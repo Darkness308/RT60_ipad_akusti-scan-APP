@@ -1,0 +1,44 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: "5.9"
+    
+    - name: Resolve Dependencies
+      run: |
+        cd AcoustiScanConsolidated
+        swift package resolve
+    
+    - name: Build Project
+      run: |
+        cd AcoustiScanConsolidated
+        swift build
+    
+    - name: Run Tests
+      run: |
+        cd AcoustiScanConsolidated
+        swift test
+    
+    - name: Build Key-Coverage Linter
+      run: |
+        chmod +x Tools/linters/report_key_coverage.swift
+        # Swift shebang script – kein separater Build nötig, direkt ausführbar
+
+    - name: Run Key-Coverage Linter (HTML)
+      run: |
+        # Beispiel: nutze dein Sample-Model; füge hier weitere Models hinzu
+        Tools/linters/report_key_coverage.swift Tools/reporthtml/sample.report.model.json
