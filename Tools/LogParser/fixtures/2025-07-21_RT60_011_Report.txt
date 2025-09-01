@@ -1,0 +1,25 @@
+Setup:
+AppVersion=1.0.0
+Date=2025-07-21
+Device=iPadPro
+Room=Classroom_A
+
+T20:
+125Hz   0.89
+250Hz   0.76
+500Hz   -.--
+1000Hz  0.64
+2000Hz  0.58
+4000Hz  0.52
+8000Hz  0.48
+
+Correltn:
+125Hz   97.2
+250Hz   96.8
+500Hz   -.--
+1000Hz  98.1
+2000Hz  97.5
+4000Hz  96.3
+8000Hz  95.7
+
+Checksum=ABC123
