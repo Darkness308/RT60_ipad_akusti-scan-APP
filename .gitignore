@@ -1,0 +1,39 @@
+# Swift Package Manager build artifacts
+.build/
+Package.resolved
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+*.xcodebuild.log
+
+# Swift
+*.swiftpm
+*.playground
+
+# macOS
+.DS_Store
+
+# Temporary files
+*.tmp
+*.log
+build.log
+test.log
+
+# Distribution
+dist/
+*.tar.gz
+*.zip
+
+# IDE files
+.vscode/
+.idea/
+
+# Build artifacts from automated tools
+*.dSYM/
+*.o
+*.a
+*.dylib
+
+# Linux
+*~
