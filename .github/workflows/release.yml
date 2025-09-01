@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Get tag version
+      id: tag
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    
+    - name: Build Swift Package
+      run: |
+        if [ -f "Package.swift" ]; then
+          swift build -c release
+        else
+          echo "Package.swift not found. Skipping build."
+        fi
+    
+    - name: Run Tests
+      run: |
+        if [ -f "Package.swift" ]; then
+          swift test
+        else
+          echo "Running Swift syntax validation..."
+          find . -name "*.swift" -exec swift -frontend -parse {} \;
+        fi
+    
+    - name: Create Release Archive
+      run: |
+        # Create source archive
+        git archive --format=zip --prefix=AcoustiScan-${{ steps.tag.outputs.VERSION }}/ HEAD > AcoustiScan-${{ steps.tag.outputs.VERSION }}-source.zip
+        
+        # Create changelog for this release
+        if [ -f "CHANGELOG.md" ]; then
+          echo "## Changes in ${{ steps.tag.outputs.VERSION }}" > release-notes.md
+          # Extract changes for this version from CHANGELOG.md
+          sed -n '/^## \[${{ steps.tag.outputs.VERSION }}\]/,/^## \[/p' CHANGELOG.md | head -n -1 >> release-notes.md || true
+        else
+          echo "Release ${{ steps.tag.outputs.VERSION }}" > release-notes.md
+          echo "" >> release-notes.md
+          echo "### Swift Code Modules:" >> release-notes.md
+          echo "- AcousticEngine: RT60 calculations and impulse response analysis" >> release-notes.md
+          echo "- ScannerEngine: LiDAR scanning and surface detection" >> release-notes.md
+          echo "- DIN18041: Room acoustics standards compliance" >> release-notes.md
+          echo "- MaterialDatabase: Acoustic material properties" >> release-notes.md
+          echo "- ReportGenerator: PDF report generation" >> release-notes.md
+        fi
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          AcoustiScan-${{ steps.tag.outputs.VERSION }}-source.zip
+        body_path: release-notes.md
+        draft: false
+        prerelease: ${{ contains(steps.tag.outputs.VERSION, 'beta') || contains(steps.tag.outputs.VERSION, 'alpha') }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
