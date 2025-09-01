@@ -1,0 +1,159 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raumakustik-Rohdaten</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container my-4">
+        <h1>Raumakustik-Rohdaten</h1>
+        <p>
+            <strong>Projekt</strong>: MyProject<br>
+            <strong>Datum</strong>: 2025-07-21<br>
+            <strong>Messgerät</strong>: XL2, SNo. A2A-08559-E0, FW4.94<br>
+            <strong>Checksum</strong>: D547EADF0139AF4D5F86FB29D4CE4AA0
+        </p>
+
+        <h2>Messergebnisse</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Frequenz [Hz]</th>
+                    <th>RT60 [s]</th>
+                    <th>Messunsicherheit [%]</th>
+                    <th>DIN 18041 Sollwert [s]</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="rt60TableBody">
+                <!-- Dynamisch via JavaScript -->
+            </tbody>
+        </table>
+
+        <h2>Visualisierung</h2>
+        <canvas id="rt60Chart" style="max-height: 400px;"></canvas>
+    </div>
+
+    <script>
+        // Lokale JSON-Daten
+        const rt60Data = [
+            { frequency: 63, rt60: null, uncertainty: null, targetRange: [0.8, 1.2], status: "Nicht gemessen" },
+            { frequency: 125, rt60: 2.67, uncertainty: 6.94, targetRange: [0.6, 0.8], status: "Zu hoch" },
+            { frequency: 250, rt60: 2.53, uncertainty: 5.31, targetRange: [0.6, 0.8], status: "Zu hoch" },
+            { frequency: 500, rt60: 3.01, uncertainty: 3.27, targetRange: [0.5, 0.7], status: "Zu hoch" },
+            { frequency: 1000, rt60: 2.38, uncertainty: 2.74, targetRange: [0.5, 0.7], status: "Zu hoch" },
+            { frequency: 2000, rt60: 2.28, uncertainty: 1.98, targetRange: [0.4, 0.6], status: "Zu hoch" },
+            { frequency: 4000, rt60: 1.91, uncertainty: 1.53, targetRange: [0.4, 0.6], status: "Zu hoch" },
+            { frequency: 8000, rt60: 1.58, uncertainty: null, targetRange: [0.3, 0.5], status: "Zu hoch" }
+        ];
+
+        // Tabelle füllen mit Cross-Verlinkung
+        const tableBody = document.getElementById('rt60TableBody');
+        rt60Data.forEach(data => {
+            const row = document.createElement('tr');
+            row.id = `freq-${data.frequency}`;
+            row.innerHTML = `
+                <td><a href="#rt60Chart" onclick="highlightPoint(${data.frequency})">${data.frequency}</a></td>
+                <td>${data.rt60 ? data.rt60.toFixed(2) : '-.--'}</td>
+                <td>${data.uncertainty ? data.uncertainty.toFixed(2) : '-.--'}</td>
+                <td>${data.targetRange[0].toFixed(1)}–${data.targetRange[1].toFixed(1)}</td>
+                <td class="${data.status === 'Zu hoch' ? 'text-danger' : data.status === 'Nicht gemessen' ? 'text-muted' : 'text-success'}">${data.status}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Chart.js mit Cross-Verlinkung
+        const ctx = document.getElementById('rt60Chart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: rt60Data.map(d => `${d.frequency} Hz`),
+                datasets: [
+                    {
+                        label: 'Gemessene RT60',
+                        data: rt60Data.map(d => d.rt60),
+                        borderColor: '#1E90FF',
+                        backgroundColor: '#1E90FF',
+                        fill: false,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    },
+                    {
+                        label: 'DIN 18041 Sollwert (Mittel)',
+                        data: rt60Data.map(d => (d.targetRange[0] + d.targetRange[1]) / 2),
+                        borderColor: '#32CD32',
+                        backgroundColor: '#32CD32',
+                        fill: false,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: { title: { display: true, text: 'Nachhallzeit [s]' } },
+                    x: { title: { display: true, text: 'Frequenzband [Hz]' } }
+                },
+                plugins: { title: { display: true, text: 'RT60 vs. DIN 18041' } },
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const freq = rt60Data[index].frequency;
+                        document.getElementById(`freq-${freq}`).scrollIntoView({ behavior: 'smooth' });
+                        document.getElementById(`freq-${freq}`).style.backgroundColor = '#e0f7fa';
+                        setTimeout(() => document.getElementById(`freq-${freq}`).style.backgroundColor = '', 1000);
+                    }
+                }
+            }
+        });
+
+        function highlightPoint(frequency) {
+            const index = rt60Data.findIndex(d => d.frequency === frequency);
+            chart.setActiveElements([{ datasetIndex: 0, index }, { datasetIndex: 1, index }]);
+            chart.update();
+        }
+    </script>
+</body>
+</html>

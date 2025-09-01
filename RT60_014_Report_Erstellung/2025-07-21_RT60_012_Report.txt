@@ -1,0 +1,48 @@
+XL2 RT60 Reporting:		MyProject\2025-07-21_RT60_012_Report.txt
+-------------------
+
+
+# Hardware Configuration
+	Device Info:    	XL2, SNo. A2A-08559-E0, FW4.94
+	Mic Type:       	NTi Audio M4260, SNo. 4753, User calibrated 2025-07-20  13:19
+	Mic Sensitivity:	31.0 mV/Pa
+	Time Zone:      	UTC+02:00 (Europe/Berlin, DST)
+
+# Measurement Setup
+	Profile:        	Full mode
+	Resolution:     	1/1 Octave
+	Range:          	40 - 140 dB
+
+
+# Time
+	Start:          	2025-07-21, 15:05:36
+	End:            	2025-07-21, 15:06:06
+
+# RT60 Average Results
+
+	Band    	RT60(T20)	MeasUnct
+	[Hz]    	[s]      	[%]     
+	63      	-.--     	-.--    
+	125     	3.01     	6.54    
+	250     	2.96     	4.66    
+	500     	2.80     	3.39    
+	1000    	2.63     	2.47    
+	2000    	2.37     	1.84    
+	4000    	2.08     	1.39    
+	8000    	-.--     	-.--    
+
+
+# RT60 Cycle Results
+
+	Band [Hz]:	63      	        	125     	        	250     	        	500     	        	1000    	        	2000    	        	4000    	        	8000    	        
+
+	          	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn
+	CYCLE     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     
+
+	01        	-.--    	-.--    	3.09    	99.83   	3.00    	99.83   	2.75    	99.92   	2.74    	99.95   	2.38    	99.96   	2.09    	99.99   	-.--    	-.--    
+	02        	-.--    	-.--    	2.86    	99.75   	2.94    	99.75   	2.84    	99.93   	2.48    	99.87   	2.36    	99.97   	2.11    	99.96   	-.--    	-.--    
+	03        	-.--    	-.--    	3.17    	99.72   	3.10    	99.82   	2.94    	99.87   	2.54    	99.91   	2.38    	99.99   	2.01    	99.98   	-.--    	-.--    
+	04        	-.--    	-.--    	2.92    	99.81   	2.81    	99.86   	2.66    	99.91   	2.75    	99.89   	2.36    	99.97   	2.11    	99.98   	-.--    	-.--    
+
+#CheckSum
+	D36EA15A4F98D9E96B32CDF13C614C11
