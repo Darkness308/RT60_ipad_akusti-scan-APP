@@ -1,0 +1,87 @@
+[
+  {
+    "name": "Unterschied",
+    "name_id": 0,
+    "definition": "Existenz eines wahrnehmbaren Unterschieds.",
+    "category": null,
+    "category_id": 0,
+    "scale_label": [
+      "gar keiner",
+      "sehr großer"
+    ],
+    "is_unipolar": 1,
+    "is_dichotom": 0,
+    "is_degree_scale": 0
+  },
+  {
+    "name": "Klangfarbe hell-dunkel",
+    "name_id": 1,
+    "definition": "Klangeindruck, der durch das Verhältnis hoher zu tiefer Frequenzanteile bestimmt wird.",
+    "category": "Klangfarbe",
+    "category_id": 1,
+    "scale_label": [
+      "dunkler",
+      "heller"
+    ],
+    "is_unipolar": 0,
+    "is_dichotom": 0,
+    "is_degree_scale": 0
+  },
+  {
+    "name": "Klangfarbliche Ausprägung im Höhenbereich",
+    "name_id": 2,
+    "definition": "Klangliche Veränderungen in einem begrenzten Frequenzbereich.",
+    "category": "Klangfarbe",
+    "category_id": 1,
+    "scale_label": [
+      "Höhen abgesenkt",
+      "Höhen angehoben"
+    ],
+    "is_unipolar": 0,
+    "is_dichotom": 0,
+    "is_degree_scale": 0
+  },
+  {
+    "name": "Klangfarbliche Ausprägung im Mittenbereich",
+    "name_id": 3,
+    "definition": "Klangliche Veränderungen in einem begrenzten Frequenzbereich.",
+    "category": "Klangfarbe",
+    "category_id": 1,
+    "scale_label": [
+      "Mitten abgesenkt",
+      "Mitten angehoben"
+    ],
+    "is_unipolar": 0,
+    "is_dichotom": 0,
+    "is_degree_scale": 0
+  },
+  {
+    "name": "Klangfarbliche Ausprägung im Tiefenbereich",
+    "name_id": 4,
+    "definition": "Klangliche Veränderungen in einem begrenzten Frequenzbereich.",
+    "category": "Klangfarbe",
+    "category_id": 1,
+    "scale_label": [
+      "Tiefen abgesenkt",
+      "Tiefen angehoben"
+    ],
+    "is_unipolar": 0,
+    "is_dichotom": 0,
+    "is_degree_scale": 0
+  },
+  {
+    "name": "Schärfe",
+    "name_id": 5,
+    "definition": "Klangeindruck, der z.B. auf den Kraftaufwand schließen lässt, mit dem eine Klangquelle angeregt wird. Beispiele: - hart/weich angeschlagene Perkussionsinstrumente - hart/weich gezupfte Saiteninstrumente (klassische Gitarre, Harfe) - Eine Überbetonung hoher Frequenzen kann einen 'scharfen' Klangeindruck fördern.",
+    "category": "Klangfarbe",
+    "category_id": 1,
+    "scale_label": [
+      "schwächer ausgeprägt",
+      "stärker ausgeprägt"
+    ],
+    "is_unipolar": 0,
+    "is_dichotom": 0,
+    "is_degree_scale": 0
+  }
+  // ... vollständiger JSON-Code mit allen 48 Parametern ...
+]
