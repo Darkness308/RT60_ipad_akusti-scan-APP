@@ -1,0 +1,2 @@
+dependencies: \
+  /home/runner/work/RT60_ipad_akusti-scan-APP/RT60_ipad_akusti-scan-APP/AcoustiScanConsolidated/.build/checkouts/swift-syntax/Sources/_SwiftSyntaxCShims/dummy.c
