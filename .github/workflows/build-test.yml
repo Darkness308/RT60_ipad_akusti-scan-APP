@@ -1,3 +1,4 @@
+copilot/fix-61f5a74e-22f9-4da7-953e-05aa7d3a29f4
 name: build-test
 on: [push, pull_request]
 jobs:
@@ -28,3 +29,46 @@ jobs:
             **/*.xcresult
             **/Artifacts/*.pdf
             **/Artifacts/*.json
+
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: "5.9"
+    
+    - name: Build AcoustiScan Consolidated
+      run: |
+        cd AcoustiScanConsolidated
+        swift build
+    
+    - name: Run Tests
+      run: |
+        cd AcoustiScanConsolidated
+        swift test
+    
+    - name: Generate HTML report artifact
+      run: |
+        mkdir -p Artifacts
+        swiftc -o reporthtml Tools/reporthtml/main.swift
+        ./reporthtml Tools/reporthtml/sample.report.model.json -o Artifacts/report.html
+    
+    - name: Upload HTML Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: Artifacts/report.html
+main

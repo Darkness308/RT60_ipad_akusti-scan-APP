@@ -9,7 +9,7 @@ final class ReportContractTests: XCTestCase {
     func test_pdf_and_html_contain_same_core_tokens() {
         // Arrange – identisches Model für beide Renderer
         let model = ReportModel(
-            metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21","room":"Demo A"],
+            metadata: ["device": "iPadPro", "app_version": "1.0.0", "date": "2025-07-21", "room": "Demo A"],
             rt60_bands: [
                 ["freq_hz": 125.0, "t20_s": 0.70],
                 ["freq_hz": 250.0, "t20_s": 0.60],
@@ -19,9 +19,9 @@ final class ReportContractTests: XCTestCase {
                 ["freq_hz": 125.0, "t_soll": 0.60, "tol": 0.20],
                 ["freq_hz": 250.0, "t_soll": 0.60, "tol": 0.20]
             ],
-            validity: ["method":"ISO3382-1","bands":"octave","note":"demo"],
-            recommendations: ["Wandabsorber ergänzen","Deckenwolken prüfen"],
-            audit: ["hash":"DEMOHASH","source":"fixtures"]
+            validity: ["method": "ISO3382-1", "bands": "octave", "note": "demo"],
+            recommendations: ["Wandabsorber ergänzen", "Deckenwolken prüfen"],
+            audit: ["hash": "DEMOHASH", "source": "fixtures"]
         )
 
         // Act – PDF
@@ -51,7 +51,7 @@ final class ReportContractTests: XCTestCase {
     func test_missing_values_show_as_dash_in_both_outputs() {
         // Arrange – Model mit fehlenden Werten
         let model = ReportModel(
-            metadata: ["device":"TestDevice"],
+            metadata: ["device": "TestDevice"],
             rt60_bands: [
                 ["freq_hz": 125.0, "t20_s": nil], // fehlender Wert
                 ["freq_hz": 250.0, "t20_s": 0.50]
@@ -81,7 +81,7 @@ final class ReportContractTests: XCTestCase {
     func test_all_frequency_labels_present_in_both_outputs() {
         // Arrange – Model mit verschiedenen Frequenzen
         let model = ReportModel(
-            metadata: ["device":"TestDevice"],
+            metadata: ["device": "TestDevice"],
             rt60_bands: [
                 ["freq_hz": 125.0, "t20_s": 0.70],
                 ["freq_hz": 1000.0, "t20_s": 0.55],
@@ -116,7 +116,7 @@ final class ReportContractTests: XCTestCase {
     func test_din_target_values_present_in_both_outputs() {
         // Arrange – Model mit DIN-Zielwerten
         let model = ReportModel(
-            metadata: ["device":"TestDevice"],
+            metadata: ["device": "TestDevice"],
             rt60_bands: [],
             din_targets: [
                 ["freq_hz": 250.0, "t_soll": 0.65, "tol": 0.15],

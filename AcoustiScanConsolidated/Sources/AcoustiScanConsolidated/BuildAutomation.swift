@@ -70,15 +70,19 @@ public class BuildAutomation {
     /// Execute swift build and parse output
     private static func runBuild(projectPath: String) -> BuildResult {
         let task = Process()
-        task.launchPath = "/usr/bin/swift"
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
         task.arguments = ["build", "--package-path", projectPath]
         
         let pipe = Pipe()
         task.standardError = pipe
         task.standardOutput = pipe
         
-        task.launch()
-        task.waitUntilExit()
+        do {
+            try task.run()
+            task.waitUntilExit()
+        } catch {
+            return .failure("Failed to execute swift build: \(error)", [])
+        }
         
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         let output = String(data: data, encoding: .utf8) ?? ""
@@ -330,11 +334,15 @@ public class ContinuousIntegration {
     
     private static func runTests(projectPath: String) -> Bool {
         let task = Process()
-        task.launchPath = "/usr/bin/swift"
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
         task.arguments = ["test", "--package-path", projectPath]
         
-        task.launch()
-        task.waitUntilExit()
+        do {
+            try task.run()
+            task.waitUntilExit()
+        } catch {
+            return false
+        }
         
         return task.terminationStatus == 0
     }

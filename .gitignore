@@ -37,3 +37,8 @@ dist/
 
 # Linux
 *~
+
+# CLI tool artifacts
+/reporthtml
+Artifacts/
+Tools/reporthtml/reporthtml

@@ -20,10 +20,10 @@ public class ConsolidatedPDFExporter {
         public let surfaces: [AcousticSurface]
         public let recommendations: [String]
         
-        public init(date: String, roomType: RoomType, volume: Double, 
-                   rt60Measurements: [RT60Measurement], dinResults: [RT60Deviation],
-                   acousticFrameworkResults: [String: Double], surfaces: [AcousticSurface],
-                   recommendations: [String]) {
+        public init(date: String, roomType: RoomType, volume: Double,
+                    rt60Measurements: [RT60Measurement], dinResults: [RT60Deviation],
+                    acousticFrameworkResults: [String: Double], surfaces: [AcousticSurface],
+                    recommendations: [String]) {
             self.date = date
             self.roomType = roomType
             self.volume = volume
@@ -126,13 +126,15 @@ public class ConsolidatedPDFExporter {
         DIN 18041 Konformität: \(String(format: "%.1f", compliancePercentage))%
         Frequenzbereiche in Toleranz: \(withinTolerance)/\(totalMeasurements)
         
-        Bewertung: \(compliancePercentage >= 80 ? "Sehr gut" : compliancePercentage >= 60 ? "Gut" : "Verbesserungsbedarf")
+        Bewertung: \(compliancePercentage >= 80 ? "Sehr gut" : 
+                    compliancePercentage >= 60 ? "Gut" : "Verbesserungsbedarf")
         """
         
         let summaryAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
         ]
-        summaryText.draw(in: CGRect(x: margin + 20, y: yPosition + 50, width: pageRect.width - 2*margin - 40, height: 140), 
+        summaryText.draw(in: CGRect(x: margin + 20, y: yPosition + 50, 
+                                    width: pageRect.width - 2*margin - 40, height: 140),
                         withAttributes: summaryAttrs)
         
         // Footer
@@ -228,7 +230,8 @@ public class ConsolidatedPDFExporter {
             .font: UIFont.systemFont(ofSize: 12)
         ]
         
-        "Frequenz    Ist-RT60    Soll-RT60    Abweichung    Status".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: headerAttrs)
+        let headerText = "Frequenz    Ist-RT60    Soll-RT60    Abweichung    Status"
+        headerText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: headerAttrs)
         yPosition += 25
         
         for deviation in data.dinResults.sorted(by: { $0.frequency < $1.frequency }) {
