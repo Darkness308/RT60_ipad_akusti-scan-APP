@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "device": "iPadPro",
+    "app_version": "1.0.0",
+    "date": "2025-07-21",
+    "room": "Demo A",
+    "missing_key": "this_should_fail"
+  },
+  "rt60_bands": [
+    {
+      "freq_hz": 125.0,
+      "t20_s": 0.70
+    }
+  ],
+  "din_targets": [
+    {
+      "freq_hz": 125.0,
+      "t_soll": 0.60,
+      "tol": 0.20
+    }
+  ],
+  "validity": {
+    "method": "ISO3382-1",
+    "bands": "octave"
+  },
+  "recommendations": [
+    "Wandabsorber ergänzen"
+  ],
+  "audit": {
+    "hash": "DEMOHASH",
+    "source": "fixtures"
+  }
+}

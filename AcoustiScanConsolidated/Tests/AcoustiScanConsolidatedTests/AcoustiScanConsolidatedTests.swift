@@ -531,3 +531,61 @@ struct IntegrationTests {
         #expect(parameters.count > 0)
     }
 }
+
+/// Test suite for HTML Report Rendering
+struct ReportHTMLRendererTests {
+
+    @Test("HTML contains core sections and values")
+    func testHTMLContainsCoresSectionsAndValues() {
+        let model = ReportModel(
+            metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21","room":"Demo A"],
+            rt60_bands: [
+                ["freq_hz": 125.0, "t20_s": 0.70],
+                ["freq_hz": 250.0, "t20_s": nil]
+            ],
+            din_targets: [
+                ["freq_hz": 125.0, "t_soll": 0.60, "tol": 0.20]
+            ],
+            validity: ["method":"ISO3382-1","bands":"octave"],
+            recommendations: ["Wandabsorber ergänzen"],
+            audit: ["hash":"DEMOHASH","source":"fixtures"]
+        )
+
+        let html = ReportHTMLRenderer().render(model)
+        let text = String(decoding: html, as: UTF8.self)
+            .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
+            .lowercased()
+
+        // Kernabschnitte
+        for token in ["rt60 bericht","metadaten","rt60 je frequenz","din 18041","gültigkeit","empfehlungen","audit"] {
+            #expect(text.contains(token), "Fehlender Abschnitt: \(token)")
+        }
+        // Werte
+        #expect(text.contains("ipadpro"))
+        #expect(text.contains("1.0.0"))
+        #expect(text.contains("125"))
+        #expect(text.contains("0.70"))
+        // nil -> "-"
+        #expect(text.contains("250"))
+        #expect(text.contains("-"))
+    }
+
+    @Test("HTML is UTF-8 and sanitized")
+    func testHTMLIsUTF8AndSanitized() {
+        let model = ReportModel(
+            metadata: ["device":"<iPad&Pro>","app_version":"1.0.0","date":"2025-07-21"],
+            rt60_bands: [["freq_hz": 125.0, "t20_s": 0.70]],
+            din_targets: [],
+            validity: [:],
+            recommendations: ["<b>Keine Tags rendern</b>"],
+            audit: [:]
+        )
+        let data = ReportHTMLRenderer().render(model)
+        // UTF-8 roundtrip
+        #expect(String(data: data, encoding: .utf8) != nil)
+        let html = String(decoding: data, as: UTF8.self)
+        // Grundlegende Entschärfung (Escape) wird erwartet
+        #expect(html.contains("&lt;iPad&amp;Pro&gt;"))
+        #expect(!html.contains("<b>Keine Tags rendern</b>"))
+    }
+}
