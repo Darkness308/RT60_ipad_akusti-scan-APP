@@ -81,11 +81,13 @@ struct PDFExportView: View {
         let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent("Report.pdf")
         do {
             try data.write(to: tmpURL)
+            #if canImport(UIKit)
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = windowScene.windows.first {
                 let activityVC = UIActivityViewController(activityItems: [tmpURL], applicationActivities: nil)
                 window.rootViewController?.present(activityVC, animated: true, completion: nil)
             }
+            #endif
         } catch {
             print("Error writing PDF: \(error)")
         }
