@@ -1,38 +1,3 @@
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-
-copilot/fix-61f5a74e-22f9-4da7-953e-05aa7d3a29f4
-name: build-test
-on: [push, pull_request]
-jobs:
-  ios:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Select Xcode
-        run: sudo xcode-select -s "/Applications/Xcode.app/Contents/Developer"
-      - name: Cache DerivedData
-        uses: actions/cache@v4
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-dd-${{ hashFiles('**/*.swift','**/*.xcodeproj','**/Package.resolved') }}
-      - name: Install Tools
-        run: brew install swiftlint swiftformat || true
-      - name: Lint
-        run: swiftlint --strict || true
-      - name: Format Check
-        run: swiftformat --lint . || true
-      - name: Test
-        run: xcodebuild -scheme "MyApp" -destination 'platform=iOS Simulator,name=iPad (10th generation)' -enableCodeCoverage YES test
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: |
-            **/*.xcresult
-            **/Artifacts/*.pdf
-            **/Artifacts/*.json
-
-main
 name: Build and Test
 
 on:
@@ -42,35 +7,42 @@ on:
     branches: [ main ]
 
 jobs:
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-  build-and-test:
-
   build:
-main
-    runs-on: ubuntu-latest
+    runs-on: macos-13
     
     steps:
     - uses: actions/checkout@v4
     
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-    - name: Setup Swift
-
-    - name: Install Swift
-main
-      uses: swift-actions/setup-swift@v1
+    - uses: maxim-lobanov/setup-xcode@v1
       with:
-        swift-version: "5.9"
+        xcode-version: '15.2'
     
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
+    - name: Cache DerivedData
+      uses: actions/cache@v4
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData
+        key: ${{ runner.os }}-dd-${{ hashFiles('**/*.swift','**/*.xcodeproj','**/Package.resolved') }}
+    
+    - name: Install Tools
+      run: brew install swiftlint swiftformat || true
+    
+    - name: Lint
+      run: swiftlint --strict || true
+    
+    - name: Format Check
+      run: swiftformat --lint . || true
+    
+    - name: Clean build cache
+      run: |
+        cd AcoustiScanConsolidated
+        swift package clean
+    
     - name: Resolve Dependencies
       run: |
         cd AcoustiScanConsolidated
         swift package resolve
     
-    - name: Build Project
-
     - name: Build AcoustiScan Consolidated
-main
       run: |
         cd AcoustiScanConsolidated
         swift build
@@ -80,7 +52,6 @@ main
         cd AcoustiScanConsolidated
         swift test
     
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
     - name: Build Key-Coverage Linter
       run: |
         chmod +x Tools/linters/report_key_coverage.swift
@@ -102,5 +73,3 @@ copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
       with:
         name: html-report
         path: Artifacts/report.html
-main
-main
