@@ -7,6 +7,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
+copilot/fix-9fae47c8-9630-4ae1-90f1-4695b65c0227
   swift-package-build:
     runs-on: macos-latest
     
@@ -48,14 +49,42 @@ jobs:
 
   consolidated-build:
     runs-on: ubuntu-latest
+
+  build:
+    runs-on: macos-13
+main
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Install Swift
-      uses: swift-actions/setup-swift@v1
+    - uses: maxim-lobanov/setup-xcode@v1
       with:
-        swift-version: "5.9"
+        xcode-version: '15.2'
+    
+    - name: Cache DerivedData
+      uses: actions/cache@v4
+      with:
+        path: ~/Library/Developer/Xcode/DerivedData
+        key: ${{ runner.os }}-dd-${{ hashFiles('**/*.swift','**/*.xcodeproj','**/Package.resolved') }}
+    
+    - name: Install Tools
+      run: brew install swiftlint swiftformat || true
+    
+    - name: Lint
+      run: swiftlint --strict || true
+    
+    - name: Format Check
+      run: swiftformat --lint . || true
+    
+    - name: Clean build cache
+      run: |
+        cd AcoustiScanConsolidated
+        swift package clean
+    
+    - name: Resolve Dependencies
+      run: |
+        cd AcoustiScanConsolidated
+        swift package resolve
     
     - name: Build AcoustiScan Consolidated
       run: |
@@ -67,6 +96,16 @@ jobs:
         cd AcoustiScanConsolidated
         swift test --verbose
     
+    - name: Build Key-Coverage Linter
+      run: |
+        chmod +x Tools/linters/report_key_coverage.swift
+        # Swift shebang script – kein separater Build nötig, direkt ausführbar
+
+    - name: Run Key-Coverage Linter (HTML)
+      run: |
+        # Beispiel: nutze dein Sample-Model; füge hier weitere Models hinzu
+        Tools/linters/report_key_coverage.swift Tools/reporthtml/sample.report.model.json
+
     - name: Generate HTML report artifact
       run: |
         mkdir -p Artifacts
@@ -80,8 +119,13 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
+copilot/fix-9fae47c8-9630-4ae1-90f1-4695b65c0227
         name: build-artifacts
         path: |
           Artifacts/*.html
           Artifacts/*.pdf
           Artifacts/*.json
+
+        name: html-report
+        path: Artifacts/report.html
+main

@@ -1,9 +1,9 @@
 // ReportHTMLRenderer.swift
-// HTML renderer for ReportModel to ensure equivalent output to PDF
+// HTML renderer for ReportModel without PDFKit dependencies
 
 import Foundation
 
-/// HTML renderer for ReportModel
+/// HTML renderer for ReportModel that produces UTF-8 HTML content
 public class ReportHTMLRenderer {
     
     public init() {}
@@ -62,7 +62,7 @@ public class ReportHTMLRenderer {
     private func renderMetadataSection(_ metadata: [String: String]) -> String {
         var rows = ""
         for (key, value) in metadata.sorted(by: { $0.key < $1.key }) {
-            rows += "<tr><td>\(key)</td><td>\(value)</td></tr>\n"
+            rows += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>\n"
         }
         
         return """
@@ -133,7 +133,7 @@ public class ReportHTMLRenderer {
     private func renderValiditySection(_ validity: [String: String]) -> String {
         var rows = ""
         for (key, value) in validity.sorted(by: { $0.key < $1.key }) {
-            rows += "<tr><td>\(key)</td><td>\(value)</td></tr>\n"
+            rows += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>\n"
         }
         
         return """
@@ -147,7 +147,7 @@ public class ReportHTMLRenderer {
     }
     
     private func renderRecommendationsSection(_ recommendations: [String]) -> String {
-        let items = recommendations.map { "<li>\($0)</li>" }.joined(separator: "\n")
+        let items = recommendations.map { "<li>\(escapeHTML($0))</li>" }.joined(separator: "\n")
         
         return """
         <div class="section">
@@ -162,7 +162,7 @@ public class ReportHTMLRenderer {
     private func renderAuditSection(_ audit: [String: String]) -> String {
         var rows = ""
         for (key, value) in audit.sorted(by: { $0.key < $1.key }) {
-            rows += "<tr><td>\(key)</td><td>\(value)</td></tr>\n"
+            rows += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>\n"
         }
         
         return """
@@ -173,5 +173,15 @@ public class ReportHTMLRenderer {
             </table>
         </div>
         """
+    }
+    
+    /// Escape HTML entities to prevent XSS and ensure proper rendering
+    private func escapeHTML(_ text: String) -> String {
+        return text
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "'", with: "&#39;")
     }
 }
