@@ -19,7 +19,7 @@ jobs:
       - name: Format Check
         run: swiftformat --lint . || true
       - name: Test
-        run: xcodebuild -scheme "<AppScheme>" -destination 'platform=iOS Simulator,name=iPad (10th generation)' -enableCodeCoverage YES test
+        run: xcodebuild -scheme "MyApp" -destination 'platform=iOS Simulator,name=iPad (10th generation)' -enableCodeCoverage YES test
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
