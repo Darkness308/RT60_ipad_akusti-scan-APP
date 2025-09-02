@@ -40,7 +40,7 @@ public class ReportHTMLRenderer {
         </head>
         <body>
             <div class="header">
-                <h1>Gutachterlicher Raumakustik Report</h1>
+                <h1>RT60 Bericht</h1>
                 <p>RT60-Messung und DIN 18041-Bewertung</p>
             </div>
             
@@ -91,7 +91,7 @@ public class ReportHTMLRenderer {
         
         return """
         <div class="section">
-            <h2>RT60-Frequenzanalyse</h2>
+            <h2>RT60 je Frequenz</h2>
             <table>
                 <thead>
                     <tr><th>Frequenz (Hz)</th><th>RT60 (s)</th></tr>
@@ -138,7 +138,7 @@ public class ReportHTMLRenderer {
         
         return """
         <div class="section">
-            <h2>Validität</h2>
+            <h2>Gültigkeit</h2>
             <table class="metadata-table">
                 \(rows)
             </table>
