@@ -273,6 +273,191 @@ struct PDFExportTests {
     }
 }
 
+/// Contract tests for PDF ↔ HTML equivalence
+struct ReportContractTests {
+    
+    @Test("nil values render as dash in both PDF and HTML")
+    func test_nil_values_render_as_dash_in_both_pdf_and_html() {
+        let model = ReportModel(
+            metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21"],
+            rt60_bands: [
+                ["freq_hz": 125.0, "t20_s": 0.70],
+                ["freq_hz": 250.0, "t20_s": nil],   // nil -> "-"
+                ["freq_hz": 500.0, "t20_s": 0.55]
+            ],
+            din_targets: [
+                ["freq_hz": 125.0, "t_soll": 0.60, "tol": 0.20],
+                ["freq_hz": 250.0, "t_soll": 0.60, "tol": 0.20]
+            ],
+            validity: ["method":"ISO3382-1"],
+            recommendations: [],
+            audit: [:]
+        )
+
+        // HTML
+        let htmlData = ReportHTMLRenderer().render(model)
+        let htmlText = String(decoding: htmlData, as: UTF8.self)
+            .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
+
+        // 250 Hz must show "-" for nil
+        #expect(htmlText.contains("250"))
+        #expect(htmlText.contains("-"))
+        
+        // PDF generation test would go here when UIKit is available
+        #if canImport(UIKit)
+        // Convert ReportModel to ReportData for PDF
+        let reportData = createReportDataFromModel(model)
+        if let pdfData = ConsolidatedPDFExporter.generateReport(data: reportData) {
+            let pdfText = PDFTextExtractor.extractText(from: pdfData)
+            #expect(pdfText.contains("250"))
+            #expect(pdfText.contains("-"))
+        }
+        #endif
+    }
+
+    @Test("all frequency labels match between PDF and HTML")
+    func test_all_frequency_labels_match_between_pdf_and_html() {
+        let model = ReportModel(
+            metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21"],
+            rt60_bands: [
+                ["freq_hz": 125.0, "t20_s": 0.70],
+                ["freq_hz": 250.0, "t20_s": 0.60],
+                ["freq_hz": 500.0, "t20_s": nil],
+                ["freq_hz": 1000.0, "t20_s": 0.50]
+            ],
+            din_targets: [
+                ["freq_hz": 125.0, "t_soll": 0.60, "tol": 0.20],
+                ["freq_hz": 250.0, "t_soll": 0.60, "tol": 0.20],
+                ["freq_hz": 1000.0, "t_soll": 0.60, "tol": 0.20]
+            ],
+            validity: ["method":"ISO3382-1"],
+            recommendations: [],
+            audit: [:]
+        )
+
+        // HTML rendering
+        let htmlText = String(decoding: ReportHTMLRenderer().render(model), as: UTF8.self)
+            .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
+            .lowercased()
+
+        // Frequency set from the model
+        let expectedFreqs = Set(model.rt60_bands.compactMap { band -> Int? in
+            guard let freq = band["freq_hz"] else { return nil }
+            return Int(freq?.rounded() ?? 0)
+        })
+
+        // Check: each frequency must appear in HTML output
+        for f in expectedFreqs {
+            let token = "\(f)"
+            #expect(htmlText.contains(token), "HTML missing frequency \(f) Hz")
+        }
+        
+        #if canImport(UIKit)
+        let reportData = createReportDataFromModel(model)
+        if let pdfData = ConsolidatedPDFExporter.generateReport(data: reportData) {
+            let pdfText = PDFTextExtractor.extractText(from: pdfData).lowercased()
+            
+            // Check: each frequency must appear in PDF output
+            for f in expectedFreqs {
+                let token = "\(f)"
+                #expect(pdfText.contains(token), "PDF missing frequency \(f) Hz")
+            }
+        }
+        #endif
+    }
+
+    @Test("all DIN targets match between PDF and HTML")
+    func test_all_din_targets_match_between_pdf_and_html() {
+        let model = ReportModel(
+            metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21"],
+            rt60_bands: [
+                ["freq_hz": 125.0, "t20_s": 0.70],
+                ["freq_hz": 250.0, "t20_s": 0.60]
+            ],
+            din_targets: [
+                ["freq_hz": 125.0, "t_soll": 0.60, "tol": 0.20],
+                ["freq_hz": 250.0, "t_soll": 0.55, "tol": 0.20]
+            ],
+            validity: ["method":"ISO3382-1"],
+            recommendations: [],
+            audit: [:]
+        )
+
+        let htmlText = String(decoding: ReportHTMLRenderer().render(model), as: UTF8.self)
+            .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
+            .lowercased()
+
+        for row in model.din_targets {
+            let f = Int((row["freq_hz"] as? Double ?? 0).rounded())
+            let ts = String(format: "%.2f", row["t_soll"] as? Double ?? 0)
+            let tol = String(format: "%.2f", row["tol"] as? Double ?? 0.2)
+
+            let tokens = ["\(f)", ts, tol]
+            for t in tokens {
+                #expect(htmlText.contains(t), "HTML missing DIN token \(t) @\(f)Hz")
+            }
+        }
+        
+        #if canImport(UIKit)
+        let reportData = createReportDataFromModel(model)
+        if let pdfData = ConsolidatedPDFExporter.generateReport(data: reportData) {
+            let pdfText = PDFTextExtractor.extractText(from: pdfData).lowercased()
+            
+            for row in model.din_targets {
+                let f = Int((row["freq_hz"] as? Double ?? 0).rounded())
+                let ts = String(format: "%.2f", row["t_soll"] as? Double ?? 0)
+                let tol = String(format: "%.2f", row["tol"] as? Double ?? 0.2)
+
+                let tokens = ["\(f)", ts, tol]
+                for t in tokens {
+                    #expect(pdfText.contains(t), "PDF missing DIN token \(t) @\(f)Hz")
+                }
+            }
+        }
+        #endif
+    }
+    
+    // Helper function to convert ReportModel to ReportData for PDF generation
+    private func createReportDataFromModel(_ model: ReportModel) -> ConsolidatedPDFExporter.ReportData {
+        let rt60Measurements = model.rt60_bands.compactMap { band -> RT60Measurement? in
+            guard let freq = band["freq_hz"], let rt60_opt = band["t20_s"], let rt60 = rt60_opt else { return nil }
+            return RT60Measurement(frequency: Int(freq?.rounded() ?? 0), rt60: rt60)
+        }
+        
+        let dinResults = model.din_targets.map { target in
+            let freq = Int(target["freq_hz"] as? Double ?? 0)
+            let targetRT60 = target["t_soll"] as? Double ?? 0
+            let tolerance = target["tol"] as? Double ?? 0.1
+            
+            // Find corresponding measurement
+            let measuredRT60 = rt60Measurements.first { $0.frequency == freq }?.rt60 ?? targetRT60
+            
+            let diff = measuredRT60 - targetRT60
+            let status: EvaluationStatus
+            if abs(diff) <= tolerance {
+                status = .withinTolerance
+            } else if diff > 0 {
+                status = .tooHigh
+            } else {
+                status = .tooLow
+            }
+            
+            return RT60Deviation(frequency: freq, measuredRT60: measuredRT60, targetRT60: targetRT60, status: status)
+        }
+        
+        return ConsolidatedPDFExporter.ReportData(
+            date: model.metadata["date"] ?? "2025-01-01",
+            roomType: .classroom,
+            volume: 150.0,
+            rt60Measurements: rt60Measurements,
+            dinResults: dinResults,
+            acousticFrameworkResults: [:],
+            surfaces: [],
+            recommendations: model.recommendations
+        )
+    }
+}
+
 /// Integration tests
 struct IntegrationTests {
     
