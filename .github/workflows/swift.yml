@@ -1,4 +1,4 @@
-name: Swift
+name: Swift Build
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: macos-13
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@v4
@@ -17,27 +18,38 @@ jobs:
       with:
         xcode-version: '15.2'
     
-    - name: Clean build cache
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v3
+      with:
+        path: |
+          .build
+          AcoustiScanConsolidated/.build
+          Modules/Export/.build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.swift', '**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+    
+    - name: Build and Test Main Package
       run: |
-        cd AcoustiScanConsolidated
-        swift package clean
+        swift build --build-tests
+        swift test
 
     - name: Build AcoustiScanConsolidated
       run: |
         cd AcoustiScanConsolidated
-        swift build -v
+        swift build
 
-    - name: Run tests for AcoustiScanConsolidated
+    - name: Test AcoustiScanConsolidated
       run: |
         cd AcoustiScanConsolidated
-        swift test -v
+        swift test
 
     - name: Build Export Module
       run: |
         cd Modules/Export
-        swift build -v
+        swift build
 
-    - name: Run tests for Export Module
+    - name: Test Export Module
       run: |
         cd Modules/Export
-        swift test -v
+        swift test

@@ -4,6 +4,8 @@ copilot/fix-9fae47c8-9630-4ae1-90f1-4695b65c0227
 
 # Paths to include and exclude
 included:
+  - Sources
+  - Tests
   - RT60_014_Report_Erstellung
   - swift_coding
 
@@ -13,6 +15,7 @@ excluded:
   - .github
   - "*/Tests/Resources/*"
   - "**/*.zip"
+  - AcoustiScanConsolidated/.build
 
 # Rules to enable
 opt_in_rules:
@@ -21,7 +24,6 @@ opt_in_rules:
   - collection_alignment
   - empty_count
   - explicit_init
-  - file_header
   - first_where
   - force_unwrapping
   - implicitly_unwrapped_optional
@@ -37,8 +39,8 @@ opt_in_rules:
 
 # Rules to disable
 disabled_rules:
-  - line_length # Will be configured below
   - identifier_name # Too restrictive for this project
+  - trailing_whitespace
 
 # Customizable rules
 line_length:
@@ -64,6 +66,10 @@ function_parameter_count:
   warning: 5
   error: 8
 
+cyclomatic_complexity:
+  warning: 10
+  error: 15
+
 nesting:
   type_level:
     warning: 3
@@ -87,17 +93,4 @@ custom_rules:
     severity: warning
 
 # Reporter type
-
-disabled_rules:
-  - trailing_whitespace
-  - identifier_name
-opt_in_rules:
-  - force_unwrapping
-  - empty_count
-  - closure_spacing
-line_length: 120
-type_body_length: 400
-file_length: 1000
-cyclomatic_complexity: 15
-main
 reporter: "xcode"
