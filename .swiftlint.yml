@@ -1,0 +1,12 @@
+disabled_rules:
+  - trailing_whitespace
+  - identifier_name
+opt_in_rules:
+  - force_unwrapping
+  - empty_count
+  - closure_spacing
+line_length: 120
+type_body_length: 400
+file_length: 1000
+cyclomatic_complexity: 15
+reporter: "xcode"

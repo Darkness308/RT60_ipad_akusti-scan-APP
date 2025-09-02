@@ -1,3 +1,35 @@
+copilot/fix-61f5a74e-22f9-4da7-953e-05aa7d3a29f4
+name: build-test
+on: [push, pull_request]
+jobs:
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s "/Applications/Xcode.app/Contents/Developer"
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-dd-${{ hashFiles('**/*.swift','**/*.xcodeproj','**/Package.resolved') }}
+      - name: Install Tools
+        run: brew install swiftlint swiftformat || true
+      - name: Lint
+        run: swiftlint --strict || true
+      - name: Format Check
+        run: swiftformat --lint . || true
+      - name: Test
+        run: xcodebuild -scheme "MyApp" -destination 'platform=iOS Simulator,name=iPad (10th generation)' -enableCodeCoverage YES test
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            **/*.xcresult
+            **/Artifacts/*.pdf
+            **/Artifacts/*.json
+
 name: Build and Test
 
 on:
@@ -39,3 +71,4 @@ jobs:
       with:
         name: html-report
         path: Artifacts/report.html
+main
