@@ -144,6 +144,47 @@ final class ReportContractTests: XCTestCase {
         }
     }
 
+    func test_pdf_includes_required_frequencies_and_din_values() {
+        // Arrange – Model with minimal data - should still include required frequencies and DIN values
+        let model = ReportModel(
+            metadata: ["device": "iPadPro", "app_version": "1.0.0"],
+            rt60_bands: [
+                ["freq_hz": 250.0, "t20_s": 0.60]  // Only one frequency, not in required list
+            ],
+            din_targets: [
+                ["freq_hz": 250.0, "t_soll": 0.60, "tol": 0.20]  // Only one target, not required values
+            ],
+            validity: [:],
+            recommendations: [],
+            audit: [:]
+        )
+        
+        // Act
+        let pdfData = PDFReportRenderer().render(model)
+        let pdfText = extractPDFText(pdfData).lowercased()
+        
+        // Assert – Required frequencies should always appear in PDF
+        let requiredFrequencies = ["125", "1000", "4000"]
+        for freq in requiredFrequencies {
+            XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq)")
+        }
+        
+        // Assert – Required DIN values should always appear in PDF  
+        let requiredDINValues = ["0.65", "0.55", "0.15", "0.12"]
+        for value in requiredDINValues {
+            XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value)")
+        }
+        
+        // Assert – Core tokens should always appear in PDF
+        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        for token in coreTokens {
+            XCTAssertTrue(pdfText.contains(token), "PDF fehlt Core-Token: \(token)")
+        }
+        
+        // Assert – Missing values should be represented as "-"
+        XCTAssertTrue(pdfText.contains("-"), "PDF sollte '-' für fehlende Werte enthalten")
+    }
+
     // MARK: - Helpers
 
     #if canImport(PDFKit)
