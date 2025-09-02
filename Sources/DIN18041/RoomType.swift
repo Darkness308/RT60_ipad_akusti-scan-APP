@@ -30,6 +30,11 @@ public enum RoomType: String, CaseIterable {
         }
     }
     
+    /// Alias for displayName (for compatibility)
+    public var displayName: String {
+        return germanName
+    }
+    
     /// Beschreibung des Raumtyps
     public var description: String {
         switch self {
