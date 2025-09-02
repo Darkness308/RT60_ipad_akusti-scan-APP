@@ -1,6 +1,7 @@
-#if canImport(SwiftUI) && canImport(WebKit)
+#if canImport(SwiftUI) && canImport(WebKit) && canImport(UIKit)
 import SwiftUI
 import WebKit
+import UIKit
 
 public struct HTMLPreviewView: UIViewRepresentable {
     let htmlData: Data
@@ -19,5 +20,13 @@ public struct HTMLPreviewView: UIViewRepresentable {
         let html = String(decoding: htmlData, as: UTF8.self)
         webView.loadHTMLString(html, baseURL: nil)
     }
+}
+#else
+// Fallback for non-iOS platforms
+import Foundation
+
+public struct HTMLPreviewView {
+    let htmlData: Data
+    public init(htmlData: Data) { self.htmlData = htmlData }
 }
 #endif
