@@ -2,9 +2,14 @@ copilot/fix-61f5a74e-22f9-4da7-953e-05aa7d3a29f4
 import UIKit
 import PDFKit
 
+public struct RT60Band: Codable {
+    public let freq_hz: Double
+    public let t20_s: Double?
+}
+
 public struct ReportModel: Codable {
     public let metadata: [String: String]
-    public let rt60_bands: [[String: Double?]]  // [{ "freq_hz": 125, "t20_s": 0.7 }]
+    public let rt60_bands: [RT60Band]  // [{ "freq_hz": 125, "t20_s": 0.7 }]
     public let din_targets: [[String: Double]]  // [{ "freq_hz": 125, "t_soll": 0.6, "tol": 0.2 }]
     public let validity: [String: String]       // {"method":"ISO3382-1", "notes":"..."}
     public let recommendations: [String]
