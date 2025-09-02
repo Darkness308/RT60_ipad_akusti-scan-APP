@@ -1,17 +1,9 @@
 // ReportModel.swift
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-// Report data model for HTML and PDF rendering
-
-import Foundation
-
-/// Report data model that contains all required fields for rendering
-
 // JSON-serializable report model for contract tests and HTML export
 
 import Foundation
 
 /// JSON-serializable report model matching the schema requirements
-main
 public struct ReportModel: Codable {
     public let metadata: [String: String]
     public let rt60_bands: [[String: Double?]]
@@ -35,8 +27,6 @@ public struct ReportModel: Codable {
         self.recommendations = recommendations
         self.audit = audit
     }
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-
 }
 
 /// Extension to convert between existing ReportData and new ReportModel
@@ -85,5 +75,4 @@ extension ReportModel {
             audit: audit
         )
     }
-main
 }
