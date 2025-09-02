@@ -165,4 +165,3 @@ public final class PDFReportRenderer {
     }
     #endif
 }
-}
