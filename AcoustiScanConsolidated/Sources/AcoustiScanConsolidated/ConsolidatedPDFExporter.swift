@@ -5,6 +5,9 @@ import Foundation
 #if canImport(UIKit)
 import UIKit
 #endif
+#if canImport(AppKit)
+import AppKit
+#endif
 
 /// Comprehensive PDF report generator
 public class ConsolidatedPDFExporter {
@@ -20,10 +23,7 @@ public class ConsolidatedPDFExporter {
         public let surfaces: [AcousticSurface]
         public let recommendations: [String]
         
-        public init(date: String, roomType: RoomType, volume: Double,
-                    rt60Measurements: [RT60Measurement], dinResults: [RT60Deviation],
-                    acousticFrameworkResults: [String: Double], surfaces: [AcousticSurface],
-                    recommendations: [String]) {
+        public init(date: String, roomType: RoomType, volume: Double, rt60Measurements: [RT60Measurement], dinResults: [RT60Deviation], acousticFrameworkResults: [String: Double], surfaces: [AcousticSurface], recommendations: [String]) {
             self.date = date
             self.roomType = roomType
             self.volume = volume
@@ -35,9 +35,29 @@ public class ConsolidatedPDFExporter {
         }
     }
     
-    #if canImport(UIKit)
+    /// Use the existing AcousticSurface from RT60Calculator module
+    
     /// Generate comprehensive PDF report
     public static func generateReport(data: ReportData) -> Data? {
+        #if canImport(UIKit)
+        return generateReportWithUIKit(data: data)
+        #else
+        // Fallback for non-UIKit platforms
+        let fallbackContent = """
+        AcoustiScan Report
+        
+        Date: \(data.date)
+        Room Type: \(data.roomType)
+        Volume: \(data.volume) m³
+        
+        Note: Full PDF generation requires UIKit platform.
+        """
+        return fallbackContent.data(using: .utf8)
+        #endif
+    }
+    
+#if canImport(UIKit)
+    private static func generateReportWithUIKit(data: ReportData) -> Data? {
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan Consolidated Tool",
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
@@ -51,14 +71,15 @@ public class ConsolidatedPDFExporter {
         let pageWidth = 595.2  // A4 width in points
         let pageHeight = 841.8 // A4 height in points
         let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
+        
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
         
         return renderer.pdfData { context in
-            // Page 1: Title and Executive Summary
+            // Page 1: Title Page with Executive Summary
             context.beginPage()
             drawTitlePage(pageRect: pageRect, data: data)
             
-            // Page 2: Measurement Metadata and Room Information
+            // Page 2: Metadata and Test Conditions
             context.beginPage()
             drawMetadataPage(pageRect: pageRect, data: data)
             
@@ -103,80 +124,63 @@ public class ConsolidatedPDFExporter {
         yPosition += 80
         
         // Executive Summary Box
-        let summaryRect = CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 200)
-        UIColor.lightGray.withAlphaComponent(0.1).setFill()
-        UIRectFill(summaryRect)
-        
-        let summaryTitle = "Executive Summary"
-        let summaryTitleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 16)
-        ]
-        summaryTitle.draw(at: CGPoint(x: margin + 20, y: yPosition + 20), withAttributes: summaryTitleAttrs)
-        
-        // Summary content
-        let withinTolerance = data.dinResults.filter { $0.status == .withinTolerance }.count
-        let totalMeasurements = data.dinResults.count
-        let compliancePercentage = totalMeasurements > 0 ? Double(withinTolerance) / Double(totalMeasurements) * 100 : 0
-        
         let summaryText = """
-        Raum: \(data.roomType.displayName)
+        EXECUTIVE SUMMARY
+        
+        Raumtyp: \(data.roomType.displayName)
         Volumen: \(String(format: "%.1f", data.volume)) m³
-        Messdatum: \(data.date)
+        Datum: \(data.date)
         
-        DIN 18041 Konformität: \(String(format: "%.1f", compliancePercentage))%
-        Frequenzbereiche in Toleranz: \(withinTolerance)/\(totalMeasurements)
-        
-        Bewertung: \(compliancePercentage >= 80 ? "Sehr gut" : 
-                    compliancePercentage >= 60 ? "Gut" : "Verbesserungsbedarf")
+        Bewertung: \(getDINComplianceStatus(data: data))
         """
         
         let summaryAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14)
+            .font: UIFont.boldSystemFont(ofSize: 16)
         ]
-        summaryText.draw(in: CGRect(x: margin + 20, y: yPosition + 50, 
-                                    width: pageRect.width - 2*margin - 40, height: 140),
-                        withAttributes: summaryAttrs)
         
-        // Footer
-        let footer = "Erstellt mit AcoustiScan Consolidated Tool"
-        let footerAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12),
-            .foregroundColor: UIColor.gray
-        ]
-        footer.draw(at: CGPoint(x: margin, y: pageRect.height - 100), withAttributes: footerAttrs)
+        let summaryRect = CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 200)
+        
+        // Draw background
+        UIColor.lightGray.setFill()
+        summaryRect.fill()
+        
+        summaryText.draw(in: summaryRect, withAttributes: summaryAttrs)
+        
+        // Compliance indicators
+        yPosition += 250
+        drawComplianceIndicators(pageRect: pageRect, data: data, yPosition: yPosition)
     }
     
     private static func drawMetadataPage(pageRect: CGRect, data: ReportData) {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
         
-        let pageTitle = "Messdaten und Raumkonfiguration"
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 20)
-        ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
-        yPosition += 40
-        
         let metadataText = """
-        Grunddaten:
-        • Messung durchgeführt am: \(data.date)
-        • Raumtyp: \(data.roomType.displayName)
-        • Raumvolumen: \(String(format: "%.2f", data.volume)) m³
-        • Anzahl Oberflächenelemente: \(data.surfaces.count)
+        MESSDATEN UND TESTBEDINGUNGEN
         
-        Oberflächenkonfiguration:
+        Datum: \(data.date)
+        Raumtyp: \(data.roomType.displayName)
+        Volumen: \(String(format: "%.1f", data.volume)) m³
+        Anzahl Messpunkte: \(data.rt60Measurements.count)
+        
+        OBERFLÄCHENANALYSE:
         """
         
-        let textAttrs: [NSAttributedString.Key: Any] = [
+        let metadataAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
         ]
-        metadataText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-        yPosition += 120
+        
+        metadataText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: metadataAttrs)
+        yPosition += 200
         
         // Surface details
         for surface in data.surfaces {
-            let surfaceInfo = "• \(surface.name): \(String(format: "%.2f", surface.area)) m² - \(surface.material.name)"
-            surfaceInfo.draw(at: CGPoint(x: margin + 20, y: yPosition), withAttributes: textAttrs)
+            let surfaceText = "• \(surface.name): \(String(format: "%.1f", surface.area)) m² (\(surface.material.name))"
+            let surfaceAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 12),
+                .foregroundColor: UIColor.darkGray
+            ]
+            surfaceText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: surfaceAttrs)
             yPosition += 20
         }
     }
@@ -185,30 +189,21 @@ public class ConsolidatedPDFExporter {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
         
-        let pageTitle = "RT60-Frequenzanalyse"
+        let title = "RT60-FREQUENZANALYSE"
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 20)
         ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
-        yPosition += 40
+        title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        yPosition += 50
         
         // RT60 values table
-        let headerAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 14)
-        ]
-        let valueAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12)
-        ]
-        
-        "Frequenz (Hz)    RT60 (s)    Status".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: headerAttrs)
-        yPosition += 25
-        
-        for measurement in data.rt60Measurements.sorted(by: { $0.frequency < $1.frequency }) {
-            let dinResult = data.dinResults.first { $0.frequency == measurement.frequency }
-            let status = dinResult?.status.displayName ?? "Unbekannt"
-            let line = String(format: "%-15d %-11.2f %@", measurement.frequency, measurement.rt60, status)
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: valueAttrs)
-            yPosition += 18
+        for measurement in data.rt60Measurements {
+            let valueText = "\(measurement.frequency) Hz: \(String(format: "%.2f", measurement.rt60Value)) s"
+            let valueAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 14)
+            ]
+            valueText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: valueAttrs)
+            yPosition += 30
         }
     }
     
@@ -216,33 +211,22 @@ public class ConsolidatedPDFExporter {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
         
-        let pageTitle = "DIN 18041 Konformitätsbewertung"
+        let title = "DIN 18041 COMPLIANCE BEWERTUNG"
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 20)
         ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
-        yPosition += 40
+        title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        yPosition += 50
         
-        let headerAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 14)
-        ]
-        let valueAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12)
-        ]
-        
-        let headerText = "Frequenz    Ist-RT60    Soll-RT60    Abweichung    Status"
-        headerText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: headerAttrs)
-        yPosition += 25
-        
-        for deviation in data.dinResults.sorted(by: { $0.frequency < $1.frequency }) {
-            let line = String(format: "%-10d %-11.2f %-12.2f %-13.2f %@", 
-                            deviation.frequency, 
-                            deviation.measuredRT60, 
-                            deviation.targetRT60, 
-                            deviation.deviation,
-                            deviation.status.displayName)
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: valueAttrs)
-            yPosition += 18
+        // DIN results
+        for deviation in data.dinResults {
+            let status = deviation.isWithinTolerance ? "✓ ERFÜLLT" : "✗ NICHT ERFÜLLT"
+            let deviationText = "\(deviation.frequency) Hz: \(status) (Abweichung: \(String(format: "%.2f", deviation.deviation)))"
+            let deviationAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: 14)
+            ]
+            deviationText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: deviationAttrs)
+            yPosition += 30
         }
     }
     
@@ -250,34 +234,31 @@ public class ConsolidatedPDFExporter {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
         
-        let pageTitle = "48-Parameter Akustik-Framework Analyse"
+        let title = "48-PARAMETER ACOUSTIC FRAMEWORK"
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 20)
         ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
-        yPosition += 40
+        title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        yPosition += 50
         
-        let descriptionText = """
-        Erweiterte akustische Bewertung basierend auf dem validierten 48-Parameter-Framework.
-        Kategorien: Klangfarbe, Tonalität, Geometrie, Raum, Zeitverhalten, Dynamik, Artefakte.
-        """
+        // Framework results (showing first 12 for brevity)
+        let sortedResults = data.acousticFrameworkResults.sorted { $0.key < $1.key }
+        for (parameter, value) in sortedResults.prefix(12) {
+            let parameterText = "\(parameter): \(String(format: "%.3f", value))"
+            let parameterAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 14)
+            ]
+            parameterText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: parameterAttrs)
+            yPosition += 25
+        }
         
-        let descAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14)
-        ]
-        descriptionText.draw(in: CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 60), 
-                           withAttributes: descAttrs)
-        yPosition += 80
-        
-        // Framework results
-        let valueAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12)
-        ]
-        
-        for (parameter, value) in data.acousticFrameworkResults.sorted(by: { $0.key < $1.key }) {
-            let line = "\(parameter): \(String(format: "%.2f", value))"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: valueAttrs)
-            yPosition += 18
+        if sortedResults.count > 12 {
+            let moreText = "... und \(sortedResults.count - 12) weitere Parameter"
+            let moreAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 12),
+                .foregroundColor: UIColor.gray
+            ]
+            moreText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: moreAttrs)
         }
     }
     
@@ -285,12 +266,12 @@ public class ConsolidatedPDFExporter {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
         
-        let pageTitle = "Empfehlungen und Maßnahmen"
+        let title = "EMPFEHLUNGEN UND MASSNAHMEN"
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 20)
         ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
-        yPosition += 40
+        title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        yPosition += 50
         
         let textAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
@@ -319,5 +300,28 @@ public class ConsolidatedPDFExporter {
         qaStatement.draw(in: CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 100), 
                         withAttributes: qaAttrs)
     }
-    #endif
+    
+    private static func getDINComplianceStatus(data: ReportData) -> String {
+        let compliantCount = data.dinResults.filter { $0.isWithinTolerance }.count
+        let totalCount = data.dinResults.count
+        
+        if compliantCount == totalCount {
+            return "VOLLSTÄNDIG ERFÜLLT"
+        } else if compliantCount > totalCount / 2 {
+            return "TEILWEISE ERFÜLLT"
+        } else {
+            return "NICHT ERFÜLLT"
+        }
+    }
+    
+    private static func drawComplianceIndicators(pageRect: CGRect, data: ReportData, yPosition: CGFloat) {
+        // Simplified compliance visualization
+        let margin: CGFloat = 72
+        let indicatorText = "Compliance Status: \(getDINComplianceStatus(data: data))"
+        let indicatorAttrs: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 16)
+        ]
+        indicatorText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: indicatorAttrs)
+    }
+#endif
 }

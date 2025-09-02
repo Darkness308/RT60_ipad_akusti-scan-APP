@@ -129,7 +129,8 @@ struct PDFExportView: View {
     }
 
     private func drawMetadataPage(pageRect: CGRect) {
-        let metaText = "Messung durchgeführt am: \(reportData.date)\nRaumtyp: \(reportData.roomType.displayName)\nVolumen: \(Int(reportData.volume)) m³"
+        let metaText = "Messung durchgeführt am: \(reportData.date)\nRaumtyp: \(reportData.roomType.displayName)\n" +
+                       "Volumen: \(Int(reportData.volume)) m³"
         let attrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
         ]
@@ -150,7 +151,8 @@ struct PDFExportView: View {
     private func drawDINResults(pageRect: CGRect) {
         var y = 72
         for dev in reportData.dinResults {
-            let line = "\(dev.frequency) Hz: Soll=\(String(format: "%.2f", dev.targetRT60)) s, Ist=\(String(format: "%.2f", dev.measuredRT60)) s, Status=\(dev.status)"
+            let line = "\(dev.frequency) Hz: Soll=\(String(format: "%.2f", dev.targetRT60)) s, " +
+                       "Ist=\(String(format: "%.2f", dev.measuredRT60)) s, Status=\(dev.status)"
             let attrs: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 12)]
             line.draw(at: CGPoint(x: 72, y: CGFloat(y)), withAttributes: attrs)
             y += 20

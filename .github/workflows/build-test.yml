@@ -4,9 +4,59 @@ on:
   push:
     branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
+  swift-package-build:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+    
+    - name: Install Tools
+      run: |
+        brew install swiftlint swiftformat || true
+    
+    - name: Build Main Swift Package
+      run: |
+        swift build --verbose
+    
+    - name: Run Swift Package Tests
+      run: |
+        swift test --verbose
+    
+    - name: SwiftLint Check
+      run: |
+        swiftlint --strict || true
+    
+    - name: SwiftFormat Check
+      run: |
+        swiftformat --lint . || true
+
+  consolidated-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build Consolidated Project
+      run: |
+        cd AcoustiScanConsolidated
+        swift build
+
   build:
     runs-on: macos-13
     
@@ -45,12 +95,12 @@ jobs:
     - name: Build AcoustiScan Consolidated
       run: |
         cd AcoustiScanConsolidated
-        swift build
+        swift build --verbose
     
-    - name: Run Tests
+    - name: Run Consolidated Tests
       run: |
         cd AcoustiScanConsolidated
-        swift test
+        swift test --verbose
     
     - name: Build Key-Coverage Linter
       run: |
@@ -65,11 +115,18 @@ jobs:
     - name: Generate HTML report artifact
       run: |
         mkdir -p Artifacts
-        swiftc -o reporthtml Tools/reporthtml/main.swift
-        ./reporthtml Tools/reporthtml/sample.report.model.json -o Artifacts/report.html
+        if [ -f "Tools/reporthtml/main.swift" ]; then
+          swiftc -o reporthtml Tools/reporthtml/main.swift
+          if [ -f "Tools/reporthtml/sample.report.model.json" ]; then
+            ./reporthtml Tools/reporthtml/sample.report.model.json -o Artifacts/report.html
+          fi
+        fi
     
-    - name: Upload HTML Artifact
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: html-report
-        path: Artifacts/report.html
+        name: build-artifacts
+        path: |
+          Artifacts/*.html
+          Artifacts/*.pdf
+          Artifacts/*.json

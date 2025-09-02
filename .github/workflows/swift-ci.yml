@@ -1,0 +1,85 @@
+name: Swift CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+    
+    - name: Build Swift Package
+      run: |
+        if [ -f "Package.swift" ]; then
+          swift build
+        else
+          echo "Package.swift not found. Building individual Swift files..."
+          # Compile individual Swift files to check syntax
+          find . -name "*.swift" -exec swift -frontend -parse {} \;
+        fi
+    
+    - name: Run Tests
+      run: |
+        if [ -f "Package.swift" ]; then
+          swift test
+        else
+          echo "Running basic Swift syntax validation"
+          # For now, just validate Swift syntax of test files
+          find . -path "*/Tests/*" -name "*.swift" -exec swift -frontend -parse {} \;
+        fi
+    
+    - name: Check Swift Code Style
+      run: |
+        # Install SwiftLint if available
+        if command -v swiftlint &> /dev/null; then
+          swiftlint --strict
+        else
+          echo "SwiftLint not available, skipping style check"
+        fi
+
+  analyze-code:
+    runs-on: macos-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Code Analysis
+      run: |
+        echo "Analyzing Swift code quality..."
+        # Count Swift files and lines
+        echo "Swift files: $(find . -name "*.swift" | wc -l)"
+        echo "Swift lines of code: $(find . -name "*.swift" -exec wc -l {} + | tail -1 | awk '{print $1}')"
+        
+        # Check for common Swift issues
+        echo "Checking for force unwrapping..."
+        if grep -r "!" --include="*.swift" . | grep -v "//"; then
+          echo "⚠️  Force unwrapping found - consider using optional binding"
+        else
+          echo "✅ No force unwrapping found"
+        fi

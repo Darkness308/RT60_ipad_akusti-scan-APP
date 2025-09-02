@@ -1,0 +1,60 @@
+name: Test Coverage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test-coverage:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Run Tests with Coverage
+      run: |
+        if [ -f "Package.swift" ]; then
+          # Run tests with coverage for Swift Package Manager
+          swift test --enable-code-coverage
+          
+          # Generate coverage report
+          xcrun llvm-cov export -format="lcov" \
+            .build/debug/AcoustiScanPackageTests.xctest/Contents/MacOS/AcoustiScanPackageTests \
+            -instr-profile .build/debug/codecov/default.profdata > coverage.lcov || true
+        else
+          echo "Package.swift not found. Skipping coverage generation."
+          # For individual Swift files, we can still run basic syntax checks
+          echo "Running Swift syntax validation for all files..."
+          find . -name "*.swift" -exec swift -frontend -parse {} \;
+        fi
+    
+    - name: Upload Coverage to Codecov
+      if: github.event_name == 'push'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.lcov
+        flags: swift
+        name: AcoustiScan Coverage
+        fail_ci_if_error: false
+    
+    - name: Coverage Summary
+      run: |
+        if [ -f "coverage.lcov" ]; then
+          echo "📊 Test Coverage Report Generated"
+          # Simple coverage summary
+          total_lines=$(grep -c "^LF:" coverage.lcov || echo "0")
+          covered_lines=$(grep -c "^LH:" coverage.lcov || echo "0")
+          if [ "$total_lines" -gt 0 ]; then
+            coverage_percent=$((covered_lines * 100 / total_lines))
+            echo "Coverage: $coverage_percent% ($covered_lines/$total_lines lines)"
+          fi
+        else
+          echo "No coverage data available"
+        fi
