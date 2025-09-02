@@ -6,11 +6,14 @@ import Foundation
 /// Advanced RT60 calculation engine with DIN 18041 compliance
 public class RT60Calculator {
     
-    /// Calculate RT60 using Sabine formula
+    /// Calculate RT60 using Sabine formula with safe math
     public static func calculateRT60(volume: Double, absorptionArea: Double) -> Double {
+        guard SafeMath.isValid(volume) && SafeMath.isValid(absorptionArea) else { 
+            return .nan 
+        }
         guard absorptionArea > 0 else { return 0.0 }
         let sabineConstant = 0.161 // For air at 20°C, 50% humidity
-        return sabineConstant * volume / absorptionArea
+        return SafeMath.safeDivision(sabineConstant * volume, absorptionArea)
     }
     
     /// Calculate total absorption area from surfaces and materials

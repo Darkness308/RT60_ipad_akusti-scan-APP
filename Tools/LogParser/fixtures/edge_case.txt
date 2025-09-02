@@ -1,0 +1,17 @@
+Setup:
+Device=iPadPro
+AppVersion=1.0.0
+Date=2025-07-21
+
+T20:
+125Hz   0,70
+250Hz   -.--
+500Hz   0.55
+
+Correltn:
+125Hz   99.0
+250Hz   97.0
+500Hz   96.0
+
+CheckSum:
+ABC123DEF456

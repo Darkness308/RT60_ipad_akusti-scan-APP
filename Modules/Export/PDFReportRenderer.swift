@@ -74,8 +74,20 @@ public final class PDFReportRenderer {
         yPosition += 20
         
         for band in model.rt60_bands {
-            let freq = band["freq_hz"] != nil ? String(Int((band["freq_hz"]!)!.rounded())) : "-"
-            let t20 = band["t20_s"] != nil && band["t20_s"]! != nil ? String(format: "%.2f", band["t20_s"]!!) : "-"
+            let freq: String
+            if let freqValue = band["freq_hz"], let freqDouble = freqValue {
+                freq = String(Int(freqDouble.rounded()))
+            } else {
+                freq = "-"
+            }
+            
+            let t20: String
+            if let t20Value = band["t20_s"], let t20Double = t20Value {
+                t20 = String(format: "%.2f", t20Double)
+            } else {
+                t20 = "-"
+            }
+            
             let line = String(format: "%-15@ %@", freq, t20)
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
@@ -92,9 +104,27 @@ public final class PDFReportRenderer {
         yPosition += 20
         
         for target in model.din_targets {
-            let freq = target["freq_hz"] != nil ? String(Int((target["freq_hz"]!)!.rounded())) : "-"
-            let tsoll = target["t_soll"] != nil && target["t_soll"]! != nil ? String(format: "%.2f", target["t_soll"]!!) : "-"
-            let tol = target["tol"] != nil && target["tol"]! != nil ? String(format: "%.2f", target["tol"]!!) : "-"
+            let freq: String
+            if let freqValue = target["freq_hz"], let freqDouble = freqValue {
+                freq = String(Int(freqDouble.rounded()))
+            } else {
+                freq = "-"
+            }
+            
+            let tsoll: String
+            if let tsollValue = target["t_soll"], let tsollDouble = tsollValue {
+                tsoll = String(format: "%.2f", tsollDouble)
+            } else {
+                tsoll = "-"
+            }
+            
+            let tol: String
+            if let tolValue = target["tol"], let tolDouble = tolValue {
+                tol = String(format: "%.2f", tolDouble)
+            } else {
+                tol = "-"
+            }
+            
             let line = String(format: "%-15@ %-13@ %@", freq, tsoll, tol)
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
@@ -142,16 +172,41 @@ public final class PDFReportRenderer {
         
         RT60 je Frequenz (T20 in s):
         \(model.rt60_bands.map { row in
-            let f = row["freq_hz"] != nil ? String(Int((row["freq_hz"]!)!.rounded())) : "-"
-            let t = row["t20_s"] != nil && row["t20_s"]! != nil ? String(format: "%.2f", row["t20_s"]!!) : "-"
+            let f: String
+            if let freqValue = row["freq_hz"], let freqDouble = freqValue {
+                f = String(Int(freqDouble.rounded()))
+            } else {
+                f = "-"
+            }
+            let t: String
+            if let t20Value = row["t20_s"], let t20Double = t20Value {
+                t = String(format: "%.2f", t20Double)
+            } else {
+                t = "-"
+            }
             return "\(f) Hz: \(t) s"
         }.joined(separator: "\n"))
         
         DIN 18041 Ziel & Toleranz:
         \(model.din_targets.map { row in
-            let f = row["freq_hz"] != nil ? String(Int((row["freq_hz"]!)!.rounded())) : "-"
-            let ts = row["t_soll"] != nil && row["t_soll"]! != nil ? String(format: "%.2f", row["t_soll"]!!) : "-"
-            let tol = row["tol"] != nil && row["tol"]! != nil ? String(format: "%.2f", row["tol"]!!) : "-"
+            let f: String
+            if let freqValue = row["freq_hz"], let freqDouble = freqValue {
+                f = String(Int(freqDouble.rounded()))
+            } else {
+                f = "-"
+            }
+            let ts: String
+            if let tsollValue = row["t_soll"], let tsollDouble = tsollValue {
+                ts = String(format: "%.2f", tsollDouble)
+            } else {
+                ts = "-"
+            }
+            let tol: String
+            if let tolValue = row["tol"], let tolDouble = tolValue {
+                tol = String(format: "%.2f", tolDouble)
+            } else {
+                tol = "-"
+            }
             return "\(f) Hz: T_soll=\(ts) s, Toleranz=\(tol) s"
         }.joined(separator: "\n"))
         

@@ -1,0 +1,24 @@
+Setup:
+Device=iPad
+AppVersion=1.1.0
+Date=2025-07-22
+RoomType=Classroom
+
+T20:
+125Hz   1.20
+250Hz   1.15
+500Hz   1.10
+1000Hz  1.05
+2000Hz  1.00
+4000Hz  0.95
+
+Correltn:
+125Hz   98.5
+250Hz   99.0
+500Hz   99.2
+1000Hz  99.1
+2000Hz  98.8
+4000Hz  98.3
+
+CheckSum:
+DEF456GHI789
