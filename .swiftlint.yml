@@ -1,3 +1,4 @@
+copilot/fix-9fae47c8-9630-4ae1-90f1-4695b65c0227
 # SwiftLint configuration for AcoustiScan project
 # Reference: https://github.com/realm/SwiftLint
 
@@ -86,4 +87,17 @@ custom_rules:
     severity: warning
 
 # Reporter type
+
+disabled_rules:
+  - trailing_whitespace
+  - identifier_name
+opt_in_rules:
+  - force_unwrapping
+  - empty_count
+  - closure_spacing
+line_length: 120
+type_body_length: 400
+file_length: 1000
+cyclomatic_complexity: 15
+main
 reporter: "xcode"

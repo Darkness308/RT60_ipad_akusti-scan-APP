@@ -1,0 +1,39 @@
+name: Swift
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: "5.9"
+
+    - name: Build AcoustiScanConsolidated
+      run: |
+        cd AcoustiScanConsolidated
+        swift build -v
+
+    - name: Run tests for AcoustiScanConsolidated
+      run: |
+        cd AcoustiScanConsolidated
+        swift test -v
+
+    - name: Build Export Module
+      run: |
+        cd Modules/Export
+        swift build -v
+
+    - name: Run tests for Export Module
+      run: |
+        cd Modules/Export
+        swift test -v

@@ -1,3 +1,4 @@
+copilot/fix-9fae47c8-9630-4ae1-90f1-4695b65c0227
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -88,9 +89,24 @@ fastlane/test_output
 
 iOSInjectionProject/
 
+# Swift Package Manager build artifacts
+.build/
+Package.resolved
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+*.xcodebuild.log
+
+# Swift
+*.swiftpm
+*.playground
+main
+
 # macOS
 .DS_Store
 
+copilot/fix-9fae47c8-9630-4ae1-90f1-4695b65c0227
 # IDEs
 .vscode/
 .idea/
@@ -150,3 +166,33 @@ MANIFEST
 *.swp
 *.swo
 *~
+=======
+# Temporary files
+*.tmp
+*.log
+build.log
+test.log
+
+# Distribution
+dist/
+*.tar.gz
+*.zip
+
+# IDE files
+.vscode/
+.idea/
+
+# Build artifacts from automated tools
+*.dSYM/
+*.o
+*.a
+*.dylib
+
+# Linux
+*~
+
+# CLI tool artifacts
+/reporthtml
+Artifacts/
+Tools/reporthtml/reporthtml
+main
