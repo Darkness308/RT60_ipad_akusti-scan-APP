@@ -1,165 +1,81 @@
-// ReportHTMLRenderer.swift
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-// HTML renderer for ReportModel without PDFKit dependencies
-
 import Foundation
 
-/// HTML renderer for ReportModel that produces UTF-8 HTML content
+// Command line argument parsing
+let args = CommandLine.arguments
+guard args.count >= 2 else {
+    fputs("Usage: reporthtml <ReportModel.json> -o <report.html>\n", stderr)
+    exit(2)
+}
+var input: String?
+var output: String?
+var i = 1
+while i < args.count {
+    let a = args[i]
+    if a == "-o", i + 1 < args.count { output = args[i+1]; i += 2; continue }
+    if input == nil { input = a; i += 1; continue }
+    i += 1
+}
+guard let inPath = input, let outPath = output else {
+    fputs("Usage: reporthtml <ReportModel.json> -o <report.html>\n", stderr)
+    exit(2)
+}
 
-// HTML renderer for ReportModel to ensure equivalent output to PDF
+do {
+    let data = try Data(contentsOf: URL(fileURLWithPath: inPath))
+    let model = try JSONDecoder().decode(ReportModel.self, from: data)
+    let html = ReportHTMLRenderer().render(model)
+    try html.write(to: URL(fileURLWithPath: outPath))
+    print("OK: wrote \(outPath)")
+    exit(0)
+} catch {
+    fputs("Error: \(error)\n", stderr)
+    exit(1)
+}
 
-import Foundation
+/// JSON-serializable report model matching the schema requirements
+public struct ReportModel: Codable {
+    public let metadata: [String: String]
+    public let rt60_bands: [[String: Double?]]
+    public let din_targets: [[String: Double]]
+    public let validity: [String: String]
+    public let recommendations: [String]
+    public let audit: [String: String]
+    
+    public init(
+        metadata: [String: String],
+        rt60_bands: [[String: Double?]],
+        din_targets: [[String: Double]],
+        validity: [String: String],
+        recommendations: [String],
+        audit: [String: String]
+    ) {
+        self.metadata = metadata
+        self.rt60_bands = rt60_bands
+        self.din_targets = din_targets
+        self.validity = validity
+        self.recommendations = recommendations
+        self.audit = audit
+    }
+}
 
 /// HTML renderer for ReportModel
-main
 public class ReportHTMLRenderer {
     
     public init() {}
     
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-    /// Render ReportModel to HTML as UTF-8 Data
-
     /// Render ReportModel to HTML data
-main
     public func render(_ model: ReportModel) -> Data {
         let html = generateHTML(model)
         return html.data(using: .utf8) ?? Data()
     }
     
     private func generateHTML(_ model: ReportModel) -> String {
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-        var html = """
-
         return """
-main
         <!DOCTYPE html>
         <html lang="de">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
-            <title>RT60 Bericht</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                h1, h2 { color: #333; }
-                table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                th { background-color: #f5f5f5; }
-                .section { margin: 20px 0; }
-            </style>
-        </head>
-        <body>
-            <h1>RT60 Bericht</h1>
-        """
-        
-        // Metadaten section
-        html += """
-            <div class="section">
-                <h2>Metadaten</h2>
-                <table>
-        """
-        for (key, value) in model.metadata {
-            html += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>"
-        }
-        html += """
-                </table>
-            </div>
-        """
-        
-        // RT60 je Frequenz section
-        html += """
-            <div class="section">
-                <h2>RT60 je Frequenz</h2>
-                <table>
-                    <tr><th>Frequenz (Hz)</th><th>T20 (s)</th></tr>
-        """
-        for band in model.rt60_bands {
-            let freq = band["freq_hz"].flatMap { $0.map { Int($0.rounded()) } } ?? 0
-            let t20 = band["t20_s"].flatMap { $0.map { String(format: "%.2f", $0) } } ?? "-"
-            html += "<tr><td>\(freq)</td><td>\(t20)</td></tr>"
-        }
-        html += """
-                </table>
-            </div>
-        """
-        
-        // DIN 18041 section
-        html += """
-            <div class="section">
-                <h2>DIN 18041</h2>
-                <table>
-                    <tr><th>Frequenz (Hz)</th><th>T Soll (s)</th><th>Toleranz (s)</th></tr>
-        """
-        for target in model.din_targets {
-            let freq = Int((target["freq_hz"] ?? 0).rounded())
-            let tsoll = String(format: "%.2f", target["t_soll"] ?? 0)
-            let tol = String(format: "%.2f", target["tol"] ?? 0.2)
-            html += "<tr><td>\(freq)</td><td>\(tsoll)</td><td>\(tol)</td></tr>"
-        }
-        html += """
-                </table>
-            </div>
-        """
-        
-        // Gültigkeit section
-        html += """
-            <div class="section">
-                <h2>Gültigkeit</h2>
-                <table>
-        """
-        for (key, value) in model.validity {
-            html += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>"
-        }
-        html += """
-                </table>
-            </div>
-        """
-        
-        // Empfehlungen section
-        html += """
-            <div class="section">
-                <h2>Empfehlungen</h2>
-                <ul>
-        """
-        for recommendation in model.recommendations {
-            html += "<li>\(escapeHTML(recommendation))</li>"
-        }
-        html += """
-                </ul>
-            </div>
-        """
-        
-        // Audit section
-        html += """
-            <div class="section">
-                <h2>Audit</h2>
-                <table>
-        """
-        for (key, value) in model.audit {
-            html += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>"
-        }
-        html += """
-                </table>
-            </div>
-        """
-        
-        html += """
-        </body>
-        </html>
-        """
-        
-        return html
-    }
-    
-    /// Escape HTML entities to prevent XSS and ensure proper rendering
-    private func escapeHTML(_ text: String) -> String {
-        return text
-            .replacingOccurrences(of: "&", with: "&amp;")
-            .replacingOccurrences(of: "<", with: "&lt;")
-            .replacingOccurrences(of: ">", with: "&gt;")
-            .replacingOccurrences(of: "\"", with: "&quot;")
-            .replacingOccurrences(of: "'", with: "&#39;")
-
             <title>Raumakustik Report</title>
             <style>
                 body { font-family: Arial, sans-serif; margin: 40px; color: #333; }
@@ -170,9 +86,6 @@ copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
                 th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
                 th { background-color: #f2f2f2; font-weight: bold; }
                 .metadata-table td:first-child { font-weight: bold; width: 30%; }
-                .status-green { color: #27ae60; font-weight: bold; }
-                .status-red { color: #e74c3c; font-weight: bold; }
-                .status-orange { color: #f39c12; font-weight: bold; }
                 ul { padding-left: 20px; }
                 .footer { margin-top: 60px; text-align: center; color: #7f8c8d; font-size: 12px; }
             </style>
@@ -312,6 +225,5 @@ copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
             </table>
         </div>
         """
-main
     }
 }

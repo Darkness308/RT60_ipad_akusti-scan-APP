@@ -1,9 +1,17 @@
 // ReportModel.swift
+copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
 // Report data model for HTML and PDF rendering
 
 import Foundation
 
 /// Report data model that contains all required fields for rendering
+
+// JSON-serializable report model for contract tests and HTML export
+
+import Foundation
+
+/// JSON-serializable report model matching the schema requirements
+main
 public struct ReportModel: Codable {
     public let metadata: [String: String]
     public let rt60_bands: [[String: Double?]]
@@ -27,4 +35,55 @@ public struct ReportModel: Codable {
         self.recommendations = recommendations
         self.audit = audit
     }
+copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
+
+}
+
+/// Extension to convert between existing ReportData and new ReportModel
+extension ReportModel {
+    
+    /// Create ReportModel from existing ConsolidatedPDFExporter.ReportData
+    public static func from(_ reportData: ConsolidatedPDFExporter.ReportData) -> ReportModel {
+        let metadata = [
+            "device": "iPadPro",
+            "app_version": "1.0.0", 
+            "date": reportData.date,
+            "room": reportData.roomType.displayName
+        ]
+        
+        let rt60_bands = reportData.rt60Measurements.map { measurement in
+            [
+                "freq_hz": Double(measurement.frequency),
+                "t20_s": measurement.rt60
+            ]
+        }
+        
+        let din_targets = reportData.dinResults.map { deviation in
+            [
+                "freq_hz": Double(deviation.frequency),
+                "t_soll": deviation.targetRT60,
+                "tol": abs(deviation.deviation) // Approximate tolerance from deviation
+            ]
+        }
+        
+        let validity = [
+            "method": "ISO3382-1",
+            "bands": "octave"
+        ]
+        
+        let audit = [
+            "hash": "DEMO\(abs(reportData.date.hashValue))",
+            "source": "consolidated"
+        ]
+        
+        return ReportModel(
+            metadata: metadata,
+            rt60_bands: rt60_bands,
+            din_targets: din_targets,
+            validity: validity,
+            recommendations: reportData.recommendations,
+            audit: audit
+        )
+    }
+main
 }

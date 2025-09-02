@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ReportModel",
+  "type": "object",
+  "required": ["metadata", "rt60_bands", "din_targets", "validity", "recommendations", "audit"],
+  "properties": {
+    "metadata": {"type": "object"},
+    "rt60_bands": {"type": "array"},
+    "din_targets": {"type": "array"},
+    "validity": {"type": "object"},
+    "recommendations": {"type": "array", "items": {"type": "string"}},
+    "audit": {"type": "object"}
+  }
+}

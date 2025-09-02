@@ -1,0 +1,5 @@
+# Kernmodule
+/Tools/LogParser/           @your-org/dsp-team
+/Modules/Export/            @your-org/ios-team
+/Schemas/                   @your-org/qa-team
+/Docs/                      @your-org/docs-team

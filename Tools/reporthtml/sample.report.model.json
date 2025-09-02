@@ -1,4 +1,5 @@
 {
+copilot/fix-292845ea-6286-4ea1-9f5f-82a4a976777b
   "metadata": {
     "device": "iPadPro",
     "app_version": "1.0.0",
@@ -43,4 +44,19 @@
     "hash": "DEMOHASH",
     "source": "fixtures"
   }
+
+  "metadata": { "device": "iPadPro", "app_version": "1.0.0", "date": "2025-07-21", "room": "Demo A" },
+  "rt60_bands": [
+    { "freq_hz": 125.0, "t20_s": 0.70 },
+    { "freq_hz": 250.0, "t20_s": 0.60 },
+    { "freq_hz": 500.0, "t20_s": null }
+  ],
+  "din_targets": [
+    { "freq_hz": 125.0, "t_soll": 0.60, "tol": 0.20 },
+    { "freq_hz": 250.0, "t_soll": 0.55, "tol": 0.20 }
+  ],
+  "validity": { "method": "ISO3382-1", "bands": "octave" },
+  "recommendations": [ "Wandabsorber ergänzen", "Deckenwolken prüfen" ],
+  "audit": { "hash": "DEMOHASH", "source": "fixtures" }
+main
 }

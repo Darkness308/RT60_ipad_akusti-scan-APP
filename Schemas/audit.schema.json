@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AuditModel",
+  "type": "object",
+  "required": ["metadata", "bands", "summary"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["source_file", "timestamp_iso", "device", "app_version"],
+      "properties": {
+        "source_file": {"type": "string"},
+        "timestamp_iso": {"type": "string", "format": "date-time"},
+        "device": {"type": "string"},
+        "app_version": {"type": "string"}
+      }
+    },
+    "bands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["freq_hz", "valid"],
+        "properties": {
+          "freq_hz": {"type": "integer"},
+          "t20_s": {"type": ["number", "null"]},
+          "corr_percent": {"type": ["number", "null"]},
+          "valid": {"type": "boolean"},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["checksum_ok", "valid_band_count", "mean_t20_s_valid"],
+      "properties": {
+        "checksum_ok": {"type": "boolean"},
+        "valid_band_count": {"type": "integer"},
+        "mean_t20_s_valid": {"type": ["number", "null"]}
+      }
+    }
+  }
+}
