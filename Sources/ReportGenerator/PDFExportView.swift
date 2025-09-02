@@ -150,7 +150,8 @@ struct PDFExportView: View {
 
     private func drawRecommendations(pageRect: CGRect) {
         #if canImport(UIKit)
-        let text = "Empfohlene Maßnahmen:\n- Absorberfläche vergrößern.\n- Materialien mit höherem α-Wert einsetzen.\n- Deckenabsorber in Sprachräumen ergänzen."
+        let text = "Empfohlene Maßnahmen:\n- Absorberfläche vergrößern.\n- Materialien mit höherem α-Wert einsetzen.\n" +
+                   "- Deckenabsorber in Sprachräumen ergänzen."
         let attrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
         ]

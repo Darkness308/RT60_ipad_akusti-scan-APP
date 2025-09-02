@@ -33,7 +33,7 @@ final class PDFReportTests: XCTestCase {
         XCTAssertNotNil(jsonData)
         
         if let data = jsonData {
-            XCTAssertTrue(data.count > 0)
+            XCTAssertFalse(data.isEmpty)
         }
     }
 }
