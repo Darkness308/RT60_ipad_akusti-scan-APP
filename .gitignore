@@ -39,6 +39,6 @@ dist/
 *~
 
 # CLI tool artifacts
-reporthtml
+/reporthtml
 Artifacts/
 Tools/reporthtml/reporthtml
