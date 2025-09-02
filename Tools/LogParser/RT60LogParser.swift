@@ -101,9 +101,7 @@ public final class RT60LogParser {
             let t20raw = t20[f]
             let corrRaw = corr[f]
             let isNoData = (t20raw == "-.--")
-            let t20Val = Self.parseNumber(t20raw)
-            let corrVal = Self.parseNumber(corrRaw)
-            let isValid = !isNoData && (t20Val != nil)
+            let isValid = !isNoData && (t20Val != nil) && (corrVal != nil) && (corrVal! >= 95.0)
             var note: [String] = []
             if isNoData { note.append("no data") }
             if let c = corrVal, c < 95.0 { note.append("low correlation") }
