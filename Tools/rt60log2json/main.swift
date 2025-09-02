@@ -21,7 +21,10 @@ struct CLI {
             let text = try String(contentsOfFile: inPath, encoding: .utf8)
             let model = try RT60LogParser().parse(text: text, sourceFile: (inPath as NSString).lastPathComponent)
             let data = try JSONEncoder().encode(model)
-            let pretty = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+            guard let pretty = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                fputs("Error: Top-level JSON is not a dictionary\n", stderr)
+                exit(1)
+            }
             let outData = try JSONSerialization.data(withJSONObject: pretty, options: [.prettyPrinted, .sortedKeys])
             try outData.write(to: URL(fileURLWithPath: outPath))
             print("OK: wrote \(outPath)")
