@@ -1,14 +1,21 @@
 
 import Foundation
 
-struct AcousticMaterial: Identifiable, Codable {
-    let id: UUID
-    var name: String
-    var absorptionCoefficients: [Int: Double]
+public struct AcousticMaterial: Identifiable, Codable {
+    public let id: UUID
+    public var name: String
+    public var coefficients: [Int: Double]
+    public var absorption: AbsorptionData
 
-    init(name: String, absorptionCoefficients: [Int: Double]) {
-        self.id = UUID()
+    public init(id: UUID = UUID(), name: String, coefficients: [Int: Double], absorption: AbsorptionData) {
+        self.id = id
         self.name = name
-        self.absorptionCoefficients = absorptionCoefficients
+        self.coefficients = coefficients
+        self.absorption = absorption
+    }
+    
+    /// Get absorption coefficient for specific frequency
+    public func absorptionCoefficient(at frequency: Int) -> Double {
+        return coefficients[frequency] ?? 0.1
     }
 }

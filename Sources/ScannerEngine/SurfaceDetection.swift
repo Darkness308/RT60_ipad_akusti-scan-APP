@@ -1,9 +1,11 @@
 import Foundation
+#if canImport(SwiftUI) && canImport(ARKit)
 import SwiftUI
 import ARKit
 import Combine
 
 /// Eine einfache SwiftUI-View zur Darstellung erkannter Flächen in ARKit.
+@available(iOS 14.0, *)
 struct SurfaceDetectionView: View {
     @StateObject private var coordinator = MSHARCoordinator()
     
@@ -67,5 +69,23 @@ struct ARViewContainer: UIViewRepresentable {
                 }
             }
         }
+    }
+}
+
+#endif
+
+/// Cross-platform surface detection fallback
+public class SurfaceDetectionService {
+    
+    public static func detectBasicSurfaces(roomVolume: Double) -> [String] {
+        let estimatedArea = pow(roomVolume, 2.0/3.0) * 6 // Rough estimate for 6 surfaces
+        return [
+            "Floor (\(String(format: "%.1f", estimatedArea/6)) m²)",
+            "Ceiling (\(String(format: "%.1f", estimatedArea/6)) m²)",
+            "Wall 1 (\(String(format: "%.1f", estimatedArea/6)) m²)",
+            "Wall 2 (\(String(format: "%.1f", estimatedArea/6)) m²)",
+            "Wall 3 (\(String(format: "%.1f", estimatedArea/6)) m²)",
+            "Wall 4 (\(String(format: "%.1f", estimatedArea/6)) m²)"
+        ]
     }
 }

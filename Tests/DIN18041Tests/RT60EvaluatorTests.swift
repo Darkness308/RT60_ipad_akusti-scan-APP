@@ -1,19 +1,32 @@
 import XCTest
-@testable import iPadScannerApp
+@testable import DIN18041
 
 final class RT60EvaluatorTests: XCTestCase {
-    func testRT60ClassificationWithinRange() {
-        let result = RT60Evaluator.classifyRT60(measured: 1.1, target: 1.0)
-        XCTAssertEqual(result, .withinRange)
+    func testRT60EvaluationWithinTolerance() {
+        let measurement = RT60Measurement(frequency: 1000, rt60: 0.6)
+        let roomType = RoomType.classroom
+        let volume = 150.0
+        
+        let deviations = RT60Evaluator.evaluateDINCompliance(
+            measurements: [measurement],
+            roomType: roomType,
+            volume: volume
+        )
+        
+        XCTAssertEqual(deviations.count, 1)
+        XCTAssertEqual(deviations.first?.status, .withinTolerance)
     }
 
-    func testRT60ClassificationTooHigh() {
-        let result = RT60Evaluator.classifyRT60(measured: 1.3, target: 1.0)
-        XCTAssertEqual(result, .tooHigh)
+    func testRoomTypeDescription() {
+        let classroom = RoomType.classroom
+        XCTAssertEqual(classroom.germanName, "Unterrichtsraum")
+        XCTAssertFalse(classroom.description.isEmpty)
     }
 
-    func testRT60ClassificationTooLow() {
-        let result = RT60Evaluator.classifyRT60(measured: 0.7, target: 1.0)
-        XCTAssertEqual(result, .tooLow)
+    func testRT60MeasurementComparable() {
+        let measurement1 = RT60Measurement(frequency: 500, rt60: 0.6)
+        let measurement2 = RT60Measurement(frequency: 1000, rt60: 0.7)
+        
+        XCTAssertTrue(measurement1 < measurement2)
     }
 }

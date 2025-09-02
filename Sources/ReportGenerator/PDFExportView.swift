@@ -7,12 +7,19 @@
 //  Deckblatt, Metadaten, RT60-Kurven, DIN-Ampellogik und Maßnahmenblock.
 //
 
+import Foundation
+#if canImport(SwiftUI)
 import SwiftUI
+#endif
+#if canImport(PDFKit)
 import PDFKit
+#endif
 
+#if canImport(SwiftUI)
 /// Struct that generates a full PDF report from measurement results.
 /// This implementation is focused on clarity, compliance (EU AI Act),
 /// and auditability.
+@available(iOS 16.0, macOS 13.0, *)
 struct PDFExportView: View {
     @Binding var isPresented: Bool
     var reportData: ReportData
@@ -132,8 +139,34 @@ struct PDFExportView: View {
 /// Data container for PDF report.
 struct ReportData {
     var date: String
-    var roomType: RoomType
+    var roomType: String  // Keep as String for cross-platform compatibility
     var volume: Double
-    var rt60Measurements: [RT60Measurement]
-    var dinResults: [RT60Deviation]
+    var rt60Measurements: [String]  // Simplified for cross-platform
+    var dinResults: [String]        // Simplified for cross-platform
+}
+
+#endif
+
+/// Cross-platform PDF report generator
+public class PDFReportGenerator {
+    
+    /// Generate PDF report data structure
+    public static func generateReportData(
+        roomType: String,
+        volume: Double,
+        measurements: [String]
+    ) -> [String: Any] {
+        return [
+            "date": ISO8601DateFormatter().string(from: Date()),
+            "roomType": roomType,
+            "volume": volume,
+            "measurements": measurements,
+            "generator": "AcoustiScan RT60 Analysis"
+        ]
+    }
+    
+    /// Export report as JSON (cross-platform compatible)
+    public static func exportAsJSON(reportData: [String: Any]) -> Data? {
+        return try? JSONSerialization.data(withJSONObject: reportData, options: .prettyPrinted)
+    }
 }

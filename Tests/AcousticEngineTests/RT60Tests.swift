@@ -1,6 +1,6 @@
 
 import XCTest
-@testable import iPadScannerApp
+@testable import AcousticEngine
 
 final class RT60Tests: XCTestCase {
 
@@ -14,17 +14,23 @@ final class RT60Tests: XCTestCase {
         XCTAssertEqual(result, expectedRT60, accuracy: 0.01)
     }
 
-    func testAbsorptionAreaSum() {
-        let surfaces = [
-            LabeledSurface(name: "Decke", area: 37.5, absorptionCoefficient: 0.6, color: .gray),
-            LabeledSurface(name: "Boden", area: 37.5, absorptionCoefficient: 0.1, color: .gray),
-            LabeledSurface(name: "Wand", area: 60.0, absorptionCoefficient: 0.2, color: .gray)
-        ]
+    func testAbsorptionAreaCalculation() {
+        let surfaceAreas = [37.5, 37.5, 60.0]
+        let coefficients = [0.6, 0.1, 0.2]
+        
         let total = RT60Calculation.totalAbsorptionArea(
-            surfaceAreas: surfaces.map { $0.area },
-            absorptionCoefficients: surfaces.map { $0.absorptionCoefficient }
+            surfaceAreas: surfaceAreas,
+            absorptionCoefficients: coefficients
         )
 
         XCTAssertEqual(total, 22.5 + 3.75 + 12.0, accuracy: 0.01)
+    }
+    
+    func testEnergyDecayCurve() {
+        let impulseResponse: [Float] = [1.0, 0.8, 0.6, 0.4, 0.2, 0.0]
+        let energyCurve = ImpulseResponseAnalyzer.energyDecayCurve(ir: impulseResponse)
+        
+        XCTAssertFalse(energyCurve.isEmpty)
+        XCTAssertEqual(energyCurve.count, impulseResponse.count)
     }
 }

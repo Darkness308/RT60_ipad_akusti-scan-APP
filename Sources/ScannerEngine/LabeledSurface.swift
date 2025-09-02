@@ -1,55 +1,24 @@
 
 import Foundation
-import SwiftUI
 
-struct LabeledSurface: Identifiable, Codable {
-    let id: UUID
-    var name: String
-    var area: Double
-    var absorptionCoefficient: Double
-    var color: Color
-
-    var absorptionArea: Double {
+/// Labeled surface for acoustic measurements
+public struct LabeledSurface: Identifiable, Codable {
+    public let id: UUID
+    public var name: String
+    public var area: Double
+    public var absorptionCoefficient: Double
+    public var colorComponents: [Double] // [red, green, blue, alpha] for cross-platform compatibility
+    
+    /// Calculated absorption area
+    public var absorptionArea: Double {
         return area * absorptionCoefficient
     }
 
-    enum CodingKeys: String, CodingKey {
-        case id, name, area, absorptionCoefficient, colorRed, colorGreen, colorBlue, colorOpacity
-    }
-
-    init(name: String, area: Double, absorptionCoefficient: Double, color: Color = .gray) {
+    public init(name: String, area: Double, absorptionCoefficient: Double, colorComponents: [Double] = [0.5, 0.5, 0.5, 1.0]) {
         self.id = UUID()
         self.name = name
         self.area = area
         self.absorptionCoefficient = absorptionCoefficient
-        self.color = color
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(UUID.self, forKey: .id)
-        name = try container.decode(String.self, forKey: .name)
-        area = try container.decode(Double.self, forKey: .area)
-        absorptionCoefficient = try container.decode(Double.self, forKey: .absorptionCoefficient)
-
-        let red = try container.decode(Double.self, forKey: .colorRed)
-        let green = try container.decode(Double.self, forKey: .colorGreen)
-        let blue = try container.decode(Double.self, forKey: .colorBlue)
-        let opacity = try container.decode(Double.self, forKey: .colorOpacity)
-        color = Color(red: red, green: green, blue: blue).opacity(opacity)
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(name, forKey: .name)
-        try container.encode(area, forKey: .area)
-        try container.encode(absorptionCoefficient, forKey: .absorptionCoefficient)
-
-        // Statische Farbwerte als Platzhalter
-        try container.encode(0.5, forKey: .colorRed)
-        try container.encode(0.5, forKey: .colorGreen)
-        try container.encode(0.5, forKey: .colorBlue)
-        try container.encode(1.0, forKey: .colorOpacity)
+        self.colorComponents = colorComponents
     }
 }

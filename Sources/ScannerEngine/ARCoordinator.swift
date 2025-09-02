@@ -1,8 +1,17 @@
 import Foundation
+#if canImport(ARKit)
 import ARKit
+#endif
+#if canImport(Combine)
 import Combine
+#endif
+#if canImport(SwiftUI)
 import SwiftUI
+#endif
 
+#if canImport(ARKit) && canImport(SwiftUI)
+/// AR Coordinator for LiDAR scanning and surface detection
+@available(iOS 14.0, *)
 final class MSHARCoordinator: NSObject, ARSessionDelegate, ObservableObject {
     
     // MARK: - Published Properties
@@ -64,5 +73,19 @@ final class MSHARCoordinator: NSObject, ARSessionDelegate, ObservableObject {
         for anchor in anchors {
             detectedPlanes.removeValue(forKey: anchor.identifier)
         }
+    }
+}
+
+#endif
+
+/// Cross-platform surface detection (fallback for non-AR platforms)
+public class SurfaceDetectionEngine {
+    
+    public static func detectSurfaces() -> [String] {
+        return ["Floor", "Ceiling", "Wall1", "Wall2", "Wall3", "Wall4"]
+    }
+    
+    public static func calculateSurfaceArea(width: Double, height: Double) -> Double {
+        return width * height
     }
 }

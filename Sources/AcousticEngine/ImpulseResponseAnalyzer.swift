@@ -14,7 +14,9 @@
 //  respectively【473764854244230†L186-L204】.
 
 import Foundation
+#if canImport(Accelerate)
 import Accelerate
+#endif
 
 public struct ImpulseResponseAnalyzer {
     /// Compute the Schroeder energy decay curve from an impulse response.
@@ -24,7 +26,14 @@ public struct ImpulseResponseAnalyzer {
         guard !ir.isEmpty else { return [] }
         // Square the impulse response
         var squared = [Float](repeating: 0, count: ir.count)
+        #if canImport(Accelerate)
         vDSP_vsq(ir, 1, &squared, 1, vDSP_Length(ir.count))
+        #else
+        // Fallback implementation without Accelerate
+        for i in 0..<ir.count {
+            squared[i] = ir[i] * ir[i]
+        }
+        #endif
         // Reverse and compute cumulative sum
         let reversed = squared.reversed()
         var cumulative = [Float](repeating: 0, count: reversed.count)
