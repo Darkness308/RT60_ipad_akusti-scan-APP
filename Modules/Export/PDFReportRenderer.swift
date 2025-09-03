@@ -2,6 +2,9 @@ import Foundation
 #if canImport(UIKit)
 import UIKit
 import PDFKit
+#elseif canImport(AppKit)
+import AppKit
+import PDFKit
 #endif
 
 /// PDF report renderer that uses the same ReportModel as ReportHTMLRenderer
@@ -10,7 +13,7 @@ public final class PDFReportRenderer {
     public init() {}
 
     #if canImport(UIKit)
-    /// Rendert ein vollständiges PDF-Dokument
+    /// Rendert ein vollständiges PDF-Dokument (iOS/UIKit)
     public func render(_ model: ReportModel) -> Data {
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan RT60 Tool",
@@ -28,11 +31,11 @@ public final class PDFReportRenderer {
         
         return renderer.pdfData { context in
             context.beginPage()
-            drawContent(pageRect: pageRect, model: model)
+            drawContentUIKit(pageRect: pageRect, model: model)
         }
     }
     
-    private func drawContent(pageRect: CGRect, model: ReportModel) {
+    private func drawContentUIKit(pageRect: CGRect, model: ReportModel) {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
         
@@ -127,6 +130,154 @@ public final class PDFReportRenderer {
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
+    }
+    #elseif canImport(AppKit)
+    /// Rendert ein vollständiges PDF-Dokument (macOS/AppKit)
+    public func render(_ model: ReportModel) -> Data {
+        let pageWidth: CGFloat = 595.2  // A4 width in points
+        let pageHeight: CGFloat = 841.8 // A4 height in points
+        let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
+        
+        let data = NSMutableData()
+        let consumer = CGDataConsumer(data: data)!
+        
+        var mediaBox = pageRect
+        let context = CGContext(consumer: consumer, mediaBox: &mediaBox, [
+            kCGPDFContextCreator as String: "AcoustiScan RT60 Tool",
+            kCGPDFContextAuthor as String: "MSH-Audio-Gruppe",
+            kCGPDFContextTitle as String: "RT60 Bericht"
+        ] as CFDictionary)!
+        
+        context.beginPDFPage(nil)
+        drawContentAppKit(context: context, pageRect: pageRect, model: model)
+        context.endPDFPage()
+        context.closePDF()
+        
+        return data as Data
+    }
+    
+    private func drawContentAppKit(context: CGContext, pageRect: CGRect, model: ReportModel) {
+        let margin: CGFloat = 72
+        var yPosition: CGFloat = pageRect.height - margin // AppKit has flipped coordinates
+        
+        // Title
+        let title = "RT60 Bericht"
+        let titleFont = NSFont.boldSystemFont(ofSize: 24)
+        yPosition -= titleFont.pointSize
+        drawText(context: context, text: title, font: titleFont, 
+                point: CGPoint(x: margin, y: yPosition))
+        yPosition -= 40
+        
+        // Metadata
+        let metaTitle = "Metadaten"
+        let sectionFont = NSFont.boldSystemFont(ofSize: 18)
+        yPosition -= sectionFont.pointSize
+        drawText(context: context, text: metaTitle, font: sectionFont,
+                point: CGPoint(x: margin, y: yPosition))
+        yPosition -= 25
+        
+        let textFont = NSFont.systemFont(ofSize: 12)
+        
+        // Draw metadata
+        for (key, value) in model.metadata.sorted(by: { $0.key < $1.key }) {
+            let line = "\(key): \(value)"
+            yPosition -= textFont.pointSize
+            drawText(context: context, text: line, font: textFont,
+                    point: CGPoint(x: margin, y: yPosition))
+            yPosition -= 6
+        }
+        
+        yPosition -= 20
+        
+        // RT60 Bands
+        let bandsTitle = "RT60 je Frequenz (T20 in s)"
+        yPosition -= sectionFont.pointSize
+        drawText(context: context, text: bandsTitle, font: sectionFont,
+                point: CGPoint(x: margin, y: yPosition))
+        yPosition -= 25
+        
+        yPosition -= textFont.pointSize
+        drawText(context: context, text: "Frequenz [Hz]    T20 [s]", font: textFont,
+                point: CGPoint(x: margin, y: yPosition))
+        yPosition -= 20
+        
+        for band in model.rt60_bands {
+            let freq = band["freq_hz"] != nil ? String(Int((band["freq_hz"]!)!.rounded())) : "-"
+            let t20 = band["t20_s"] != nil && band["t20_s"]! != nil ? String(format: "%.2f", band["t20_s"]!!) : "-"
+            let line = String(format: "%-15@ %@", freq, t20)
+            yPosition -= textFont.pointSize
+            drawText(context: context, text: line, font: textFont,
+                    point: CGPoint(x: margin, y: yPosition))
+            yPosition -= 6
+        }
+        
+        yPosition -= 20
+        
+        // DIN Targets
+        let dinTitle = "DIN 18041 Ziel & Toleranz"
+        yPosition -= sectionFont.pointSize
+        drawText(context: context, text: dinTitle, font: sectionFont,
+                point: CGPoint(x: margin, y: yPosition))
+        yPosition -= 25
+        
+        yPosition -= textFont.pointSize
+        drawText(context: context, text: "Frequenz [Hz]    T_soll [s]    Toleranz [s]", font: textFont,
+                point: CGPoint(x: margin, y: yPosition))
+        yPosition -= 20
+        
+        for target in model.din_targets {
+            let freq = target["freq_hz"] != nil ? String(Int((target["freq_hz"]!)!.rounded())) : "-"
+            let tsoll = target["t_soll"] != nil && target["t_soll"]! != nil ? String(format: "%.2f", target["t_soll"]!!) : "-"
+            let tol = target["tol"] != nil && target["tol"]! != nil ? String(format: "%.2f", target["tol"]!!) : "-"
+            let line = String(format: "%-15@ %-13@ %@", freq, tsoll, tol)
+            yPosition -= textFont.pointSize
+            drawText(context: context, text: line, font: textFont,
+                    point: CGPoint(x: margin, y: yPosition))
+            yPosition -= 6
+        }
+        
+        yPosition -= 20
+        
+        // Empfehlungen
+        let recTitle = "Empfehlungen"
+        yPosition -= sectionFont.pointSize
+        drawText(context: context, text: recTitle, font: sectionFont,
+                point: CGPoint(x: margin, y: yPosition))
+        yPosition -= 25
+        
+        for (index, rec) in model.recommendations.enumerated() {
+            let line = "\(index + 1). \(rec)"
+            yPosition -= textFont.pointSize
+            drawText(context: context, text: line, font: textFont,
+                    point: CGPoint(x: margin, y: yPosition))
+            yPosition -= 18
+        }
+        
+        yPosition -= 20
+        
+        // Audit
+        let auditTitle = "Audit"
+        yPosition -= sectionFont.pointSize
+        drawText(context: context, text: auditTitle, font: sectionFont,
+                point: CGPoint(x: margin, y: yPosition))
+        yPosition -= 25
+        
+        for (key, value) in model.audit.sorted(by: { $0.key < $1.key }) {
+            let line = "\(key): \(value)"
+            yPosition -= textFont.pointSize
+            drawText(context: context, text: line, font: textFont,
+                    point: CGPoint(x: margin, y: yPosition))
+            yPosition -= 6
+        }
+    }
+    
+    private func drawText(context: CGContext, text: String, font: NSFont, point: CGPoint) {
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        let attributedString = NSAttributedString(string: text, attributes: attributes)
+        let line = CTLineCreateWithAttributedString(attributedString)
+        
+        context.textPosition = point
+        CTLineDraw(line, context)
     }
     #else
     /// Text-based rendering for non-UIKit platforms (for testing)
