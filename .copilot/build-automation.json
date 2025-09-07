@@ -1,0 +1,289 @@
+{
+  "copilot_build_automation": {
+    "version": "1.0",
+    "name": "AcoustiScan Build Automation",
+    "description": "Automated build error detection and resolution for RT60 iPad app",
+    
+    "error_detection": {
+      "compilation_errors": {
+        "patterns": [
+          {
+            "regex": "cannot find '([^']+)' in scope",
+            "category": "undefined_variable",
+            "severity": "error",
+            "auto_fix": true,
+            "fix_strategy": "add_variable_declaration"
+          },
+          {
+            "regex": "No such module '([^']+)'",
+            "category": "missing_import",
+            "severity": "error", 
+            "auto_fix": true,
+            "fix_strategy": "add_import_statement"
+          },
+          {
+            "regex": "Fatal error: Unexpectedly found nil",
+            "category": "force_unwrap_crash",
+            "severity": "critical",
+            "auto_fix": true,
+            "fix_strategy": "safe_unwrapping"
+          }
+        ]
+      },
+      
+      "test_failures": {
+        "patterns": [
+          {
+            "regex": "test.*failed",
+            "category": "test_failure",
+            "severity": "warning",
+            "auto_fix": false,
+            "fix_strategy": "manual_review"
+          }
+        ]
+      },
+      
+      "runtime_errors": {
+        "patterns": [
+          {
+            "regex": "AVAudioSession.*error",
+            "category": "audio_session",
+            "severity": "error",
+            "auto_fix": true,
+            "fix_strategy": "audio_session_setup"
+          },
+          {
+            "regex": "RoomPlan.*failed",
+            "category": "roomplan_error",
+            "severity": "warning",
+            "auto_fix": true,
+            "fix_strategy": "roomplan_fallback"
+          }
+        ]
+      }
+    },
+    
+    "build_pipeline": {
+      "steps": [
+        {
+          "name": "clean",
+          "command": "swift package clean",
+          "retry_on_failure": false,
+          "timeout_seconds": 30
+        },
+        {
+          "name": "resolve_dependencies", 
+          "command": "swift package resolve",
+          "retry_on_failure": true,
+          "max_retries": 3,
+          "timeout_seconds": 120
+        },
+        {
+          "name": "lint",
+          "command": "swiftlint --strict",
+          "retry_on_failure": false,
+          "allow_failure": true,
+          "timeout_seconds": 60
+        },
+        {
+          "name": "format_check",
+          "command": "swiftformat --lint .",
+          "retry_on_failure": false,
+          "allow_failure": true,
+          "timeout_seconds": 60
+        },
+        {
+          "name": "build",
+          "command": "swift build",
+          "retry_on_failure": true,
+          "max_retries": 2,
+          "timeout_seconds": 300
+        },
+        {
+          "name": "test",
+          "command": "swift test",
+          "retry_on_failure": true,
+          "max_retries": 1,
+          "timeout_seconds": 180
+        }
+      ]
+    },
+    
+    "auto_fixes": {
+      "undefined_variable": {
+        "description": "Add missing variable declaration",
+        "code_templates": [
+          {
+            "pattern": "t20Val",
+            "replacement": "let t20Val = Self.parseNumber(t20raw)"
+          },
+          {
+            "pattern": "corrVal", 
+            "replacement": "let corrVal = Self.parseNumber(corrRaw)"
+          }
+        ]
+      },
+      
+      "missing_import": {
+        "description": "Add missing import statements",
+        "common_imports": {
+          "AVFoundation": ["AVAudioSession", "AVAudioEngine", "AVAudioPlayer"],
+          "SwiftUI": ["View", "State", "Binding", "ObservableObject"],
+          "PDFKit": ["PDFDocument", "PDFPage", "PDFView"],
+          "RoomPlan": ["RoomCaptureView", "CapturedRoom"],
+          "Foundation": ["Data", "URL", "Date", "UUID"]
+        }
+      },
+      
+      "safe_unwrapping": {
+        "description": "Replace force unwrapping with safe alternatives",
+        "patterns": [
+          {
+            "unsafe": "data!",
+            "safe": "guard let data = data else { return }"
+          },
+          {
+            "unsafe": "url!",
+            "safe": "guard let url = url else { throw URLError(.badURL) }"
+          }
+        ]
+      },
+      
+      "audio_session_setup": {
+        "description": "Configure audio session properly",
+        "template": "try AVAudioSession.sharedInstance().setCategory(.record, mode: .measurement)"
+      },
+      
+      "roomplan_fallback": {
+        "description": "Add fallback for RoomPlan failures",
+        "template": "guard RoomCaptureView.isSupported else { showManualRoomEntry(); return }"
+      }
+    },
+    
+    "quality_checks": {
+      "swift_style": {
+        "rules": [
+          "no_force_unwrapping",
+          "explicit_types_for_complex_expressions",
+          "meaningful_variable_names",
+          "guard_statements_preferred"
+        ]
+      },
+      
+      "rt60_specific": {
+        "rules": [
+          "correlation_validation_95_percent",
+          "frequency_band_completeness",
+          "iso_3382_compliance",
+          "measurement_uncertainty_calculation"
+        ]
+      },
+      
+      "test_coverage": {
+        "minimum_coverage": 80,
+        "critical_components": [
+          "RT60Calculator",
+          "ReportModel", 
+          "PDFReportRenderer",
+          "AudioProcessor"
+        ]
+      }
+    },
+    
+    "monitoring": {
+      "metrics": {
+        "build_success_rate": {
+          "threshold": 90,
+          "alert_when_below": true
+        },
+        "test_coverage": {
+          "threshold": 80,
+          "alert_when_below": true
+        },
+        "error_resolution_time": {
+          "target_minutes": 30,
+          "alert_when_above": 60
+        },
+        "compilation_error_frequency": {
+          "max_per_day": 10,
+          "alert_when_above": true
+        }
+      },
+      
+      "alerts": {
+        "channels": [
+          {
+            "type": "github_issue",
+            "enabled": true,
+            "labels": ["bug", "auto-detected"]
+          },
+          {
+            "type": "console_log",
+            "enabled": true,
+            "level": "error"
+          }
+        ]
+      }
+    },
+    
+    "learning_system": {
+      "error_history": {
+        "storage_path": ".copilot/error-history.json",
+        "max_entries": 1000,
+        "retention_days": 90
+      },
+      
+      "pattern_recognition": {
+        "enabled": true,
+        "confidence_threshold": 0.8,
+        "auto_apply_fixes": true
+      },
+      
+      "feedback_loop": {
+        "track_fix_success": true,
+        "update_confidence_scores": true,
+        "learn_new_patterns": true
+      }
+    },
+    
+    "integration": {
+      "github_actions": {
+        "workflow_files": [
+          ".github/workflows/build-test.yml",
+          ".github/workflows/swift-ci.yml"
+        ],
+        "on_failure": [
+          "analyze_logs",
+          "apply_auto_fixes",
+          "retry_build",
+          "create_issue_if_unresolved"
+        ]
+      },
+      
+      "xcode": {
+        "build_settings": {
+          "SWIFT_TREAT_WARNINGS_AS_ERRORS": "YES",
+          "CLANG_STATIC_ANALYZER_MODE": "deep",
+          "ENABLE_TESTABILITY": "YES"
+        },
+        
+        "build_phases": [
+          "SwiftLint",
+          "SwiftFormat",
+          "Custom RT60 Validation"
+        ]
+      }
+    },
+    
+    "documentation": {
+      "auto_generate": {
+        "error_reports": true,
+        "fix_summaries": true,
+        "trend_analysis": true
+      },
+      
+      "update_frequency": "daily",
+      "format": ["markdown", "json", "html"]
+    }
+  }
+}

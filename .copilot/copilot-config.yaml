@@ -1,0 +1,233 @@
+# GitHub Copilot Configuration for AcoustiScan RT60 iPad App
+# Version: 1.0
+# Purpose: Automated error detection, fixing, and consistent problem resolution
+
+copilot:
+  version: "1.0"
+  name: "AcoustiScan Error Management System"
+  description: "Comprehensive error handling and solution patterns for RT60 acoustic measurement app"
+
+# Context and Prompts for Copilot SWE Agent
+context:
+  project_type: "Swift iOS iPad App"
+  domain: "Acoustic measurements, RT60 reverberation time, audio processing"
+  target_platform: "iPad, iOS 17+, LiDAR support"
+  architecture: "SwiftUI, Combine, AVAudioEngine, RoomPlan"
+  
+  key_components:
+    - "RT60 acoustic measurements"
+    - "XL2 device integration"
+    - "PDF report generation"
+    - "RoomPlan 3D scanning"
+    - "Audio signal processing"
+    - "Statistical validation"
+
+# Error Categories and Automated Fix Strategies
+error_patterns:
+  compilation_errors:
+    swift_undefined_variables:
+      pattern: "cannot find '.*' in scope"
+      description: "Swift variable not defined before use"
+      auto_fix_strategy: |
+        1. Identify the missing variable name
+        2. Look for similar variable names in nearby code
+        3. Check if variable should be parsed from string data
+        4. Apply appropriate parsing function (parseNumber, parseString)
+        5. Add variable declaration before first use
+      example_fix: |
+        // Before: let isValid = (t20Val != nil)
+        // After: let t20Val = Self.parseNumber(t20raw)
+        //        let isValid = (t20Val != nil)
+    
+    swift_force_unwrap_crash:
+      pattern: "Fatal error: Unexpectedly found nil while unwrapping an Optional value"
+      description: "Force unwrapping nil Optional"
+      auto_fix_strategy: |
+        1. Replace force unwraps (!) with safe unwrapping
+        2. Add guard statements or if-let bindings
+        3. Provide fallback values for critical paths
+        4. Use nil-coalescing operator (??) where appropriate
+      example_fix: |
+        // Before: let value = data!
+        // After: guard let value = data else { return defaultValue }
+    
+    missing_imports:
+      pattern: "No such module '.*'"
+      description: "Missing import statement"
+      auto_fix_strategy: |
+        1. Identify the missing framework/module
+        2. Add appropriate import statement at top of file
+        3. Check Package.swift dependencies if needed
+        4. Verify module availability on target iOS version
+      common_imports:
+        - "import Foundation"
+        - "import SwiftUI"
+        - "import AVFoundation"
+        - "import RoomPlan"
+        - "import PDFKit"
+    
+    package_swift_errors:
+      pattern: "package contains errors"
+      description: "Package.swift configuration issues"
+      auto_fix_strategy: |
+        1. Check target dependencies
+        2. Verify source file inclusion
+        3. Add missing test files to testTarget
+        4. Ensure proper module naming
+        5. Validate Swift tools version
+
+  runtime_errors:
+    audio_session_issues:
+      description: "AVAudioSession configuration problems"
+      auto_fix_strategy: |
+        1. Request microphone permissions
+        2. Configure audio session category
+        3. Handle interruptions gracefully
+        4. Validate audio input availability
+    
+    roomplan_failures:
+      description: "RoomPlan scanning issues"
+      auto_fix_strategy: |
+        1. Check LiDAR device capability
+        2. Validate ARKit permissions
+        3. Handle scanning session lifecycle
+        4. Provide fallback manual room input
+
+  data_validation_errors:
+    rt60_measurement_invalid:
+      description: "RT60 measurement data validation failures"
+      auto_fix_strategy: |
+        1. Check correlation values (>95%)
+        2. Validate frequency band completeness
+        3. Verify measurement duration
+        4. Apply statistical outlier detection
+    
+    checksum_validation:
+      description: "Data integrity checksum failures"
+      auto_fix_strategy: |
+        1. Recalculate checksum using deterministic algorithm
+        2. Compare with expected values
+        3. Log discrepancies for debugging
+        4. Flag measurement as questionable if needed
+
+# Build System Integration
+build_automation:
+  pre_build_checks:
+    - "swiftlint --strict"
+    - "swiftformat --lint ."
+    - "swift package resolve"
+  
+  error_recovery_steps:
+    1. "swift package clean"
+    2. "rm -rf .build"
+    3. "swift package resolve"
+    4. "swift build"
+  
+  retry_strategy:
+    max_attempts: 3
+    exponential_backoff: true
+    base_delay_seconds: 5
+
+# Code Quality Rules
+quality_standards:
+  swift_style:
+    - "Use explicit type annotations for complex types"
+    - "Prefer guard statements over nested if-let"
+    - "Use meaningful variable names (no single letters except i,j in loops)"
+    - "Handle errors gracefully with proper logging"
+    - "Avoid force unwrapping in production code"
+  
+  rt60_specific:
+    - "Always validate correlation percentages >= 95%"
+    - "Handle missing frequency band data gracefully"
+    - "Provide ISO 3382-1 compliant calculations"
+    - "Log measurement conditions and parameters"
+    - "Include statistical uncertainty estimates"
+
+# Common Solution Patterns
+solution_templates:
+  swift_optional_handling: |
+    // Safe optional unwrapping pattern
+    guard let value = optionalValue else {
+        logger.error("Missing required value: \(#function)")
+        return fallbackValue
+    }
+  
+  error_logging: |
+    // Comprehensive error logging
+    func handleError(_ error: Error, context: String) {
+        logger.error("Error in \(context): \(error.localizedDescription)")
+        // Add crash reporting or analytics here
+        notifyUser(error)
+    }
+  
+  audio_session_setup: |
+    // Proper audio session configuration
+    do {
+        try AVAudioSession.sharedInstance().setCategory(.record, mode: .measurement)
+        try AVAudioSession.sharedInstance().setActive(true)
+    } catch {
+        handleAudioSessionError(error)
+    }
+  
+  rt60_validation: |
+    // RT60 measurement validation
+    func validateMeasurement(_ measurement: RT60Measurement) -> ValidationResult {
+        guard measurement.correlation >= 95.0 else {
+            return .invalid("Low correlation: \(measurement.correlation)%")
+        }
+        guard measurement.t20 > 0.1 && measurement.t20 < 10.0 else {
+            return .invalid("T20 out of range: \(measurement.t20)s")
+        }
+        return .valid
+    }
+
+# Documentation Requirements
+documentation:
+  error_history: ".copilot/error-solutions.md"
+  build_logs: ".copilot/build-history.json"
+  common_fixes: ".copilot/common-fixes.md"
+  
+  required_comments:
+    - "Function purpose and acoustic theory background"
+    - "Parameter ranges and units (Hz, seconds, dB)"
+    - "Error conditions and recovery strategies"
+    - "ISO 3382-1 compliance notes where applicable"
+
+# Monitoring and Alerting
+monitoring:
+  track_metrics:
+    - "Build success rate"
+    - "Test coverage percentage"
+    - "Error resolution time"
+    - "Common error patterns"
+  
+  alert_conditions:
+    - "Build failure rate > 10%"
+    - "Test coverage drops below 80%"
+    - "New error pattern detected"
+    - "RT60 validation failures increase"
+
+# Integration Points
+integrations:
+  github_actions:
+    workflow_files:
+      - ".github/workflows/build-test.yml"
+      - ".github/workflows/swift-ci.yml"
+    
+    failure_actions:
+      - "Analyze error logs"
+      - "Apply known fixes automatically"
+      - "Create issue if new error pattern"
+      - "Notify development team"
+  
+  xcode_integration:
+    scheme_settings:
+      - "Enable Address Sanitizer for debug builds"
+      - "Run static analyzer"
+      - "Generate test coverage reports"
+    
+    build_phases:
+      - "SwiftLint validation"
+      - "SwiftFormat check"
+      - "Custom RT60 validation scripts"
