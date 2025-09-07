@@ -35,7 +35,7 @@ final class PDFReportSnapshotTests: XCTestCase {
         let h = Self.hash(data)
         // Erwartungswert beim ersten Lauf ermitteln & festschreiben:
         // XCTFail("Hash=\(h)")  // einmalig ausgeben, dann Wert unten eintragen
-        XCTAssertEqual(h, h) // Platzhalter: trage den erwarteten Hash ein
+        XCTAssertEqual(h, "EXPECTED_HASH_VALUE") // Vergleiche mit festem Erwartungswert
         #else
         // Skip test on platforms without PDFKit
         throw XCTSkip("PDFKit not available on this platform")
