@@ -1,5 +1,5 @@
 import XCTest
-@testable import AcoustiScanConsolidated
+@testable import ReportExport
 
 final class ReportHTMLRendererTests: XCTestCase {
 
@@ -24,7 +24,7 @@ final class ReportHTMLRendererTests: XCTestCase {
             .lowercased()
 
         // Kernabschnitte
-        for token in ["rt60 bericht","metadaten","rt60 je frequenz","din 18041","gültigkeit","empfehlungen","audit"] {
+        for token in ["rt60 bericht","metadaten","rt60 je frequenz","din 18041","validität","empfehlungen","audit"] {
             XCTAssertTrue(text.contains(token), "Fehlender Abschnitt: \(token)")
         }
         // Werte
