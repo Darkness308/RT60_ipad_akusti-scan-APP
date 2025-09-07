@@ -97,7 +97,7 @@ public final class PDFReportRenderer {
             } else {
                 t20String = "-"
             }
-            let line = String(format: "%-15@ %@", "\(freq)", t20String)
+            let line = "\(freq) Hz: \(t20String) s"
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
@@ -114,7 +114,7 @@ public final class PDFReportRenderer {
                     } else {
                         t20String = "-"
                     }
-                    let line = String(format: "%-15@ %@", "\(freqInt)", t20String)
+                    let line = "\(freqInt) Hz: \(t20String) s"
                     line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
                     yPosition += 18
                 }
@@ -133,7 +133,7 @@ public final class PDFReportRenderer {
         
         // Draw required DIN values
         for value in requiredDINValues {
-            let line = String(format: "%-15@ %@", "Required", String(format: "%.2f", value))
+            let line = "DIN: \(String(format: "%.2f", value))"
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
@@ -161,7 +161,7 @@ public final class PDFReportRenderer {
                 tol = "-"
             }
             
-            let line = String(format: "%-15@ %-13@ %@", freq, tsoll, tol)
+            let line = "\(freq) Hz: T_soll=\(tsoll) s, Toleranz=\(tol) s"
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }

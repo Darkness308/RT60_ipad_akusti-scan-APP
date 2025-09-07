@@ -1,5 +1,7 @@
+#if canImport(SwiftUI) && canImport(PDFKit) && canImport(UIKit)
 import SwiftUI
 import PDFKit
+import UIKit
 
 public struct PDFExportView: View {
     @State private var isBusy = false
@@ -41,3 +43,20 @@ struct PDFKitView: UIViewRepresentable {
     }
     func updateUIView(_ uiView: PDFView, context: Context) {}
 }
+#else
+// Fallback for non-UIKit platforms
+import Foundation
+
+public struct PDFExportView {
+    public let reportModel: ReportModel
+    
+    public init(reportModel: ReportModel) { 
+        self.reportModel = reportModel 
+    }
+    
+    /// Generate PDF data for non-UIKit platforms
+    public func generatePDF() -> Data {
+        return PDFReportRenderer().render(reportModel)
+    }
+}
+#endif
