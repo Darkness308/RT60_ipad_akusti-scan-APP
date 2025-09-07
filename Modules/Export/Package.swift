@@ -29,7 +29,9 @@ let package = Package(
             dependencies: ["ReportExport"],
             path: "Tests",
             sources: [
-                "ReportContractTests.swift"
+                "ReportContractTests.swift",
+                "ReportHTMLRendererTests.swift",
+                "PDFReportSnapshotTests.swift"
             ]
         )
     ]
