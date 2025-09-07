@@ -1,9 +1,15 @@
 import XCTest
+#if canImport(PDFKit)
 import PDFKit
+#endif
+#if canImport(CryptoKit)
+import CryptoKit
+#endif
 
 final class PDFReportSnapshotTests: XCTestCase {
 
-    func test_pdf_page_count_and_hash_are_stable() {
+    func test_pdf_page_count_and_hash_are_stable() throws {
+        #if canImport(PDFKit)
         let model = ReportModel(
             metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21"],
             rt60_bands: [
@@ -20,13 +26,20 @@ final class PDFReportSnapshotTests: XCTestCase {
         )
 
         let data = PDFReportRenderer().render(model)
-        let doc = PDFDocument(data: data)!
+        guard let doc = PDFDocument(data: data) else {
+            XCTFail("Failed to create PDFDocument from data")
+            return
+        }
         XCTAssertEqual(doc.pageCount, 7)
 
         let h = Self.hash(data)
         // Erwartungswert beim ersten Lauf ermitteln & festschreiben:
         // XCTFail("Hash=\(h)")  // einmalig ausgeben, dann Wert unten eintragen
         XCTAssertEqual(h, h) // Platzhalter: trage den erwarteten Hash ein
+        #else
+        // Skip test on platforms without PDFKit
+        throw XCTSkip("PDFKit not available on this platform")
+        #endif
     }
 
     private static func hash(_ data: Data) -> String {
@@ -36,7 +49,6 @@ final class PDFReportSnapshotTests: XCTestCase {
 
     private static func sha256Hex(_ data: Data) -> String {
         #if canImport(CryptoKit)
-        import CryptoKit
         return SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined()
         #else
         // Fallback – NICHT kryptografisch, nur deterministisch
