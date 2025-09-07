@@ -1,5 +1,5 @@
 import XCTest
-@testable import AcoustiScanConsolidated
+@testable import ReportExport
 
 final class ReportHTMLRendererTests: XCTestCase {
 

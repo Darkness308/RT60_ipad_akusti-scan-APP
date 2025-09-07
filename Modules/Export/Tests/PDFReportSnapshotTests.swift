@@ -1,5 +1,10 @@
 import XCTest
+#if canImport(PDFKit)
 import PDFKit
+#if canImport(CryptoKit)
+import CryptoKit
+#endif
+@testable import ReportExport
 
 final class PDFReportSnapshotTests: XCTestCase {
 
@@ -36,7 +41,6 @@ final class PDFReportSnapshotTests: XCTestCase {
 
     private static func sha256Hex(_ data: Data) -> String {
         #if canImport(CryptoKit)
-        import CryptoKit
         return SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined()
         #else
         // Fallback – NICHT kryptografisch, nur deterministisch
@@ -44,3 +48,4 @@ final class PDFReportSnapshotTests: XCTestCase {
         #endif
     }
 }
+#endif

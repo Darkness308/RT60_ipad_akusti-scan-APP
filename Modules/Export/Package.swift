@@ -16,21 +16,11 @@ let package = Package(
     targets: [
         .target(
             name: "ReportExport",
-            dependencies: [],
-            path: ".",
-            sources: [
-                "ReportHTMLRenderer.swift",
-                "PDFReportRenderer.swift",
-                "HTMLPreviewView.swift"
-            ]
+            dependencies: []
         ),
         .testTarget(
             name: "ReportExportTests",
-            dependencies: ["ReportExport"],
-            path: "Tests",
-            sources: [
-                "ReportContractTests.swift"
-            ]
+            dependencies: ["ReportExport"]
         )
     ]
 )
