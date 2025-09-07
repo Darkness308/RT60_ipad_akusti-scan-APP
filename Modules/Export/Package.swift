@@ -21,7 +21,8 @@ let package = Package(
             sources: [
                 "ReportHTMLRenderer.swift",
                 "PDFReportRenderer.swift",
-                "HTMLPreviewView.swift"
+                "HTMLPreviewView.swift",
+                "PDFExportView.swift"
             ]
         ),
         .testTarget(
