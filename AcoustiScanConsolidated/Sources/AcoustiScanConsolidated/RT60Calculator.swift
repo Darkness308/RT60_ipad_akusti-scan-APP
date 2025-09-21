@@ -76,33 +76,8 @@ public class RT60Calculator {
     }
 }
 
-/// Acoustic surface representation
-public struct AcousticSurface {
-    public let name: String
-    public let area: Double
-    public let material: AcousticMaterial
-    
-    public init(name: String, area: Double, material: AcousticMaterial) {
-        self.name = name
-        self.area = area
-        self.material = material
-    }
-}
-
-/// Acoustic material with frequency-dependent absorption coefficients
-public struct AcousticMaterial {
-    public let name: String
-    public let absorptionCoefficients: [Int: Double] // frequency -> coefficient
-    
-    public init(name: String, absorptionCoefficients: [Int: Double]) {
-        self.name = name
-        self.absorptionCoefficients = absorptionCoefficients
-    }
-    
-    public func absorptionCoefficient(at frequency: Int) -> Double {
-        return absorptionCoefficients[frequency] ?? 0.1 // Default value
-    }
-}
+// Note: AcousticSurface and AcousticMaterial models have been moved to 
+// dedicated files in the Models/ directory to avoid duplication.
 
 /// DIN 18041 target database
 public struct DIN18041Database {

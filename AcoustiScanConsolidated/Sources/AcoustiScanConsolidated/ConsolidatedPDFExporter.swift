@@ -9,31 +9,8 @@ import UIKit
 /// Comprehensive PDF report generator
 public class ConsolidatedPDFExporter {
     
-    /// Report data container
-    public struct ReportData {
-        public let date: String
-        public let roomType: RoomType
-        public let volume: Double
-        public let rt60Measurements: [RT60Measurement]
-        public let dinResults: [RT60Deviation]
-        public let acousticFrameworkResults: [String: Double] // Parameter name -> value
-        public let surfaces: [AcousticSurface]
-        public let recommendations: [String]
-        
-        public init(date: String, roomType: RoomType, volume: Double,
-                    rt60Measurements: [RT60Measurement], dinResults: [RT60Deviation],
-                    acousticFrameworkResults: [String: Double], surfaces: [AcousticSurface],
-                    recommendations: [String]) {
-            self.date = date
-            self.roomType = roomType
-            self.volume = volume
-            self.rt60Measurements = rt60Measurements
-            self.dinResults = dinResults
-            self.acousticFrameworkResults = acousticFrameworkResults
-            self.surfaces = surfaces
-            self.recommendations = recommendations
-        }
-    }
+    // Backward compatibility: Use the consolidated ReportData model
+    public typealias ReportData = AcoustiScanConsolidated.ReportData
     
     #if canImport(UIKit)
     /// Generate comprehensive PDF report
