@@ -11,9 +11,18 @@
 //  ✅ ENHANCED: Professional gutachterliche reports
 //  ✅ ENHANCED: Automated build integration
 
+import Foundation
+#if canImport(SwiftUI)
 import SwiftUI
+#endif
+#if canImport(PDFKit)
 import PDFKit
+#endif
+#if canImport(UIKit)
+import UIKit
+#endif
 
+#if canImport(SwiftUI)
 /// Struct that generates a full PDF report from measurement results.
 /// This implementation is focused on clarity, compliance (EU AI Act),
 /// and auditability.
@@ -36,6 +45,7 @@ struct PDFExportView: View {
     }
 
     private func generateReport() {
+        #if canImport(UIKit)
         // ENHANCED: Use consolidated PDF exporter for professional reports
         print("🚀 Using AcoustiScan Consolidated Tool for PDF generation")
         print("📊 Integrating 48-parameter framework results")
@@ -84,14 +94,22 @@ struct PDFExportView: View {
         let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent("Report.pdf")
         do {
             try data.write(to: tmpURL)
-            let activityVC = UIActivityViewController(activityItems: [tmpURL], applicationActivities: nil)
-            UIApplication.shared.windows.first?.rootViewController?.present(activityVC, animated: true, completion: nil)
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                let activityVC = UIActivityViewController(activityItems: [tmpURL], applicationActivities: nil)
+                window.rootViewController?.present(activityVC, animated: true, completion: nil)
+            }
         } catch {
             print("Error writing PDF: \(error)")
         }
+        #else
+        // Fallback for non-UIKit platforms
+        print("PDF generation requires UIKit platform")
+        #endif
     }
 
     private func drawCoverPage(pageRect: CGRect) {
+        #if canImport(UIKit)
         // ENHANCED: Professional title page with executive summary
         let title = "Gutachterlicher Raumakustik Report"
         let attrs: [NSAttributedString.Key: Any] = [
@@ -126,18 +144,22 @@ struct PDFExportView: View {
             .foregroundColor: UIColor.gray
         ]
         qaNote.draw(at: CGPoint(x: 72, y: pageRect.height - 100), withAttributes: qaAttrs)
+        #endif
     }
 
     private func drawMetadataPage(pageRect: CGRect) {
+        #if canImport(UIKit)
         let metaText = "Messung durchgeführt am: \(reportData.date)\nRaumtyp: \(reportData.roomType.displayName)\n" +
                        "Volumen: \(Int(reportData.volume)) m³"
         let attrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
         ]
         metaText.draw(at: CGPoint(x: 72, y: 72), withAttributes: attrs)
+        #endif
     }
 
     private func drawRT60Curves(pageRect: CGRect) {
+        #if canImport(UIKit)
         // Vereinfachte Darstellung: Werte als Text
         var y = 72
         for m in reportData.rt60Measurements.sorted(by: { $0.frequency < $1.frequency }) {
@@ -146,9 +168,11 @@ struct PDFExportView: View {
             line.draw(at: CGPoint(x: 72, y: CGFloat(y)), withAttributes: attrs)
             y += 20
         }
+        #endif
     }
 
     private func drawDINResults(pageRect: CGRect) {
+        #if canImport(UIKit)
         var y = 72
         for dev in reportData.dinResults {
             let line = "\(dev.frequency) Hz: Soll=\(String(format: "%.2f", dev.targetRT60)) s, " +
@@ -157,10 +181,12 @@ struct PDFExportView: View {
             line.draw(at: CGPoint(x: 72, y: CGFloat(y)), withAttributes: attrs)
             y += 20
         }
+        #endif
     }
 
     // ENHANCED: New function for 48-parameter framework results
     private func drawFrameworkResults(pageRect: CGRect) {
+        #if canImport(UIKit)
         let title = "48-Parameter Akustik-Framework Analyse"
         let attrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 18)
@@ -186,9 +212,11 @@ struct PDFExportView: View {
             .font: UIFont.systemFont(ofSize: 12)
         ]
         frameworkText.draw(at: CGPoint(x: 72, y: 120), withAttributes: textAttrs)
+        #endif
     }
 
     private func drawRecommendations(pageRect: CGRect) {
+        #if canImport(UIKit)
         let text = """
         Empfohlene Maßnahmen (AcoustiScan Consolidated Tool):
         
@@ -215,6 +243,7 @@ struct PDFExportView: View {
             .font: UIFont.systemFont(ofSize: 12)
         ]
         text.draw(at: CGPoint(x: 72, y: 72), withAttributes: attrs)
+        #endif
     }
 }
 
@@ -226,3 +255,4 @@ struct ReportData {
     var rt60Measurements: [RT60Measurement]
     var dinResults: [RT60Deviation]
 }
+#endif
