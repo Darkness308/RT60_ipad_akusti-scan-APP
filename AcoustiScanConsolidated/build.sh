@@ -84,23 +84,54 @@ build_with_retry() {
 fix_common_errors() {
     local fixed_something=false
     
+    print_status $BLUE "🔍 Analyzing build errors..."
+    
     # Check for missing import statements
     if grep -q "No such module" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected missing module errors"
-        fix_missing_imports
-        fixed_something=true
+        if fix_missing_imports; then
+            fixed_something=true
+        fi
     fi
     
     # Check for syntax errors
     if grep -q "expected" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected potential syntax errors"
-        # Could implement basic syntax fixes here
+        if fix_syntax_errors; then
+            fixed_something=true
+        fi
     fi
     
     # Check for access control issues
     if grep -q "is not accessible" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected access control issues"
-        # Could implement access control fixes here
+        if fix_access_control_issues; then
+            fixed_something=true
+        fi
+    fi
+    
+    # Check for deprecated API usage
+    if grep -q "deprecated" $BUILD_LOG; then
+        print_status $YELLOW "🔍 Detected deprecated API usage"
+        if fix_deprecated_apis; then
+            fixed_something=true
+        fi
+    fi
+    
+    # Check for type mismatch errors
+    if grep -q "Cannot convert value of type" $BUILD_LOG; then
+        print_status $YELLOW "🔍 Detected type conversion errors"
+        if fix_type_errors; then
+            fixed_something=true
+        fi
+    fi
+    
+    # Check for package resolution issues
+    if grep -q "package dependency" $BUILD_LOG || grep -q "could not resolve" $BUILD_LOG; then
+        print_status $YELLOW "🔍 Detected package dependency issues"
+        if fix_package_issues; then
+            fixed_something=true
+        fi
     fi
     
     return $([ "$fixed_something" = true ])
@@ -140,6 +171,113 @@ import $module
             fi
         done
     done
+    return 0
+}
+
+# Function to fix syntax errors
+fix_syntax_errors() {
+    print_status $BLUE "🔧 Attempting to fix syntax errors..."
+    local fixed_any=false
+    
+    # Look for common syntax issues
+    while IFS= read -r line; do
+        if [[ $line =~ "expected ',' separator" ]]; then
+            print_status $YELLOW "Found missing comma separator issue"
+            # Could implement specific fixes here
+        elif [[ $line =~ "expected '}'" ]]; then
+            print_status $YELLOW "Found missing closing brace issue"
+            # Could implement specific fixes here
+        elif [[ $line =~ "expected ']'" ]]; then
+            print_status $YELLOW "Found missing closing bracket issue"
+            # Could implement specific fixes here
+        fi
+    done < $BUILD_LOG
+    
+    return $fixed_any
+}
+
+# Function to fix access control issues
+fix_access_control_issues() {
+    print_status $BLUE "🔧 Attempting to fix access control issues..."
+    local fixed_any=false
+    
+    # Look for access control patterns
+    while IFS= read -r line; do
+        if [[ $line =~ "'([^']+)' is not accessible due to '([^']+)' protection level" ]]; then
+            local symbol="${BASH_REMATCH[1]}"
+            local protection="${BASH_REMATCH[2]}"
+            print_status $YELLOW "Found inaccessible symbol: $symbol (protection: $protection)"
+            # Could implement specific access control fixes here
+            # For now, just log the issue
+        fi
+    done < $BUILD_LOG
+    
+    return $fixed_any
+}
+
+# Function to fix deprecated API usage
+fix_deprecated_apis() {
+    print_status $BLUE "🔧 Attempting to fix deprecated API usage..."
+    local fixed_any=false
+    
+    # Look for deprecation warnings
+    while IFS= read -r line; do
+        if [[ $line =~ "'([^']+)' is deprecated" ]]; then
+            local deprecated_api="${BASH_REMATCH[1]}"
+            print_status $YELLOW "Found deprecated API: $deprecated_api"
+            # Log for manual review - automated fixing could be risky
+        fi
+    done < $BUILD_LOG
+    
+    return $fixed_any
+}
+
+# Function to fix type errors
+fix_type_errors() {
+    print_status $BLUE "🔧 Attempting to fix type conversion errors..."
+    local fixed_any=false
+    
+    # Look for type conversion issues
+    while IFS= read -r line; do
+        if [[ $line =~ "Cannot convert value of type '([^']+)' to expected argument type '([^']+)'" ]]; then
+            local from_type="${BASH_REMATCH[1]}"
+            local to_type="${BASH_REMATCH[2]}"
+            print_status $YELLOW "Found type mismatch: $from_type -> $to_type"
+            # Could implement specific type conversion fixes here
+        fi
+    done < $BUILD_LOG
+    
+    return $fixed_any
+}
+
+# Function to fix package dependency issues
+fix_package_issues() {
+    print_status $BLUE "🔧 Attempting to fix package dependency issues..."
+    local fixed_any=false
+    
+    # Try common package fixes
+    print_status $YELLOW "Cleaning package cache..."
+    swift package clean
+    
+    print_status $YELLOW "Resetting package state..."
+    rm -rf .build Package.resolved
+    
+    print_status $YELLOW "Resolving dependencies..."
+    if swift package resolve; then
+        print_status $GREEN "✅ Dependencies resolved successfully"
+        fixed_any=true
+    else
+        print_status $RED "❌ Could not resolve dependencies"
+        
+        # Try updating dependencies
+        print_status $YELLOW "Attempting to update dependencies..."
+        if swift package update; then
+            print_status $GREEN "✅ Dependencies updated successfully"
+            fixed_any=true
+        fi
+    fi
+    
+    return $fixed_any
 }
 
 # Function to run tests

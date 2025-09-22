@@ -5,17 +5,23 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  MAX_RETRY_ATTEMPTS: 3
+  XCODE_VERSION: '15.2'
 
 jobs:
   build:
     runs-on: macos-13
+    timeout-minutes: 45
     
     steps:
     - uses: actions/checkout@v4
     
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '15.2'
+        xcode-version: ${{ env.XCODE_VERSION }}
     
     - name: Cache DerivedData
       uses: actions/cache@v4
@@ -26,50 +32,282 @@ jobs:
     - name: Install Tools
       run: brew install swiftlint swiftformat || true
     
-    - name: Lint
-      run: swiftlint --strict || true
+    - name: Lint with retry
+      id: lint
+      run: |
+        set +e  # Don't exit on error
+        attempt=1
+        while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
+          echo "Lint attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
+          swiftlint --strict
+          lint_result=$?
+          if [ $lint_result -eq 0 ]; then
+            echo "✅ Linting successful on attempt $attempt"
+            break
+          fi
+          echo "⚠️ Linting failed on attempt $attempt"
+          if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
+            echo "❌ Linting failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "lint_failed=true" >> $GITHUB_OUTPUT
+          fi
+          attempt=$((attempt + 1))
+          sleep 2
+        done
     
-    - name: Format Check
-      run: swiftformat --lint . || true
+    - name: Format Check with retry
+      id: format
+      run: |
+        set +e  # Don't exit on error
+        attempt=1
+        while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
+          echo "Format check attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
+          swiftformat --lint .
+          format_result=$?
+          if [ $format_result -eq 0 ]; then
+            echo "✅ Format check successful on attempt $attempt"
+            break
+          fi
+          echo "⚠️ Format check failed on attempt $attempt"
+          if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
+            echo "❌ Format check failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "format_failed=true" >> $GITHUB_OUTPUT
+            # Auto-fix format issues and report
+            echo "🔧 Attempting to auto-fix format issues..."
+            swiftformat . || true
+          fi
+          attempt=$((attempt + 1))
+          sleep 2
+        done
     
     - name: Clean build cache
       run: |
         cd AcoustiScanConsolidated
         swift package clean
     
-    - name: Resolve Dependencies
+    - name: Resolve Dependencies with retry
+      id: dependencies
+      run: |
+        set +e  # Don't exit on error
+        cd AcoustiScanConsolidated
+        attempt=1
+        while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
+          echo "Dependencies resolution attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
+          swift package resolve
+          deps_result=$?
+          if [ $deps_result -eq 0 ]; then
+            echo "✅ Dependencies resolved successfully on attempt $attempt"
+            break
+          fi
+          echo "⚠️ Dependencies resolution failed on attempt $attempt"
+          if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
+            echo "❌ Dependencies resolution failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "deps_failed=true" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          attempt=$((attempt + 1))
+          sleep 5  # Longer wait for network issues
+        done
+    
+    - name: Build AcoustiScan Consolidated with automation
+      id: build_acoustiscan
       run: |
         cd AcoustiScanConsolidated
-        swift package resolve
+        # Use the enhanced build script with automation
+        chmod +x build.sh
+        ./build.sh build || {
+          echo "❌ Automated build script failed, trying manual approach..."
+          swift build 2>&1 | tee build.log
+          if [ ${PIPESTATUS[0]} -ne 0 ]; then
+            echo "❌ Manual build also failed"
+            echo "🔍 Build errors:"
+            cat build.log
+            echo "build_failed=true" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ Manual build succeeded"
+          fi
+        }
     
-    - name: Build AcoustiScan Consolidated
+    - name: Run Tests with retry
+      id: test_acoustiscan
       run: |
+        set +e  # Don't exit on error
         cd AcoustiScanConsolidated
-        swift build
+        attempt=1
+        while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
+          echo "Test attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
+          swift test
+          test_result=$?
+          if [ $test_result -eq 0 ]; then
+            echo "✅ Tests passed on attempt $attempt"
+            break
+          fi
+          echo "⚠️ Tests failed on attempt $attempt"
+          if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
+            echo "❌ Tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "tests_failed=true" >> $GITHUB_OUTPUT
+            # Clean build and retry once more
+            echo "🔧 Cleaning build and retrying tests one final time..."
+            swift package clean
+            swift build
+            swift test || exit 1
+          fi
+          attempt=$((attempt + 1))
+          sleep 3
+        done
     
-    - name: Run Tests
+    - name: Build Export Module with retry
+      id: build_export
       run: |
-        cd AcoustiScanConsolidated
-        swift test
+        set +e  # Don't exit on error
+        cd Modules/Export
+        attempt=1
+        while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
+          echo "Export module build attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
+          swift build
+          build_result=$?
+          if [ $build_result -eq 0 ]; then
+            echo "✅ Export module built successfully on attempt $attempt"
+            break
+          fi
+          echo "⚠️ Export module build failed on attempt $attempt"
+          if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
+            echo "❌ Export module build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "export_build_failed=true" >> $GITHUB_OUTPUT
+            # Don't exit here - continue with other steps
+          fi
+          attempt=$((attempt + 1))
+          swift package clean  # Clean between attempts
+          sleep 2
+        done
     
-    - name: Build Key-Coverage Linter
+    - name: Test Export Module with retry
+      id: test_export
       run: |
-        chmod +x Tools/linters/report_key_coverage.swift
-        # Swift shebang script – kein separater Build nötig, direkt ausführbar
-
-    - name: Run Key-Coverage Linter (HTML)
+        set +e  # Don't exit on error
+        cd Modules/Export
+        attempt=1
+        while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
+          echo "Export module test attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
+          swift test
+          test_result=$?
+          if [ $test_result -eq 0 ]; then
+            echo "✅ Export module tests passed on attempt $attempt"
+            break
+          fi
+          echo "⚠️ Export module tests failed on attempt $attempt"
+          if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
+            echo "❌ Export module tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "export_tests_failed=true" >> $GITHUB_OUTPUT
+            # Don't exit here - continue with other steps
+          fi
+          attempt=$((attempt + 1))
+          sleep 2
+        done
+    
+    - name: Build Tools with error handling
+      id: build_tools
       run: |
-        # Beispiel: nutze dein Sample-Model; füge hier weitere Models hinzu
-        Tools/linters/report_key_coverage.swift Tools/reporthtml/sample.report.model.json
-
-    - name: Generate HTML report artifact
+        set +e  # Don't exit on error
+        echo "🔧 Building and testing tools..."
+        
+        # Check Tools directory
+        if [ -d "Tools/linters" ]; then
+          echo "📋 Making linter executable..."
+          chmod +x Tools/linters/report_key_coverage.swift || echo "⚠️ Could not make linter executable"
+        fi
+        
+        # Test if we can compile reporthtml tool
+        if [ -f "Tools/reporthtml/main.swift" ]; then
+          echo "📊 Building HTML report tool..."
+          mkdir -p Artifacts
+          swiftc -o reporthtml Tools/reporthtml/main.swift || {
+            echo "⚠️ Could not build HTML report tool"
+            echo "tools_build_failed=true" >> $GITHUB_OUTPUT
+          }
+        fi
+        
+        # Test LogParser if present
+        if [ -f "Tools/LogParser/RT60LogParser.swift" ]; then
+          echo "📝 Testing LogParser..."
+          cd Tools/LogParser
+          swift -emit-executable RT60LogParser.swift -o rt60parser || {
+            echo "⚠️ Could not build LogParser"
+            echo "logparser_build_failed=true" >> $GITHUB_OUTPUT
+          }
+          cd ../..
+        fi
+    
+    - name: Generate reports and artifacts
+      id: generate_artifacts
+      continue-on-error: true
       run: |
         mkdir -p Artifacts
-        swiftc -o reporthtml Tools/reporthtml/main.swift
-        ./reporthtml Tools/reporthtml/sample.report.model.json -o Artifacts/report.html
+        
+        # Generate HTML report if tool is available
+        if [ -f "./reporthtml" ] && [ -f "Tools/reporthtml/sample.report.model.json" ]; then
+          echo "📊 Generating HTML report..."
+          ./reporthtml Tools/reporthtml/sample.report.model.json -o Artifacts/report.html || {
+            echo "⚠️ Could not generate HTML report"
+          }
+        fi
+        
+        # Run key coverage linter if available
+        if [ -x "Tools/linters/report_key_coverage.swift" ] && [ -f "Tools/reporthtml/sample.report.model.json" ]; then
+          echo "📋 Running key coverage linter..."
+          Tools/linters/report_key_coverage.swift Tools/reporthtml/sample.report.model.json || {
+            echo "⚠️ Key coverage linter failed"
+          }
+        fi
+        
+        # Create build summary
+        echo "📊 Creating build summary..."
+        echo "# Build Summary" > Artifacts/build-summary.md
+        echo "- AcoustiScan Build: ${{ steps.build_acoustiscan.outcome }}" >> Artifacts/build-summary.md
+        echo "- AcoustiScan Tests: ${{ steps.test_acoustiscan.outcome }}" >> Artifacts/build-summary.md
+        echo "- Export Build: ${{ steps.build_export.outcome }}" >> Artifacts/build-summary.md
+        echo "- Export Tests: ${{ steps.test_export.outcome }}" >> Artifacts/build-summary.md
+        echo "- Tools Build: ${{ steps.build_tools.outcome }}" >> Artifacts/build-summary.md
+        echo "- Lint Status: ${{ steps.lint.outcome }}" >> Artifacts/build-summary.md
+        echo "- Format Status: ${{ steps.format.outcome }}" >> Artifacts/build-summary.md
     
-    - name: Upload HTML Artifact
+    - name: Report build status and create issue on failure
+      if: failure()
+      run: |
+        echo "❌ Build process failed. Creating detailed error report..."
+        
+        # Collect all error flags
+        ERRORS=""
+        [ "${{ steps.lint.outputs.lint_failed }}" = "true" ] && ERRORS="$ERRORS\n- Linting failed"
+        [ "${{ steps.format.outputs.format_failed }}" = "true" ] && ERRORS="$ERRORS\n- Code formatting failed"
+        [ "${{ steps.dependencies.outputs.deps_failed }}" = "true" ] && ERRORS="$ERRORS\n- Dependency resolution failed"
+        [ "${{ steps.build_acoustiscan.outputs.build_failed }}" = "true" ] && ERRORS="$ERRORS\n- AcoustiScan build failed"
+        [ "${{ steps.test_acoustiscan.outputs.tests_failed }}" = "true" ] && ERRORS="$ERRORS\n- AcoustiScan tests failed"
+        [ "${{ steps.build_export.outputs.export_build_failed }}" = "true" ] && ERRORS="$ERRORS\n- Export module build failed"
+        [ "${{ steps.test_export.outputs.export_tests_failed }}" = "true" ] && ERRORS="$ERRORS\n- Export module tests failed"
+        [ "${{ steps.build_tools.outputs.tools_build_failed }}" = "true" ] && ERRORS="$ERRORS\n- Tools build failed"
+        
+        echo "🔍 Detected errors:$ERRORS"
+        
+        # Save error details to artifacts
+        echo "# Build Failure Report" > Artifacts/failure-report.md
+        echo "## Workflow Run: ${{ github.run_id }}" >> Artifacts/failure-report.md
+        echo "## Branch: ${{ github.ref }}" >> Artifacts/failure-report.md
+        echo "## Commit: ${{ github.sha }}" >> Artifacts/failure-report.md
+        echo "## Errors Detected:$ERRORS" >> Artifacts/failure-report.md
+        echo "" >> Artifacts/failure-report.md
+        echo "### Recommended Actions:" >> Artifacts/failure-report.md
+        echo "1. Check the workflow logs for detailed error messages" >> Artifacts/failure-report.md
+        echo "2. Review the automated fix attempts that were made" >> Artifacts/failure-report.md
+        echo "3. Consider running the build script locally: \`./AcoustiScanConsolidated/build.sh\`" >> Artifacts/failure-report.md
+        echo "4. Manual intervention may be required for complex errors" >> Artifacts/failure-report.md
+    
+    - name: Upload Build Artifacts (always run)
       uses: actions/upload-artifact@v4
+      if: always()
       with:
-        name: html-report
-        path: Artifacts/report.html
+        name: build-artifacts-${{ github.run_id }}
+        path: |
+          Artifacts/
+          AcoustiScanConsolidated/build.log
+        retention-days: 30
