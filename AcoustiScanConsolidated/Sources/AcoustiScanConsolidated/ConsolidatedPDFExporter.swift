@@ -142,7 +142,7 @@ public class ConsolidatedPDFExporter {
         
         // Draw background
         UIColor.lightGray.setFill()
-        summaryRect.fill()
+        UIRectFill(summaryRect)
         
         summaryText.draw(in: summaryRect, withAttributes: summaryAttrs)
         
