@@ -20,7 +20,6 @@ let package = Package(
         ),
         .testTarget(
             name: "ReportExportTests",
-copilot/fix-151d7a9d-31a9-451a-bc46-9ca33c7437e3
             dependencies: ["ReportExport"],
             path: "Tests",
             sources: [
@@ -28,9 +27,6 @@ copilot/fix-151d7a9d-31a9-451a-bc46-9ca33c7437e3
                 "ReportHTMLRendererTests.swift",
                 "PDFReportSnapshotTests.swift"
             ]
-
-            dependencies: ["ReportExport"]
-main
         )
     ]
 )
