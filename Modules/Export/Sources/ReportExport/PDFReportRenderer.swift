@@ -34,7 +34,7 @@ public final class PDFReportRenderer {
 
         return renderer.pdfData { context in
             context.beginPage()
-            drawContent(pageRect: pageRect, model: model)
+            drawContent(context: context, pageRect: pageRect, model: model)
         }
     }
     
@@ -56,148 +56,81 @@ public final class PDFReportRenderer {
         
         return renderer.pdfData { context in
             context.beginPage()
-            drawMinimalContent(pageRect: pageRect)
+            drawMinimalContent(context: context, pageRect: pageRect)
         }
     }
     
 
-    private func drawContent(pageRect: CGRect, model: ReportModel) {
-        let margin: CGFloat = 72
-        var yPosition: CGFloat = margin
-        let maxY = pageRect.height - margin // Don't draw below this point
-
-        // Helper function to return value or dash for missing values
-        func valueOrDash(_ value: Any?) -> String {
-            return value != nil ? "\(value!)" : "-"
-        }
-
-        // Helper function to check if we can draw at the current position
-        func canDraw(at y: CGFloat) -> Bool {
-            return y < maxY
-        }
+    private func drawContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect, model: ReportModel) {
+        var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
         // Required frequencies and values that should always appear
         let requiredFrequencies = [125, 1000, 4000]
         let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
-        // Title
-        let title = "RT60 Bericht"
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 24)
         ]
-        if canDraw(at: yPosition) {
-            title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
-            yPosition += 40
-        }
-
-        // Metadata
-        let metaTitle = "Metadaten"
         let sectionAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 18)
         ]
-        if canDraw(at: yPosition) {
-            metaTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-            yPosition += 25
-        }
-
         let textAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 12)
         ]
 
-        // Draw metadata with bounds checking
-        for (key, value) in model.metadata.sorted(by: { $0.key < $1.key }) {
-            guard canDraw(at: yPosition) else { break }
-            let line = "\(key): \(value)"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+        layout.drawLine("RT60 Bericht", attributes: titleAttrs, spacing: 20)
+        layout.drawLine("Metadaten", attributes: sectionAttrs, spacing: 12)
+
+        layout.drawLine("Gerät: \(formattedString(model.metadata["device"]))", attributes: textAttrs)
+        layout.drawLine("Version: \(formattedString(model.metadata["app_version"]))", attributes: textAttrs)
+        layout.drawLine("Datum: \(formattedString(model.metadata["date"]))", attributes: textAttrs, spacing: 12)
+
+        let filteredMetadata = model.metadata.filter { !["device", "app_version", "date"].contains($0.key) }
+        for (key, value) in filteredMetadata.sorted(by: { $0.key < $1.key }) {
+            layout.drawLine("\(key): \(formattedString(value))", attributes: textAttrs)
         }
 
-        // Add remaining sections only if there's space
-        guard canDraw(at: yPosition + 50) else { return }
-        yPosition += 20
-
-        // RT60 Bands - Always include required frequencies
-        let bandsTitle = "RT60 je Frequenz (T20 in s)"
-        if canDraw(at: yPosition) {
-            bandsTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-            yPosition += 25
+        if !model.validity.isEmpty {
+            layout.addSpacing(8)
+            layout.drawLine("Validität", attributes: sectionAttrs, spacing: 8)
+            for (key, value) in model.validity.sorted(by: { $0.key < $1.key }) {
+                layout.drawLine("\(key): \(formattedString(value))", attributes: textAttrs)
+            }
         }
 
-        if canDraw(at: yPosition) {
-            "Frequenz [Hz]    T20 [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 20
-        }
+        layout.addSpacing(12)
+        layout.drawLine("RT60 je Frequenz (T20 in s)", attributes: sectionAttrs, spacing: 8)
+        layout.drawLine("Frequenz [Hz]    T20 [s]", attributes: textAttrs)
 
-        // Draw required frequencies first with bounds checking
         for freq in requiredFrequencies {
-            guard canDraw(at: yPosition) else { break }
             let matchingBand = model.rt60_bands.first { band in
                 guard let modelFreq = band["freq_hz"], let actualFreq = modelFreq else { return false }
                 return Int(actualFreq.rounded()) == freq
             }
-
-            let t20Value = matchingBand?["t20_s"]
-            let t20String: String
-            if let t20Value = t20Value, let actualValue = t20Value {
-                t20String = String(format: "%.2f", actualValue)
-            } else {
-                t20String = "-"
-            }
-            let line = "\(freq) Hz: \(t20String) s"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+            let t20Value = formattedDecimal(matchingBand?["t20_s"] ?? nil)
+            layout.drawLine("\(freq) Hz: \(t20Value) s", attributes: textAttrs)
         }
 
-        // Only continue with additional content if there's sufficient space
-        guard canDraw(at: yPosition + 100) else { return }
-
-        // Draw additional frequencies from model that aren't in required list
         for band in model.rt60_bands {
-            guard canDraw(at: yPosition) else { break }
             if let freq = band["freq_hz"], let actualFreq = freq {
                 let freqInt = Int(actualFreq.rounded())
                 if !requiredFrequencies.contains(freqInt) {
-                    let t20Value = band["t20_s"]
-                    let t20String: String
-                    if let t20Value = t20Value, let actualValue = t20Value {
-                        t20String = String(format: "%.2f", actualValue)
-                    } else {
-                        t20String = "-"
-                    }
-                    let line = "\(freqInt) Hz: \(t20String) s"
-                    line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-                    yPosition += 18
+                    let t20String = formattedDecimal(band["t20_s"] ?? nil)
+                    layout.drawLine("\(freqInt) Hz: \(t20String) s", attributes: textAttrs)
                 }
             }
         }
 
-        guard canDraw(at: yPosition + 100) else { return }
-        yPosition += 20
+        layout.addSpacing(12)
+        layout.drawLine("DIN 18041 Ziel & Toleranz", attributes: sectionAttrs, spacing: 8)
+        layout.drawLine("Frequenz [Hz]    T_soll [s]    Toleranz [s]", attributes: textAttrs)
 
-        // DIN Targets - Always include required values
-        let dinTitle = "DIN 18041 Ziel & Toleranz"
-        if canDraw(at: yPosition) {
-            dinTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-            yPosition += 25
-        }
-
-        if canDraw(at: yPosition) {
-            "Frequenz [Hz]    T_soll [s]    Toleranz [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 20
-        }
-
-        // Draw required DIN values with bounds checking
         for value in requiredDINValues {
-            guard canDraw(at: yPosition) else { break }
-            let line = "DIN: \(String(format: "%.2f", value))"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+            layout.drawLine("DIN: \(String(format: "%.2f", value))", attributes: textAttrs)
         }
 
-        // Draw DIN targets from model
         for target in model.din_targets {
-            guard canDraw(at: yPosition) else { break }
             let freq: String
             if let f = target["freq_hz"], let actualF = f {
                 freq = String(Int(actualF.rounded()))
@@ -205,158 +138,122 @@ public final class PDFReportRenderer {
                 freq = "-"
             }
 
-            let tsoll: String
-            if let ts = target["t_soll"], let actualTs = ts {
-                tsoll = String(format: "%.2f", actualTs)
-            } else {
-                tsoll = "-"
-            }
+            let tsoll = formattedDecimal(target["t_soll"] ?? nil)
+            let tol = formattedDecimal(target["tol"] ?? nil)
 
-            let tol: String
-            if let tolerance = target["tol"], let actualTol = tolerance {
-                tol = String(format: "%.2f", actualTol)
-            } else {
-                tol = "-"
-            }
-
-            let line = "\(freq) Hz: T_soll=\(tsoll) s, Toleranz=\(tol) s"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+            layout.drawLine("\(freq) Hz: T_soll=\(tsoll) s, Toleranz=\(tol) s", attributes: textAttrs)
         }
 
-        guard canDraw(at: yPosition + 80) else { return }
-        yPosition += 20
-
-        // Empfehlungen
-        let recTitle = "Empfehlungen"
-        if canDraw(at: yPosition) {
-            recTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-            yPosition += 25
-        }
-
+        layout.addSpacing(12)
+        layout.drawLine("Empfehlungen", attributes: sectionAttrs, spacing: 8)
         for (index, rec) in model.recommendations.enumerated() {
-            guard canDraw(at: yPosition + 30) else { break }
             let line = "\(index + 1). \(rec)"
-            let maxWidth = pageRect.width - 2 * margin
-            let textRect = CGRect(x: margin, y: yPosition, width: maxWidth, height: 50)
-            line.draw(in: textRect, withAttributes: textAttrs)
-            yPosition += 30
+            layout.drawMultiline(line, attributes: textAttrs, width: layout.contentWidth)
         }
 
-        guard canDraw(at: yPosition + 80) else { return }
-        yPosition += 20
-
-        // Audit
-        let auditTitle = "Audit"
-        if canDraw(at: yPosition) {
-            auditTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-            yPosition += 25
-        }
-
+        layout.addSpacing(12)
+        layout.drawLine("Audit", attributes: sectionAttrs, spacing: 8)
         for (key, value) in model.audit.sorted(by: { $0.key < $1.key }) {
-            guard canDraw(at: yPosition) else { break }
-            let line = "\(key): \(value)"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+            layout.drawLine("\(key): \(formattedString(value))", attributes: textAttrs)
         }
 
-        guard canDraw(at: yPosition + 60) else { return }
-        yPosition += 20
-
-        // Core Tokens - Always include these for test compatibility
-        let tokensTitle = "Core Tokens"
-        if canDraw(at: yPosition) {
-            tokensTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-            yPosition += 25
-        }
-
+        layout.addSpacing(12)
+        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
         for token in coreTokens {
-            guard canDraw(at: yPosition) else { break }
-            token.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+            layout.drawLine(token, attributes: textAttrs)
         }
     }
     
     /// Draws minimal content ensuring all required elements are present
-    private func drawMinimalContent(pageRect: CGRect) {
-        let margin: CGFloat = 72
-        var yPosition: CGFloat = margin
-        
-        // Required frequencies and values that should always appear
+    private func drawMinimalContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect) {
+        var layout = PDFTextLayout(context: context, pageRect: pageRect)
+
         let requiredFrequencies = [125, 1000, 4000]
         let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
-        
-        // Title
-        let title = "RT60 Bericht"
+
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 24)
         ]
-        title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
-        yPosition += 40
-        
-        // Metadata
-        let metaTitle = "Metadaten"
         let sectionAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 18)
         ]
-        metaTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
-        
         let textAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 12)
         ]
-        
-        // Draw minimal metadata
-        "gerät: ipadpro".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-        yPosition += 18
-        "version: 1.0.0".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-        yPosition += 18
-        
-        yPosition += 20
-        
-        // RT60 Bands - Always include required frequencies
-        let bandsTitle = "RT60 je Frequenz (T20 in s)"
-        bandsTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
-        
-        "Frequenz [Hz]    T20 [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-        yPosition += 20
-        
-        // Draw required frequencies with dash values
+
+        layout.drawLine("RT60 Bericht", attributes: titleAttrs, spacing: 20)
+        layout.drawLine("Metadaten", attributes: sectionAttrs, spacing: 12)
+        layout.drawLine("gerät: ipadpro", attributes: textAttrs)
+        layout.drawLine("version: 1.0.0", attributes: textAttrs)
+        layout.drawLine("datum: -", attributes: textAttrs, spacing: 12)
+
+        layout.drawLine("RT60 je Frequenz (T20 in s)", attributes: sectionAttrs, spacing: 8)
+        layout.drawLine("Frequenz [Hz]    T20 [s]", attributes: textAttrs)
         for freq in requiredFrequencies {
-            let line = "\(freq) Hz: - s"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+            layout.drawLine("\(freq) Hz: - s", attributes: textAttrs)
         }
-        
-        yPosition += 20
-        
-        // DIN Targets - Always include required values
-        let dinTitle = "DIN 18041 Ziel & Toleranz"
-        dinTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
-        
-        "Frequenz [Hz]    T_soll [s]    Toleranz [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-        yPosition += 20
-        
-        // Draw required DIN values
+
+        layout.addSpacing(12)
+        layout.drawLine("DIN 18041 Ziel & Toleranz", attributes: sectionAttrs, spacing: 8)
+        layout.drawLine("Frequenz [Hz]    T_soll [s]    Toleranz [s]", attributes: textAttrs)
         for value in requiredDINValues {
-            let line = "DIN: \(String(format: "%.2f", value))"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+            layout.drawLine("DIN: \(String(format: "%.2f", value))", attributes: textAttrs)
         }
-        
-        yPosition += 20
-        
-        // Core Tokens - Always include these for test compatibility
-        let tokensTitle = "Core Tokens"
-        tokensTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
-        
+
+        layout.addSpacing(12)
+        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
         for token in coreTokens {
-            token.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-            yPosition += 18
+            layout.drawLine(token, attributes: textAttrs)
+        }
+    }
+
+    /// Simple text layout helper that automatically handles page breaks.
+    private struct PDFTextLayout {
+        let context: UIGraphicsPDFRendererContext
+        let pageRect: CGRect
+        let margin: CGFloat
+        private(set) var yPosition: CGFloat
+
+        init(context: UIGraphicsPDFRendererContext, pageRect: CGRect, margin: CGFloat = 72) {
+            self.context = context
+            self.pageRect = pageRect
+            self.margin = margin
+            self.yPosition = margin
+        }
+
+        var contentWidth: CGFloat { pageRect.width - 2 * margin }
+
+        mutating func drawLine(_ text: String, attributes: [NSAttributedString.Key: Any], spacing: CGFloat = 4) {
+            let font = (attributes[.font] as? UIFont) ?? UIFont.systemFont(ofSize: 12)
+            let lineHeight = font.lineHeight
+            ensureSpace(for: lineHeight)
+            text.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: attributes)
+            yPosition += lineHeight + spacing
+        }
+
+        mutating func drawMultiline(_ text: String, attributes: [NSAttributedString.Key: Any], width: CGFloat, spacing: CGFloat = 8) {
+            guard !text.isEmpty else { return }
+            let options: NSStringDrawingOptions = [.usesLineFragmentOrigin, .usesFontLeading]
+            let bounding = (text as NSString).boundingRect(with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), options: options, attributes: attributes, context: nil)
+            let height = ceil(bounding.height)
+            ensureSpace(for: height)
+            let rect = CGRect(x: margin, y: yPosition, width: width, height: height)
+            text.draw(in: rect, withAttributes: attributes)
+            yPosition += height + spacing
+        }
+
+        mutating func addSpacing(_ spacing: CGFloat) {
+            ensureSpace(for: spacing)
+            yPosition += spacing
+        }
+
+        private mutating func ensureSpace(for height: CGFloat) {
+            let maxY = pageRect.height - margin
+            if yPosition + height > maxY {
+                context.beginPage()
+                yPosition = margin
+            }
         }
     }
     #else
@@ -368,11 +265,6 @@ public final class PDFReportRenderer {
             return renderMinimalTextPDF()
         }
         
-        // Helper function to return value or dash for missing values
-        func valueOrDash(_ value: Any?) -> String {
-            return value != nil ? "\(value!)" : "-"
-        }
-
         // Required frequencies that should always appear in the PDF
         let requiredFrequencies = [125, 1000, 4000]
         let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
@@ -386,13 +278,7 @@ public final class PDFReportRenderer {
                 return Int(actualFreq.rounded()) == freq
             }
 
-            let t20Value = matchingBand?["t20_s"]
-            let t20String: String
-            if let t20Value = t20Value, let actualValue = t20Value {
-                t20String = String(format: "%.2f", actualValue)
-            } else {
-                t20String = "-"
-            }
+            let t20String = formattedDecimal(matchingBand?["t20_s"] ?? nil)
             rt60Content += "\(freq) Hz: \(t20String) s\n"
         }
 
@@ -401,13 +287,7 @@ public final class PDFReportRenderer {
             if let freq = band["freq_hz"], let actualFreq = freq {
                 let freqInt = Int(actualFreq.rounded())
                 if !requiredFrequencies.contains(freqInt) {
-                    let t20Value = band["t20_s"]
-                    let t20String: String
-                    if let t20Value = t20Value, let actualValue = t20Value {
-                        t20String = String(format: "%.2f", actualValue)
-                    } else {
-                        t20String = "-"
-                    }
+                    let t20String = formattedDecimal(band["t20_s"] ?? nil)
                     rt60Content += "\(freqInt) Hz: \(t20String) s\n"
                 }
             }
@@ -427,19 +307,8 @@ public final class PDFReportRenderer {
                 f = "-"
             }
 
-            let ts: String
-            if let tsoll = target["t_soll"], let actualTsoll = tsoll {
-                ts = String(format: "%.2f", actualTsoll)
-            } else {
-                ts = "-"
-            }
-
-            let tol: String
-            if let tolerance = target["tol"], let actualTol = tolerance {
-                tol = String(format: "%.2f", actualTol)
-            } else {
-                tol = "-"
-            }
+            let ts = formattedDecimal(target["t_soll"] ?? nil)
+            let tol = formattedDecimal(target["tol"] ?? nil)
 
             dinContent += "\(f) Hz: T_soll=\(ts) s, Toleranz=\(tol) s\n"
         }
@@ -449,14 +318,35 @@ public final class PDFReportRenderer {
             coreTokensContent += "\(token)\n"
         }
 
+        let additionalMetadata = model.metadata
+            .filter { !["app_version", "device", "date"].contains($0.key) }
+            .sorted(by: { $0.key < $1.key })
+            .map { "\($0.key): \(formattedString($0.value))" }
+            .joined(separator: "\n")
+
+        let validityContent = model.validity
+            .sorted(by: { $0.key < $1.key })
+            .map { "\($0.key): \(formattedString($0.value))" }
+            .joined(separator: "\n")
+
+        let auditContent = model.audit
+            .sorted(by: { $0.key < $1.key })
+            .map { "\($0.key): \(formattedString($0.value))" }
+            .joined(separator: "\n")
+
+        let recommendationsContent = model.recommendations
+            .enumerated()
+            .map { index, rec in "\(index + 1). \(rec)" }
+            .joined(separator: "\n")
+
         let text = """
         RT60 Bericht
 
         Metadaten:
-        Version: \(model.metadata["app_version"] ?? "-")
-        Gerät: \(model.metadata["device"] ?? "-")
-        Datum: \(model.metadata["date"] ?? "-")
-        \(model.metadata.filter { !["app_version", "device", "date"].contains($0.key) }.map { k, v in "\(k): \(v)" }.joined(separator: "\n"))
+        Version: \(formattedString(model.metadata["app_version"]))
+        Gerät: \(formattedString(model.metadata["device"]))
+        Datum: \(formattedString(model.metadata["date"]))
+        \(additionalMetadata.isEmpty ? "-" : additionalMetadata)
 
         RT60 je Frequenz (T20 in s):
         \(rt60Content)
@@ -465,10 +355,13 @@ public final class PDFReportRenderer {
         \(dinContent)
 
         Empfehlungen:
-        \(model.recommendations.enumerated().map { i, rec in "\(i + 1). \(rec)" }.joined(separator: "\n"))
+        \(recommendationsContent.isEmpty ? "-" : recommendationsContent)
 
         Audit:
-        \(model.audit.map { k, v in "\(k): \(v)" }.joined(separator: "\n"))
+        \(auditContent.isEmpty ? "-" : auditContent)
+
+        Validität:
+        \(validityContent.isEmpty ? "-" : validityContent)
 
         Core Tokens:
         \(coreTokensContent)
@@ -481,7 +374,7 @@ public final class PDFReportRenderer {
         let requiredFrequencies = [125, 1000, 4000]
         let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
-        
+
         var rt60Content = ""
         for freq in requiredFrequencies {
             rt60Content += "\(freq) Hz: - s\n"
@@ -503,17 +396,37 @@ public final class PDFReportRenderer {
         Metadaten:
         Version: 1.0.0
         Gerät: ipadpro
-        
+        Datum: -
+
         RT60 je Frequenz (T20 in s):
         \(rt60Content)
-        
+
         DIN 18041 Ziel & Toleranz:
         \(dinContent)
-        
+
+        Empfehlungen:
+        -
+
+        Audit:
+        -
+
+        Validität:
+        -
+
         Core Tokens:
         \(coreTokensContent)
         """
         return Data(text.utf8)
     }
     #endif
+
+    private func formattedDecimal(_ value: Double??) -> String {
+        guard let inner = value, let actual = inner else { return "-" }
+        return String(format: "%.2f", actual)
+    }
+
+    private func formattedString(_ value: String?) -> String {
+        guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else { return "-" }
+        return value
+    }
 }
