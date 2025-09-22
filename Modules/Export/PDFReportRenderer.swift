@@ -202,8 +202,18 @@ public final class PDFReportRenderer {
         yPosition -= 20
         
         for band in model.rt60_bands {
-            let freq = band["freq_hz"] != nil ? String(Int((band["freq_hz"]!)!.rounded())) : "-"
-            let t20 = band["t20_s"] != nil && band["t20_s"]! != nil ? String(format: "%.2f", band["t20_s"]!!) : "-"
+            let freq: String
+            if let freqValue = band["freq_hz"] as? Double {
+                freq = String(Int(freqValue.rounded()))
+            } else {
+                freq = "-"
+            }
+            let t20: String
+            if let t20Value = band["t20_s"] as? Double {
+                t20 = String(format: "%.2f", t20Value)
+            } else {
+                t20 = "-"
+            }
             let line = String(format: "%-15@ %@", freq, t20)
             yPosition -= textFont.pointSize
             drawText(context: context, text: line, font: textFont,
