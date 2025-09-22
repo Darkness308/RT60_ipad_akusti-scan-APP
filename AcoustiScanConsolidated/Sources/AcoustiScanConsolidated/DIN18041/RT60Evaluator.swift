@@ -63,8 +63,8 @@ public struct RT60Evaluator {
         if nonCompliantCount == 0 {
             return .withinTolerance
         } else if nonCompliantCount <= deviations.count / 2 {
-            // If less than half are non-compliant, consider it "partially compliant" -> tooLow
-            return .tooLow
+            // If less than half are non-compliant, consider it "partially compliant"
+            return .partiallyCompliant
         } else {
             // If more than half are non-compliant, consider it "non-compliant" -> tooHigh
             return .tooHigh
