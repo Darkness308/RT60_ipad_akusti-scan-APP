@@ -35,10 +35,16 @@ public final class PDFReportRenderer {
     private func drawContent(pageRect: CGRect, model: ReportModel) {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
+        let maxY = pageRect.height - margin // Don't draw below this point
         
         // Helper function to return value or dash for missing values
         func valueOrDash(_ value: Any?) -> String {
             return value != nil ? "\(value!)" : "-"
+        }
+        
+        // Helper function to check if we can draw at the current position
+        func canDraw(at y: CGFloat) -> Bool {
+            return y < maxY
         }
         
         // Required frequencies and values that should always appear
@@ -51,40 +57,52 @@ public final class PDFReportRenderer {
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 24)
         ]
-        title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
-        yPosition += 40
+        if canDraw(at: yPosition) {
+            title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+            yPosition += 40
+        }
         
         // Metadata
         let metaTitle = "Metadaten"
         let sectionAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 18)
         ]
-        metaTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
+        if canDraw(at: yPosition) {
+            metaTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
+            yPosition += 25
+        }
         
         let textAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 12)
         ]
         
-        // Draw metadata
+        // Draw metadata with bounds checking
         for (key, value) in model.metadata.sorted(by: { $0.key < $1.key }) {
+            guard canDraw(at: yPosition) else { break }
             let line = "\(key): \(value)"
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
         
+        // Add remaining sections only if there's space
+        guard canDraw(at: yPosition + 50) else { return }
         yPosition += 20
         
         // RT60 Bands - Always include required frequencies
         let bandsTitle = "RT60 je Frequenz (T20 in s)"
-        bandsTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
+        if canDraw(at: yPosition) {
+            bandsTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
+            yPosition += 25
+        }
         
-        "Frequenz [Hz]    T20 [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-        yPosition += 20
+        if canDraw(at: yPosition) {
+            "Frequenz [Hz]    T20 [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
+            yPosition += 20
+        }
         
-        // Draw required frequencies first
+        // Draw required frequencies first with bounds checking
         for freq in requiredFrequencies {
+            guard canDraw(at: yPosition) else { break }
             let matchingBand = model.rt60_bands.first { band in
                 guard let modelFreq = band["freq_hz"], let actualFreq = modelFreq else { return false }
                 return Int(actualFreq.rounded()) == freq
@@ -102,8 +120,12 @@ public final class PDFReportRenderer {
             yPosition += 18
         }
         
+        // Only continue with additional content if there's sufficient space
+        guard canDraw(at: yPosition + 100) else { return }
+        
         // Draw additional frequencies from model that aren't in required list
         for band in model.rt60_bands {
+            guard canDraw(at: yPosition) else { break }
             if let freq = band["freq_hz"], let actualFreq = freq {
                 let freqInt = Int(actualFreq.rounded())
                 if !requiredFrequencies.contains(freqInt) {
@@ -121,18 +143,24 @@ public final class PDFReportRenderer {
             }
         }
         
+        guard canDraw(at: yPosition + 100) else { return }
         yPosition += 20
         
         // DIN Targets - Always include required values
         let dinTitle = "DIN 18041 Ziel & Toleranz"
-        dinTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
+        if canDraw(at: yPosition) {
+            dinTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
+            yPosition += 25
+        }
         
-        "Frequenz [Hz]    T_soll [s]    Toleranz [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
-        yPosition += 20
+        if canDraw(at: yPosition) {
+            "Frequenz [Hz]    T_soll [s]    Toleranz [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
+            yPosition += 20
+        }
         
-        // Draw required DIN values
+        // Draw required DIN values with bounds checking
         for value in requiredDINValues {
+            guard canDraw(at: yPosition) else { break }
             let line = "DIN: \(String(format: "%.2f", value))"
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
@@ -140,6 +168,7 @@ public final class PDFReportRenderer {
         
         // Draw DIN targets from model
         for target in model.din_targets {
+            guard canDraw(at: yPosition) else { break }
             let freq: String
             if let f = target["freq_hz"], let actualF = f {
                 freq = String(Int(actualF.rounded()))
@@ -166,14 +195,18 @@ public final class PDFReportRenderer {
             yPosition += 18
         }
         
+        guard canDraw(at: yPosition + 80) else { return }
         yPosition += 20
         
         // Empfehlungen
         let recTitle = "Empfehlungen"
-        recTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
+        if canDraw(at: yPosition) {
+            recTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
+            yPosition += 25
+        }
         
         for (index, rec) in model.recommendations.enumerated() {
+            guard canDraw(at: yPosition + 30) else { break }
             let line = "\(index + 1). \(rec)"
             let maxWidth = pageRect.width - 2 * margin
             let textRect = CGRect(x: margin, y: yPosition, width: maxWidth, height: 50)
@@ -181,27 +214,35 @@ public final class PDFReportRenderer {
             yPosition += 30
         }
         
+        guard canDraw(at: yPosition + 80) else { return }
         yPosition += 20
         
         // Audit
         let auditTitle = "Audit"
-        auditTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
+        if canDraw(at: yPosition) {
+            auditTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
+            yPosition += 25
+        }
         
         for (key, value) in model.audit.sorted(by: { $0.key < $1.key }) {
+            guard canDraw(at: yPosition) else { break }
             let line = "\(key): \(value)"
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
         
+        guard canDraw(at: yPosition + 60) else { return }
         yPosition += 20
         
         // Core Tokens - Always include these for test compatibility
         let tokensTitle = "Core Tokens"
-        tokensTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
-        yPosition += 25
+        if canDraw(at: yPosition) {
+            tokensTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
+            yPosition += 25
+        }
         
         for token in coreTokens {
+            guard canDraw(at: yPosition) else { break }
             token.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }

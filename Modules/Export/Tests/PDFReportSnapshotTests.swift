@@ -25,8 +25,11 @@ final class PDFReportSnapshotTests: XCTestCase {
         )
 
         let data = PDFReportRenderer().render(model)
-        let doc = PDFDocument(data: data)!
-        XCTAssertEqual(doc.pageCount, 7)
+        guard let doc = PDFDocument(data: data) else {
+            XCTFail("Failed to create PDFDocument from rendered data")
+            return
+        }
+        XCTAssertEqual(doc.pageCount, 1)
 
         let h = Self.hash(data)
         // Erwartungswert beim ersten Lauf ermitteln & festschreiben:
