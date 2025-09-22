@@ -277,7 +277,7 @@ fix_package_issues() {
         fi
     fi
     
-    return $fixed_any
+    return $([ "$fixed_any" = true ])
 }
 
 # Function to run tests
