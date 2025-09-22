@@ -17,41 +17,41 @@ public final class PDFReportRenderer {
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
             kCGPDFContextTitle: "RT60 Bericht"
         ]
-        
+
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
-        
+
         let pageWidth = 595.2  // A4 width in points
         let pageHeight = 841.8 // A4 height in points
         let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
-        
+
         return renderer.pdfData { context in
             context.beginPage()
             drawContent(pageRect: pageRect, model: model)
         }
     }
-    
+
     private func drawContent(pageRect: CGRect, model: ReportModel) {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
         let maxY = pageRect.height - margin // Don't draw below this point
-        
+
         // Helper function to return value or dash for missing values
         func valueOrDash(_ value: Any?) -> String {
             return value != nil ? "\(value!)" : "-"
         }
-        
+
         // Helper function to check if we can draw at the current position
         func canDraw(at y: CGFloat) -> Bool {
             return y < maxY
         }
-        
+
         // Required frequencies and values that should always appear
         let requiredFrequencies = [125, 1000, 4000]
         let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
-        
+
         // Title
         let title = "RT60 Bericht"
         let titleAttrs: [NSAttributedString.Key: Any] = [
@@ -61,7 +61,7 @@ public final class PDFReportRenderer {
             title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
             yPosition += 40
         }
-        
+
         // Metadata
         let metaTitle = "Metadaten"
         let sectionAttrs: [NSAttributedString.Key: Any] = [
@@ -71,11 +71,11 @@ public final class PDFReportRenderer {
             metaTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
             yPosition += 25
         }
-        
+
         let textAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 12)
         ]
-        
+
         // Draw metadata with bounds checking
         for (key, value) in model.metadata.sorted(by: { $0.key < $1.key }) {
             guard canDraw(at: yPosition) else { break }
@@ -83,23 +83,23 @@ public final class PDFReportRenderer {
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
-        
+
         // Add remaining sections only if there's space
         guard canDraw(at: yPosition + 50) else { return }
         yPosition += 20
-        
+
         // RT60 Bands - Always include required frequencies
         let bandsTitle = "RT60 je Frequenz (T20 in s)"
         if canDraw(at: yPosition) {
             bandsTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
             yPosition += 25
         }
-        
+
         if canDraw(at: yPosition) {
             "Frequenz [Hz]    T20 [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 20
         }
-        
+
         // Draw required frequencies first with bounds checking
         for freq in requiredFrequencies {
             guard canDraw(at: yPosition) else { break }
@@ -107,7 +107,7 @@ public final class PDFReportRenderer {
                 guard let modelFreq = band["freq_hz"], let actualFreq = modelFreq else { return false }
                 return Int(actualFreq.rounded()) == freq
             }
-            
+
             let t20Value = matchingBand?["t20_s"]
             let t20String: String
             if let t20Value = t20Value, let actualValue = t20Value {
@@ -119,10 +119,10 @@ public final class PDFReportRenderer {
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
-        
+
         // Only continue with additional content if there's sufficient space
         guard canDraw(at: yPosition + 100) else { return }
-        
+
         // Draw additional frequencies from model that aren't in required list
         for band in model.rt60_bands {
             guard canDraw(at: yPosition) else { break }
@@ -142,22 +142,22 @@ public final class PDFReportRenderer {
                 }
             }
         }
-        
+
         guard canDraw(at: yPosition + 100) else { return }
         yPosition += 20
-        
+
         // DIN Targets - Always include required values
         let dinTitle = "DIN 18041 Ziel & Toleranz"
         if canDraw(at: yPosition) {
             dinTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
             yPosition += 25
         }
-        
+
         if canDraw(at: yPosition) {
             "Frequenz [Hz]    T_soll [s]    Toleranz [s]".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 20
         }
-        
+
         // Draw required DIN values with bounds checking
         for value in requiredDINValues {
             guard canDraw(at: yPosition) else { break }
@@ -165,7 +165,7 @@ public final class PDFReportRenderer {
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
-        
+
         // Draw DIN targets from model
         for target in model.din_targets {
             guard canDraw(at: yPosition) else { break }
@@ -175,36 +175,36 @@ public final class PDFReportRenderer {
             } else {
                 freq = "-"
             }
-            
+
             let tsoll: String
             if let ts = target["t_soll"], let actualTs = ts {
                 tsoll = String(format: "%.2f", actualTs)
             } else {
                 tsoll = "-"
             }
-            
+
             let tol: String
             if let tolerance = target["tol"], let actualTol = tolerance {
                 tol = String(format: "%.2f", actualTol)
             } else {
                 tol = "-"
             }
-            
+
             let line = "\(freq) Hz: T_soll=\(tsoll) s, Toleranz=\(tol) s"
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
-        
+
         guard canDraw(at: yPosition + 80) else { return }
         yPosition += 20
-        
+
         // Empfehlungen
         let recTitle = "Empfehlungen"
         if canDraw(at: yPosition) {
             recTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
             yPosition += 25
         }
-        
+
         for (index, rec) in model.recommendations.enumerated() {
             guard canDraw(at: yPosition + 30) else { break }
             let line = "\(index + 1). \(rec)"
@@ -213,34 +213,34 @@ public final class PDFReportRenderer {
             line.draw(in: textRect, withAttributes: textAttrs)
             yPosition += 30
         }
-        
+
         guard canDraw(at: yPosition + 80) else { return }
         yPosition += 20
-        
+
         // Audit
         let auditTitle = "Audit"
         if canDraw(at: yPosition) {
             auditTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
             yPosition += 25
         }
-        
+
         for (key, value) in model.audit.sorted(by: { $0.key < $1.key }) {
             guard canDraw(at: yPosition) else { break }
             let line = "\(key): \(value)"
             line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
             yPosition += 18
         }
-        
+
         guard canDraw(at: yPosition + 60) else { return }
         yPosition += 20
-        
+
         // Core Tokens - Always include these for test compatibility
         let tokensTitle = "Core Tokens"
         if canDraw(at: yPosition) {
             tokensTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: sectionAttrs)
             yPosition += 25
         }
-        
+
         for token in coreTokens {
             guard canDraw(at: yPosition) else { break }
             token.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
@@ -254,12 +254,12 @@ public final class PDFReportRenderer {
         func valueOrDash(_ value: Any?) -> String {
             return value != nil ? "\(value!)" : "-"
         }
-        
+
         // Required frequencies that should always appear in the PDF
         let requiredFrequencies = [125, 1000, 4000]
         let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
-        
+
         var rt60Content = ""
         for freq in requiredFrequencies {
             // Find matching data in model
@@ -267,7 +267,7 @@ public final class PDFReportRenderer {
                 guard let modelFreq = band["freq_hz"], let actualFreq = modelFreq else { return false }
                 return Int(actualFreq.rounded()) == freq
             }
-            
+
             let t20Value = matchingBand?["t20_s"]
             let t20String: String
             if let t20Value = t20Value, let actualValue = t20Value {
@@ -277,7 +277,7 @@ public final class PDFReportRenderer {
             }
             rt60Content += "\(freq) Hz: \(t20String) s\n"
         }
-        
+
         // Add any additional frequencies from model that aren't in required list
         for band in model.rt60_bands {
             if let freq = band["freq_hz"], let actualFreq = freq {
@@ -294,12 +294,12 @@ public final class PDFReportRenderer {
                 }
             }
         }
-        
+
         var dinContent = ""
         for value in requiredDINValues {
             dinContent += "\(value)\n"
         }
-        
+
         // Add DIN targets from model
         for target in model.din_targets {
             let f: String
@@ -308,50 +308,50 @@ public final class PDFReportRenderer {
             } else {
                 f = "-"
             }
-            
-            let ts: String  
+
+            let ts: String
             if let tsoll = target["t_soll"], let actualTsoll = tsoll {
                 ts = String(format: "%.2f", actualTsoll)
             } else {
                 ts = "-"
             }
-            
+
             let tol: String
             if let tolerance = target["tol"], let actualTol = tolerance {
                 tol = String(format: "%.2f", actualTol)
             } else {
                 tol = "-"
             }
-            
+
             dinContent += "\(f) Hz: T_soll=\(ts) s, Toleranz=\(tol) s\n"
         }
-        
+
         var coreTokensContent = ""
         for token in coreTokens {
             coreTokensContent += "\(token)\n"
         }
-        
+
         let text = """
         RT60 Bericht
-        
+
         Metadaten:
         Version: \(model.metadata["app_version"] ?? "-")
         Gerät: \(model.metadata["device"] ?? "-")
         Datum: \(model.metadata["date"] ?? "-")
         \(model.metadata.filter { !["app_version", "device", "date"].contains($0.key) }.map { k, v in "\(k): \(v)" }.joined(separator: "\n"))
-        
+
         RT60 je Frequenz (T20 in s):
         \(rt60Content)
-        
+
         DIN 18041 Ziel & Toleranz:
         \(dinContent)
-        
+
         Empfehlungen:
         \(model.recommendations.enumerated().map { i, rec in "\(i + 1). \(rec)" }.joined(separator: "\n"))
-        
+
         Audit:
         \(model.audit.map { k, v in "\(k): \(v)" }.joined(separator: "\n"))
-        
+
         Core Tokens:
         \(coreTokensContent)
         """
