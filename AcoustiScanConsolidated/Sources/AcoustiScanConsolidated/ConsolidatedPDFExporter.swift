@@ -221,7 +221,7 @@ public class ConsolidatedPDFExporter {
         // DIN results
         for deviation in data.dinResults {
             let status = deviation.isWithinTolerance ? "✓ ERFÜLLT" : "✗ NICHT ERFÜLLT"
-            let deviationText = "\(deviation.frequency) Hz: \(status) (Abweichung: \(String(format: "%.2f", deviation.deviation)))"
+            let deviationText = "\(deviation.frequency) Hz: \(status) (Abweichung: \(String(format: "%.2f", deviation.absoluteDeviation)))"
             let deviationAttrs: [NSAttributedString.Key: Any] = [
                 .font: UIFont.boldSystemFont(ofSize: 14)
             ]
