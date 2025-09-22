@@ -72,7 +72,7 @@ final class PDFReportSnapshotTests: XCTestCase {
         #if canImport(CryptoKit)
         return SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined()
         #else
-        // Fallback – NICHT kryptografisch, nur deterministisch
+        // Fallback hash when CryptoKit is not available
         return data.reduce(into: 5381) { $0 = ($0 &* 33) ^ Int($1) }.description
         #endif
     }
