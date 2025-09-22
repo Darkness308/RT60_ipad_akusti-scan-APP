@@ -3,7 +3,7 @@
 
 import Foundation
 
-public enum EvaluationStatus: String, CaseIterable {
+public enum EvaluationStatus: String, CaseIterable, Codable {
     case withinTolerance = "within_tolerance"
     case tooHigh = "too_high"
     case tooLow = "too_low"

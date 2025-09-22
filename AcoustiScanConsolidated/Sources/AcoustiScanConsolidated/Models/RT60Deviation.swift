@@ -4,7 +4,7 @@
 import Foundation
 
 /// DIN 18041 compliance evaluation
-public struct RT60Deviation {
+public struct RT60Deviation: Codable, Equatable {
     public let frequency: Int
     public let measuredRT60: Double
     public let targetRT60: Double
