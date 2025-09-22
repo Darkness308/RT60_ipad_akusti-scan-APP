@@ -1,4 +1,5 @@
 // RoomType.swift
+copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
 // Data model for room classification according to DIN 18041
 
 import Foundation
@@ -73,6 +74,29 @@ public enum RoomType: String, CaseIterable, Codable {
             return 150...1000
         case .sports:
             return 1000...10000
+
+// Room type classification according to DIN 18041
+
+import Foundation
+
+/// Room type classification according to DIN 18041
+public enum RoomType: String, CaseIterable {
+    case classroom = "classroom"
+    case officeSpace = "office_space"
+    case conference = "conference"
+    case lecture = "lecture"
+    case music = "music"
+    case sports = "sports"
+    
+    public var displayName: String {
+        switch self {
+        case .classroom: return "Klassenzimmer"
+        case .officeSpace: return "Büroraum"
+        case .conference: return "Konferenzraum"
+        case .lecture: return "Hörsaal"
+        case .music: return "Musikraum"
+        case .sports: return "Sporthalle"
+main
         }
     }
 }
