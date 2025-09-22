@@ -1,17 +1,11 @@
 import XCTest
-copilot/fix-151d7a9d-31a9-451a-bc46-9ca33c7437e3
 @testable import ReportExport
 #if canImport(PDFKit)
 import PDFKit
 #endif
-
-#if canImport(PDFKit)
-import PDFKit
 #if canImport(CryptoKit)
 import CryptoKit
 #endif
-@testable import ReportExport
-main
 
 final class PDFReportSnapshotTests: XCTestCase {
 
@@ -76,17 +70,10 @@ final class PDFReportSnapshotTests: XCTestCase {
 
     private static func sha256Hex(_ data: Data) -> String {
         #if canImport(CryptoKit)
-copilot/fix-151d7a9d-31a9-451a-bc46-9ca33c7437e3
-        // Move import to top of file for proper module-level import
-        // SHA256 functionality would need to be properly imported
-        return data.reduce(into: 5381) { $0 = ($0 &* 33) ^ Int($1) }.description
-
         return SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined()
-main
         #else
         // Fallback – NICHT kryptografisch, nur deterministisch
         return data.reduce(into: 5381) { $0 = ($0 &* 33) ^ Int($1) }.description
         #endif
     }
 }
-#endif
