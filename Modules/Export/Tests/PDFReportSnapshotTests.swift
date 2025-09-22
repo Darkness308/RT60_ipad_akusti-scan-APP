@@ -25,7 +25,8 @@ final class PDFReportSnapshotTests: XCTestCase {
         )
 
         let data = PDFReportRenderer().render(model)
-        let doc = PDFDocument(data: data)!
+        guard !data.isEmpty else { XCTFail("Failed to get PDF data"); return }
+        guard let doc = PDFDocument(data: data) else { XCTFail("Failed to create PDFDocument from PDF data"); return }
         XCTAssertEqual(doc.pageCount, 7)
 
         let h = Self.hash(data)
