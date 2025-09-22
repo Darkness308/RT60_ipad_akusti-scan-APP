@@ -156,12 +156,17 @@ public final class PDFReportRenderer {
         return data as Data
     }
     
+    /**
+     Draws the content of the PDF page using AppKit's coordinate system.
+     
+     AppKit uses a coordinate system where (0,0) is at the bottom-left corner of the page,
+     unlike UIKit, which has (0,0) at the top-left. This means that y-coordinates increase as you move up,
+     and decrease as you move down. All vertical positioning in this method is calculated accordingly,
+     starting from the top of the page (`pageRect.height - margin`) and decrementing `yPosition` for each line drawn.
+     */
     private func drawContentAppKit(context: CGContext, pageRect: CGRect, model: ReportModel) {
         let margin: CGFloat = 72
-        // Note: AppKit uses a coordinate system where (0,0) is at the bottom-left corner of the page,
-        // unlike UIKit, which has (0,0) at the top-left. This means that y-coordinates increase as you move up,
-        // and decrease as you move down. All vertical positioning in this method is calculated accordingly,
-        // starting from the top of the page (pageRect.height - margin) and decrementing yPosition for each line drawn.
+        // Vertical positioning starts from the top of the page and decrements for each line.
         var yPosition: CGFloat = pageRect.height - margin
         
         // Title
