@@ -37,7 +37,6 @@ public final class PDFReportRenderer {
             drawContent(pageRect: pageRect, model: model)
         }
     }
-copilot/fix-c0e508b8-1cc9-49b9-b3b1-771ea6563c8e
     
     /// Renders a minimal PDF with required elements when model data is insufficient
     private func renderMinimalPDF() -> Data {
@@ -62,8 +61,6 @@ copilot/fix-c0e508b8-1cc9-49b9-b3b1-771ea6563c8e
     }
     
 
-
-main
     private func drawContent(pageRect: CGRect, model: ReportModel) {
         let margin: CGFloat = 72
         var yPosition: CGFloat = margin
