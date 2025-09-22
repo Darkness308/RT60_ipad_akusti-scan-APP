@@ -184,7 +184,7 @@ struct DIN18041ModuleTests {
             RT60Deviation(frequency: 1000, measuredRT60: 0.80, targetRT60: 0.60, status: .tooHigh),
             RT60Deviation(frequency: 2000, measuredRT60: 0.55, targetRT60: 0.48, status: .withinTolerance)
         ]
-        #expect(RT60Evaluator.overallCompliance(deviations: partiallyCompliant) == .tooLow)
+        #expect(RT60Evaluator.overallCompliance(deviations: partiallyCompliant) == .partiallyCompliant)
         
         // Non-compliant (more than half non-compliant)
         let nonCompliant = [
