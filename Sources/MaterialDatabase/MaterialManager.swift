@@ -22,7 +22,7 @@ public class MaterialManager {
         }
     }
 
-    /// Importiert Materialien aus einem CSV‑String.  Ersetzte vorhandene
+    /// Importiert Materialien aus einem CSV‑String.  Ersetzt vorhandene
     /// `customMaterials` vollständig durch die importierten Daten.
     /// - Parameter csv: Die CSV‑Zeichenkette.
     func importFromCSV(_ csv: String) {
