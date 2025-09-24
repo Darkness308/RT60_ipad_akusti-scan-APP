@@ -137,7 +137,7 @@ final class ReportContractTests: XCTestCase {
             .lowercased()
         
         // Assert – DIN-Zielwerte sollten in beiden Ausgaben vorkommen
-        let targetValues = ["0.65", "0.55", "0.15", "0.12"]
+        let targetValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in targetValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt DIN-Zielwert: \(value)")
             XCTAssertTrue(htmlText.contains(value), "HTML fehlt DIN-Zielwert: \(value)")
@@ -170,7 +170,7 @@ final class ReportContractTests: XCTestCase {
         }
         
         // Assert – Required DIN values should always appear in PDF  
-        let requiredDINValues = ["0.65", "0.55", "0.15", "0.12"]
+        let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value)")
         }

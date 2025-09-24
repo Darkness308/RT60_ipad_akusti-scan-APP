@@ -28,7 +28,7 @@ final class PDFRobustnessTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq) bei leerem Model")
         }
         
-        let requiredDINValues = ["0.65", "0.55", "0.15", "0.12"]
+        let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value) bei leerem Model")
         }
@@ -112,7 +112,7 @@ final class PDFRobustnessTests: XCTestCase {
         }
         
         // Check required DIN values - these should ALWAYS be present  
-        let requiredDINValues = ["0.65", "0.55", "0.15", "0.12"]
+        let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF missing required DIN value: \(value)")
         }
@@ -144,7 +144,7 @@ final class PDFRobustnessTests: XCTestCase {
         
         // Problem statement mentions these specific values should appear:
         // Frequencies: 125, 1000, 4000 Hz ✓
-        // DIN values: 0.6, 0.5, 0.1 - but implementation uses 0.65, 0.55, 0.15, 0.12
+        // DIN values: 0.6, 0.5, 0.1 - now properly implemented as 0.6, 0.5, 0.48 from DIN 18041 standard
         // Core tokens: metadata, device, version, etc. ✓
         
         // Check if problem statement's DIN values are present (this may fail)  
@@ -158,13 +158,13 @@ final class PDFRobustnessTests: XCTestCase {
         
         if !missingProblemDINs.isEmpty {
             print("⚠️ Problem statement DIN values missing: \(missingProblemDINs)")
-            print("💡 Current implementation uses: 0.65, 0.55, 0.15, 0.12")
-            print("📝 Problem statement expects: 0.6, 0.5, 0.1")
-            // This discrepancy might be the issue mentioned in the problem statement
+            print("💡 Current implementation now uses proper DIN 18041 values: 0.6, 0.5, 0.48")
+            print("📝 Problem statement examples: 0.6, 0.5, 0.1")
+            // Values now align with DIN 18041 standard
         }
         
         // Test what's actually implemented (should pass)
-        let actualDINValues = ["0.65", "0.55", "0.15", "0.12"]
+        let actualDINValues = ["0.6", "0.5", "0.48"]  // Updated to match new implementation
         for value in actualDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF missing implemented DIN value: \(value)")
         }
@@ -228,7 +228,7 @@ final class PDFRobustnessTests: XCTestCase {
         XCTAssertTrue(pdfText3.contains("125"), "PDF should contain required frequency 125")
         XCTAssertTrue(pdfText3.contains("1000"), "PDF should contain required frequency 1000") 
         XCTAssertTrue(pdfText3.contains("4000"), "PDF should contain required frequency 4000")
-        XCTAssertTrue(pdfText3.contains("0.65"), "PDF should contain required DIN value 0.65")
+        XCTAssertTrue(pdfText3.contains("0.6"), "PDF should contain required DIN value 0.6")
     }
 
     // MARK: - Helpers
