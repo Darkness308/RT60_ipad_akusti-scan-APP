@@ -32,8 +32,8 @@ public struct ReportModel: Codable {
 /// Extension to convert between existing ReportData and new ReportModel
 extension ReportModel {
     
-    /// Create ReportModel from existing ConsolidatedPDFExporter.ReportData
-    public static func from(_ reportData: ConsolidatedPDFExporter.ReportData) -> ReportModel {
+    /// Create ReportModel from existing ReportData
+    public static func from(_ reportData: ReportData) -> ReportModel {
         let metadata = [
             "device": "iPadPro",
             "app_version": "1.0.0", 

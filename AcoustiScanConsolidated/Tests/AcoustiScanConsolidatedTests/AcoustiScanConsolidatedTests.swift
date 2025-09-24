@@ -388,9 +388,9 @@ struct ReportContractTests {
             .lowercased()
 
         for row in model.din_targets {
-            let f = Int((row["freq_hz"] as? Double ?? 0).rounded())
-            let ts = String(format: "%.2f", row["t_soll"] as? Double ?? 0)
-            let tol = String(format: "%.2f", row["tol"] as? Double ?? 0.2)
+            let f = Int(row["freq_hz"]?.rounded() ?? 0)
+            let ts = String(format: "%.2f", row["t_soll"] ?? 0)
+            let tol = String(format: "%.2f", row["tol"] ?? 0.2)
 
             let tokens = ["\(f)", ts, tol]
             for t in tokens {
@@ -416,6 +416,87 @@ struct ReportContractTests {
         }
         #endif
     }
+
+    @Test("numerical values match with 0.01 tolerance between PDF and HTML")
+    func test_numerical_values_match_with_tolerance_between_pdf_and_html() {
+        let model = ReportModel(
+            metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21"],
+            rt60_bands: [
+                ["freq_hz": 125.0, "t20_s": 0.72],
+                ["freq_hz": 250.0, "t20_s": 0.68],
+                ["freq_hz": 500.0, "t20_s": 0.55],
+                ["freq_hz": 1000.0, "t20_s": 0.51]
+            ],
+            din_targets: [
+                ["freq_hz": 125.0, "t_soll": 0.65, "tol": 0.18],
+                ["freq_hz": 250.0, "t_soll": 0.60, "tol": 0.15],
+                ["freq_hz": 500.0, "t_soll": 0.55, "tol": 0.12],
+                ["freq_hz": 1000.0, "t_soll": 0.50, "tol": 0.10]
+            ],
+            validity: ["method":"ISO3382-1"],
+            recommendations: [],
+            audit: [:]
+        )
+
+        // HTML rendering
+        let htmlText = String(decoding: ReportHTMLRenderer().render(model), as: UTF8.self)
+            .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
+
+        // Extract expected numerical values
+        let expectedRT60Values = [0.72, 0.68, 0.55, 0.51]
+        let expectedDINValues = [0.65, 0.60, 0.55, 0.50, 0.18, 0.15, 0.12, 0.10]
+        
+        // Verify all expected values are present in HTML
+        for expectedValue in expectedRT60Values + expectedDINValues {
+            let formattedValue = String(format: "%.2f", expectedValue)
+            #expect(htmlText.contains(formattedValue), "HTML missing numerical value: \(formattedValue)")
+        }
+        
+        #if canImport(UIKit)
+        let reportData = createReportDataFromModel(model)
+        if let pdfData = ConsolidatedPDFExporter.generateReport(data: reportData) {
+            let pdfText = PDFTextExtractor.extractText(from: pdfData)
+            
+            // Verify all expected values are present in PDF with same formatting
+            for expectedValue in expectedRT60Values + expectedDINValues {
+                let formattedValue = String(format: "%.2f", expectedValue)
+                #expect(pdfText.contains(formattedValue), "PDF missing numerical value: \(formattedValue)")
+            }
+            
+            // Test that the same format is used in both outputs (2 decimal places)
+            let tolerance = 0.01
+            let htmlNumbers = extractNumbersFromText(htmlText)
+            let pdfNumbers = extractNumbersFromText(pdfText)
+            
+            // Verify that all expected values are present in both outputs within tolerance
+            for expectedValue in expectedRT60Values + expectedDINValues {
+                let htmlHasValue = htmlNumbers.contains { abs($0 - expectedValue) <= tolerance }
+                let pdfHasValue = pdfNumbers.contains { abs($0 - expectedValue) <= tolerance }
+                
+                #expect(htmlHasValue, "HTML missing value within tolerance: \(expectedValue)")
+                #expect(pdfHasValue, "PDF missing value within tolerance: \(expectedValue)")
+            }
+        }
+        #endif
+    }
+    
+    // Helper function to extract numerical values from text
+    private func extractNumbersFromText(_ text: String) -> [Double] {
+        do {
+            let pattern = #"\b\d+\.?\d*\b"#
+            let regex = try NSRegularExpression(pattern: pattern)
+            let range = NSRange(text.startIndex..<text.endIndex, in: text)
+            let matches = regex.matches(in: text, range: range)
+            
+            return matches.compactMap { match in
+                guard let range = Range(match.range, in: text) else { return nil }
+                let numberString = String(text[range])
+                return Double(numberString)
+            }
+        } catch {
+            return []
+        }
+    }
     
     // Helper function to convert ReportModel to ReportData for PDF generation
     private func createReportDataFromModel(_ model: ReportModel) -> ConsolidatedPDFExporter.ReportData {
@@ -425,9 +506,9 @@ struct ReportContractTests {
         }
         
         let dinResults = model.din_targets.map { target in
-            let freq = Int(target["freq_hz"] as? Double ?? 0)
-            let targetRT60 = target["t_soll"] as? Double ?? 0
-            let tolerance = target["tol"] as? Double ?? 0.1
+            let freq = Int(target["freq_hz"]?.rounded() ?? 0)
+            let targetRT60 = target["t_soll"] ?? 0
+            let tolerance = (target["tol"] as? Double) ?? 0.1
             
             // Find corresponding measurement
             let measuredRT60 = rt60Measurements.first { $0.frequency == freq }?.rt60 ?? targetRT60
