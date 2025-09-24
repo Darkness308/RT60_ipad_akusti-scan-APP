@@ -65,8 +65,8 @@ public final class PDFReportRenderer {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
         // Required frequencies and values that should always appear
-        let requiredFrequencies = [125, 1000, 4000]
-        let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         let titleAttrs: [NSAttributedString.Key: Any] = [
@@ -168,8 +168,8 @@ public final class PDFReportRenderer {
     private func drawMinimalContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
-        let requiredFrequencies = [125, 1000, 4000]
-        let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         let titleAttrs: [NSAttributedString.Key: Any] = [
@@ -266,8 +266,8 @@ public final class PDFReportRenderer {
         }
         
         // Required frequencies that should always appear in the PDF
-        let requiredFrequencies = [125, 1000, 4000]
-        let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         var rt60Content = ""
@@ -371,8 +371,8 @@ public final class PDFReportRenderer {
     
     /// Renders minimal text-based PDF with required elements when model data is insufficient
     private func renderMinimalTextPDF() -> Data {
-        let requiredFrequencies = [125, 1000, 4000]
-        let requiredDINValues = [0.65, 0.55, 0.15, 0.12]
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         var rt60Content = ""

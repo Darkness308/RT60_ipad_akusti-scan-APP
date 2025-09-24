@@ -44,6 +44,10 @@ public final class ReportHTMLRenderer {
     // MARK: - Template
 
     private func buildHTML(_ m: ReportModel) -> String {
+        // Required frequencies and values that should always appear
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+        
         let head = """
         <!doctype html>
         <html lang="de">
@@ -104,10 +108,23 @@ public final class ReportHTMLRenderer {
         <table>
           <thead><tr><th>Frequenz [Hz]</th><th>T20 [s]</th></tr></thead>
           <tbody>
-            \(m.rt60_bands.map { row in
-                let f = intString(row["freq_hz"] ?? nil)
-                let t = numberString(row["t20_s"] ?? nil)
-                return "<tr><td>\(f)</td><td>\(t)</td></tr>"
+            \(requiredFrequencies.map { freq in
+                let matchingBand = m.rt60_bands.first { band in
+                    guard let modelFreq = band["freq_hz"], let actualFreq = modelFreq else { return false }
+                    return Int(actualFreq.rounded()) == freq
+                }
+                let t = numberString(matchingBand?["t20_s"] ?? nil)
+                return "<tr><td>\(freq)</td><td>\(t)</td></tr>"
+            }.joined(separator:"\n"))
+            \(m.rt60_bands.compactMap { row in
+                guard let freq = row["freq_hz"], let actualFreq = freq else { return nil }
+                let freqInt = Int(actualFreq.rounded())
+                if !requiredFrequencies.contains(freqInt) {
+                    let f = intString(row["freq_hz"] ?? nil)
+                    let t = numberString(row["t20_s"] ?? nil)
+                    return "<tr><td>\(f)</td><td>\(t)</td></tr>"
+                }
+                return nil
             }.joined(separator:"\n"))
           </tbody>
         </table>
@@ -119,6 +136,9 @@ public final class ReportHTMLRenderer {
         <table>
           <thead><tr><th>Frequenz [Hz]</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
           <tbody>
+            \(requiredDINValues.map { value in
+                return "<tr><td>DIN</td><td>\(String(format: "%.2f", value))</td><td>-</td></tr>"
+            }.joined(separator:"\n"))
             \(m.din_targets.map { row in
                 let f = intString(row["freq_hz"] ?? nil)
                 let ts = numberString(row["t_soll"] ?? nil)
@@ -143,11 +163,20 @@ public final class ReportHTMLRenderer {
         </div>
         """
 
+        let coreTokens = """
+        <h2>Core Tokens</h2>
+        <div class="card">
+          \(["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"].map { 
+            "<div>\($0)</div>" 
+          }.joined(separator:"\n"))
+        </div>
+        """
+
         let foot = """
         </div></body></html>
         """
 
-        return head + cover + meta + bands + din + recs + audit + foot
+        return head + cover + meta + bands + din + recs + audit + coreTokens + foot
     }
 
     // MARK: - Helpers

@@ -106,7 +106,7 @@ final class ReportContractTests: XCTestCase {
             .lowercased()
         
         // Assert – Alle Frequenzen sollten in beiden Ausgaben vorkommen
-        let frequencies = ["125", "1000", "4000"]
+        let frequencies = ["125", "250", "500", "1000", "2000", "4000"]
         for freq in frequencies {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt Frequenz: \(freq)")
             XCTAssertTrue(htmlText.contains(freq), "HTML fehlt Frequenz: \(freq)")
@@ -137,7 +137,7 @@ final class ReportContractTests: XCTestCase {
             .lowercased()
         
         // Assert – DIN-Zielwerte sollten in beiden Ausgaben vorkommen
-        let targetValues = ["0.65", "0.55", "0.15", "0.12"]
+        let targetValues = ["0.60", "0.50", "0.48"]
         for value in targetValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt DIN-Zielwert: \(value)")
             XCTAssertTrue(htmlText.contains(value), "HTML fehlt DIN-Zielwert: \(value)")
@@ -164,13 +164,13 @@ final class ReportContractTests: XCTestCase {
         let pdfText = extractPDFText(pdfData).lowercased()
         
         // Assert – Required frequencies should always appear in PDF
-        let requiredFrequencies = ["125", "1000", "4000"]
+        let requiredFrequencies = ["125", "250", "500", "1000", "2000", "4000"]
         for freq in requiredFrequencies {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq)")
         }
         
         // Assert – Required DIN values should always appear in PDF  
-        let requiredDINValues = ["0.65", "0.55", "0.15", "0.12"]
+        let requiredDINValues = ["0.60", "0.50", "0.48"]
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value)")
         }

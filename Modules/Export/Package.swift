@@ -26,8 +26,7 @@ let package = Package(
                 "ReportContractTests.swift",
                 "ReportHTMLRendererTests.swift",
                 "PDFReportSnapshotTests.swift",
-                "PDFRobustnessTests.swift",
-                "DebugTest.swift"
+                "PDFRobustnessTests.swift"
             ]
         )
     ]
