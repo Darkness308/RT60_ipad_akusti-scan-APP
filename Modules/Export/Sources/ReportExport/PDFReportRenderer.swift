@@ -65,6 +65,10 @@ public final class PDFReportRenderer {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
         // Required frequencies and values that should always appear
+copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+
         let requiredFrequencies = [125, 1000, 4000]
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
@@ -72,6 +76,7 @@ public final class PDFReportRenderer {
             (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
             (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
         ]
+main
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         let titleAttrs: [NSAttributedString.Key: Any] = [
@@ -192,6 +197,10 @@ public final class PDFReportRenderer {
     private func drawMinimalContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
+copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+
         let requiredFrequencies = [125, 1000, 4000]
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
@@ -199,6 +208,7 @@ public final class PDFReportRenderer {
             (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
             (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
         ]
+main
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         let titleAttrs: [NSAttributedString.Key: Any] = [
@@ -296,6 +306,10 @@ public final class PDFReportRenderer {
         }
         
         // Required frequencies that should always appear in the PDF
+copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+
         let requiredFrequencies = [125, 1000, 4000]
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
@@ -303,6 +317,7 @@ public final class PDFReportRenderer {
             (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
             (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
         ]
+main
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         var rt60Content = ""
@@ -424,6 +439,10 @@ public final class PDFReportRenderer {
     
     /// Renders minimal text-based PDF with required elements when model data is insufficient
     private func renderMinimalTextPDF() -> Data {
+copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+
         let requiredFrequencies = [125, 1000, 4000]
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
@@ -431,6 +450,7 @@ public final class PDFReportRenderer {
             (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
             (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
         ]
+main
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         var rt60Content = ""
