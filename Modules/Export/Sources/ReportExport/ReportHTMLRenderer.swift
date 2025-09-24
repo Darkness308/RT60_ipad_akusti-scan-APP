@@ -137,7 +137,7 @@ public final class ReportHTMLRenderer {
           <thead><tr><th>Frequenz [Hz]</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
           <tbody>
             \(requiredDINValues.map { value in
-                return "<tr><td>DIN</td><td>\(String(format: "%.2f", value))</td><td>-</td></tr>"
+                return "<tr><td></td><td>\(String(format: "%.2f", value))</td><td>-</td></tr>"
             }.joined(separator:"\n"))
             \(m.din_targets.map { row in
                 let f = intString(row["freq_hz"] ?? nil)
