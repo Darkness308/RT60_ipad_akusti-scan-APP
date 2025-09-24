@@ -508,7 +508,7 @@ struct ReportContractTests {
         let dinResults = model.din_targets.map { target in
             let freq = Int(target["freq_hz"]?.rounded() ?? 0)
             let targetRT60 = target["t_soll"] ?? 0
-            let tolerance = target["tol"] ?? 0.1
+            let tolerance = (target["tol"] as? Double) ?? 0.1
             
             // Find corresponding measurement
             let measuredRT60 = rt60Measurements.first { $0.frequency == freq }?.rt60 ?? targetRT60
