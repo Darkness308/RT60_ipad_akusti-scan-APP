@@ -24,13 +24,10 @@ let package = Package(
             path: "Tests",
             sources: [
                 "ReportContractTests.swift",
-copilot/fix-7d35a047-f81f-4124-99ae-baa758f4bbac
-                "PDFReportSnapshotTests.swift"
-
                 "ReportHTMLRendererTests.swift",
                 "PDFReportSnapshotTests.swift",
-                "PDFRobustnessTests.swift"
-main
+                "PDFRobustnessTests.swift",
+                "DebugTest.swift"
             ]
         )
     ]
