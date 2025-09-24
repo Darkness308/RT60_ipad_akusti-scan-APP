@@ -1,0 +1,101 @@
+COPILOT RULES FOR ACOUSTISCAN RT60 IPAD APP
+===========================================
+
+CRITICAL RULES - NEVER VIOLATE:
+1. NO FORCE UNWRAPPING (!) in production code - use guard/if-let
+2. ALWAYS validate RT60 correlation >= 95% for ISO 3382-1 compliance  
+3. PRESERVE acoustic measurement precision - RT60 accuracy is critical
+4. HANDLE missing frequency band data gracefully
+5. LOG errors with context for debugging
+
+SWIFT COMPILATION FIXES:
+- Undefined variables: Add declaration before use (let t20Val = Self.parseNumber(t20raw))
+- Missing imports: Add appropriate import statement (Foundation, SwiftUI, AVFoundation, PDFKit, RoomPlan)
+- Package.swift: Include all source files in targets, add test files to testTarget
+
+AUDIO PROCESSING RULES:
+- Use .record category with .measurement mode for AVAudioSession
+- Request microphone permissions in Info.plist
+- Handle audio interruptions gracefully
+- Validate audio input before starting measurements
+
+RT60 MEASUREMENT STANDARDS:
+- Frequency range: 125Hz to 4kHz minimum required
+- Time precision: 0.01 seconds for RT60 values
+- Correlation threshold: 95% minimum for valid measurements
+- Statistical analysis: Include mean, std dev, uncertainty estimates
+
+ERROR HANDLING PATTERNS:
+- Use Result<Success, Error> types for operations that can fail
+- Provide fallback values for optional data
+- Log with metadata: frequency, correlation, device info
+- User-friendly error messages with actionable guidance
+
+PDF REPORT REQUIREMENTS:
+- ISO 3382-1 compliance statement required
+- Include measurement timestamp and device info
+- Display frequency response graphs
+- Show statistical analysis and quality indicators
+
+BUILD AUTOMATION:
+- Clean command: swift package clean
+- Dependency resolution: swift package resolve  
+- Lint: swiftlint --strict (allow non-breaking)
+- Format: swiftformat . (allow non-breaking)
+- Test: swift test --enable-code-coverage
+
+QUALITY GATES:
+✓ Code compiles without warnings
+✓ All tests pass with >80% coverage
+✓ SwiftLint rules satisfied
+✓ No force unwrapping in production
+✓ RT60 calculations validated
+✓ Error handling comprehensive
+
+EMERGENCY RECOVERY:
+1. rm -rf .build && swift package clean
+2. rm Package.resolved && swift package resolve
+3. Check Xcode version compatibility (15.2+)
+4. Review recent commits for issues
+5. Verify device capabilities (LiDAR for RoomPlan)
+
+COMMON AUTO-FIXES:
+- t20Val undefined -> let t20Val = Self.parseNumber(t20raw)
+- corrVal undefined -> let corrVal = Self.parseNumber(corrRaw)
+- data! crash -> guard let data = data else { return }
+- Missing AVFoundation -> import AVFoundation
+- Missing SwiftUI -> import SwiftUI
+
+PERFORMANCE RULES:
+- Minimize allocations in audio callback threads
+- Use lock-free data structures for real-time processing
+- Cache expensive RT60 calculations
+- Profile audio processing latency
+
+ACCESSIBILITY REQUIREMENTS:
+- VoiceOver support for all interactive elements
+- Sufficient color contrast for graphs
+- Alternative text for acoustic data visualizations
+- Support for assistive technologies
+
+DATA VALIDATION:
+- Check frequency band completeness
+- Validate measurement duration
+- Detect statistical outliers (>2 std dev)
+- Verify checksum integrity for saved data
+
+TESTING PRIORITIES:
+1. RT60 calculation accuracy with known inputs
+2. Audio session configuration and error handling
+3. PDF generation with various data sets
+4. RoomPlan integration and fallbacks
+5. End-to-end measurement workflow
+
+VERSION COMPATIBILITY:
+- iOS 17.0+ required for RoomPlan features
+- iPad with LiDAR for 3D room scanning
+- Fallback to manual room input on non-LiDAR devices
+- Backward compatibility for saved measurement files
+
+Last Updated: September 7, 2025
+Version: 1.0

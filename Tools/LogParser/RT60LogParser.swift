@@ -100,6 +100,8 @@ public final class RT60LogParser {
         for f in freqs {
             let t20raw = t20[f]
             let corrRaw = corr[f]
+            let t20Val = Self.parseNumber(t20raw)
+            let corrVal = Self.parseNumber(corrRaw)
             let isNoData = (t20raw == "-.--")
             let isValid = !isNoData && (t20Val != nil) && (corrVal != nil) && (corrVal! >= 95.0)
             var note: [String] = []

@@ -1,0 +1,135 @@
+name: Auto-Retry Failed Workflows
+
+on:
+  workflow_run:
+    workflows: ["Build and Test", "Swift Build and Test"]
+    types:
+      - completed
+
+env:
+  MAX_AUTO_RETRIES: 3
+
+jobs:
+  auto-retry:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    
+    steps:
+    - name: Check retry count and trigger re-run
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const workflow_run = context.payload.workflow_run;
+          const repo = context.repo;
+          
+          // Get the number of previous retry attempts
+          const runs = await github.rest.actions.listWorkflowRuns({
+            owner: repo.owner,
+            repo: repo.repo,
+            workflow_id: workflow_run.workflow_id,
+            head_sha: workflow_run.head_sha,
+            status: 'completed'
+          });
+          
+          const failedRuns = runs.data.workflow_runs.filter(run => 
+            run.conclusion === 'failure' && 
+            run.head_sha === workflow_run.head_sha
+          );
+          
+          const retryCount = failedRuns.length;
+          console.log(`Current retry count: ${retryCount}`);
+          console.log(`Max auto retries: ${process.env.MAX_AUTO_RETRIES}`);
+          
+          if (retryCount < parseInt(process.env.MAX_AUTO_RETRIES)) {
+            console.log(`🔄 Triggering auto-retry ${retryCount + 1}/${process.env.MAX_AUTO_RETRIES} for workflow ${workflow_run.name}`);
+            
+            // Re-run the failed workflow
+            try {
+              await github.rest.actions.reRunWorkflow({
+                owner: repo.owner,
+                repo: repo.repo,
+                run_id: workflow_run.id
+              });
+              
+              console.log(`✅ Successfully triggered retry for workflow run ${workflow_run.id}`);
+              
+              // Create a comment on PR if this is a PR
+              if (workflow_run.pull_requests && workflow_run.pull_requests.length > 0) {
+                const pr_number = workflow_run.pull_requests[0].number;
+                await github.rest.issues.createComment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number: pr_number,
+                  body: `🔄 Auto-retry ${retryCount + 1}/${process.env.MAX_AUTO_RETRIES} triggered for failed workflow "${workflow_run.name}"`
+                });
+              }
+            } catch (error) {
+              console.error(`❌ Failed to trigger retry: ${error.message}`);
+            }
+          } else {
+            console.log(`❌ Maximum retry attempts (${process.env.MAX_AUTO_RETRIES}) reached for workflow ${workflow_run.name}`);
+            
+            // Create issue for manual intervention needed
+            const issueTitle = `🚨 Workflow "${workflow_run.name}" failed after ${retryCount} attempts`;
+            const issueBody = `
+            ## Workflow Failure Report
+            
+            **Workflow:** ${workflow_run.name}
+            **Run ID:** ${workflow_run.id}
+            **Branch:** ${workflow_run.head_branch}
+            **Commit:** ${workflow_run.head_sha}
+            **Failed Attempts:** ${retryCount}
+            
+            ### Auto-retry attempts exhausted
+            
+            The workflow has failed ${retryCount} times and auto-retry is disabled.
+            Manual intervention is required.
+            
+            ### Recommended Actions:
+            
+            1. **Check the [workflow logs](${workflow_run.html_url})** for detailed error messages
+            2. **Review recent changes** to identify potential causes
+            3. **Run the build locally** to reproduce and debug issues:
+               \`\`\`bash
+               cd AcoustiScanConsolidated
+               ./build.sh
+               \`\`\`
+            4. **Check for dependency issues** or environment problems
+            5. **Manually re-run the workflow** once issues are resolved
+            
+            ### Quick Fixes to Try:
+            
+            - **Clean build:** Delete derived data and rebuild
+            - **Update dependencies:** \`swift package update\`
+            - **Check SwiftLint/SwiftFormat:** Run linting tools locally
+            - **Verify Xcode version** compatibility
+            
+            This issue was automatically created by the auto-retry workflow.
+            `;
+            
+            try {
+              const issue = await github.rest.issues.create({
+                owner: repo.owner,
+                repo: repo.repo,
+                title: issueTitle,
+                body: issueBody,
+                labels: ['bug', 'ci-failure', 'needs-attention']
+              });
+              
+              console.log(`📝 Created issue #${issue.data.number} for manual intervention`);
+              
+              // Also comment on PR if this is a PR
+              if (workflow_run.pull_requests && workflow_run.pull_requests.length > 0) {
+                const pr_number = workflow_run.pull_requests[0].number;
+                await github.rest.issues.createComment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number: pr_number,
+                  body: `❌ Workflow "${workflow_run.name}" failed after ${retryCount} attempts. Created issue #${issue.data.number} for tracking. Manual intervention required.`
+                });
+              }
+            } catch (error) {
+              console.error(`❌ Failed to create issue: ${error.message}`);
+            }
+          }
