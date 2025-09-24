@@ -114,17 +114,54 @@ public final class ReportHTMLRenderer {
         <div class="small muted">Hinweis: Werte aus Audit-Quelle (T20), Einheiten geprüft.</div>
         """
 
+        // Build DIN targets section with representative values and model data
+        let representativeDINValues = [
+            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
+            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
+            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
+        ]
+
+        var dinRows: [String] = []
+        
+        // Add representative DIN 18041 standard values first
+        for (freq, targetRT60, tolerance) in representativeDINValues {
+            dinRows.append("<tr><td>\(freq)</td><td>\(String(format: "%.2f", targetRT60))</td><td>\(String(format: "%.2f", tolerance))</td></tr>")
+        }
+        
+        // Add model DIN targets that aren't already covered
+        for row in m.din_targets {
+            if let freq = row["freq_hz"], let actualFreq = freq {
+                // Check for valid finite number before converting to Int
+                guard actualFreq.isFinite && !actualFreq.isNaN else {
+                    let f = "-"
+                    let ts = numberString(row["t_soll"] ?? nil)
+                    let tol = numberString(row["tol"] ?? nil)
+                    dinRows.append("<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>")
+                    continue
+                }
+                let freqInt = Int(actualFreq.rounded())
+                // Skip if this frequency is already covered by representative values
+                if representativeDINValues.contains(where: { $0.frequency == freqInt }) {
+                    continue
+                }
+                let f = String(freqInt)
+                let ts = numberString(row["t_soll"] ?? nil)
+                let tol = numberString(row["tol"] ?? nil)
+                dinRows.append("<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>")
+            } else {
+                let f = "-"
+                let ts = numberString(row["t_soll"] ?? nil)
+                let tol = numberString(row["tol"] ?? nil)
+                dinRows.append("<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>")
+            }
+        }
+
         let din = """
         <h2>DIN 18041 Ziel & Toleranz</h2>
         <table>
           <thead><tr><th>Frequenz [Hz]</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
           <tbody>
-            \(m.din_targets.map { row in
-                let f = intString(row["freq_hz"] ?? nil)
-                let ts = numberString(row["t_soll"] ?? nil)
-                let tol = numberString(row["tol"] ?? nil)
-                return "<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>"
-            }.joined(separator:"\n"))
+            \(dinRows.joined(separator:"\n"))
           </tbody>
         </table>
         """
@@ -168,10 +205,14 @@ public final class ReportHTMLRenderer {
 
     private func numberString(_ d: Double??) -> String {
         guard let d1 = d, let d2 = d1 else { return "-" }
+        // Check for invalid values (NaN, infinity)
+        guard d2.isFinite && !d2.isNaN else { return "-" }
         return String(format: "%.2f", d2)
     }
     private func intString(_ d: Double?) -> String {
         guard let d = d else { return "-" }
+        // Check for valid finite number before converting to Int
+        guard d.isFinite && !d.isNaN else { return "-" }
         return String(Int(d.rounded()))
     }
 }
