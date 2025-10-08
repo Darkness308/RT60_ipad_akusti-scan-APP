@@ -69,7 +69,7 @@
           "name": "clean",
           "command": "swift package clean",
           "retry_on_failure": false,
-          "timeout_seconds": 30
+          "timeout_seconds": 120
         },
         {
           "name": "resolve_dependencies", 
@@ -83,28 +83,28 @@
           "command": "swiftlint --strict",
           "retry_on_failure": false,
           "allow_failure": true,
-          "timeout_seconds": 60
+          "timeout_seconds": 120
         },
         {
           "name": "format_check",
           "command": "swiftformat --lint .",
           "retry_on_failure": false,
           "allow_failure": true,
-          "timeout_seconds": 60
+          "timeout_seconds": 120
         },
         {
           "name": "build",
           "command": "swift build",
           "retry_on_failure": true,
           "max_retries": 2,
-          "timeout_seconds": 300
+          "timeout_seconds": 120
         },
         {
           "name": "test",
           "command": "swift test",
           "retry_on_failure": true,
           "max_retries": 1,
-          "timeout_seconds": 180
+          "timeout_seconds": 120
         }
       ]
     },

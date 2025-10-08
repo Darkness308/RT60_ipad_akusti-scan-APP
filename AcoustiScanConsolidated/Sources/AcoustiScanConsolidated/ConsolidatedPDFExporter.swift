@@ -8,11 +8,78 @@ import UIKit
 
 /// Comprehensive PDF report generator
 public class ConsolidatedPDFExporter {
-    
+
     // Backward compatibility: Use the consolidated ReportData model
     public typealias ReportData = AcoustiScanConsolidated.ReportData
-    
+
     #if canImport(UIKit)
+    private enum PDFStyling {
+        static let margin: CGFloat = 72
+
+        static func titleAttributes(size: CGFloat, weight: UIFont.Weight = .regular, color: UIColor = .black) -> [NSAttributedString.Key: Any] {
+            [
+                .font: UIFont.systemFont(ofSize: size, weight: weight),
+                .foregroundColor: color
+            ]
+        }
+
+        static func bodyAttributes(size: CGFloat = 14, color: UIColor = .black) -> [NSAttributedString.Key: Any] {
+            [
+                .font: UIFont.systemFont(ofSize: size),
+                .foregroundColor: color
+            ]
+        }
+
+        static func footerAttributes() -> [NSAttributedString.Key: Any] {
+            [
+                .font: UIFont.systemFont(ofSize: 12),
+                .foregroundColor: UIColor.gray
+            ]
+        }
+
+        static func draw(_ text: String, at point: CGPoint, attributes: [NSAttributedString.Key: Any]) {
+            text.draw(at: point, withAttributes: attributes)
+        }
+
+        static func draw(_ text: String, in rect: CGRect, attributes: [NSAttributedString.Key: Any]) {
+            text.draw(in: rect, withAttributes: attributes)
+        }
+    }
+
+    private enum PDFListRenderer {
+        static func drawBulletedList(
+            _ items: [String],
+            startY: CGFloat,
+            margin: CGFloat,
+            attributes: [NSAttributedString.Key: Any],
+            bullet: String = "•",
+            width: CGFloat? = nil,
+            lineSpacing: CGFloat = 20
+        ) -> CGFloat {
+            var yPosition = startY
+            for item in items {
+                let text = bullet.isEmpty ? item : "\(bullet) \(item)"
+
+                if let width = width {
+                    let rect = CGRect(x: margin, y: yPosition, width: width, height: .greatestFiniteMagnitude)
+                    PDFStyling.draw(text, in: rect, attributes: attributes)
+
+                    let bounding = text.boundingRect(
+                        with: CGSize(width: width, height: .greatestFiniteMagnitude),
+                        options: [.usesLineFragmentOrigin, .usesFontLeading],
+                        attributes: attributes,
+                        context: nil
+                    )
+                    yPosition += ceil(bounding.height) + max(0, lineSpacing - 20)
+                } else {
+                    PDFStyling.draw(text, at: CGPoint(x: margin, y: yPosition), attributes: attributes)
+                    yPosition += lineSpacing
+                }
+            }
+            return yPosition
+        }
+    }
+
     /// Generate comprehensive PDF report
     public static func generateReport(data: ReportData) -> Data? {
         let pdfMetaData = [
@@ -58,37 +125,29 @@ public class ConsolidatedPDFExporter {
     }
     
     private static func drawTitlePage(pageRect: CGRect, data: ReportData) {
-        let margin: CGFloat = 72
+        let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
-        
+
         // Title
         let title = "Gutachterlicher Raumakustik Report"
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 28),
-            .foregroundColor: UIColor.black
-        ]
-        title.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        let titleAttrs = PDFStyling.titleAttributes(size: 28, weight: .bold)
+        PDFStyling.draw(title, at: CGPoint(x: margin, y: yPosition), attributes: titleAttrs)
         yPosition += 60
-        
+
         // Subtitle
         let subtitle = "RT60-Messung und DIN 18041-Bewertung"
-        let subtitleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 18),
-            .foregroundColor: UIColor.darkGray
-        ]
-        subtitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: subtitleAttrs)
+        let subtitleAttrs = PDFStyling.titleAttributes(size: 18, color: .darkGray)
+        PDFStyling.draw(subtitle, at: CGPoint(x: margin, y: yPosition), attributes: subtitleAttrs)
         yPosition += 80
         
         // Executive Summary Box
         let summaryRect = CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 200)
         UIColor.lightGray.withAlphaComponent(0.1).setFill()
         UIRectFill(summaryRect)
-        
+
         let summaryTitle = "Executive Summary"
-        let summaryTitleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 16)
-        ]
-        summaryTitle.draw(at: CGPoint(x: margin + 20, y: yPosition + 20), withAttributes: summaryTitleAttrs)
+        let summaryTitleAttrs = PDFStyling.titleAttributes(size: 16, weight: .bold)
+        PDFStyling.draw(summaryTitle, at: CGPoint(x: margin + 20, y: yPosition + 20), attributes: summaryTitleAttrs)
         
         // Summary content
         let withinTolerance = data.dinResults.filter { $0.status == .withinTolerance }.count
@@ -107,31 +166,23 @@ public class ConsolidatedPDFExporter {
                     compliancePercentage >= 60 ? "Gut" : "Verbesserungsbedarf")
         """
         
-        let summaryAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14)
-        ]
-        summaryText.draw(in: CGRect(x: margin + 20, y: yPosition + 50, 
-                                    width: pageRect.width - 2*margin - 40, height: 140),
-                        withAttributes: summaryAttrs)
-        
+        let summaryAttrs = PDFStyling.bodyAttributes()
+        PDFStyling.draw(summaryText, in: CGRect(x: margin + 20, y: yPosition + 50,
+                                                width: pageRect.width - 2*margin - 40, height: 140),
+                         attributes: summaryAttrs)
+
         // Footer
         let footer = "Erstellt mit AcoustiScan Consolidated Tool"
-        let footerAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12),
-            .foregroundColor: UIColor.gray
-        ]
-        footer.draw(at: CGPoint(x: margin, y: pageRect.height - 100), withAttributes: footerAttrs)
+        PDFStyling.draw(footer, at: CGPoint(x: margin, y: pageRect.height - 100), attributes: PDFStyling.footerAttributes())
     }
     
     private static func drawMetadataPage(pageRect: CGRect, data: ReportData) {
-        let margin: CGFloat = 72
+        let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
-        
+
         let pageTitle = "Messdaten und Raumkonfiguration"
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 20)
-        ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        let titleAttrs = PDFStyling.titleAttributes(size: 20, weight: .bold)
+        PDFStyling.draw(pageTitle, at: CGPoint(x: margin, y: yPosition), attributes: titleAttrs)
         yPosition += 40
         
         let metadataText = """
@@ -144,142 +195,119 @@ public class ConsolidatedPDFExporter {
         Oberflächenkonfiguration:
         """
         
-        let textAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14)
-        ]
-        metadataText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: textAttrs)
+        let textAttrs = PDFStyling.bodyAttributes()
+        PDFStyling.draw(metadataText, at: CGPoint(x: margin, y: yPosition), attributes: textAttrs)
         yPosition += 120
-        
-        // Surface details
-        for surface in data.surfaces {
-            let surfaceInfo = "• \(surface.name): \(String(format: "%.2f", surface.area)) m² - \(surface.material.name)"
-            surfaceInfo.draw(at: CGPoint(x: margin + 20, y: yPosition), withAttributes: textAttrs)
-            yPosition += 20
+
+        let surfaceLines = data.surfaces.map { surface in
+            "\(surface.name): \(String(format: "%.2f", surface.area)) m² - \(surface.material.name)"
         }
+        _ = PDFListRenderer.drawBulletedList(surfaceLines, startY: yPosition, margin: margin + 20, attributes: textAttrs)
     }
     
     private static func drawRT60AnalysisPage(pageRect: CGRect, data: ReportData) {
-        let margin: CGFloat = 72
+        let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
-        
+
         let pageTitle = "RT60-Frequenzanalyse"
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 20)
-        ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        let titleAttrs = PDFStyling.titleAttributes(size: 20, weight: .bold)
+        PDFStyling.draw(pageTitle, at: CGPoint(x: margin, y: yPosition), attributes: titleAttrs)
         yPosition += 40
-        
+
         // RT60 values table
-        let headerAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 14)
-        ]
-        let valueAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12)
-        ]
-        
-        "Frequenz (Hz)    RT60 (s)    Status".draw(at: CGPoint(x: margin, y: yPosition), withAttributes: headerAttrs)
+        let headerAttrs = PDFStyling.titleAttributes(size: 14, weight: .bold)
+        let valueAttrs = PDFStyling.bodyAttributes(size: 12)
+
+        PDFStyling.draw("Frequenz (Hz)    RT60 (s)    Status", at: CGPoint(x: margin, y: yPosition), attributes: headerAttrs)
         yPosition += 25
-        
+
         for measurement in data.rt60Measurements.sorted(by: { $0.frequency < $1.frequency }) {
             let dinResult = data.dinResults.first { $0.frequency == measurement.frequency }
             let status = dinResult?.status.displayName ?? "Unbekannt"
             let line = String(format: "%-15d %-11.2f %@", measurement.frequency, measurement.rt60, status)
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: valueAttrs)
+            PDFStyling.draw(line, at: CGPoint(x: margin, y: yPosition), attributes: valueAttrs)
             yPosition += 18
         }
     }
     
     private static func drawDINCompliancePage(pageRect: CGRect, data: ReportData) {
-        let margin: CGFloat = 72
+        let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
-        
+
         let pageTitle = "DIN 18041 Konformitätsbewertung"
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 20)
-        ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        let titleAttrs = PDFStyling.titleAttributes(size: 20, weight: .bold)
+        PDFStyling.draw(pageTitle, at: CGPoint(x: margin, y: yPosition), attributes: titleAttrs)
         yPosition += 40
-        
-        let headerAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 14)
-        ]
-        let valueAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12)
-        ]
-        
+
+        let headerAttrs = PDFStyling.titleAttributes(size: 14, weight: .bold)
+        let valueAttrs = PDFStyling.bodyAttributes(size: 12)
+
         let headerText = "Frequenz    Ist-RT60    Soll-RT60    Abweichung    Status"
-        headerText.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: headerAttrs)
+        PDFStyling.draw(headerText, at: CGPoint(x: margin, y: yPosition), attributes: headerAttrs)
         yPosition += 25
-        
+
         for deviation in data.dinResults.sorted(by: { $0.frequency < $1.frequency }) {
-            let line = String(format: "%-10d %-11.2f %-12.2f %-13.2f %@", 
-                            deviation.frequency, 
-                            deviation.measuredRT60, 
-                            deviation.targetRT60, 
+            let line = String(format: "%-10d %-11.2f %-12.2f %-13.2f %@",
+                            deviation.frequency,
+                            deviation.measuredRT60,
+                            deviation.targetRT60,
                             deviation.deviation,
                             deviation.status.displayName)
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: valueAttrs)
+            PDFStyling.draw(line, at: CGPoint(x: margin, y: yPosition), attributes: valueAttrs)
             yPosition += 18
         }
     }
     
     private static func drawAcousticFrameworkPage(pageRect: CGRect, data: ReportData) {
-        let margin: CGFloat = 72
+        let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
-        
+
         let pageTitle = "48-Parameter Akustik-Framework Analyse"
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 20)
-        ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        let titleAttrs = PDFStyling.titleAttributes(size: 20, weight: .bold)
+        PDFStyling.draw(pageTitle, at: CGPoint(x: margin, y: yPosition), attributes: titleAttrs)
         yPosition += 40
-        
+
         let descriptionText = """
         Erweiterte akustische Bewertung basierend auf dem validierten 48-Parameter-Framework.
         Kategorien: Klangfarbe, Tonalität, Geometrie, Raum, Zeitverhalten, Dynamik, Artefakte.
         """
-        
-        let descAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14)
-        ]
-        descriptionText.draw(in: CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 60), 
-                           withAttributes: descAttrs)
+
+        let descAttrs = PDFStyling.bodyAttributes()
+        PDFStyling.draw(descriptionText, in: CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 60),
+                        attributes: descAttrs)
         yPosition += 80
-        
+
         // Framework results
-        let valueAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12)
-        ]
-        
+        let valueAttrs = PDFStyling.bodyAttributes(size: 12)
+
         for (parameter, value) in data.acousticFrameworkResults.sorted(by: { $0.key < $1.key }) {
             let line = "\(parameter): \(String(format: "%.2f", value))"
-            line.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: valueAttrs)
+            PDFStyling.draw(line, at: CGPoint(x: margin, y: yPosition), attributes: valueAttrs)
             yPosition += 18
         }
     }
     
     private static func drawRecommendationsPage(pageRect: CGRect, data: ReportData) {
-        let margin: CGFloat = 72
+        let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
-        
+
         let pageTitle = "Empfehlungen und Maßnahmen"
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 20)
-        ]
-        pageTitle.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: titleAttrs)
+        let titleAttrs = PDFStyling.titleAttributes(size: 20, weight: .bold)
+        PDFStyling.draw(pageTitle, at: CGPoint(x: margin, y: yPosition), attributes: titleAttrs)
         yPosition += 40
-        
-        let textAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14)
-        ]
-        
-        for (index, recommendation) in data.recommendations.enumerated() {
-            let line = "\(index + 1). \(recommendation)"
-            let textRect = CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 50)
-            line.draw(in: textRect, withAttributes: textAttrs)
-            yPosition += 60
-        }
-        
+
+        let textAttrs = PDFStyling.bodyAttributes()
+        let numberedItems = data.recommendations.enumerated().map { "\($0.offset + 1). \($0.element)" }
+        yPosition = PDFListRenderer.drawBulletedList(
+            numberedItems,
+            startY: yPosition,
+            margin: margin,
+            attributes: textAttrs,
+            bullet: "",
+            width: pageRect.width - 2*margin,
+            lineSpacing: 30
+        )
+
         // Quality assurance statement
         yPosition += 40
         let qaStatement = """
@@ -288,13 +316,10 @@ public class ConsolidatedPDFExporter {
         für raumakustische Bewertungen. Die Empfehlungen basieren auf validierten akustischen Prinzipien
         und dem 48-Parameter-Framework für umfassende Audiobewertung.
         """
-        
-        let qaAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12),
-            .foregroundColor: UIColor.darkGray
-        ]
-        qaStatement.draw(in: CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 100), 
-                        withAttributes: qaAttrs)
+
+        let qaAttrs = PDFStyling.bodyAttributes(size: 12, color: .darkGray)
+        PDFStyling.draw(qaStatement, in: CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 100),
+                        attributes: qaAttrs)
     }
     #endif
 }

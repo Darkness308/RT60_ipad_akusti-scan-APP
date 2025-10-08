@@ -75,63 +75,15 @@ struct AcoustiScanTool {
     static func runAcousticAnalysis() {
         print("🔬 Running Acoustic Analysis...")
         
-        // Create sample room data
-        let surfaces = [
-            AcousticSurface(
-                name: "Decke",
-                area: 50.0,
-                material: AcousticMaterial(
-                    name: "Gipskarton",
-                    absorptionCoefficients: [
-                        125: 0.10, 250: 0.08, 500: 0.05, 1000: 0.04, 
-                        2000: 0.07, 4000: 0.09, 8000: 0.11
-                    ]
-                )
-            ),
-            AcousticSurface(
-                name: "Boden",
-                area: 50.0,
-                material: AcousticMaterial(
-                    name: "Linoleum",
-                    absorptionCoefficients: [
-                        125: 0.02, 250: 0.03, 500: 0.03, 1000: 0.04,
-                        2000: 0.04, 4000: 0.04, 8000: 0.04
-                    ]
-                )
-            ),
-            AcousticSurface(
-                name: "Wände",
-                area: 120.0,
-                material: AcousticMaterial(
-                    name: "Putz auf Mauerwerk",
-                    absorptionCoefficients: [
-                        125: 0.02, 250: 0.02, 500: 0.03, 1000: 0.04,
-                        2000: 0.05, 4000: 0.05, 8000: 0.05
-                    ]
-                )
-            )
-        ]
-        
-        let roomVolume = 150.0 // m³
-        let roomType = RoomType.classroom
-        
-        // Calculate RT60 for all frequencies
-        let measurements = RT60Calculator.calculateFrequencySpectrum(
-            volume: roomVolume,
-            surfaces: surfaces
-        )
-        
-        // Evaluate DIN compliance
-        let dinResults = RT60Calculator.evaluateDINCompliance(
-            measurements: measurements,
-            roomType: roomType,
-            volume: roomVolume
-        )
+        let dataset = SampleData.baselineDataset()
+        let configuration = dataset.configuration
+        let measurements = dataset.measurements
+        let dinResults = dataset.dinResults
         
         // Display results
         print("\n📊 RT60 Analysis Results:")
-        print("Room Type: \(roomType.displayName)")
-        print("Volume: \(roomVolume) m³")
+        print("Room Type: \(configuration.roomType.displayName)")
+        print("Volume: \(configuration.volume) m³")
         print("\nFrequency Analysis:")
         
         for measurement in measurements.sorted(by: { $0.frequency < $1.frequency }) {
@@ -191,49 +143,17 @@ struct AcoustiScanTool {
     static func generateComprehensiveReport() {
         print("📄 Generating Comprehensive PDF Report...")
         
-        // Create sample data for report
-        let measurements = [
-            RT60Measurement(frequency: 500, rt60: 0.65),
-            RT60Measurement(frequency: 1000, rt60: 0.62),
-            RT60Measurement(frequency: 2000, rt60: 0.58)
-        ]
-        
-        let dinResults = [
-            RT60Deviation(frequency: 500, measuredRT60: 0.65, targetRT60: 0.60, status: .tooHigh),
-            RT60Deviation(frequency: 1000, measuredRT60: 0.62, targetRT60: 0.60, status: .withinTolerance),
-            RT60Deviation(frequency: 2000, measuredRT60: 0.58, targetRT60: 0.60, status: .withinTolerance)
-        ]
-        
-        let surfaces = [
-            AcousticSurface(name: "Decke", area: 50.0, 
-                          material: AcousticMaterial(name: "Gipskarton", absorptionCoefficients: [:])),
-            AcousticSurface(name: "Boden", area: 50.0,
-                          material: AcousticMaterial(name: "Linoleum", absorptionCoefficients: [:]))
-        ]
-        
-        let frameworkResults = [
-            "Klangfarbe hell-dunkel": 0.7,
-            "Schärfe": 0.4,
-            "Nachhallstärke": 0.8,
-            "Lautheit": 0.6
-        ]
-        
-        let recommendations = [
-            "Absorberfläche an der Decke um 15% vergrößern",
-            "Materialien mit höherem Absorptionsgrad einsetzen",
-            "Schallabsorber in kritischen Bereichen installieren",
-            "Nachmessung nach 3 Monaten durchführen"
-        ]
-        
+        let dataset = SampleData.baselineDataset()
+
         let reportData = ConsolidatedPDFExporter.ReportData(
             date: DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .none),
-            roomType: .classroom,
-            volume: 150.0,
-            rt60Measurements: measurements,
-            dinResults: dinResults,
-            acousticFrameworkResults: frameworkResults,
-            surfaces: surfaces,
-            recommendations: recommendations
+            roomType: dataset.configuration.roomType,
+            volume: dataset.configuration.volume,
+            rt60Measurements: dataset.measurements,
+            dinResults: dataset.dinResults,
+            acousticFrameworkResults: dataset.frameworkScores,
+            surfaces: dataset.configuration.surfaces,
+            recommendations: dataset.recommendations
         )
         
         #if canImport(UIKit)
