@@ -1,9 +1,6 @@
 import XCTest
 @testable import ReportExport
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
 
-
-main
 #if canImport(PDFKit)
 import PDFKit
 #endif
@@ -31,7 +28,7 @@ final class PDFReportSnapshotTests: XCTestCase {
         )
 
         let data = PDFReportRenderer().render(model)
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
+
         guard let doc = PDFDocument(data: data) else {
             XCTFail("Failed to create PDFDocument from data")
             return

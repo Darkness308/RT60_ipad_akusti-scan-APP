@@ -7,6 +7,24 @@ import PDFKit
 /// PDF report renderer that uses the same ReportModel as ReportHTMLRenderer
 public final class PDFReportRenderer {
 
+    // MARK: - Constants
+
+    /// Standard frequencies for RT60 measurements required in reports
+    private static let requiredFrequencies = [125, 1000, 4000]
+
+    /// Representative DIN 18041 standard values for different room types
+    /// These are reference values based on common room classifications
+    private static let representativeDINValues = [
+        (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
+        (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
+        (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
+    ]
+
+    /// Core tokens that must appear in every report for validation
+    private static let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+
+    // MARK: - Initialization
+
     public init() {}
 
     #if canImport(UIKit)
@@ -64,21 +82,6 @@ public final class PDFReportRenderer {
     private func drawContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect, model: ReportModel) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
-        // Required frequencies and values that should always appear
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
-        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
-        let requiredDINValues = [0.6, 0.5, 0.48]
-
-        let requiredFrequencies = [125, 1000, 4000]
-        // Use representative DIN 18041 values instead of arbitrary hardcoded ones
-        let representativeDINValues = [
-            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
-            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
-            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
-        ]
-main
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
-
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 24)
         ]
@@ -113,7 +116,7 @@ main
         layout.drawLine("RT60 je Frequenz (T20 in s)", attributes: sectionAttrs, spacing: 8)
         layout.drawLine("Frequenz [Hz]    T20 [s]", attributes: textAttrs)
 
-        for freq in requiredFrequencies {
+        for freq in Self.requiredFrequencies {
             let matchingBand = model.rt60_bands.first { band in
                 guard let modelFreq = band["freq_hz"], let actualFreq = modelFreq else { return false }
                 // Check for valid finite number before converting to Int
@@ -129,7 +132,7 @@ main
                 // Check for valid finite number before converting to Int
                 guard actualFreq.isFinite && !actualFreq.isNaN else { continue }
                 let freqInt = Int(actualFreq.rounded())
-                if !requiredFrequencies.contains(freqInt) {
+                if !Self.requiredFrequencies.contains(freqInt) {
                     let t20String = formattedDecimal(band["t20_s"] ?? nil)
                     layout.drawLine("\(freqInt) Hz: \(t20String) s", attributes: textAttrs)
                 }
@@ -141,7 +144,7 @@ main
         layout.drawLine("Frequenz [Hz]    T_soll [s]    Toleranz [s]", attributes: textAttrs)
 
         // Always show representative DIN 18041 standard values
-        for (freq, targetRT60, tolerance) in representativeDINValues {
+        for (freq, targetRT60, tolerance) in Self.representativeDINValues {
             layout.drawLine("\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s", attributes: textAttrs)
         }
 
@@ -159,7 +162,7 @@ main
                 }
                 let freqInt = Int(actualF.rounded())
                 // Skip if this frequency is already covered by representative values
-                if representativeDINValues.contains(where: { $0.frequency == freqInt }) {
+                if Self.representativeDINValues.contains(where: { $0.frequency == freqInt }) {
                     continue
                 }
                 freq = String(freqInt)
@@ -188,7 +191,7 @@ main
 
         layout.addSpacing(12)
         layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
-        for token in coreTokens {
+        for token in Self.coreTokens {
             layout.drawLine(token, attributes: textAttrs)
         }
     }
@@ -196,20 +199,6 @@ main
     /// Draws minimal content ensuring all required elements are present
     private func drawMinimalContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
-
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
-        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
-        let requiredDINValues = [0.6, 0.5, 0.48]
-
-        let requiredFrequencies = [125, 1000, 4000]
-        // Use representative DIN 18041 values instead of arbitrary hardcoded ones
-        let representativeDINValues = [
-            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
-            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
-            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
-        ]
-main
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 24)
@@ -229,7 +218,7 @@ main
 
         layout.drawLine("RT60 je Frequenz (T20 in s)", attributes: sectionAttrs, spacing: 8)
         layout.drawLine("Frequenz [Hz]    T20 [s]", attributes: textAttrs)
-        for freq in requiredFrequencies {
+        for freq in Self.requiredFrequencies {
             layout.drawLine("\(freq) Hz: - s", attributes: textAttrs)
         }
 
@@ -237,13 +226,13 @@ main
         layout.drawLine("DIN 18041 Ziel & Toleranz", attributes: sectionAttrs, spacing: 8)
         layout.drawLine("Frequenz [Hz]    T_soll [s]    Toleranz [s]", attributes: textAttrs)
         // Show representative DIN 18041 standard values
-        for (freq, targetRT60, tolerance) in representativeDINValues {
+        for (freq, targetRT60, tolerance) in Self.representativeDINValues {
             layout.drawLine("\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s", attributes: textAttrs)
         }
 
         layout.addSpacing(12)
         layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
-        for token in coreTokens {
+        for token in Self.coreTokens {
             layout.drawLine(token, attributes: textAttrs)
         }
     }
@@ -304,24 +293,9 @@ main
             // Return minimal content with required elements
             return renderMinimalTextPDF()
         }
-        
-        // Required frequencies that should always appear in the PDF
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
-        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
-        let requiredDINValues = [0.6, 0.5, 0.48]
-
-        let requiredFrequencies = [125, 1000, 4000]
-        // Use representative DIN 18041 values instead of arbitrary hardcoded ones
-        let representativeDINValues = [
-            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
-            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
-            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
-        ]
-main
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
         var rt60Content = ""
-        for freq in requiredFrequencies {
+        for freq in Self.requiredFrequencies {
             // Find matching data in model
             let matchingBand = model.rt60_bands.first { band in
                 guard let modelFreq = band["freq_hz"], let actualFreq = modelFreq else { return false }
@@ -340,7 +314,7 @@ main
                 // Check for valid finite number before converting to Int
                 guard actualFreq.isFinite && !actualFreq.isNaN else { continue }
                 let freqInt = Int(actualFreq.rounded())
-                if !requiredFrequencies.contains(freqInt) {
+                if !Self.requiredFrequencies.contains(freqInt) {
                     let t20String = formattedDecimal(band["t20_s"] ?? nil)
                     rt60Content += "\(freqInt) Hz: \(t20String) s\n"
                 }
@@ -349,7 +323,7 @@ main
 
         var dinContent = ""
         // Always show representative DIN 18041 standard values
-        for (freq, targetRT60, tolerance) in representativeDINValues {
+        for (freq, targetRT60, tolerance) in Self.representativeDINValues {
             dinContent += "\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s\n"
         }
 
@@ -358,7 +332,7 @@ main
             let f: String
             if let freq = target["freq_hz"], let actualFreq = freq {
                 // Check for valid finite number before converting to Int
-                guard actualFreq.isFinite && !actualFreq.isNaN else { 
+                guard actualFreq.isFinite && !actualFreq.isNaN else {
                     f = "-"
                     let ts = formattedDecimal(target["t_soll"] ?? nil)
                     let tol = formattedDecimal(target["tol"] ?? nil)
@@ -367,7 +341,7 @@ main
                 }
                 let freqInt = Int(actualFreq.rounded())
                 // Skip if this frequency is already covered by representative values
-                if representativeDINValues.contains(where: { $0.frequency == freqInt }) {
+                if Self.representativeDINValues.contains(where: { $0.frequency == freqInt }) {
                     continue
                 }
                 f = String(freqInt)
@@ -382,7 +356,7 @@ main
         }
 
         var coreTokensContent = ""
-        for token in coreTokens {
+        for token in Self.coreTokens {
             coreTokensContent += "\(token)\n"
         }
 
@@ -439,33 +413,19 @@ main
     
     /// Renders minimal text-based PDF with required elements when model data is insufficient
     private func renderMinimalTextPDF() -> Data {
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
-        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
-        let requiredDINValues = [0.6, 0.5, 0.48]
-
-        let requiredFrequencies = [125, 1000, 4000]
-        // Use representative DIN 18041 values instead of arbitrary hardcoded ones
-        let representativeDINValues = [
-            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
-            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
-            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
-        ]
-main
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
-
         var rt60Content = ""
-        for freq in requiredFrequencies {
+        for freq in Self.requiredFrequencies {
             rt60Content += "\(freq) Hz: - s\n"
         }
-        
+
         var dinContent = ""
         // Show representative DIN 18041 standard values
-        for (freq, targetRT60, tolerance) in representativeDINValues {
+        for (freq, targetRT60, tolerance) in Self.representativeDINValues {
             dinContent += "\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s\n"
         }
-        
+
         var coreTokensContent = ""
-        for token in coreTokens {
+        for token in Self.coreTokens {
             coreTokensContent += "\(token)\n"
         }
         

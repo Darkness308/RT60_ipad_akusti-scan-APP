@@ -48,17 +48,16 @@ public class RT60Calculator {
         roomType: RoomType,
         volume: Double
     ) -> [RT60Deviation] {
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
         let targets = DIN18041Database.targets(for: roomType, volume: volume)
-        
+
         return measurements.compactMap { measurement in
             guard let target = targets.first(where: { $0.frequency == measurement.frequency }) else {
                 return nil
             }
-            
+
             let diff = measurement.rt60 - target.targetRT60
             let status: EvaluationStatus
-            
+
             if abs(diff) <= target.tolerance {
                 status = .withinTolerance
             } else if diff > 0 {
@@ -66,7 +65,7 @@ copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
             } else {
                 status = .tooLow
             }
-            
+
             return RT60Deviation(
                 frequency: measurement.frequency,
                 measuredRT60: measurement.rt60,
@@ -77,15 +76,6 @@ copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
     }
 }
 
-// Note: AcousticSurface and AcousticMaterial models have been moved to 
+// Note: AcousticSurface and AcousticMaterial models have been moved to
 // dedicated files in the Models/ directory to avoid duplication.
-
-        return RT60Evaluator.evaluateDINCompliance(
-            measurements: measurements,
-            roomType: roomType,
-            volume: volume
-        )
-    }
-}
-main
 

@@ -1,5 +1,5 @@
 // RoomType.swift
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
+
 // Data model for room classification according to DIN 18041
 
 import Foundation

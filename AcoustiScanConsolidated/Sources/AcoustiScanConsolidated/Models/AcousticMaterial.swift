@@ -1,14 +1,13 @@
 // AcousticMaterial.swift
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
+
 // Data model for acoustic materials and their absorption properties
 
 // Acoustic material with frequency-dependent absorption coefficients
-main
 
 import Foundation
 
 /// Acoustic material with frequency-dependent absorption coefficients
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
+
 ///
 /// This structure represents a building material with its acoustic absorption
 /// properties across different frequency bands, used for RT60 calculations
@@ -42,7 +41,7 @@ main
         self.absorptionCoefficients = absorptionCoefficients
     }
     
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
+
     /// Initialize with specific ID (for testing or known materials)
     /// - Parameters:
     ///   - id: Unique identifier

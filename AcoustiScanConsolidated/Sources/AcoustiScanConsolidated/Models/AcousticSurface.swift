@@ -1,5 +1,5 @@
 // AcousticSurface.swift
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
+
 // Data model for room surfaces with acoustic properties
 
 import Foundation
@@ -35,14 +35,12 @@ public struct AcousticSurface {
     public let area: Double
     public let material: AcousticMaterial
     
-main
     public init(name: String, area: Double, material: AcousticMaterial) {
         self.name = name
         self.area = area
         self.material = material
     }
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
-    
+
     /// Calculate absorption area for a specific frequency
     /// - Parameter frequency: Frequency in Hz
     /// - Returns: Absorption area in square meters (area × absorption coefficient)
@@ -65,5 +63,4 @@ copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
         return material.speechAbsorption
     }
 
-main
 }

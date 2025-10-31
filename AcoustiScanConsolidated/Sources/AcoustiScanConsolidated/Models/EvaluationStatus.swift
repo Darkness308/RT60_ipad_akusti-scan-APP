@@ -1,5 +1,5 @@
 // EvaluationStatus.swift
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
+
 // Data model for RT60 evaluation status
 
 import Foundation
