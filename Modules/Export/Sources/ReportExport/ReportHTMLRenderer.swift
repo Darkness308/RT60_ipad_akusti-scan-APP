@@ -11,7 +11,7 @@ public struct ReportModel {
     public let validity: [String: String]
     public let recommendations: [String]
     public let audit: [String: String]
-    
+
     public init(
         metadata: [String: String],
         rt60_bands: [[String: Double?]],
@@ -47,7 +47,7 @@ public final class ReportHTMLRenderer {
         // Required frequencies and values that should always appear
         let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
         let requiredDINValues = [0.6, 0.5, 0.48]
-        
+
         let head = """
         <!doctype html>
         <html lang="de">
@@ -139,12 +139,12 @@ public final class ReportHTMLRenderer {
         ]
 
         var dinRows: [String] = []
-        
+
         // Add representative DIN 18041 standard values first
         for (freq, targetRT60, tolerance) in representativeDINValues {
             dinRows.append("<tr><td>\(freq)</td><td>\(String(format: "%.2f", targetRT60))</td><td>\(String(format: "%.2f", tolerance))</td></tr>")
         }
-        
+
         // Add model DIN targets that aren't already covered
         for row in m.din_targets {
             if let freq = row["freq_hz"], let actualFreq = freq {
@@ -178,19 +178,7 @@ public final class ReportHTMLRenderer {
         <table>
           <thead><tr><th>Frequenz [Hz]</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
           <tbody>
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
-            \(requiredDINValues.map { value in
-                return "<tr><td></td><td>\(String(format: "%.2f", value))</td><td>-</td></tr>"
-            }.joined(separator:"\n"))
-            \(m.din_targets.map { row in
-                let f = intString(row["freq_hz"] ?? nil)
-                let ts = numberString(row["t_soll"] ?? nil)
-                let tol = numberString(row["tol"] ?? nil)
-                return "<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>"
-            }.joined(separator:"\n"))
-
             \(dinRows.joined(separator:"\n"))
-main
           </tbody>
         </table>
         """
@@ -212,8 +200,8 @@ main
         let coreTokens = """
         <h2>Core Tokens</h2>
         <div class="card">
-          \(["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"].map { 
-            "<div>\($0)</div>" 
+          \(["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"].map {
+            "<div>\($0)</div>"
           }.joined(separator:"\n"))
         </div>
         """
