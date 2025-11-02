@@ -1,47 +1,19 @@
 // DIN18041Target.swift
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
 // Data model for DIN 18041 target values
 
 import Foundation
 
-/// DIN 18041 target RT60 value with tolerance for a specific frequency
-///
-/// This structure represents the target reverberation time and tolerance
-/// for a specific frequency band according to DIN 18041 standard.
-public struct DIN18041Target: Codable, Equatable {
-    
-    /// Frequency band in Hz
-    public let frequency: Int
-    
-    /// Target RT60 value in seconds according to DIN 18041
-    public let targetRT60: Double
-    
-    /// Tolerance range in seconds (±tolerance)
-    public let tolerance: Double
-    
-    /// Initialize a new DIN 18041 target
-    /// - Parameters:
-    ///   - frequency: Frequency band in Hz
-    ///   - targetRT60: Target RT60 value in seconds
-    ///   - tolerance: Tolerance range in seconds
-
-// DIN 18041 target specification
-
-import Foundation
-
 /// DIN 18041 target specification
-public struct DIN18041Target {
+public struct DIN18041Target: Codable, Equatable {
     public let frequency: Int
     public let targetRT60: Double
     public let tolerance: Double
     
-main
     public init(frequency: Int, targetRT60: Double, tolerance: Double) {
         self.frequency = frequency
         self.targetRT60 = targetRT60
         self.tolerance = tolerance
     }
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
     
     /// Lower bound of acceptable RT60 range
     public var lowerBound: Double {
@@ -72,6 +44,4 @@ copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
             return .withinTolerance
         }
     }
-
-main
 }

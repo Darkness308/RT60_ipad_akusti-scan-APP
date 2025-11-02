@@ -1,9 +1,7 @@
 import XCTest
 @testable import ReportExport
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
 
 
-main
 #if canImport(PDFKit)
 import PDFKit
 #endif
@@ -31,7 +29,6 @@ final class PDFReportSnapshotTests: XCTestCase {
         )
 
         let data = PDFReportRenderer().render(model)
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
         guard let doc = PDFDocument(data: data) else {
             XCTFail("Failed to create PDFDocument from data")
             return
@@ -62,26 +59,6 @@ copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
 
         let data = PDFReportRenderer().render(model)
         XCTAssertFalse(data.isEmpty, "PDF renderer should produce non-empty data")
-
-        guard !data.isEmpty else { 
-            XCTFail("Failed to get PDF data")
-            return 
-        }
-        
-        guard let doc = PDFDocument(data: data) else { 
-            XCTFail("Failed to create PDFDocument from PDF data")
-            return 
-        }
-        
-        XCTAssertEqual(doc.pageCount, 7)
-
-        let h = Self.hash(data)
-        // For now, just verify hash is computed consistently
-        XCTAssertEqual(h, h) // Placeholder: enter expected hash value after first run
-        #else
-        // Skip test on platforms without PDFKit
-        throw XCTSkip("PDFKit not available on this platform")
-main
         #endif
     }
 
