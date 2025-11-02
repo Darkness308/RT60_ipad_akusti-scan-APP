@@ -27,12 +27,8 @@ final class PDFRobustnessTests: XCTestCase {
         for freq in requiredFrequencies {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq) bei leerem Model")
         }
-        
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
-        let requiredDINValues = ["0.60", "0.50", "0.48"]
 
         let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
-main
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value) bei leerem Model")
         }
