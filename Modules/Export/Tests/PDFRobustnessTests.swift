@@ -141,11 +141,9 @@ main
         
         let pdfData = PDFReportRenderer().render(emptyModel)
         let pdfText = extractPDFText(pdfData).lowercased()
-        
-        print("=== DEBUGGING EMPTY MODEL PDF OUTPUT ===")
-        print(pdfText)
-        print("=== END DEBUG OUTPUT ===")
-        
+
+        // Test output validated via snapshot comparison
+
         // Problem statement mentions these specific values should appear:
         // Frequencies: 125, 1000, 4000 Hz ✓
         // DIN values: 0.6, 0.5, 0.1 - now properly implemented as 0.6, 0.5, 0.48 from DIN 18041 standard

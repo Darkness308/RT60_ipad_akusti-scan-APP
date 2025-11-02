@@ -13,14 +13,23 @@ let package = Package(
             targets: ["ReportExport"]
         )
     ],
+    dependencies: [
+        // Depend on AcoustiScanConsolidated for shared report models and renderers
+        .package(path: "../../AcoustiScanConsolidated")
+    ],
     targets: [
         .target(
             name: "ReportExport",
-            dependencies: []
+            dependencies: [
+                .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated")
+            ]
         ),
         .testTarget(
             name: "ReportExportTests",
-            dependencies: ["ReportExport"],
+            dependencies: [
+                "ReportExport",
+                .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated")
+            ],
             path: "Tests",
             sources: [
                 "ReportContractTests.swift",

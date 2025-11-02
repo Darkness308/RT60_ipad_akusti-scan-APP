@@ -3,19 +3,20 @@
 
 import Foundation
 
-/// JSON-serializable report model matching the schema requirements
-public struct ReportModel: Codable {
+/// Unified report data model used by both PDF and HTML renderers
+/// Note: din_targets uses [[String: Double?]] to handle optional values in rendering
+public struct ReportModel {
     public let metadata: [String: String]
     public let rt60_bands: [[String: Double?]]
-    public let din_targets: [[String: Double]]
+    public let din_targets: [[String: Double?]]
     public let validity: [String: String]
     public let recommendations: [String]
     public let audit: [String: String]
-    
+
     public init(
         metadata: [String: String],
         rt60_bands: [[String: Double?]],
-        din_targets: [[String: Double]],
+        din_targets: [[String: Double?]],
         validity: [String: String],
         recommendations: [String],
         audit: [String: String]
@@ -48,7 +49,7 @@ extension ReportModel {
             ]
         }
         
-        let din_targets = reportData.dinResults.map { deviation in
+        let din_targets = reportData.dinResults.map { deviation -> [String: Double?] in
             [
                 "freq_hz": Double(deviation.frequency),
                 "t_soll": deviation.targetRT60,
