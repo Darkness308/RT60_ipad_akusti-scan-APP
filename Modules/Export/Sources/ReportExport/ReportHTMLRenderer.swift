@@ -44,8 +44,8 @@ public final class ReportHTMLRenderer {
     // MARK: - Template
 
     private func buildHTML(_ m: ReportModel) -> String {
-        // Required frequencies that should always appear
-        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        // Required frequencies that should always appear (using representative frequencies as per DIN 18041)
+        let requiredFrequencies = [125, 1000, 4000]
         
         let head = """
         <!doctype html>
