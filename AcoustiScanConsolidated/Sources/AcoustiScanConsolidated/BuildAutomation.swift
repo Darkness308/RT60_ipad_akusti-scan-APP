@@ -90,69 +90,15 @@ public class BuildAutomation {
         if task.terminationStatus == 0 {
             return .success(output)
         } else {
-            let errors = parseErrors(from: output)
+            let errors = BuildAutomationDiagnostics.parseErrors(from: output)
             return .failure(output, errors)
         }
     }
-    
-    /// Parse Swift build errors from output
-    private static func parseErrors(from output: String) -> [BuildError] {
-        var errors: [BuildError] = []
-        let lines = output.components(separatedBy: .newlines)
-        
-        for line in lines {
-            if let error = parseErrorLine(line) {
-                errors.append(error)
-            }
-        }
-        
-        return errors
-    }
-    
-    /// Parse individual error line
-    private static func parseErrorLine(_ line: String) -> BuildError? {
-        // Parse Swift error format: file:line:column: error: message
-        let pattern = #"(.+?):(\d+):(\d+):\s*(error|warning):\s*(.+)"#
-        
-        guard let regex = try? NSRegularExpression(pattern: pattern),
-              let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)) else {
-            return nil
-        }
-        
-        let file = String(line[Range(match.range(at: 1), in: line)!])
-        let lineNum = Int(String(line[Range(match.range(at: 2), in: line)!])) ?? 0
-        let column = Int(String(line[Range(match.range(at: 3), in: line)!])) ?? 0
-        let severity = String(line[Range(match.range(at: 4), in: line)!])
-        let message = String(line[Range(match.range(at: 5), in: line)!])
-        
-        guard severity == "error" else { return nil } // Only handle errors for now
-        
-        let errorType = classifyError(message: message)
-        
-        return BuildError(file: file, line: lineNum, column: column, message: message, type: errorType)
-    }
-    
-    /// Classify error type based on message
-    private static func classifyError(message: String) -> BuildError.ErrorType {
-        if message.contains("import") || message.contains("module") {
-            return .missingImport
-        } else if message.contains("unresolved identifier") || message.contains("undeclared") {
-            return .undeclaredIdentifier
-        } else if message.contains("type") {
-            return .typeError
-        } else if message.contains("expected") || message.contains("syntax") {
-            return .syntaxError
-        } else if message.contains("deprecated") {
-            return .deprecation
-        } else {
-            return .other
-        }
-    }
-    
+
     /// Attempt to automatically fix common errors
     private static func attemptToFixErrors(_ errors: [BuildError], projectPath: String) -> [BuildError] {
         var fixedErrors: [BuildError] = []
-        
+
         for error in errors {
             switch error.type {
             case .missingImport:
@@ -186,7 +132,7 @@ public class BuildAutomation {
     /// Fix missing import statements
     private static func fixMissingImport(_ error: BuildError, projectPath: String) -> Bool {
         guard let fileContent = try? String(contentsOfFile: error.file),
-              let missingModule = extractMissingModule(from: error.message) else {
+              let missingModule = BuildAutomationDiagnostics.extractMissingModule(from: error.message) else {
             return false
         }
         

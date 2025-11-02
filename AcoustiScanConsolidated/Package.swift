@@ -20,8 +20,6 @@ let package = Package(
         )
     ],
     dependencies: [
-        // Add dependencies for testing and build automation
-        .package(url: "https://github.com/apple/swift-testing", from: "0.1.0")
     ],
     targets: [
         .target(
@@ -37,8 +35,7 @@ let package = Package(
         .testTarget(
             name: "AcoustiScanConsolidatedTests",
             dependencies: [
-                "AcoustiScanConsolidated",
-                .product(name: "Testing", package: "swift-testing")
+                "AcoustiScanConsolidated"
             ],
             path: "Tests/AcoustiScanConsolidatedTests"
         )
