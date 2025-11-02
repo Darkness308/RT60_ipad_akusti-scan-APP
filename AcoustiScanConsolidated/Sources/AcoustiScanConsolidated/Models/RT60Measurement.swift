@@ -1,5 +1,4 @@
 // RT60Measurement.swift
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
 // Data model for room acoustics measurement data
 
 import Foundation
@@ -25,18 +24,6 @@ public struct RT60Measurement: Codable, Equatable {
     ///   - frequency: Frequency band in Hz
     ///   - rt60: RT60 value in seconds
     ///   - timestamp: Measurement timestamp (defaults to current time)
-
-// Room acoustics measurement data structure
-
-import Foundation
-
-/// Room acoustics measurement data structure
-public struct RT60Measurement {
-    public let frequency: Int
-    public let rt60: Double
-    public let timestamp: Date
-    
-main
     public init(frequency: Int, rt60: Double, timestamp: Date = Date()) {
         self.frequency = frequency
         self.rt60 = rt60

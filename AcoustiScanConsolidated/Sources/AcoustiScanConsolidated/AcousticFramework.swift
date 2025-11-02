@@ -69,9 +69,6 @@ public struct AcousticFramework {
     }
 }
 
-copilot/fix-aa461d06-db9a-46a8-a69e-81cd537f46e8
 // Note: RT60Measurement, RoomType, RT60Deviation, and EvaluationStatus models
 // have been moved to dedicated files in the Models/ directory.
 // Import them from there to avoid duplication.
-
-main
