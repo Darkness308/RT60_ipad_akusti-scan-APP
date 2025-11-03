@@ -48,7 +48,6 @@ public class RT60Calculator {
         roomType: RoomType,
         volume: Double
     ) -> [RT60Deviation] {
-copilot/fix-failing-job-issue
         let targets = DIN18041Database.targets(for: roomType, volume: volume)
         
         return measurements.compactMap { measurement in
@@ -79,12 +78,3 @@ copilot/fix-failing-job-issue
 
 // Note: AcousticSurface and AcousticMaterial models have been moved to 
 // dedicated files in the Models/ directory to avoid duplication.
-
-        return RT60Evaluator.evaluateDINCompliance(
-            measurements: measurements,
-            roomType: roomType,
-            volume: volume
-        )
-    }
-}
-main
