@@ -44,7 +44,11 @@ public final class ReportHTMLRenderer {
     // MARK: - Template
 
     private func buildHTML(_ m: ReportModel) -> String {
+copilot/fix-failed-builds-and-workflows
+        // Required frequencies that should always appear
+
         // Required frequencies that should always appear (using representative frequencies as per DIN 18041)
+main
         let requiredFrequencies = [125, 1000, 4000]
         
         let head = """
