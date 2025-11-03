@@ -44,9 +44,8 @@ public final class ReportHTMLRenderer {
     // MARK: - Template
 
     private func buildHTML(_ m: ReportModel) -> String {
-        // Required frequencies and values that should always appear
-        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
-        let requiredDINValues = [0.6, 0.5, 0.48]
+        // Required frequencies that should always appear (using representative frequencies as per DIN 18041)
+        let requiredFrequencies = [125, 1000, 4000]
         
         let head = """
         <!doctype html>
@@ -178,19 +177,7 @@ public final class ReportHTMLRenderer {
         <table>
           <thead><tr><th>Frequenz [Hz]</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
           <tbody>
-copilot/fix-57406077-7a71-4169-ae14-9946c82accb9
-            \(requiredDINValues.map { value in
-                return "<tr><td></td><td>\(String(format: "%.2f", value))</td><td>-</td></tr>"
-            }.joined(separator:"\n"))
-            \(m.din_targets.map { row in
-                let f = intString(row["freq_hz"] ?? nil)
-                let ts = numberString(row["t_soll"] ?? nil)
-                let tol = numberString(row["tol"] ?? nil)
-                return "<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>"
-            }.joined(separator:"\n"))
-
             \(dinRows.joined(separator:"\n"))
-main
           </tbody>
         </table>
         """
