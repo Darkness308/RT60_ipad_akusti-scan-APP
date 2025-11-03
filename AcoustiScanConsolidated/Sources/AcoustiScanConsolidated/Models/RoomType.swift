@@ -9,25 +9,25 @@ import Foundation
 /// which determines the target RT60 values and tolerance ranges for acoustic evaluation.
 /// Each room type has specific requirements based on its intended use.
 public enum RoomType: String, CaseIterable, Codable {
-    
+
     /// Classroom or teaching room
     case classroom = "classroom"
-    
+
     /// Office space for speech communication
     case officeSpace = "office_space"
-    
+
     /// Conference room for meetings and presentations
     case conference = "conference"
-    
+
     /// Lecture hall or auditorium
     case lecture = "lecture"
-    
+
     /// Music room or rehearsal space
     case music = "music"
-    
+
     /// Sports hall or gymnasium
     case sports = "sports"
-    
+
     /// Human-readable display name in German
     public var displayName: String {
         switch self {
@@ -45,7 +45,7 @@ public enum RoomType: String, CaseIterable, Codable {
             return "Sporthalle"
         }
     }
-    
+
     /// Primary use category for acoustic planning
     public var primaryUse: String {
         switch self {
@@ -57,7 +57,7 @@ public enum RoomType: String, CaseIterable, Codable {
             return "Sports"
         }
     }
-    
+
     /// Typical volume range for this room type (in cubic meters)
     public var typicalVolumeRange: ClosedRange<Double> {
         switch self {

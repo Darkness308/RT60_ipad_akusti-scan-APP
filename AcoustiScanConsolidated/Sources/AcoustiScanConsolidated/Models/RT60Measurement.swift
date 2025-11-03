@@ -3,6 +3,7 @@
 
 import Foundation
 
+copilot/fix-failing-job-54309431333
 /// Room acoustics measurement data structure for RT60 analysis
 ///
 /// This structure represents a single RT60 measurement at a specific frequency band.
@@ -24,6 +25,14 @@ public struct RT60Measurement: Codable, Equatable {
     ///   - frequency: Frequency band in Hz
     ///   - rt60: RT60 value in seconds
     ///   - timestamp: Measurement timestamp (defaults to current time)
+
+/// Room acoustics measurement data structure
+public struct RT60Measurement: Codable, Equatable {
+    public let frequency: Int
+    public let rt60: Double
+    public let timestamp: Date
+    
+main
     public init(frequency: Int, rt60: Double, timestamp: Date = Date()) {
         self.frequency = frequency
         self.rt60 = rt60

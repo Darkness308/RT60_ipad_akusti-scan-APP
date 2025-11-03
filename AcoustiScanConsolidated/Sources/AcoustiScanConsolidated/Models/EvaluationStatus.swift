@@ -3,6 +3,7 @@
 
 import Foundation
 
+copilot/fix-failing-job-54309431333
 /// Status indicating how measured RT60 values compare to DIN 18041 targets
 ///
 /// This enumeration represents the compliance status of RT60 measurements
@@ -51,6 +52,34 @@ public enum EvaluationStatus: String, CaseIterable, Codable {
             return "orange"
         case .partiallyCompliant:
             return "yellow"
+
+public enum EvaluationStatus: String, CaseIterable, Codable {
+    case withinTolerance = "within_tolerance"
+    case tooHigh = "too_high"
+    case tooLow = "too_low"
+    case partiallyCompliant = "partially_compliant"
+    
+    public var displayName: String {
+        switch self {
+        case .withinTolerance: return "Innerhalb Toleranz"
+        case .tooHigh: return "Zu hoch"
+        case .tooLow: return "Zu niedrig"
+        case .partiallyCompliant: return "Teilweise konform"
         }
+    }
+    
+    public var color: String {
+        switch self {
+        case .withinTolerance: return "green"
+        case .tooHigh: return "red"
+        case .tooLow: return "orange"
+        case .partiallyCompliant: return "yellow"
+main
+        }
+    }
+    
+    /// Color indication for UI display
+    public var isCompliant: Bool {
+        return self == .withinTolerance
     }
 }
