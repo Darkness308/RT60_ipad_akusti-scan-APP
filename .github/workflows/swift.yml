@@ -9,7 +9,7 @@ on:
 
 env:
   MAX_RETRY_ATTEMPTS: 3
-  XCODE_VERSION: '15.2'
+  XCODE_VERSION: '16.1'
 
 jobs:
   build:
