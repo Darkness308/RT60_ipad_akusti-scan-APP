@@ -3,7 +3,6 @@
 
 import Foundation
 
-copilot/fix-failing-job-54309431333
 /// Room surface with area and associated acoustic material
 ///
 /// This structure represents a room surface (wall, ceiling, floor) with its
@@ -24,14 +23,6 @@ public struct AcousticSurface: Codable, Equatable {
     ///   - name: Surface name
     ///   - area: Surface area in square meters
     ///   - material: Associated acoustic material
-
-/// Acoustic surface representation
-public struct AcousticSurface: Codable, Equatable {
-    public let name: String
-    public let area: Double
-    public let material: AcousticMaterial
-    
-main
     public init(name: String, area: Double, material: AcousticMaterial) {
         self.name = name
         self.area = area
@@ -59,8 +50,4 @@ main
     public var averageAbsorption: Double {
         return material.speechAbsorption
     }
-copilot/fix-failing-job-54309431333
 }
-
-)
-main

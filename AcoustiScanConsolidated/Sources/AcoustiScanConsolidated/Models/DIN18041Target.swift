@@ -3,7 +3,6 @@
 
 import Foundation
 
-copilot/fix-failing-job-54309431333
 /// DIN 18041 target RT60 value with tolerance for a specific frequency
 ///
 /// This structure represents the target reverberation time and tolerance
@@ -24,14 +23,6 @@ public struct DIN18041Target: Codable, Equatable {
     ///   - frequency: Frequency band in Hz
     ///   - targetRT60: Target RT60 value in seconds
     ///   - tolerance: Tolerance range in seconds
-
-/// DIN 18041 target specification
-public struct DIN18041Target: Codable, Equatable {
-    public let frequency: Int
-    public let targetRT60: Double
-    public let tolerance: Double
-    
-main
     public init(frequency: Int, targetRT60: Double, tolerance: Double) {
         self.frequency = frequency
         self.targetRT60 = targetRT60
@@ -67,7 +58,4 @@ main
             return .withinTolerance
         }
     }
-copilot/fix-failing-job-54309431333
 }
-}
-main

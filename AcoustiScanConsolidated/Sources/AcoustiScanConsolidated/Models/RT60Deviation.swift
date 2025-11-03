@@ -3,7 +3,6 @@
 
 import Foundation
 
-copilot/fix-failing-job-54309431333
 /// DIN 18041 compliance evaluation result for a specific frequency band
 ///
 /// This structure represents the evaluation of measured RT60 values against
@@ -23,15 +22,6 @@ public struct RT60Deviation: Codable, Equatable {
     public let status: EvaluationStatus
     
     /// Calculated deviation from target (measured - target)
-
-/// DIN 18041 compliance evaluation
-public struct RT60Deviation: Codable, Equatable {
-    public let frequency: Int
-    public let measuredRT60: Double
-    public let targetRT60: Double
-    public let status: EvaluationStatus
-    
-main
     public var deviation: Double {
         return measuredRT60 - targetRT60
     }

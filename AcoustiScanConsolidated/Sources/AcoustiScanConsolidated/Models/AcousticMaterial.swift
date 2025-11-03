@@ -30,11 +30,6 @@ public struct AcousticMaterial: Identifiable, Codable, Equatable {
         self.absorptionCoefficients = absorptionCoefficients
     }
     
-copilot/fix-failing-job-54309431333
-
-
-
-main
     /// Initialize with specific ID (for testing or known materials)
     /// - Parameters:
     ///   - id: Unique identifier
