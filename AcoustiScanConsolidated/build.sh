@@ -15,10 +15,14 @@ NC='\033[0m' # No Color
 
 # Configuration
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ARTIFACTS_DIR="$PROJECT_DIR/../Artifacts"
 MAX_RETRIES=3
 BUILD_LOG="build.log"
 
 echo -e "${BLUE}📁 Project directory: ${PROJECT_DIR}${NC}"
+
+# Create Artifacts directory at project root for CI/CD integration
+mkdir -p "$ARTIFACTS_DIR"
 
 # Function to print colored output
 print_status() {
@@ -76,6 +80,10 @@ build_with_retry() {
     if [ "$build_success" = false ]; then
         print_status $RED "❌ Build failed after $MAX_RETRIES attempts"
         print_status $YELLOW "📋 Build log saved to: $BUILD_LOG"
+        # Copy build log to Artifacts directory for CI/CD upload
+        if ! cp "$BUILD_LOG" "$ARTIFACTS_DIR/"; then
+            print_status $YELLOW "⚠️  Failed to copy build log to Artifacts directory"
+        fi
         exit 1
     fi
 }
@@ -289,6 +297,10 @@ run_tests() {
     else
         print_status $RED "❌ Some tests failed"
         print_status $YELLOW "📋 Test log saved to: test.log"
+        # Copy test log to Artifacts directory for CI/CD upload
+        if ! cp test.log "$ARTIFACTS_DIR/"; then
+            print_status $YELLOW "⚠️  Failed to copy test log to Artifacts directory"
+        fi
         return 1
     fi
 }
