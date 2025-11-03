@@ -276,6 +276,10 @@ jobs:
       run: |
         echo "❌ Build process failed. Creating detailed error report..."
         
+        # Ensure Artifacts directory exists
+        mkdir -p Artifacts
+        echo "Creating artifacts dir: $(pwd)/Artifacts" >&2
+        
         # Collect all error flags
         ERRORS=""
         [ "${{ steps.lint.outputs.lint_failed }}" = "true" ] && ERRORS="$ERRORS\n- Linting failed"
