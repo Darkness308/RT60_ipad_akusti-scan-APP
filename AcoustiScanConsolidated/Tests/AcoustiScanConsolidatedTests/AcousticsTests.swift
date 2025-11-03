@@ -1,16 +1,15 @@
 // AcousticsTests.swift
 // Unit tests for the ImpulseResponseAnalyzer in the Acoustics module
 
-import Testing
+import XCTest
 import Foundation
 @testable import AcoustiScanConsolidated
 
 /// Test suite for Impulse Response Analysis and RT60 calculations
-struct AcousticsTests {
+final class AcousticsTests: XCTestCase {
     
     // MARK: - Energy Decay Curve Tests
     
-    @Test("Energy decay curve from simple impulse")
     func testEnergyDecayCurveSimpleImpulse() throws {
         // Create a simple exponentially decaying impulse response
         let length = 1000
@@ -21,70 +20,60 @@ struct AcousticsTests {
         
         let energyCurve = try ImpulseResponseAnalyzer.energyDecayCurve(ir: impulse)
         
-        #expect(energyCurve.count == length)
-        #expect(energyCurve.first == 1.0) // Normalized to start at 1.0
-        #expect(energyCurve.last ?? 0 > 0) // Should not be zero
+        XCTAssertEqual(energyCurve.count, length)
+        XCTAssertEqual(energyCurve.first, 1.0) // Normalized to start at 1.0
+        XCTAssertTrue((energyCurve.last ?? 0) > 0) // Should not be zero
         
         // Energy curve should be monotonically decreasing
         for i in 1..<energyCurve.count {
-            #expect(energyCurve[i] <= energyCurve[i-1])
+            XCTAssertTrue(energyCurve[i] <= energyCurve[i-1])
         }
     }
     
-    @Test("Energy decay curve with empty input throws error")
     func testEnergyDecayCurveEmptyInput() {
-        #expect(throws: (any Error).self) {
-            try ImpulseResponseAnalyzer.energyDecayCurve(ir: [])
-        }
+        XCTAssertThrowsError(try ImpulseResponseAnalyzer.energyDecayCurve(ir: []))
     }
     
-    @Test("Energy decay curve with insufficient data throws error")
     func testEnergyDecayCurveInsufficientData() {
-        #expect(throws: (any Error).self) {
-            try ImpulseResponseAnalyzer.energyDecayCurve(ir: [1.0])
-        }
+        XCTAssertThrowsError(try ImpulseResponseAnalyzer.energyDecayCurve(ir: [1.0]))
     }
     
-    @Test("Energy decay curve from known values")
     func testEnergyDecayCurveKnownValues() throws {
         // Simple test case with known values
         let impulse: [Float] = [1.0, 0.8, 0.6, 0.4, 0.2]
         let energyCurve = try ImpulseResponseAnalyzer.energyDecayCurve(ir: impulse)
         
-        #expect(energyCurve.count == 5)
-        #expect(energyCurve.first == 1.0) // Normalized
+        XCTAssertEqual(energyCurve.count, 5)
+        XCTAssertEqual(energyCurve.first, 1.0) // Normalized
         
         // Verify monotonic decrease
-        #expect(energyCurve[1] < energyCurve[0])
-        #expect(energyCurve[2] < energyCurve[1])
-        #expect(energyCurve[3] < energyCurve[2])
-        #expect(energyCurve[4] < energyCurve[3])
+        XCTAssertTrue(energyCurve[1] < energyCurve[0])
+        XCTAssertTrue(energyCurve[2] < energyCurve[1])
+        XCTAssertTrue(energyCurve[3] < energyCurve[2])
+        XCTAssertTrue(energyCurve[4] < energyCurve[3])
     }
     
     // MARK: - Decibel Conversion Tests
     
-    @Test("Decay curve conversion to decibels")
     func testDecayCurveInDecibels() {
         let linearCurve: [Float] = [1.0, 0.5, 0.25, 0.125, 0.0625]
         let dbCurve = ImpulseResponseAnalyzer.decayCurveInDecibels(etc: linearCurve)
         
-        #expect(dbCurve.count == 5)
-        #expect(abs(dbCurve[0] - 0.0) < 0.001) // 1.0 -> 0 dB
-        #expect(abs(dbCurve[1] - (-3.0)) < 0.1) // 0.5 -> ~-3 dB
-        #expect(abs(dbCurve[2] - (-6.0)) < 0.1) // 0.25 -> ~-6 dB
-        #expect(abs(dbCurve[3] - (-9.0)) < 0.1) // 0.125 -> ~-9 dB
-        #expect(abs(dbCurve[4] - (-12.0)) < 0.1) // 0.0625 -> ~-12 dB
+        XCTAssertEqual(dbCurve.count, 5)
+        XCTAssertEqual(dbCurve[0], 0.0, accuracy: 0.001) // 1.0 -> 0 dB
+        XCTAssertEqual(dbCurve[1], -3.0, accuracy: 0.1) // 0.5 -> ~-3 dB
+        XCTAssertEqual(dbCurve[2], -6.0, accuracy: 0.1) // 0.25 -> ~-6 dB
+        XCTAssertEqual(dbCurve[3], -9.0, accuracy: 0.1) // 0.125 -> ~-9 dB
+        XCTAssertEqual(dbCurve[4], -12.0, accuracy: 0.1) // 0.0625 -> ~-12 dB
     }
     
-    @Test("Decibel conversion with empty input")
     func testDecayCurveInDecibelsEmpty() {
         let dbCurve = ImpulseResponseAnalyzer.decayCurveInDecibels(etc: [])
-        #expect(dbCurve.isEmpty)
+        XCTAssertTrue(dbCurve.isEmpty)
     }
     
     // MARK: - Level Index Finding Tests
     
-    @Test("Find level index in decay curve")
     func testIndexOfLevel() {
         let dbCurve: [Float] = [0.0, -3.0, -6.0, -9.0, -12.0, -15.0, -18.0, -21.0, -24.0, -27.0, -30.0]
         
@@ -92,20 +81,18 @@ struct AcousticsTests {
         let index25dB = ImpulseResponseAnalyzer.index(ofLevel: -25.0, in: dbCurve)
         let index35dB = ImpulseResponseAnalyzer.index(ofLevel: -35.0, in: dbCurve)
         
-        #expect(index5dB == 2) // -6 dB is the first to reach or exceed -5 dB
-        #expect(index25dB == 9) // -27 dB is the first to reach or exceed -25 dB
-        #expect(index35dB == nil) // -35 dB is not reached
+        XCTAssertEqual(index5dB, 2) // -6 dB is the first to reach or exceed -5 dB
+        XCTAssertEqual(index25dB, 9) // -27 dB is the first to reach or exceed -25 dB
+        XCTAssertNil(index35dB) // -35 dB is not reached
     }
     
-    @Test("Find level index with empty curve")
     func testIndexOfLevelEmpty() {
         let index = ImpulseResponseAnalyzer.index(ofLevel: -5.0, in: [])
-        #expect(index == nil)
+        XCTAssertNil(index)
     }
     
     // MARK: - T20 Calculation Tests
     
-    @Test("T20 calculation with sufficient decay")
     func testT20FromDecay() {
         // Create a decay curve that goes from 0 to -30 dB linearly
         let dbCurve = (0...300).map { Float($0) * -0.1 } // 0 to -30 dB in 301 samples
@@ -113,34 +100,31 @@ struct AcousticsTests {
         
         let t20 = ImpulseResponseAnalyzer.t20FromDecay(dbCurve, sampleRate: sampleRate)
         
-        #expect(t20 != nil)
+        XCTAssertNotNil(t20)
         if let t20Value = t20 {
             // Should be approximately (200 samples / 44100 Hz) * 3
             let expectedDuration = (200.0 / sampleRate) * 3.0
-            #expect(abs(t20Value - expectedDuration) < 0.001)
+            XCTAssertEqual(t20Value, expectedDuration, accuracy: 0.001)
         }
     }
     
-    @Test("T20 calculation with insufficient decay")
     func testT20FromDecayInsufficient() {
         // Decay curve that only goes to -10 dB (insufficient for T20)
         let dbCurve = (0...100).map { Float($0) * -0.1 } // 0 to -10 dB
         let sampleRate = 44100.0
         
         let t20 = ImpulseResponseAnalyzer.t20FromDecay(dbCurve, sampleRate: sampleRate)
-        #expect(t20 == nil)
+        XCTAssertNil(t20)
     }
     
-    @Test("T20 calculation with invalid sample rate")
     func testT20FromDecayInvalidSampleRate() {
         let dbCurve: [Float] = [0.0, -5.0, -10.0, -15.0, -20.0, -25.0, -30.0]
         let t20 = ImpulseResponseAnalyzer.t20FromDecay(dbCurve, sampleRate: 0.0)
-        #expect(t20 == nil)
+        XCTAssertNil(t20)
     }
     
     // MARK: - T30 Calculation Tests
     
-    @Test("T30 calculation with sufficient decay")
     func testT30FromDecay() {
         // Create a decay curve that goes from 0 to -40 dB linearly
         let dbCurve = (0...400).map { Float($0) * -0.1 } // 0 to -40 dB in 401 samples
@@ -148,27 +132,25 @@ struct AcousticsTests {
         
         let t30 = ImpulseResponseAnalyzer.t30FromDecay(dbCurve, sampleRate: sampleRate)
         
-        #expect(t30 != nil)
+        XCTAssertNotNil(t30)
         if let t30Value = t30 {
             // Should be approximately (300 samples / 44100 Hz) * 2
             let expectedDuration = (300.0 / sampleRate) * 2.0
-            #expect(abs(t30Value - expectedDuration) < 0.001)
+            XCTAssertEqual(t30Value, expectedDuration, accuracy: 0.001)
         }
     }
     
-    @Test("T30 calculation with insufficient decay")
     func testT30FromDecayInsufficient() {
         // Decay curve that only goes to -20 dB (insufficient for T30)
         let dbCurve = (0...200).map { Float($0) * -0.1 } // 0 to -20 dB
         let sampleRate = 44100.0
         
         let t30 = ImpulseResponseAnalyzer.t30FromDecay(dbCurve, sampleRate: sampleRate)
-        #expect(t30 == nil)
+        XCTAssertNil(t30)
     }
     
     // MARK: - RT60 Calculation Tests
     
-    @Test("RT60 calculation using T30 method")
     func testRT60UsingT30() throws {
         // Create impulse response that decays sufficiently for T30
         let length = 5000
@@ -179,15 +161,14 @@ struct AcousticsTests {
         
         let rt60 = try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: 44100.0)
         
-        #expect(rt60 != nil)
+        XCTAssertNotNil(rt60)
         if let rt60Value = rt60 {
             // RT60 should be positive and reasonable (0.1 to 10 seconds)
-            #expect(rt60Value > 0.0)
-            #expect(rt60Value < 10.0)
+            XCTAssertTrue(rt60Value > 0.0)
+            XCTAssertTrue(rt60Value < 10.0)
         }
     }
     
-    @Test("RT60 calculation using T20 fallback")
     func testRT60UsingT20Fallback() throws {
         // Create impulse response that decays enough for T20 but not T30
         let length = 2000
@@ -198,38 +179,34 @@ struct AcousticsTests {
         
         let rt60 = try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: 44100.0)
         
-        #expect(rt60 != nil)
+        XCTAssertNotNil(rt60)
         if let rt60Value = rt60 {
-            #expect(rt60Value > 0.0)
-            #expect(rt60Value < 10.0)
+            XCTAssertTrue(rt60Value > 0.0)
+            XCTAssertTrue(rt60Value < 10.0)
         }
     }
     
-    @Test("RT60 calculation with insufficient decay")
     func testRT60InsufficientDecay() throws {
         // Create impulse response with minimal decay - constant values should not produce valid RT60
         let impulse: [Float] = Array(repeating: 1.0, count: 100) // Very short, no decay
         
         let rt60 = try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: 44100.0)
-        #expect(rt60 == nil)
+        XCTAssertNil(rt60)
     }
     
-    @Test("RT60 calculation with invalid sample rate throws error")
     func testRT60InvalidSampleRate() {
         let impulse: [Float] = [1.0, 0.5, 0.25]
         
-        #expect(throws: (any Error).self) {
-            try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: 0.0)
-        }
+        XCTAssertThrowsError(try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: 0.0))
+copilot/fix-acoustics-tests-import-error
         
-        #expect(throws: (any Error).self) {
-            try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: -44100.0)
-        }
+
+main
+        XCTAssertThrowsError(try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: -44100.0))
     }
     
     // MARK: - Correlation Tests
     
-    @Test("Correlation calculation for linear decay")
     func testCalculateCorrelationLinearDecay() {
         // Create perfectly linear decay
         let dbCurve = (0...100).map { Float($0) * -0.2 } // Linear decay
@@ -241,10 +218,9 @@ struct AcousticsTests {
         )
         
         // Perfect linear correlation should be close to 1.0
-        #expect(correlation > 0.99)
+        XCTAssertTrue(correlation > 0.99)
     }
     
-    @Test("Correlation calculation with invalid indices")
     func testCalculateCorrelationInvalidIndices() {
         let dbCurve: [Float] = [0.0, -1.0, -2.0, -3.0, -4.0]
         
@@ -254,7 +230,7 @@ struct AcousticsTests {
             startIndex: 3,
             endIndex: 1
         )
-        #expect(correlation1 == 0.0)
+        XCTAssertEqual(correlation1, 0.0)
         
         // Index out of bounds
         let correlation2 = ImpulseResponseAnalyzer.calculateCorrelation(
@@ -262,12 +238,11 @@ struct AcousticsTests {
             startIndex: 1,
             endIndex: 10
         )
-        #expect(correlation2 == 0.0)
+        XCTAssertEqual(correlation2, 0.0)
     }
     
     // MARK: - Integration Tests with Known Values
     
-    @Test("End-to-end test with known RT60 value")
     func testKnownRT60Value() throws {
         // Create a theoretical impulse response for a room with known RT60
         // Using exponential decay: e^(-6.91t/RT60) where RT60 = 1.0 second
@@ -282,15 +257,14 @@ struct AcousticsTests {
         
         let calculatedRT60 = try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: sampleRate)
         
-        #expect(calculatedRT60 != nil)
+        XCTAssertNotNil(calculatedRT60)
         if let rt60Value = calculatedRT60 {
             // Allow 10% tolerance for numerical approximation
             let tolerance = expectedRT60 * 0.1
-            #expect(abs(rt60Value - expectedRT60) < tolerance)
+            XCTAssertEqual(rt60Value, expectedRT60, accuracy: tolerance)
         }
     }
     
-    @Test("RT60 quality check with correlation validation")
     func testRT60QualityWithCorrelation() throws {
         // Create impulse response with good linear decay characteristics
         let sampleRate = 44100.0
@@ -309,7 +283,7 @@ struct AcousticsTests {
         // Find indices for correlation check
         guard let startIndex = ImpulseResponseAnalyzer.index(ofLevel: -5.0, in: dbCurve),
               let endIndex = ImpulseResponseAnalyzer.index(ofLevel: -25.0, in: dbCurve) else {
-            #expect(Bool(false), "Failed to find required decay levels")
+            XCTFail("Failed to find required decay levels")
             return
         }
         
@@ -320,21 +294,24 @@ struct AcousticsTests {
         )
         
         // According to ISO 3382-1, correlation should be >= 0.95
-        #expect(correlation >= 0.95, "Correlation \(correlation) is below ISO 3382-1 threshold of 0.95")
+copilot/fix-acoustics-tests-import-error
+        XCTAssertGreaterThanOrEqual(correlation, 0.95, "Correlation \(correlation) is below ISO 3382-1 threshold of 0.95")
+
+        XCTAssertTrue(correlation >= 0.95, "Correlation \(correlation) is below ISO 3382-1 threshold of 0.95")
+main
     }
     
     // MARK: - Edge Cases and Error Handling
     
-    @Test("Handle extreme decay values")
     func testExtremeDecayValues() throws {
         // Test with very rapid decay
         let rapidDecay: [Float] = [1.0, 0.1, 0.01, 0.001, 0.0001]
         let rt60Rapid = try ImpulseResponseAnalyzer.rt60(ir: rapidDecay, sampleRate: 44100.0)
-        #expect(rt60Rapid != nil) // Should handle rapid decay
+        XCTAssertNotNil(rt60Rapid) // Should handle rapid decay
         
         // Test with very slow decay (constant values) - make it shorter so no decay is possible
         let slowDecay: [Float] = Array(repeating: 1.0, count: 50) // Very short constant signal
         let rt60Slow = try ImpulseResponseAnalyzer.rt60(ir: slowDecay, sampleRate: 44100.0)
-        #expect(rt60Slow == nil) // Should return nil for insufficient decay
+        XCTAssertNil(rt60Slow) // Should return nil for insufficient decay
     }
 }
