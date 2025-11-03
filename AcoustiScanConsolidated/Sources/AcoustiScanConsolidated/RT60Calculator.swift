@@ -76,5 +76,5 @@ public class RT60Calculator {
     }
 }
 
-// Note: AcousticSurface and AcousticMaterial models have been moved to 
+// Note: AcousticSurface and AcousticMaterial models have been moved to
 // dedicated files in the Models/ directory to avoid duplication.

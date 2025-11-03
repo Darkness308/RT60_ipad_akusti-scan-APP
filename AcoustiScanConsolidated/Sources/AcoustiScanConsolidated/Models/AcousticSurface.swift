@@ -3,12 +3,26 @@
 
 import Foundation
 
-/// Acoustic surface representation
+/// Room surface with area and associated acoustic material
+///
+/// This structure represents a room surface (wall, ceiling, floor) with its
+/// geometric properties and acoustic material assignment for RT60 calculations.
 public struct AcousticSurface: Codable, Equatable {
+    
+    /// Surface name (e.g., "Decke", "Nordwand", "Boden")
     public let name: String
+    
+    /// Surface area in square meters
     public let area: Double
+    
+    /// Associated acoustic material with absorption properties
     public let material: AcousticMaterial
     
+    /// Initialize a new acoustic surface
+    /// - Parameters:
+    ///   - name: Surface name
+    ///   - area: Surface area in square meters
+    ///   - material: Associated acoustic material
     public init(name: String, area: Double, material: AcousticMaterial) {
         self.name = name
         self.area = area

@@ -198,10 +198,6 @@ final class AcousticsTests: XCTestCase {
         let impulse: [Float] = [1.0, 0.5, 0.25]
         
         XCTAssertThrowsError(try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: 0.0))
-copilot/fix-acoustics-tests-import-error
-        
-
-main
         XCTAssertThrowsError(try ImpulseResponseAnalyzer.rt60(ir: impulse, sampleRate: -44100.0))
     }
     
@@ -294,11 +290,9 @@ main
         )
         
         // According to ISO 3382-1, correlation should be >= 0.95
-copilot/fix-acoustics-tests-import-error
         XCTAssertGreaterThanOrEqual(correlation, 0.95, "Correlation \(correlation) is below ISO 3382-1 threshold of 0.95")
 
         XCTAssertTrue(correlation >= 0.95, "Correlation \(correlation) is below ISO 3382-1 threshold of 0.95")
-main
     }
     
     // MARK: - Edge Cases and Error Handling
