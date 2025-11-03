@@ -20,6 +20,9 @@ BUILD_LOG="build.log"
 
 echo -e "${BLUE}📁 Project directory: ${PROJECT_DIR}${NC}"
 
+# Create Artifacts directory at project root for CI/CD integration
+mkdir -p "$PROJECT_DIR/../Artifacts"
+
 # Function to print colored output
 print_status() {
     local color=$1
@@ -76,6 +79,8 @@ build_with_retry() {
     if [ "$build_success" = false ]; then
         print_status $RED "❌ Build failed after $MAX_RETRIES attempts"
         print_status $YELLOW "📋 Build log saved to: $BUILD_LOG"
+        # Copy build log to Artifacts directory for CI/CD upload
+        cp "$BUILD_LOG" "$PROJECT_DIR/../Artifacts/" 2>/dev/null || true
         exit 1
     fi
 }
@@ -289,6 +294,8 @@ run_tests() {
     else
         print_status $RED "❌ Some tests failed"
         print_status $YELLOW "📋 Test log saved to: test.log"
+        # Copy test log to Artifacts directory for CI/CD upload
+        cp test.log "$PROJECT_DIR/../Artifacts/" 2>/dev/null || true
         return 1
     fi
 }
