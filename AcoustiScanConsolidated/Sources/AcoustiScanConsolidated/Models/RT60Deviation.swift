@@ -3,35 +3,23 @@
 
 import Foundation
 
-/// DIN 18041 compliance evaluation result for a specific frequency band
-///
-/// This structure represents the evaluation of measured RT60 values against
-/// DIN 18041 standard targets, including the deviation and compliance status.
+/// DIN 18041 compliance evaluation
 public struct RT60Deviation: Codable, Equatable {
-
-    /// Frequency band in Hz
     public let frequency: Int
-
-    /// Measured RT60 value in seconds
     public let measuredRT60: Double
-
-    /// Target RT60 value according to DIN 18041 in seconds
     public let targetRT60: Double
-
-    /// Compliance status relative to tolerance range
     public let status: EvaluationStatus
-
-    /// Calculated deviation from target (measured - target)
+    
     public var deviation: Double {
         return measuredRT60 - targetRT60
     }
-
+    
     /// Relative deviation as percentage
     public var relativeDeviation: Double {
         guard targetRT60 > 0 else { return 0 }
         return (deviation / targetRT60) * 100
     }
-
+    
     /// Initialize a new RT60 deviation analysis
     /// - Parameters:
     ///   - frequency: Frequency band in Hz

@@ -181,7 +181,10 @@ main
         <table>
           <thead><tr><th>Frequenz [Hz]</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
           <tbody>
+copilot/fix-failing-job-issue
+
 copilot/fix-failing-job-issue-another-one
+main
             \(requiredDINValues.map { value in
                 return "<tr><td></td><td>\(String(format: "%.2f", value))</td><td>-</td></tr>"
             }.joined(separator:"\n"))
@@ -192,7 +195,10 @@ copilot/fix-failing-job-issue-another-one
                 return "<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>"
             }.joined(separator:"\n"))
 
+copilot/fix-failing-job-issue
 
+
+main
 main
             \(dinRows.joined(separator:"\n"))
           </tbody>

@@ -197,7 +197,10 @@ main
     private func drawMinimalContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
+copilot/fix-failing-job-issue
+
 copilot/fix-failing-job-issue-another-one
+main
         let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
         let requiredDINValues = [0.6, 0.5, 0.48]
 
@@ -306,10 +309,13 @@ main
         }
         
         // Required frequencies that should always appear in the PDF
+copilot/fix-failing-job-issue
+
 copilot/fix-failing-job-issue-another-one
         let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
         let requiredDINValues = [0.6, 0.5, 0.48]
 
+main
         let requiredFrequencies = [125, 1000, 4000]
 main
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
@@ -439,10 +445,13 @@ main
     
     /// Renders minimal text-based PDF with required elements when model data is insufficient
     private func renderMinimalTextPDF() -> Data {
+copilot/fix-failing-job-issue
+
 copilot/fix-failing-job-issue-another-one
         let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
         let requiredDINValues = [0.6, 0.5, 0.48]
 
+main
         let requiredFrequencies = [125, 1000, 4000]
 main
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones

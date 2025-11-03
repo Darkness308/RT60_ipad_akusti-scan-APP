@@ -1,10 +1,12 @@
 import XCTest
 @testable import ReportExport
+copilot/fix-failing-job-issue
+
 
 copilot/fix-failing-job-issue-another-one
-
-
 main
+
+
 #if canImport(PDFKit)
 import PDFKit
 #endif
@@ -44,8 +46,29 @@ final class PDFReportSnapshotTests: XCTestCase {
         // XCTFail("Hash=\(h)")  // einmalig ausgeben, dann Wert unten eintragen
         XCTAssertEqual(h, h) // Platzhalter: trage den erwarteten Hash ein
         #else
+copilot/fix-failing-job-issue
+        // On platforms without PDFKit, just verify the PDF renderer produces data
+        let model = ReportModel(
+            metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21"],
+            rt60_bands: [
+                ["freq_hz": 125.0, "t20_s": 0.7],
+                ["freq_hz": 250.0, "t20_s": 0.6]
+            ],
+            din_targets: [
+                ["freq_hz": 125.0, "t_soll": 0.6, "tol": 0.2],
+                ["freq_hz": 250.0, "t_soll": 0.6, "tol": 0.2]
+            ],
+            validity: ["method":"ISO3382-1","notes":"demo"],
+            recommendations: ["Wandabsorber ergänzen","Deckenwolken prüfen"],
+            audit: ["hash":"DEMO","source":"fixtures"]
+        )
+
+        let data = PDFReportRenderer().render(model)
+        XCTAssertFalse(data.isEmpty, "PDF renderer should produce non-empty data")
+
         // Skip test on platforms without PDFKit
         throw XCTSkip("PDFKit not available on this platform")
+main
         #endif
     }
 

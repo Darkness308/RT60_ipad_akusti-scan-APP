@@ -67,3 +67,9 @@ public struct AcousticFramework {
         return allParameters.filter { $0.category == category }
     }
 }
+
+// Note: RT60Measurement, RoomType, RT60Deviation, and EvaluationStatus models
+// have been moved to dedicated files in the Models/ directory.
+// Import them from there to avoid duplication.
+
+

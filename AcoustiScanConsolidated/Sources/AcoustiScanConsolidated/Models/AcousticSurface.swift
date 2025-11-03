@@ -3,39 +3,25 @@
 
 import Foundation
 
-/// Room surface with area and associated acoustic material
-///
-/// This structure represents a room surface (wall, ceiling, floor) with its
-/// geometric properties and acoustic material assignment for RT60 calculations.
+/// Acoustic surface representation
 public struct AcousticSurface: Codable, Equatable {
-
-    /// Surface name (e.g., "Decke", "Nordwand", "Boden")
     public let name: String
-
-    /// Surface area in square meters
     public let area: Double
-
-    /// Associated acoustic material with absorption properties
     public let material: AcousticMaterial
-
-    /// Initialize a new acoustic surface
-    /// - Parameters:
-    ///   - name: Surface name
-    ///   - area: Surface area in square meters
-    ///   - material: Associated acoustic material
+    
     public init(name: String, area: Double, material: AcousticMaterial) {
         self.name = name
         self.area = area
         self.material = material
     }
-
+    
     /// Calculate absorption area for a specific frequency
     /// - Parameter frequency: Frequency in Hz
     /// - Returns: Absorption area in square meters (area × absorption coefficient)
     public func absorptionArea(at frequency: Int) -> Double {
         return area * material.absorptionCoefficient(at: frequency)
     }
-
+    
     /// Total absorption area across all standard frequencies
     public var totalAbsorptionAreas: [Int: Double] {
         let standardFrequencies = [125, 250, 500, 1000, 2000, 4000]
@@ -45,7 +31,7 @@ public struct AcousticSurface: Codable, Equatable {
         }
         return result
     }
-
+    
     /// Average absorption coefficient of the material
     public var averageAbsorption: Double {
         return material.speechAbsorption
