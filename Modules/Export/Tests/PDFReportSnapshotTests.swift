@@ -1,6 +1,10 @@
 import XCTest
 @testable import ReportExport
 
+copilot/fix-failing-job-issue-another-one
+
+
+main
 #if canImport(PDFKit)
 import PDFKit
 #endif

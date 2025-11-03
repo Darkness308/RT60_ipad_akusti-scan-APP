@@ -64,7 +64,13 @@ public final class PDFReportRenderer {
     private func drawContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect, model: ReportModel) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
+copilot/fix-failing-job-issue-another-one
+        // Required frequencies and values that should always appear
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+
         let requiredFrequencies = [125, 1000, 4000]
+main
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
             (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
@@ -191,7 +197,12 @@ public final class PDFReportRenderer {
     private func drawMinimalContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
+copilot/fix-failing-job-issue-another-one
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+
         let requiredFrequencies = [125, 1000, 4000]
+main
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
             (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
@@ -295,7 +306,12 @@ public final class PDFReportRenderer {
         }
         
         // Required frequencies that should always appear in the PDF
+copilot/fix-failing-job-issue-another-one
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+
         let requiredFrequencies = [125, 1000, 4000]
+main
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
             (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
@@ -423,7 +439,12 @@ public final class PDFReportRenderer {
     
     /// Renders minimal text-based PDF with required elements when model data is insufficient
     private func renderMinimalTextPDF() -> Data {
+copilot/fix-failing-job-issue-another-one
+        let requiredFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let requiredDINValues = [0.6, 0.5, 0.48]
+
         let requiredFrequencies = [125, 1000, 4000]
+main
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
             (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency

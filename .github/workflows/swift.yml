@@ -13,8 +13,13 @@ env:
 
 jobs:
   build:
+copilot/fix-failing-job-issue-another-one
+    runs-on: macos-13
+    timeout-minutes: 15
+
     runs-on: macos-15
     timeout-minutes: 20
+main
     steps:
     - uses: actions/checkout@v4
     
