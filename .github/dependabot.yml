@@ -1,0 +1,80 @@
+version: 2
+updates:
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    open-pull-requests-limit: 5
+
+  # Swift Package Manager - AcoustiScanConsolidated
+  - package-ecosystem: "swift"
+    directory: "/AcoustiScanConsolidated"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "swift"
+      - "acoustiscan-consolidated"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Darkness308"
+    # Allow Dependabot to update dependencies
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+
+  # Swift Package Manager - AcoustiScanApp
+  - package-ecosystem: "swift"
+    directory: "/AcoustiScanApp"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "swift"
+      - "acoustiscan-app"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Darkness308"
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+
+  # Swift Package Manager - Export Module
+  - package-ecosystem: "swift"
+    directory: "/Modules/Export"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "swift"
+      - "export-module"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "Darkness308"
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"

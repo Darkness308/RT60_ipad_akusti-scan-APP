@@ -1,5 +1,57 @@
-# Kernmodule
-/Tools/LogParser/           @your-org/dsp-team
-/Modules/Export/            @your-org/ios-team
-/Schemas/                   @your-org/qa-team
-/Docs/                      @your-org/docs-team
+# Repository Owner
+* @Darkness308
+
+# Core Backend Package
+/AcoustiScanConsolidated/ @Darkness308
+
+# iOS App Layer
+/AcoustiScanApp/ @Darkness308
+
+# Export Module (DEPRECATED - zu konsolidieren)
+/Modules/Export/ @Darkness308
+
+# Audio Analysis & RT60 Core Logic
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/Acoustics/ @Darkness308
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/RT60Calculator.swift @Darkness308
+
+# DIN 18041 Compliance & Standards
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/DIN18041/ @Darkness308
+
+# Export & Reporting (PDF/HTML)
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/Export/ @Darkness308
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/*Renderer.swift @Darkness308
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/ConsolidatedPDFExporter.swift @Darkness308
+
+# Material Database
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/Models/AcousticMaterial.swift @Darkness308
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/Models/AcousticSurface.swift @Darkness308
+
+# Data Models
+/AcoustiScanConsolidated/Sources/AcoustiScanConsolidated/Models/ @Darkness308
+
+# Tests
+/AcoustiScanConsolidated/Tests/ @Darkness308
+/Modules/Export/Tests/ @Darkness308
+/AcoustiScanApp/AcoustiScanAppTests/ @Darkness308
+
+# CI/CD & GitHub Actions
+/.github/workflows/ @Darkness308
+/.github/*.yml @Darkness308
+
+# Documentation & Templates
+/.github/*.md @Darkness308
+/README.md @Darkness308
+/Docs/ @Darkness308
+
+# Code Quality & Linting
+/.swiftlint.yml @Darkness308
+/.swiftformat @Darkness308
+/.editorconfig @Darkness308
+
+# AI Configuration
+/.github/copilot-instructions.md @Darkness308
+/.github/dependabot.yml @Darkness308
+
+# Build & Automation Tools
+/Tools/ @Darkness308
+/AcoustiScanConsolidated/build.sh @Darkness308
