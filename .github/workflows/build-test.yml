@@ -280,7 +280,7 @@ jobs:
         echo "❌ Build process failed. Creating detailed error report..."
         
         # Ensure Artifacts directory exists
-        mkdir -p Artifacts || true
+        mkdir -p Artifacts || echo "::warning::Failed to create Artifacts directory"
         echo "Creating artifacts dir: $(pwd)/Artifacts" >&2
         
         # Collect all error flags
