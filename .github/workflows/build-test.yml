@@ -30,7 +30,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/Library/Developer/Xcode/DerivedData
-        key: ${{ runner.os }}-dd-${{ hashFiles('**/*.swift','**/*.xcodeproj','**/Package.resolved') }}
+        key: ${{ runner.os }}-dd-${{ hashFiles('**/*.swift', '**/*.xcodeproj', '**/Package.resolved') }}
     
     - name: Install Tools
       run: brew install swiftlint swiftformat || true
