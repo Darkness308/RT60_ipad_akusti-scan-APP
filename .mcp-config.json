@@ -1,0 +1,259 @@
+{
+  "mcpServers": {
+    "acoustiscan-context": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/absolute/path/to/RT60_ipad_akusti-scan-APP"
+      ],
+      "env": {
+        "PROJECT_NAME": "AcoustiScan RT60",
+        "PROJECT_TYPE": "Swift/iOS",
+        "SWIFT_VERSION": "5.9",
+        "XCODE_VERSION": "15.2",
+        "IOS_TARGET": "17.0"
+      }
+    },
+    "acoustiscan-git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git",
+        "/absolute/path/to/RT60_ipad_akusti-scan-APP"
+      ],
+      "env": {
+        "GITHUB_REPO": "Darkness308/RT60_ipad_akusti-scan-APP",
+        "DEFAULT_BRANCH": "main"
+      }
+    },
+    "acoustiscan-memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_NAMESPACE": "acoustiscan-rt60"
+      }
+    }
+  },
+  "agentConfiguration": {
+    "RT60Architect": {
+      "role": "Architecture & Design",
+      "expertise": "System Architecture, Code Organization, Design Patterns",
+      "context": {
+        "domain": "Software Architecture",
+        "technologies": ["Swift 5.9+", "SwiftUI", "Swift Package Manager"],
+        "patterns": ["MVVM", "Protocol-Oriented", "Dependency Injection"],
+        "constraints": {
+          "iosApp": "17.0+",
+          "backendPackage": "15.0+",
+          "lidar": "required"
+        }
+      },
+      "knownIssues": [
+        "21% code duplication in renderers",
+        "Two incompatible report models (ReportData vs ReportModel)",
+        "Fragmented export module"
+      ],
+      "promptPrefix": "You are RT60Architect, the lead architect for AcoustiScan RT60. Focus on architectural decisions, code structure, and design patterns."
+    },
+    "AcousticsExpert": {
+      "role": "Acoustics & Standards Expert",
+      "expertise": "DIN 18041, RT60 Measurement, Room Acoustics",
+      "context": {
+        "standards": ["DIN 18041", "ISO 3382-1", "IEC 61260-1"],
+        "formulas": {
+          "sabine": "RT60 = 0.161 × V / A",
+          "eyring": "RT60 = 0.161 × V / (-S × ln(1-α_avg))"
+        },
+        "frequencies": [125, 250, 500, 1000, 2000, 4000],
+        "roomTypes": {
+          "A1": "Sprache klein (V < 250 m³), RT60: 0.6s ±20%",
+          "A2": "Sprache mittel (250-5000 m³), RT60: 0.8s ±15%",
+          "B": "Musik/Darbietung, RT60: 1.0s ±25%",
+          "C": "Inklusiver Unterricht, RT60: 1.5s ±30%"
+        }
+      },
+      "promptPrefix": "You are AcousticsExpert, a specialist in room acoustics and DIN 18041 compliance. Ensure all calculations follow physical laws and standards."
+    },
+    "SwiftCraftsman": {
+      "role": "Swift Development Expert",
+      "expertise": "Swift Best Practices, Performance, Code Quality",
+      "context": {
+        "language": "Swift 5.9",
+        "frameworks": ["SwiftUI", "PDFKit", "RoomPlan", "AVFoundation"],
+        "codeStyle": {
+          "propertyCase": "camelCase",
+          "typeCase": "PascalCase",
+          "errorHandling": "explicit throws",
+          "models": "strongly-typed",
+          "documentation": "DocC comments"
+        },
+        "linting": {
+          "tool": "SwiftLint",
+          "mode": "strict",
+          "lineLength": 120,
+          "fileLength": 1000,
+          "typeLength": 400,
+          "complexity": 15
+        }
+      },
+      "rules": {
+        "do": [
+          "Use camelCase for properties",
+          "Use throws for error handling",
+          "Strongly-typed models",
+          "DocC comments for public APIs",
+          "Follow SwiftLint rules"
+        ],
+        "dont": [
+          "Use snake_case",
+          "Silent failures (return 0.0)",
+          "Dictionary-based models",
+          "Skip error handling",
+          "Exceed 400 lines per type"
+        ]
+      },
+      "promptPrefix": "You are SwiftCraftsman, an expert Swift developer. Write clean, performant, and type-safe Swift code following best practices."
+    },
+    "TestMaster": {
+      "role": "Testing & QA Expert",
+      "expertise": "Unit Testing, Integration Testing, Code Coverage",
+      "context": {
+        "framework": "XCTest",
+        "coverageTarget": 80,
+        "currentCoverage": 50,
+        "testTypes": ["Unit", "Integration", "Snapshot", "Contract"],
+        "weakAreas": {
+          "exportRenderer": 15,
+          "impulseResponseAnalyzer": 40,
+          "buildAutomation": 16
+        },
+        "strongAreas": {
+          "rt60Calculator": 95,
+          "rt60Evaluator": 80,
+          "din18041Database": 85
+        }
+      },
+      "promptPrefix": "You are TestMaster, the testing expert. Write comprehensive tests with Arrange-Act-Assert pattern, targeting 80% coverage."
+    },
+    "CIGuardian": {
+      "role": "CI/CD & DevOps Expert",
+      "expertise": "GitHub Actions, Build Automation, Deployment",
+      "context": {
+        "platform": "GitHub Actions",
+        "workflows": ["build-test.yml", "swift.yml", "auto-retry.yml"],
+        "runners": ["macos-15"],
+        "xcodeVersion": "15.2",
+        "timeout": 20,
+        "retryLogic": "3 attempts with exponential backoff",
+        "dependencies": ["SwiftLint", "SwiftFormat", "Dependabot"]
+      },
+      "promptPrefix": "You are CIGuardian, the CI/CD expert. Focus on reliable builds, clear error messages, and automated recovery."
+    },
+    "DocScribe": {
+      "role": "Documentation Expert",
+      "expertise": "API Documentation, Guides, Tutorials",
+      "context": {
+        "documentationTypes": [
+          "DocC API Documentation",
+          "README.md",
+          "CONTRIBUTING.md",
+          "copilot-instructions.md",
+          "agents.md"
+        ],
+        "style": {
+          "clarity": "Clear and concise",
+          "examples": "Always include code examples",
+          "language": "German for user docs, English for code",
+          "diagrams": "Mermaid for architecture"
+        }
+      },
+      "promptPrefix": "You are DocScribe, the documentation expert. Write clear, comprehensive documentation with code examples and diagrams."
+    }
+  },
+  "projectMetadata": {
+    "name": "AcoustiScan RT60",
+    "description": "Professional iPad app for acoustic room analysis with RT60 measurement and DIN 18041 compliance",
+    "version": "1.0.0",
+    "repository": "https://github.com/Darkness308/RT60_ipad_akusti-scan-APP",
+    "technologies": {
+      "language": "Swift 5.9",
+      "frameworks": ["SwiftUI", "PDFKit", "RoomPlan", "AVFoundation", "Combine"],
+      "buildSystem": "Swift Package Manager",
+      "ide": "Xcode 15.2",
+      "ci": "GitHub Actions",
+      "platforms": {
+        "app": "iOS 17.0+",
+        "backend": "iOS 15.0+",
+        "hardware": "iPad with LiDAR sensor"
+      }
+    },
+    "architecture": {
+      "app": "AcoustiScanApp (SwiftUI UI Layer)",
+      "backend": "AcoustiScanConsolidated (Swift Package)",
+      "deprecated": "Modules/Export (to be consolidated)"
+    },
+    "standards": ["DIN 18041", "ISO 3382-1", "IEC 61260-1"],
+    "codeQuality": {
+      "linter": "SwiftLint",
+      "formatter": "SwiftFormat",
+      "testCoverage": "50% (target: 80%)",
+      "codeDuplication": "21% (target: <5%)"
+    },
+    "knownIssues": [
+      "Code duplication in renderers (3x HTML, 3x PDF)",
+      "Two incompatible report models",
+      "XSS vulnerability in HTML rendering",
+      "Low test coverage in Export module (15%)",
+      "ImpulseResponseAnalyzer too large (248 LOC)"
+    ],
+    "priorities": [
+      "P0: Security audit for HTML rendering",
+      "P0: Consolidate duplicate renderers",
+      "P0: Unify report models",
+      "P1: Improve test coverage to 80%",
+      "P1: Refactor ImpulseResponseAnalyzer"
+    ]
+  },
+  "toolConfiguration": {
+    "filesystem": {
+      "rootPath": "/absolute/path/to/RT60_ipad_akusti-scan-APP",
+      "watchPaths": [
+        "AcoustiScanConsolidated/Sources",
+        "AcoustiScanApp/AcoustiScanApp",
+        "Modules/Export",
+        ".github/workflows"
+      ],
+      "ignorePaths": [
+        ".build",
+        "*.xcodeproj",
+        "*.xcworkspace",
+        "DerivedData",
+        ".DS_Store"
+      ]
+    },
+    "git": {
+      "repository": "Darkness308/RT60_ipad_akusti-scan-APP",
+      "defaultBranch": "main",
+      "branchPrefixes": {
+        "feature": "feature/",
+        "fix": "fix/",
+        "copilot": "copilot/",
+        "claude": "claude/"
+      }
+    },
+    "memory": {
+      "namespace": "acoustiscan-rt60",
+      "persistentContext": [
+        "DIN 18041 standards",
+        "RT60 calculation formulas",
+        "Known code duplication issues",
+        "Test coverage targets",
+        "Architecture decisions"
+      ]
+    }
+  }
+}
