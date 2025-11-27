@@ -1,11 +1,5 @@
 import XCTest
 @testable import ReportExport
-copilot/fix-failing-job-issue
-
-
-copilot/fix-failing-job-issue-another-one
-main
-
 
 #if canImport(PDFKit)
 import PDFKit
@@ -46,7 +40,6 @@ final class PDFReportSnapshotTests: XCTestCase {
         // XCTFail("Hash=\(h)")  // einmalig ausgeben, dann Wert unten eintragen
         XCTAssertEqual(h, h) // Platzhalter: trage den erwarteten Hash ein
         #else
-copilot/fix-failing-job-issue
         // On platforms without PDFKit, just verify the PDF renderer produces data
         let model = ReportModel(
             metadata: ["device":"iPadPro","app_version":"1.0.0","date":"2025-07-21"],
@@ -68,7 +61,6 @@ copilot/fix-failing-job-issue
 
         // Skip test on platforms without PDFKit
         throw XCTSkip("PDFKit not available on this platform")
-main
         #endif
     }
 
