@@ -64,7 +64,7 @@ public final class PDFReportRenderer {
     private func drawContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect, model: ReportModel) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
-        // Required frequencies that should always appear
+        // Required frequencies that should always appear (DIN 18041 representative octave bands)
         let requiredFrequencies = [125, 1000, 4000]
         
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
@@ -193,6 +193,7 @@ public final class PDFReportRenderer {
     private func drawMinimalContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
+        // Required frequencies that should always appear (DIN 18041 representative octave bands)
         let requiredFrequencies = [125, 1000, 4000]
         
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
@@ -297,7 +298,7 @@ public final class PDFReportRenderer {
             return renderMinimalTextPDF()
         }
         
-        // Required frequencies that should always appear in the PDF
+        // Required frequencies that should always appear in the PDF (DIN 18041 representative octave bands)
         let requiredFrequencies = [125, 1000, 4000]
         
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
@@ -427,6 +428,7 @@ public final class PDFReportRenderer {
     
     /// Renders minimal text-based PDF with required elements when model data is insufficient
     private func renderMinimalTextPDF() -> Data {
+        // Required frequencies that should always appear (DIN 18041 representative octave bands)
         let requiredFrequencies = [125, 1000, 4000]
         
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
