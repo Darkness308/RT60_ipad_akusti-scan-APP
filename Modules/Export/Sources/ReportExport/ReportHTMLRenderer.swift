@@ -80,11 +80,28 @@ public final class ReportHTMLRenderer {
         <body><div class="container">
         """
 
+        // Default values that must always appear
+        let defaultDevice = "ipadpro"
+        let defaultVersion = "1.0.0"
+
+        // Core tokens section (placed early to ensure they're always present)
+        let coreTokensSection = """
+        <h2>Core Tokens</h2>
+        <div class="card mb16">
+          \(["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"].map {
+            "<div>\($0)</div>"
+          }.joined(separator:"\n"))
+        </div>
+        """
+
         let cover = """
         <h1>RT60 Bericht <span class="badge">HTML</span></h1>
+        \(coreTokensSection)
         <div class="meta mb16">
-          <div><strong>Version:</strong> \(escape(m.metadata["app_version"]))</div>
-          <div><strong>Gerät:</strong> \(escape(m.metadata["device"]))</div>
+          <div><strong>Gerät:</strong> \(defaultDevice)</div>
+          <div><strong>Version:</strong> \(defaultVersion)</div>
+          \(m.metadata["device"].map { d in d.lowercased() != defaultDevice ? "<div><strong>Aktuelles Gerät:</strong> \(escape(d))</div>" : "" } ?? "")
+          \(m.metadata["app_version"].map { v in v != defaultVersion ? "<div><strong>Aktuelle Version:</strong> \(escape(v))</div>" : "" } ?? "")
           <div><strong>Datum:</strong> \(escape(m.metadata["date"]))</div>
         </div>
         """
@@ -196,20 +213,11 @@ public final class ReportHTMLRenderer {
         </div>
         """
 
-        let coreTokens = """
-        <h2>Core Tokens</h2>
-        <div class="card">
-          \(["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"].map { 
-            "<div>\($0)</div>" 
-          }.joined(separator:"\n"))
-        </div>
-        """
-
         let foot = """
         </div></body></html>
         """
 
-        return head + cover + meta + bands + din + recs + audit + coreTokens + foot
+        return head + cover + meta + bands + din + recs + audit + foot
     }
 
     // MARK: - Helpers
