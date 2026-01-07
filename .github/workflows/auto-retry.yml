@@ -9,11 +9,14 @@ on:
 env:
   MAX_AUTO_RETRIES: 3
 
+# Note: This workflow handles simple retries.
+# For intelligent self-healing with AI agents, see self-healing.yml and autofix-agent.yml
+
 jobs:
   auto-retry:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    
+
     steps:
     - name: Check retry count and trigger re-run
       uses: actions/github-script@v7

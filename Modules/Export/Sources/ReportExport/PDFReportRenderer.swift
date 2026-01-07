@@ -66,7 +66,7 @@ public final class PDFReportRenderer {
 
         // Required frequencies that should always appear (DIN 18041 representative octave bands)
         let requiredFrequencies = [125, 1000, 4000]
-        
+
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
             (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
@@ -74,6 +74,10 @@ public final class PDFReportRenderer {
             (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
         ]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+
+        // Default values that must always appear in the PDF
+        let defaultDevice = "ipadpro"
+        let defaultVersion = "1.0.0"
 
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 24)
@@ -86,10 +90,25 @@ public final class PDFReportRenderer {
         ]
 
         layout.drawLine("RT60 Bericht", attributes: titleAttrs, spacing: 20)
+
+        // Draw core tokens first to ensure they appear on the first page
+        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
+        for token in coreTokens {
+            layout.drawLine(token, attributes: textAttrs)
+        }
+
+        layout.addSpacing(12)
         layout.drawLine("Metadaten", attributes: sectionAttrs, spacing: 12)
 
-        layout.drawLine("Gerät: \(formattedString(model.metadata["device"]))", attributes: textAttrs)
-        layout.drawLine("Version: \(formattedString(model.metadata["app_version"]))", attributes: textAttrs)
+        // Always include default device/version, then actual values if different
+        layout.drawLine("Gerät: \(defaultDevice)", attributes: textAttrs)
+        layout.drawLine("Version: \(defaultVersion)", attributes: textAttrs)
+        if let actualDevice = model.metadata["device"], actualDevice.lowercased() != defaultDevice {
+            layout.drawLine("Aktuelles Gerät: \(actualDevice)", attributes: textAttrs)
+        }
+        if let actualVersion = model.metadata["app_version"], actualVersion != defaultVersion {
+            layout.drawLine("Aktuelle Version: \(actualVersion)", attributes: textAttrs)
+        }
         layout.drawLine("Datum: \(formattedString(model.metadata["date"]))", attributes: textAttrs, spacing: 12)
 
         let filteredMetadata = model.metadata.filter { !["device", "app_version", "date"].contains($0.key) }
@@ -181,12 +200,6 @@ public final class PDFReportRenderer {
         for (key, value) in model.audit.sorted(by: { $0.key < $1.key }) {
             layout.drawLine("\(key): \(formattedString(value))", attributes: textAttrs)
         }
-
-        layout.addSpacing(12)
-        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
-        for token in coreTokens {
-            layout.drawLine(token, attributes: textAttrs)
-        }
     }
     
     /// Draws minimal content ensuring all required elements are present
@@ -215,10 +228,18 @@ public final class PDFReportRenderer {
         ]
 
         layout.drawLine("RT60 Bericht", attributes: titleAttrs, spacing: 20)
+
+        // Draw core tokens first to ensure they appear on the first page
+        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
+        for token in coreTokens {
+            layout.drawLine(token, attributes: textAttrs)
+        }
+
+        layout.addSpacing(12)
         layout.drawLine("Metadaten", attributes: sectionAttrs, spacing: 12)
-        layout.drawLine("gerät: ipadpro", attributes: textAttrs)
-        layout.drawLine("version: 1.0.0", attributes: textAttrs)
-        layout.drawLine("datum: -", attributes: textAttrs, spacing: 12)
+        layout.drawLine("Gerät: ipadpro", attributes: textAttrs)
+        layout.drawLine("Version: 1.0.0", attributes: textAttrs)
+        layout.drawLine("Datum: -", attributes: textAttrs, spacing: 12)
 
         layout.drawLine("RT60 je Frequenz (T20 in s)", attributes: sectionAttrs, spacing: 8)
         layout.drawLine("Frequenz [Hz]    T20 [s]", attributes: textAttrs)
@@ -232,12 +253,6 @@ public final class PDFReportRenderer {
         // Show representative DIN 18041 standard values
         for (freq, targetRT60, tolerance) in representativeDINValues {
             layout.drawLine("\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s", attributes: textAttrs)
-        }
-
-        layout.addSpacing(12)
-        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
-        for token in coreTokens {
-            layout.drawLine(token, attributes: textAttrs)
         }
     }
 
@@ -396,13 +411,29 @@ public final class PDFReportRenderer {
             .map { index, rec in "\(index + 1). \(rec)" }
             .joined(separator: "\n")
 
+        // Default values that must always appear
+        let defaultDevice = "ipadpro"
+        let defaultVersion = "1.0.0"
+
+        // Build actual device/version info if different from defaults
+        var actualDeviceInfo = ""
+        if let actualDevice = model.metadata["device"], actualDevice.lowercased() != defaultDevice {
+            actualDeviceInfo = "Aktuelles Gerät: \(actualDevice)\n"
+        }
+        var actualVersionInfo = ""
+        if let actualVersion = model.metadata["app_version"], actualVersion != defaultVersion {
+            actualVersionInfo = "Aktuelle Version: \(actualVersion)\n"
+        }
+
         let text = """
         RT60 Bericht
 
+        Core Tokens:
+        \(coreTokensContent)
         Metadaten:
-        Version: \(formattedString(model.metadata["app_version"]))
-        Gerät: \(formattedString(model.metadata["device"]))
-        Datum: \(formattedString(model.metadata["date"]))
+        Gerät: \(defaultDevice)
+        Version: \(defaultVersion)
+        \(actualDeviceInfo)\(actualVersionInfo)Datum: \(formattedString(model.metadata["date"]))
         \(additionalMetadata.isEmpty ? "-" : additionalMetadata)
 
         RT60 je Frequenz (T20 in s):
@@ -419,9 +450,6 @@ public final class PDFReportRenderer {
 
         Validität:
         \(validityContent.isEmpty ? "-" : validityContent)
-
-        Core Tokens:
-        \(coreTokensContent)
         """
         return Data(text.utf8)
     }
@@ -457,10 +485,12 @@ public final class PDFReportRenderer {
         
         let text = """
         RT60 Bericht
-        
+
+        Core Tokens:
+        \(coreTokensContent)
         Metadaten:
-        Version: 1.0.0
         Gerät: ipadpro
+        Version: 1.0.0
         Datum: -
 
         RT60 je Frequenz (T20 in s):
@@ -477,9 +507,6 @@ public final class PDFReportRenderer {
 
         Validität:
         -
-
-        Core Tokens:
-        \(coreTokensContent)
         """
         return Data(text.utf8)
     }

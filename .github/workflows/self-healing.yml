@@ -1,0 +1,419 @@
+name: Self-Healing CI
+
+on:
+  workflow_run:
+    workflows: ["Build and Test", "Swift Build and Test"]
+    types:
+      - completed
+
+env:
+  MAX_HEAL_ATTEMPTS: 5
+  HEAL_ATTEMPT_FILE: ".github/heal-attempts.json"
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  analyze-and-heal:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.workflow_run.head_branch }}
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get workflow run logs
+      id: get_logs
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const fs = require('fs');
+          const workflow_run = context.payload.workflow_run;
+
+          console.log(`🔍 Analyzing failed workflow: ${workflow_run.name}`);
+          console.log(`📋 Run ID: ${workflow_run.id}`);
+          console.log(`🌿 Branch: ${workflow_run.head_branch}`);
+          console.log(`📝 Commit: ${workflow_run.head_sha}`);
+
+          // Get the jobs for this workflow run
+          const jobs = await github.rest.actions.listJobsForWorkflowRun({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: workflow_run.id
+          });
+
+          let errorLogs = [];
+          let failedSteps = [];
+
+          for (const job of jobs.data.jobs) {
+            if (job.conclusion === 'failure') {
+              console.log(`❌ Failed job: ${job.name}`);
+
+              // Get failed steps
+              for (const step of job.steps || []) {
+                if (step.conclusion === 'failure') {
+                  failedSteps.push({
+                    job: job.name,
+                    step: step.name,
+                    number: step.number
+                  });
+                  console.log(`  ❌ Failed step: ${step.name}`);
+                }
+              }
+
+              // Try to get job logs
+              try {
+                const logs = await github.rest.actions.downloadJobLogsForWorkflowRun({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  job_id: job.id
+                });
+
+                // Extract relevant error lines
+                const logContent = logs.data;
+                const errorPatterns = [
+                  /error:/gi,
+                  /Error:/gi,
+                  /ERROR:/gi,
+                  /fatal:/gi,
+                  /FATAL:/gi,
+                  /failed/gi,
+                  /XCTAssert/gi,
+                  /test.*failed/gi,
+                  /Build failed/gi,
+                  /Compilation failed/gi
+                ];
+
+                const lines = logContent.split('\n');
+                const relevantLines = lines.filter(line =>
+                  errorPatterns.some(pattern => pattern.test(line))
+                ).slice(-100); // Last 100 error lines
+
+                errorLogs.push({
+                  job: job.name,
+                  errors: relevantLines.join('\n')
+                });
+              } catch (e) {
+                console.log(`⚠️ Could not fetch logs for job ${job.name}: ${e.message}`);
+              }
+            }
+          }
+
+          // Save error info for next steps
+          const errorInfo = {
+            workflow: workflow_run.name,
+            run_id: workflow_run.id,
+            branch: workflow_run.head_branch,
+            sha: workflow_run.head_sha,
+            failed_steps: failedSteps,
+            error_logs: errorLogs,
+            html_url: workflow_run.html_url
+          };
+
+          fs.writeFileSync('/tmp/error_info.json', JSON.stringify(errorInfo, null, 2));
+          core.setOutput('error_info', JSON.stringify(errorInfo));
+          core.setOutput('has_errors', failedSteps.length > 0);
+
+    - name: Check heal attempt count
+      id: check_attempts
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const workflow_run = context.payload.workflow_run;
+          const sha = workflow_run.head_sha;
+
+          // Try to read existing attempts file
+          let attempts = {};
+          try {
+            const content = fs.readFileSync('${{ env.HEAL_ATTEMPT_FILE }}', 'utf8');
+            attempts = JSON.parse(content);
+          } catch (e) {
+            console.log('No previous heal attempts found, starting fresh');
+          }
+
+          // Get current attempt count for this SHA
+          const currentAttempts = attempts[sha] || 0;
+          const newAttempts = currentAttempts + 1;
+
+          console.log(`🔄 Heal attempt ${newAttempts}/${process.env.MAX_HEAL_ATTEMPTS} for commit ${sha.substring(0, 7)}`);
+
+          core.setOutput('attempt_count', newAttempts);
+          core.setOutput('max_reached', newAttempts > parseInt(process.env.MAX_HEAL_ATTEMPTS));
+          core.setOutput('sha', sha);
+
+    - name: Trigger AI Agent for auto-fix
+      if: steps.check_attempts.outputs.max_reached != 'true'
+      id: trigger_fix
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const fs = require('fs');
+          const errorInfo = JSON.parse(fs.readFileSync('/tmp/error_info.json', 'utf8'));
+
+          console.log('🤖 Triggering AI Agent for automatic fix...');
+
+          // Create an issue that will trigger Copilot/Claude agent
+          const issueTitle = `🔧 [AUTO-FIX] CI Failure - Attempt ${{ steps.check_attempts.outputs.attempt_count }}/${{ env.MAX_HEAL_ATTEMPTS }}`;
+
+          const issueBody = `
+          ## 🚨 Automated CI Failure Detection
+
+          **This issue was automatically created to trigger an AI coding agent fix.**
+
+          ### Workflow Details
+          - **Workflow:** ${errorInfo.workflow}
+          - **Branch:** ${errorInfo.branch}
+          - **Commit:** \`${errorInfo.sha.substring(0, 7)}\`
+          - **Run URL:** ${errorInfo.html_url}
+          - **Heal Attempt:** ${{ steps.check_attempts.outputs.attempt_count }} of ${{ env.MAX_HEAL_ATTEMPTS }}
+
+          ### Failed Steps
+          ${errorInfo.failed_steps.map(s => `- ❌ **${s.job}** → ${s.step}`).join('\n') || 'No specific steps identified'}
+
+          ### Error Log Summary
+          \`\`\`
+          ${errorInfo.error_logs.map(l => l.errors).join('\n\n').substring(0, 3000) || 'No error logs available'}
+          \`\`\`
+
+          ---
+
+          ## 🤖 AI Agent Instructions
+
+          **@copilot** or **@claude** - Please analyze and fix this CI failure:
+
+          1. **Analyze** the error logs above
+          2. **Identify** the root cause of the failure
+          3. **Implement** a fix for the issue
+          4. **Commit** the fix to branch \`${errorInfo.branch}\`
+          5. **Push** the changes to trigger a new CI run
+
+          ### Common Fix Categories
+          - 🧪 **Test failures:** Fix failing assertions or test logic
+          - 🔧 **Build errors:** Fix compilation issues, missing imports
+          - 📝 **Lint errors:** Fix code style violations
+          - 📦 **Dependency issues:** Update or fix package dependencies
+
+          ### Files to Check
+          - \`Modules/Export/Sources/ReportExport/PDFReportRenderer.swift\`
+          - \`Modules/Export/Sources/ReportExport/ReportHTMLRenderer.swift\`
+          - \`Modules/Export/Tests/PDFRobustnessTests.swift\`
+          - \`Modules/Export/Tests/ReportContractTests.swift\`
+
+          ---
+
+          ⏱️ **Auto-close:** This issue will be closed automatically when CI passes.
+          `;
+
+          try {
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              labels: ['auto-fix', 'ci-failure', 'bot']
+            });
+
+            console.log(`✅ Created auto-fix issue #${issue.data.number}`);
+            core.setOutput('issue_number', issue.data.number);
+
+            // Also trigger repository dispatch for any listening workflows
+            await github.rest.repos.createDispatchEvent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event_type: 'ci-failure-autofix',
+              client_payload: {
+                issue_number: issue.data.number,
+                branch: errorInfo.branch,
+                sha: errorInfo.sha,
+                attempt: ${{ steps.check_attempts.outputs.attempt_count }},
+                error_summary: errorInfo.error_logs.map(l => l.errors).join('\n').substring(0, 1000)
+              }
+            });
+
+            console.log('📡 Dispatched ci-failure-autofix event');
+
+          } catch (error) {
+            console.error(`❌ Failed to create issue: ${error.message}`);
+            core.setFailed(error.message);
+          }
+
+    - name: Update heal attempts counter
+      if: steps.check_attempts.outputs.max_reached != 'true'
+      run: |
+        mkdir -p .github
+        SHA="${{ steps.check_attempts.outputs.sha }}"
+        ATTEMPTS="${{ steps.check_attempts.outputs.attempt_count }}"
+
+        # Read or create attempts file
+        if [ -f "${{ env.HEAL_ATTEMPT_FILE }}" ]; then
+          CONTENT=$(cat "${{ env.HEAL_ATTEMPT_FILE }}")
+        else
+          CONTENT="{}"
+        fi
+
+        # Update with new attempt count
+        echo "$CONTENT" | jq --arg sha "$SHA" --argjson count "$ATTEMPTS" '. + {($sha): $count}' > "${{ env.HEAL_ATTEMPT_FILE }}"
+
+        # Commit the updated counter
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add "${{ env.HEAL_ATTEMPT_FILE }}" || true
+        git commit -m "chore: update heal attempts counter [skip ci]" || echo "No changes to commit"
+        git push || echo "Could not push heal counter update"
+
+    - name: Escalate to human intervention
+      if: steps.check_attempts.outputs.max_reached == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const fs = require('fs');
+          let errorInfo = {};
+          try {
+            errorInfo = JSON.parse(fs.readFileSync('/tmp/error_info.json', 'utf8'));
+          } catch (e) {
+            errorInfo = { workflow: 'Unknown', branch: 'Unknown', sha: 'Unknown' };
+          }
+
+          console.log('🚨 Maximum heal attempts reached - escalating to human intervention');
+
+          const issueTitle = `🚨 [HUMAN REQUIRED] CI Failure after ${process.env.MAX_HEAL_ATTEMPTS} auto-fix attempts`;
+
+          const issueBody = `
+          ## ⚠️ Automatic Healing Failed
+
+          **The AI coding agents were unable to fix this CI failure after ${process.env.MAX_HEAL_ATTEMPTS} attempts.**
+
+          ### Workflow Details
+          - **Workflow:** ${errorInfo.workflow || 'Unknown'}
+          - **Branch:** ${errorInfo.branch || 'Unknown'}
+          - **Commit:** \`${(errorInfo.sha || 'Unknown').substring(0, 7)}\`
+          - **Auto-fix Attempts:** ${process.env.MAX_HEAL_ATTEMPTS}
+
+          ### What Was Tried
+          The following automatic fixes were attempted:
+          1. ✅ Error log analysis
+          2. ✅ AI agent issue creation
+          3. ✅ Repository dispatch events
+          4. ❌ All ${process.env.MAX_HEAL_ATTEMPTS} attempts failed to resolve the issue
+
+          ### Required Actions
+
+          **A human developer must now:**
+
+          1. 🔍 **Review** the [workflow logs](${errorInfo.html_url || '#'})
+          2. 🐛 **Debug** the issue locally:
+             \`\`\`bash
+             cd AcoustiScanConsolidated
+             swift build && swift test
+             cd ../Modules/Export
+             swift build && swift test
+             \`\`\`
+          3. 🔧 **Fix** the underlying issue
+          4. ✅ **Verify** the fix passes CI
+          5. 🗑️ **Close** this issue once resolved
+
+          ### Error Summary
+          \`\`\`
+          ${(errorInfo.error_logs || []).map(l => l.errors).join('\n\n').substring(0, 2000) || 'No error logs available'}
+          \`\`\`
+
+          ---
+
+          **Priority:** 🔴 High
+          **Auto-generated by:** Self-Healing CI Workflow
+          `;
+
+          try {
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              labels: ['bug', 'ci-failure', 'needs-human', 'priority-high'],
+              assignees: [] // Add maintainers here if needed
+            });
+
+            console.log(`📝 Created human intervention issue #${issue.data.number}`);
+
+            // Close any open auto-fix issues for this SHA
+            const openIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'auto-fix',
+              state: 'open'
+            });
+
+            for (const issue of openIssues.data) {
+              if (issue.body && issue.body.includes(errorInfo.sha)) {
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed',
+                  body: issue.body + '\n\n---\n**Closed:** Escalated to human intervention (max attempts reached)'
+                });
+                console.log(`🔒 Closed auto-fix issue #${issue.number}`);
+              }
+            }
+
+          } catch (error) {
+            console.error(`❌ Failed to create escalation issue: ${error.message}`);
+          }
+
+  # Job to close auto-fix issues when CI passes
+  close-on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+    - name: Close auto-fix issues
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const workflow_run = context.payload.workflow_run;
+
+          console.log(`✅ Workflow "${workflow_run.name}" succeeded`);
+          console.log(`🔍 Checking for open auto-fix issues to close...`);
+
+          // Find and close any open auto-fix issues
+          const openIssues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: 'auto-fix',
+            state: 'open'
+          });
+
+          for (const issue of openIssues.data) {
+            if (issue.body && issue.body.includes(workflow_run.head_sha.substring(0, 7))) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed'
+              });
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `✅ **Auto-closed:** CI workflow "${workflow_run.name}" passed successfully!\n\n🔗 [View successful run](${workflow_run.html_url})`
+              });
+
+              console.log(`✅ Closed auto-fix issue #${issue.number}`);
+            }
+          }
+
+          // Also reset heal attempts for this SHA
+          console.log(`🔄 CI passed - heal attempts will be reset on next failure`);

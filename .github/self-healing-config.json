@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "description": "Configuration for Self-Healing CI system",
+
+  "settings": {
+    "max_heal_attempts": 5,
+    "retry_delay_seconds": 30,
+    "escalation_enabled": true,
+    "auto_close_on_success": true,
+    "create_pr_for_fixes": false,
+    "notify_on_escalation": true
+  },
+
+  "error_patterns": {
+    "pdf_test_failure": {
+      "patterns": [
+        "PDFRobustnessTests",
+        "ReportContractTests",
+        "PDF fehlt",
+        "PDF missing",
+        "required frequency",
+        "required DIN",
+        "core token"
+      ],
+      "files_to_check": [
+        "Modules/Export/Sources/ReportExport/PDFReportRenderer.swift",
+        "Modules/Export/Sources/ReportExport/ReportHTMLRenderer.swift"
+      ],
+      "auto_fix_strategy": "ensure_required_elements",
+      "priority": "high"
+    },
+
+    "build_failure": {
+      "patterns": [
+        "error: cannot find",
+        "error: use of undeclared",
+        "error: missing required",
+        "Build failed",
+        "Compilation failed"
+      ],
+      "auto_fix_strategy": "clean_rebuild",
+      "priority": "high"
+    },
+
+    "lint_failure": {
+      "patterns": [
+        "SwiftLint",
+        "swiftformat",
+        "trailing whitespace",
+        "line length",
+        "indentation"
+      ],
+      "auto_fix_strategy": "run_formatters",
+      "priority": "medium"
+    },
+
+    "dependency_failure": {
+      "patterns": [
+        "package resolution failed",
+        "dependency graph",
+        "version solving failed"
+      ],
+      "auto_fix_strategy": "clean_resolve",
+      "priority": "medium"
+    },
+
+    "test_timeout": {
+      "patterns": [
+        "Test timed out",
+        "exceeded time limit"
+      ],
+      "auto_fix_strategy": "increase_timeout",
+      "priority": "low"
+    }
+  },
+
+  "fix_strategies": {
+    "ensure_required_elements": {
+      "description": "Ensure all required PDF/HTML elements are present",
+      "steps": [
+        "verify_core_tokens",
+        "verify_required_frequencies",
+        "verify_din_values",
+        "verify_default_metadata"
+      ]
+    },
+
+    "clean_rebuild": {
+      "description": "Clean build artifacts and rebuild",
+      "steps": [
+        "clean_derived_data",
+        "clean_build_folder",
+        "resolve_packages",
+        "rebuild"
+      ]
+    },
+
+    "run_formatters": {
+      "description": "Run code formatters to fix style issues",
+      "steps": [
+        "run_swiftformat",
+        "run_swiftlint_fix"
+      ]
+    },
+
+    "clean_resolve": {
+      "description": "Clean and re-resolve dependencies",
+      "steps": [
+        "remove_package_resolved",
+        "clean_caches",
+        "resolve_packages"
+      ]
+    },
+
+    "increase_timeout": {
+      "description": "Increase test timeout values",
+      "steps": [
+        "update_test_timeout_config"
+      ]
+    }
+  },
+
+  "required_elements": {
+    "frequencies": [125, 1000, 4000],
+    "din_values": [0.6, 0.5, 0.48],
+    "core_tokens": [
+      "rt60 bericht",
+      "metadaten",
+      "gerät",
+      "ipadpro",
+      "version",
+      "1.0.0"
+    ],
+    "default_device": "ipadpro",
+    "default_version": "1.0.0"
+  },
+
+  "escalation": {
+    "labels": ["bug", "ci-failure", "needs-human", "priority-high"],
+    "assignees": [],
+    "notify_channels": [],
+    "template": "human_intervention_required"
+  },
+
+  "ai_agents": {
+    "copilot": {
+      "enabled": true,
+      "trigger": "@copilot",
+      "capabilities": ["code_fix", "test_fix", "refactor"]
+    },
+    "claude": {
+      "enabled": true,
+      "trigger": "@claude",
+      "capabilities": ["code_fix", "test_fix", "analysis", "documentation"]
+    }
+  }
+}
