@@ -38,6 +38,7 @@
 		BB0000000000000000000012 /* RoomScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomScanView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000013 /* MaterialEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialEditorView.swift; sourceTree = "<group>"; };
 		DD0000000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD0000000000000000000002 /* AcoustiScan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AcoustiScan.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +66,7 @@
 				FF0000000000000000000004 /* App */,
 				FF0000000000000000000005 /* Views */,
 				FF0000000000000000000006 /* Resources */,
+				DD0000000000000000000002 /* AcoustiScan.entitlements */,
 			);
 			path = AcoustiScanApp;
 			sourceTree = "<group>";
@@ -355,9 +357,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = ""; /* TODO: Set your Apple Developer Team ID here (e.g., "ABC123XYZ4") */
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AcoustiScanApp/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -385,9 +388,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = ""; /* TODO: Set your Apple Developer Team ID here (e.g., "ABC123XYZ4") */
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AcoustiScanApp/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

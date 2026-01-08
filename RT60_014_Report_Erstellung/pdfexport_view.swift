@@ -129,7 +129,11 @@ struct PDFExportView: View {
     }
 
     private func drawMetadataPage(pageRect: CGRect) {
-        let metaText = "Messung durchgeführt am: \(reportData.date)\nRaumtyp: \(reportData.roomType.displayName)\nVolumen: \(Int(reportData.volume)) m³"
+        let metaText = """
+        Messung durchgeführt am: \(reportData.date)
+        Raumtyp: \(reportData.roomType.displayName)
+        Volumen: \(Int(reportData.volume)) m³
+        """
         let attrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
         ]

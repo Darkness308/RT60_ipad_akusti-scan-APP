@@ -1,0 +1,111 @@
+/*
+  Localizable.strings (English)
+  AcoustiScanApp
+
+  English localization strings for the RT60 acoustic measurement app
+*/
+
+// MARK: - Room & General
+
+"unnamed_room" = "Unnamed Room";
+"room" = "Room";
+"volume" = "Volume";
+"surfaces" = "Surfaces";
+"surface" = "Surface";
+"date" = "Date";
+
+// MARK: - Room Dimensions
+
+"room_dimensions" = "Room Dimensions";
+"room_dimensions_in_meters" = "Room Dimensions in Meters";
+"length" = "Length";
+"width" = "Width";
+"height" = "Height";
+"total_area" = "Total Area";
+"room_volume" = "Room Volume";
+
+// MARK: - Material
+
+"new_material" = "New Material";
+"saved_materials" = "Saved Materials";
+"add_button" = "Add";
+"material" = "Material";
+"material_overview" = "Material Overview";
+
+// MARK: - Export
+
+"data_export" = "Data Export";
+"export_rt60_as_pdf" = "Export RT60 Report as PDF";
+"export" = "Export";
+"pdf_export" = "PDF Export";
+"feature_in_integration" = "This feature is currently being integrated.";
+
+// MARK: - Scanning
+
+"scanning" = "Scanning…";
+"scan_ready" = "Scan Ready";
+"stop_scan" = "Stop Scan";
+"start_scan" = "Start Scan";
+"lidar_scan" = "LiDAR Scan";
+"floor" = "Floor";
+"wall" = "Wall";
+
+// MARK: - Report
+
+"rt60_report" = "RT60 Report";
+"metadata" = "Metadata";
+"device" = "Device";
+"version" = "Version";
+"current_device" = "Current Device";
+"current_version" = "Current Version";
+"validity" = "Validity";
+"validity_uncertainties" = "Validity/Uncertainties";
+"core_tokens" = "Core Tokens";
+
+// MARK: - RT60 Measurements
+
+"rt60_per_frequency" = "RT60 per Frequency (T20 in s)";
+"frequency_hz" = "Frequency [Hz]";
+"t20_seconds" = "T20 [s]";
+"frequency_header" = "Frequency [Hz]    T20 [s]";
+"rt60_measurements" = "RT60 Measurements";
+"measured" = "Measured";
+"target" = "Target";
+"status" = "Status";
+
+// MARK: - DIN 18041
+
+"din_target_tolerance" = "DIN 18041 Target & Tolerance";
+"din_target_tolerance_header" = "Frequency [Hz]    T_target [s]    Tolerance [s]";
+"din_classification" = "DIN 18041 Classification";
+"din_conform_note" = "According to DIN 18041 - Audibility in Rooms";
+"audit_source_note" = "Note: Values from audit source (T20), units verified.";
+"frequency" = "Frequency";
+"tolerance" = "Tolerance";
+
+// MARK: - Status & Classification
+
+"recommendations" = "Recommendations";
+"recommendations_title" = "Recommended Actions";
+"recommendations_intro" = "Based on the measurements, the following acoustic actions are recommended:";
+"audit" = "Audit";
+"compliant" = "Compliant";
+"warning" = "Warning";
+"critical" = "Critical";
+"status_ok" = "✓ OK";
+"status_tolerance" = "⚠ Tolerance";
+"status_critical" = "✗ Critical";
+"critical_action_required" = "Critical - Action Required";
+"partially_compliant" = "Partially Compliant - Improvements Recommended";
+"conform_din" = "Compliant - DIN 18041 Fulfilled";
+
+// MARK: - Enhanced PDF Report
+
+"acoustic_report" = "Acoustic Assessment Report";
+"din_standard" = "According to DIN 18041 - Audibility in Rooms";
+"area_square_meters" = "Area (m²)";
+
+// MARK: - Errors
+
+"format_error" = "Format Error";
+"checksum_invalid" = "Checksum Invalid";

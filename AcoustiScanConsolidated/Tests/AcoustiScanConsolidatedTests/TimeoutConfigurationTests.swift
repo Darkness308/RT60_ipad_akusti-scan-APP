@@ -17,7 +17,10 @@ final class TimeoutConfigurationTests: XCTestCase {
         let automationConfig = try JSONDecoder().decode(AutomationConfig.self, from: data)
         let timeouts = automationConfig.copilot_build_automation.build_pipeline.steps.map { $0.timeout_seconds }
         XCTAssertFalse(timeouts.isEmpty, "Expected at least one build pipeline step to validate timeouts")
-        XCTAssertTrue(timeouts.allSatisfy { $0 == 120 }, "Found timeouts that do not match the expected 120 seconds value: \(timeouts)")
+        XCTAssertTrue(
+            timeouts.allSatisfy { $0 == 120 },
+            "Found timeouts that do not match the expected 120 seconds value: \(timeouts)"
+        )
     }
 
     func testHTMLReportTimeoutUses120Seconds() throws {

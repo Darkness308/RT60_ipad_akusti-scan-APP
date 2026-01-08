@@ -54,7 +54,8 @@ struct ARViewContainer: UIViewRepresentable {
 
         func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
             if let planeAnchor = anchor as? ARPlaneAnchor {
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     self.coordinator.detectedPlanes[planeAnchor.identifier] = planeAnchor
                 }
             }
@@ -62,7 +63,8 @@ struct ARViewContainer: UIViewRepresentable {
 
         func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
             if let planeAnchor = anchor as? ARPlaneAnchor {
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     self.coordinator.detectedPlanes.removeValue(forKey: planeAnchor.identifier)
                 }
             }

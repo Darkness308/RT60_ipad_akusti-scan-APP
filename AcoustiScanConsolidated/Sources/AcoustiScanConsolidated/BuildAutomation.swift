@@ -175,14 +175,15 @@ public class BuildAutomation {
             #"module '(.+?)' not found"#,
             #"Cannot find '(.+?)' in scope"#
         ]
-        
+
         for pattern in patterns {
             if let regex = try? NSRegularExpression(pattern: pattern),
-               let match = regex.firstMatch(in: message, range: NSRange(message.startIndex..., in: message)) {
-                return String(message[Range(match.range(at: 1), in: message)!])
+               let match = regex.firstMatch(in: message, range: NSRange(message.startIndex..., in: message)),
+               let moduleRange = Range(match.range(at: 1), in: message) {
+                return String(message[moduleRange])
             }
         }
-        
+
         // Try to infer common modules
         if message.contains("UIKit") || message.contains("UIView") || message.contains("UIColor") {
             return "UIKit"
@@ -191,7 +192,7 @@ public class BuildAutomation {
         } else if message.contains("Foundation") || message.contains("NSString") || message.contains("URL") {
             return "Foundation"
         }
-        
+
         return nil
     }
     

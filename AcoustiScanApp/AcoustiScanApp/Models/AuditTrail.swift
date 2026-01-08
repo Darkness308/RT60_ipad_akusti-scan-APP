@@ -149,8 +149,17 @@ public class AuditTrailManager {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        
-        return try? encoder.encode(entries)
+
+        do {
+            return try encoder.encode(entries)
+        } catch {
+            ErrorLogger.log(
+                error,
+                context: "AuditTrailManager.exportJSON",
+                level: .error
+            )
+            return nil
+        }
     }
     
     /// Export audit trail as JSON string
@@ -203,28 +212,36 @@ public class AuditTrailManager {
     }
     
     // MARK: - Persistence
-    
+
     private func saveEntries() {
         do {
             let data = try JSONEncoder().encode(entries)
             UserDefaults.standard.set(data, forKey: storageKey)
         } catch {
-            // Persisting audit entries is critical; log encoding failures instead of silently ignoring them.
-            print("AuditTrailManager.saveEntries - Failed to encode audit entries: \(error)")
+            // Persisting audit entries is critical; log encoding failures with proper error logger
+            ErrorLogger.log(
+                error,
+                context: "AuditTrailManager.saveEntries",
+                level: .error
+            )
         }
     }
-    
+
     private func loadEntries() {
         guard let data = UserDefaults.standard.data(forKey: storageKey) else {
             return
         }
-        
+
         do {
             let decoded = try JSONDecoder().decode([AuditEntry].self, from: data)
             entries = decoded
         } catch {
-            // Loading audit entries is critical; log decoding failures instead of silently ignoring them.
-            print("AuditTrailManager.loadEntries - Failed to decode audit entries: \(error)")
+            // Loading audit entries is critical; log decoding failures with proper error logger
+            ErrorLogger.log(
+                error,
+                context: "AuditTrailManager.loadEntries",
+                level: .error
+            )
         }
     }
 }

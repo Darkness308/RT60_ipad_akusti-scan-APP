@@ -5,7 +5,8 @@ import PDFKit
 #endif
 
 /// PDF report renderer that uses the same ReportModel as ReportHTMLRenderer
-public final class PDFReportRenderer {
+/// Refactored to use modular components for better maintainability
+public final class PDFReportRenderer_Refactored {
 
     public init() {}
 
@@ -17,19 +18,17 @@ public final class PDFReportRenderer {
             // Return minimal PDF with required elements even if model is empty
             return renderMinimalPDF()
         }
-        
+
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan RT60 Tool",
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
-            kCGPDFContextTitle: "RT60 Bericht"
+            kCGPDFContextTitle: NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title")
         ]
 
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
 
-        let pageWidth = 595.2  // A4 width in points
-        let pageHeight = 841.8 // A4 height in points
-        let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
+        let pageRect = PDFStyleConfiguration.PageLayout.pageRect
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
 
         return renderer.pdfData { context in
@@ -37,29 +36,28 @@ public final class PDFReportRenderer {
             drawContent(context: context, pageRect: pageRect, model: model)
         }
     }
-    
+
     /// Renders a minimal PDF with required elements when model data is insufficient
     private func renderMinimalPDF() -> Data {
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan RT60 Tool",
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
-            kCGPDFContextTitle: "RT60 Bericht"
+            kCGPDFContextTitle: NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title")
         ]
-        
+
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
-        
-        let pageWidth = 595.2  // A4 width in points
-        let pageHeight = 841.8 // A4 height in points
-        let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
+
+        let pageRect = PDFStyleConfiguration.PageLayout.pageRect
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
-        
+
         return renderer.pdfData { context in
             context.beginPage()
             drawMinimalContent(context: context, pageRect: pageRect)
         }
     }
-    
+
+    // MARK: - Private Drawing Methods
 
     private func drawContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect, model: ReportModel) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
@@ -79,54 +77,48 @@ public final class PDFReportRenderer {
         let defaultDevice = "ipadpro"
         let defaultVersion = "1.0.0"
 
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 24)
-        ]
-        let sectionAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 18)
-        ]
-        let textAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12)
-        ]
+        let titleAttrs = PDFStyleConfiguration.Typography.attributes(for: PDFStyleConfiguration.Typography.title)
+        let sectionAttrs = PDFStyleConfiguration.Typography.attributes(for: PDFStyleConfiguration.Typography.sectionHeader)
+        let textAttrs = PDFStyleConfiguration.Typography.attributes(for: PDFStyleConfiguration.Typography.body)
 
-        layout.drawLine("RT60 Bericht", attributes: titleAttrs, spacing: 20)
+        layout.drawLine("RT60 Bericht", attributes: titleAttrs, spacing: PDFStyleConfiguration.Spacing.lg)
 
         // Draw core tokens first to ensure they appear on the first page
-        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
+        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
         for token in coreTokens {
             layout.drawLine(token, attributes: textAttrs)
         }
 
-        layout.addSpacing(12)
-        layout.drawLine("Metadaten", attributes: sectionAttrs, spacing: 12)
+        layout.addSpacing(PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.metadata, comment: "Metadata section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.md)
 
         // Always include default device/version, then actual values if different
-        layout.drawLine("Gerät: \(defaultDevice)", attributes: textAttrs)
-        layout.drawLine("Version: \(defaultVersion)", attributes: textAttrs)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.device, comment: "Device label")): \(defaultDevice)", attributes: textAttrs)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.version, comment: "Version label")): \(defaultVersion)", attributes: textAttrs)
         if let actualDevice = model.metadata["device"], actualDevice.lowercased() != defaultDevice {
-            layout.drawLine("Aktuelles Gerät: \(actualDevice)", attributes: textAttrs)
+            layout.drawLine("\(NSLocalizedString(LocalizationKeys.currentDevice, comment: "Current device label")): \(actualDevice)", attributes: textAttrs)
         }
         if let actualVersion = model.metadata["app_version"], actualVersion != defaultVersion {
-            layout.drawLine("Aktuelle Version: \(actualVersion)", attributes: textAttrs)
+            layout.drawLine("\(NSLocalizedString(LocalizationKeys.currentVersion, comment: "Current version label")): \(actualVersion)", attributes: textAttrs)
         }
-        layout.drawLine("Datum: \(formattedString(model.metadata["date"]))", attributes: textAttrs, spacing: 12)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.date, comment: "Date label")): \(PDFFormatHelpers.formattedString(model.metadata["date"]))", attributes: textAttrs, spacing: PDFStyleConfiguration.Spacing.md)
 
         let filteredMetadata = model.metadata.filter { !["device", "app_version", "date"].contains($0.key) }
         for (key, value) in filteredMetadata.sorted(by: { $0.key < $1.key }) {
-            layout.drawLine("\(key): \(formattedString(value))", attributes: textAttrs)
+            layout.drawLine("\(key): \(PDFFormatHelpers.formattedString(value))", attributes: textAttrs)
         }
 
         if !model.validity.isEmpty {
-            layout.addSpacing(8)
-            layout.drawLine("Validität", attributes: sectionAttrs, spacing: 8)
+            layout.addSpacing(PDFStyleConfiguration.Spacing.sm)
+            layout.drawLine(NSLocalizedString(LocalizationKeys.validity, comment: "Validity section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
             for (key, value) in model.validity.sorted(by: { $0.key < $1.key }) {
-                layout.drawLine("\(key): \(formattedString(value))", attributes: textAttrs)
+                layout.drawLine("\(key): \(PDFFormatHelpers.formattedString(value))", attributes: textAttrs)
             }
         }
 
-        layout.addSpacing(12)
-        layout.drawLine("RT60 je Frequenz (T20 in s)", attributes: sectionAttrs, spacing: 8)
-        layout.drawLine("Frequenz [Hz]    T20 [s]", attributes: textAttrs)
+        layout.addSpacing(PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60PerFrequency, comment: "RT60 per frequency section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.frequencyHeader, comment: "Frequency header"), attributes: textAttrs)
 
         for freq in requiredFrequencies {
             let matchingBand = model.rt60_bands.first { band in
@@ -135,7 +127,7 @@ public final class PDFReportRenderer {
                 guard actualFreq.isFinite && !actualFreq.isNaN else { return false }
                 return Int(actualFreq.rounded()) == freq
             }
-            let t20Value = formattedDecimal(matchingBand?["t20_s"] ?? nil)
+            let t20Value = PDFFormatHelpers.formattedDecimal(matchingBand?["t20_s"] ?? nil)
             layout.drawLine("\(freq) Hz: \(t20Value) s", attributes: textAttrs)
         }
 
@@ -145,15 +137,15 @@ public final class PDFReportRenderer {
                 guard actualFreq.isFinite && !actualFreq.isNaN else { continue }
                 let freqInt = Int(actualFreq.rounded())
                 if !requiredFrequencies.contains(freqInt) {
-                    let t20String = formattedDecimal(band["t20_s"] ?? nil)
+                    let t20String = PDFFormatHelpers.formattedDecimal(band["t20_s"] ?? nil)
                     layout.drawLine("\(freqInt) Hz: \(t20String) s", attributes: textAttrs)
                 }
             }
         }
 
-        layout.addSpacing(12)
-        layout.drawLine("DIN 18041 Ziel & Toleranz", attributes: sectionAttrs, spacing: 8)
-        layout.drawLine("Frequenz [Hz]    T_soll [s]    Toleranz [s]", attributes: textAttrs)
+        layout.addSpacing(PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetTolerance, comment: "DIN 18041 target & tolerance section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetToleranceHeader, comment: "DIN target tolerance header"), attributes: textAttrs)
 
         // Always show representative DIN 18041 standard values
         for (freq, targetRT60, tolerance) in representativeDINValues {
@@ -167,8 +159,8 @@ public final class PDFReportRenderer {
                 // Check for valid finite number before converting to Int
                 guard actualF.isFinite && !actualF.isNaN else {
                     freq = "-"
-                    let tsoll = formattedDecimal(target["t_soll"] ?? nil)
-                    let tol = formattedDecimal(target["tol"] ?? nil)
+                    let tsoll = PDFFormatHelpers.formattedDecimal(target["t_soll"] ?? nil)
+                    let tol = PDFFormatHelpers.formattedDecimal(target["tol"] ?? nil)
                     layout.drawLine("\(freq) Hz: T_soll=\(tsoll) s, Toleranz=\(tol) s", attributes: textAttrs)
                     continue
                 }
@@ -182,33 +174,33 @@ public final class PDFReportRenderer {
                 freq = "-"
             }
 
-            let tsoll = formattedDecimal(target["t_soll"] ?? nil)
-            let tol = formattedDecimal(target["tol"] ?? nil)
+            let tsoll = PDFFormatHelpers.formattedDecimal(target["t_soll"] ?? nil)
+            let tol = PDFFormatHelpers.formattedDecimal(target["tol"] ?? nil)
 
             layout.drawLine("\(freq) Hz: T_soll=\(tsoll) s, Toleranz=\(tol) s", attributes: textAttrs)
         }
 
-        layout.addSpacing(12)
-        layout.drawLine("Empfehlungen", attributes: sectionAttrs, spacing: 8)
+        layout.addSpacing(PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.recommendations, comment: "Recommendations section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
         for (index, rec) in model.recommendations.enumerated() {
             let line = "\(index + 1). \(rec)"
             layout.drawMultiline(line, attributes: textAttrs, width: layout.contentWidth)
         }
 
-        layout.addSpacing(12)
-        layout.drawLine("Audit", attributes: sectionAttrs, spacing: 8)
+        layout.addSpacing(PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.audit, comment: "Audit section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
         for (key, value) in model.audit.sorted(by: { $0.key < $1.key }) {
-            layout.drawLine("\(key): \(formattedString(value))", attributes: textAttrs)
+            layout.drawLine("\(key): \(PDFFormatHelpers.formattedString(value))", attributes: textAttrs)
         }
     }
-    
+
     /// Draws minimal content ensuring all required elements are present
     private func drawMinimalContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 
         // Required frequencies that should always appear (DIN 18041 representative octave bands)
         let requiredFrequencies = [125, 1000, 4000]
-        
+
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
             (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
@@ -217,91 +209,36 @@ public final class PDFReportRenderer {
         ]
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
 
-        let titleAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 24)
-        ]
-        let sectionAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 18)
-        ]
-        let textAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12)
-        ]
+        let titleAttrs = PDFStyleConfiguration.Typography.attributes(for: PDFStyleConfiguration.Typography.title)
+        let sectionAttrs = PDFStyleConfiguration.Typography.attributes(for: PDFStyleConfiguration.Typography.sectionHeader)
+        let textAttrs = PDFStyleConfiguration.Typography.attributes(for: PDFStyleConfiguration.Typography.body)
 
-        layout.drawLine("RT60 Bericht", attributes: titleAttrs, spacing: 20)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title"), attributes: titleAttrs, spacing: PDFStyleConfiguration.Spacing.lg)
 
         // Draw core tokens first to ensure they appear on the first page
-        layout.drawLine("Core Tokens", attributes: sectionAttrs, spacing: 8)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.coreTokens, comment: "Core Tokens section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
         for token in coreTokens {
             layout.drawLine(token, attributes: textAttrs)
         }
 
-        layout.addSpacing(12)
-        layout.drawLine("Metadaten", attributes: sectionAttrs, spacing: 12)
-        layout.drawLine("Gerät: ipadpro", attributes: textAttrs)
-        layout.drawLine("Version: 1.0.0", attributes: textAttrs)
-        layout.drawLine("Datum: -", attributes: textAttrs, spacing: 12)
+        layout.addSpacing(PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.metadata, comment: "Metadata section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.md)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.device, comment: "Device label")): ipadpro", attributes: textAttrs)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.version, comment: "Version label")): 1.0.0", attributes: textAttrs)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.date, comment: "Date label")): -", attributes: textAttrs, spacing: PDFStyleConfiguration.Spacing.md)
 
-        layout.drawLine("RT60 je Frequenz (T20 in s)", attributes: sectionAttrs, spacing: 8)
-        layout.drawLine("Frequenz [Hz]    T20 [s]", attributes: textAttrs)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60PerFrequency, comment: "RT60 per frequency section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.frequencyHeader, comment: "Frequency header"), attributes: textAttrs)
         for freq in requiredFrequencies {
             layout.drawLine("\(freq) Hz: - s", attributes: textAttrs)
         }
 
-        layout.addSpacing(12)
-        layout.drawLine("DIN 18041 Ziel & Toleranz", attributes: sectionAttrs, spacing: 8)
-        layout.drawLine("Frequenz [Hz]    T_soll [s]    Toleranz [s]", attributes: textAttrs)
+        layout.addSpacing(PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetTolerance, comment: "DIN 18041 target & tolerance section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetToleranceHeader, comment: "DIN target tolerance header"), attributes: textAttrs)
         // Show representative DIN 18041 standard values
         for (freq, targetRT60, tolerance) in representativeDINValues {
             layout.drawLine("\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s", attributes: textAttrs)
-        }
-    }
-
-    /// Simple text layout helper that automatically handles page breaks.
-    private struct PDFTextLayout {
-        let context: UIGraphicsPDFRendererContext
-        let pageRect: CGRect
-        let margin: CGFloat
-        private(set) var yPosition: CGFloat
-
-        init(context: UIGraphicsPDFRendererContext, pageRect: CGRect, margin: CGFloat = 72) {
-            self.context = context
-            self.pageRect = pageRect
-            self.margin = margin
-            self.yPosition = margin
-        }
-
-        var contentWidth: CGFloat { pageRect.width - 2 * margin }
-
-        mutating func drawLine(_ text: String, attributes: [NSAttributedString.Key: Any], spacing: CGFloat = 4) {
-            let font = (attributes[.font] as? UIFont) ?? UIFont.systemFont(ofSize: 12)
-            let lineHeight = font.lineHeight
-            ensureSpace(for: lineHeight)
-            text.draw(at: CGPoint(x: margin, y: yPosition), withAttributes: attributes)
-            yPosition += lineHeight + spacing
-        }
-
-        mutating func drawMultiline(_ text: String, attributes: [NSAttributedString.Key: Any], width: CGFloat, spacing: CGFloat = 8) {
-            guard !text.isEmpty else { return }
-            let options: NSStringDrawingOptions = [.usesLineFragmentOrigin, .usesFontLeading]
-            let bounding = (text as NSString).boundingRect(with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), options: options, attributes: attributes, context: nil)
-            let height = ceil(bounding.height)
-            ensureSpace(for: height)
-            let rect = CGRect(x: margin, y: yPosition, width: width, height: height)
-            text.draw(in: rect, withAttributes: attributes)
-            yPosition += height + spacing
-        }
-
-        mutating func addSpacing(_ spacing: CGFloat) {
-            ensureSpace(for: spacing)
-            yPosition += spacing
-        }
-
-        private mutating func ensureSpace(for height: CGFloat) {
-            let maxY = pageRect.height - margin
-            if yPosition + height > maxY {
-                context.beginPage()
-                yPosition = margin
-            }
         }
     }
     #else
@@ -312,10 +249,10 @@ public final class PDFReportRenderer {
             // Return minimal content with required elements
             return renderMinimalTextPDF()
         }
-        
+
         // Required frequencies that should always appear in the PDF (DIN 18041 representative octave bands)
         let requiredFrequencies = [125, 1000, 4000]
-        
+
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
             (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
@@ -334,7 +271,7 @@ public final class PDFReportRenderer {
                 return Int(actualFreq.rounded()) == freq
             }
 
-            let t20String = formattedDecimal(matchingBand?["t20_s"] ?? nil)
+            let t20String = PDFFormatHelpers.formattedDecimal(matchingBand?["t20_s"] ?? nil)
             rt60Content += "\(freq) Hz: \(t20String) s\n"
         }
 
@@ -345,7 +282,7 @@ public final class PDFReportRenderer {
                 guard actualFreq.isFinite && !actualFreq.isNaN else { continue }
                 let freqInt = Int(actualFreq.rounded())
                 if !requiredFrequencies.contains(freqInt) {
-                    let t20String = formattedDecimal(band["t20_s"] ?? nil)
+                    let t20String = PDFFormatHelpers.formattedDecimal(band["t20_s"] ?? nil)
                     rt60Content += "\(freqInt) Hz: \(t20String) s\n"
                 }
             }
@@ -362,10 +299,10 @@ public final class PDFReportRenderer {
             let f: String
             if let freq = target["freq_hz"], let actualFreq = freq {
                 // Check for valid finite number before converting to Int
-                guard actualFreq.isFinite && !actualFreq.isNaN else { 
+                guard actualFreq.isFinite && !actualFreq.isNaN else {
                     f = "-"
-                    let ts = formattedDecimal(target["t_soll"] ?? nil)
-                    let tol = formattedDecimal(target["tol"] ?? nil)
+                    let ts = PDFFormatHelpers.formattedDecimal(target["t_soll"] ?? nil)
+                    let tol = PDFFormatHelpers.formattedDecimal(target["tol"] ?? nil)
                     dinContent += "\(f) Hz: T_soll=\(ts) s, Toleranz=\(tol) s\n"
                     continue
                 }
@@ -379,8 +316,8 @@ public final class PDFReportRenderer {
                 f = "-"
             }
 
-            let ts = formattedDecimal(target["t_soll"] ?? nil)
-            let tol = formattedDecimal(target["tol"] ?? nil)
+            let ts = PDFFormatHelpers.formattedDecimal(target["t_soll"] ?? nil)
+            let tol = PDFFormatHelpers.formattedDecimal(target["tol"] ?? nil)
 
             dinContent += "\(f) Hz: T_soll=\(ts) s, Toleranz=\(tol) s\n"
         }
@@ -393,17 +330,17 @@ public final class PDFReportRenderer {
         let additionalMetadata = model.metadata
             .filter { !["app_version", "device", "date"].contains($0.key) }
             .sorted(by: { $0.key < $1.key })
-            .map { "\($0.key): \(formattedString($0.value))" }
+            .map { "\($0.key): \(PDFFormatHelpers.formattedString($0.value))" }
             .joined(separator: "\n")
 
         let validityContent = model.validity
             .sorted(by: { $0.key < $1.key })
-            .map { "\($0.key): \(formattedString($0.value))" }
+            .map { "\($0.key): \(PDFFormatHelpers.formattedString($0.value))" }
             .joined(separator: "\n")
 
         let auditContent = model.audit
             .sorted(by: { $0.key < $1.key })
-            .map { "\($0.key): \(formattedString($0.value))" }
+            .map { "\($0.key): \(PDFFormatHelpers.formattedString($0.value))" }
             .joined(separator: "\n")
 
         let recommendationsContent = model.recommendations
@@ -433,7 +370,7 @@ public final class PDFReportRenderer {
         Metadaten:
         Gerät: \(defaultDevice)
         Version: \(defaultVersion)
-        \(actualDeviceInfo)\(actualVersionInfo)Datum: \(formattedString(model.metadata["date"]))
+        \(actualDeviceInfo)\(actualVersionInfo)Datum: \(PDFFormatHelpers.formattedString(model.metadata["date"]))
         \(additionalMetadata.isEmpty ? "-" : additionalMetadata)
 
         RT60 je Frequenz (T20 in s):
@@ -453,12 +390,12 @@ public final class PDFReportRenderer {
         """
         return Data(text.utf8)
     }
-    
+
     /// Renders minimal text-based PDF with required elements when model data is insufficient
     private func renderMinimalTextPDF() -> Data {
         // Required frequencies that should always appear (DIN 18041 representative octave bands)
         let requiredFrequencies = [125, 1000, 4000]
-        
+
         // Use representative DIN 18041 values instead of arbitrary hardcoded ones
         let representativeDINValues = [
             (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
@@ -471,18 +408,18 @@ public final class PDFReportRenderer {
         for freq in requiredFrequencies {
             rt60Content += "\(freq) Hz: - s\n"
         }
-        
+
         var dinContent = ""
         // Show representative DIN 18041 standard values
         for (freq, targetRT60, tolerance) in representativeDINValues {
             dinContent += "\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s\n"
         }
-        
+
         var coreTokensContent = ""
         for token in coreTokens {
             coreTokensContent += "\(token)\n"
         }
-        
+
         let text = """
         RT60 Bericht
 
@@ -511,16 +448,4 @@ public final class PDFReportRenderer {
         return Data(text.utf8)
     }
     #endif
-
-    private func formattedDecimal(_ value: Double??) -> String {
-        guard let inner = value, let actual = inner else { return "-" }
-        // Check for invalid values (NaN, infinity)
-        guard actual.isFinite && !actual.isNaN else { return "-" }
-        return String(format: "%.2f", actual)
-    }
-
-    private func formattedString(_ value: String?) -> String {
-        guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else { return "-" }
-        return value
-    }
 }

@@ -14,40 +14,47 @@ public class ConsolidatedPDFExporter {
 
     #if canImport(UIKit)
     private enum PDFStyling {
-        static let margin: CGFloat = 72
+        private static let margin: CGFloat = 72
 
-        static func titleAttributes(size: CGFloat, weight: UIFont.Weight = .regular, color: UIColor = .black) -> [NSAttributedString.Key: Any] {
+        private static func titleAttributes(
+            size: CGFloat,
+            weight: UIFont.Weight = .regular,
+            color: UIColor = .black
+        ) -> [NSAttributedString.Key: Any] {
             [
                 .font: UIFont.systemFont(ofSize: size, weight: weight),
                 .foregroundColor: color
             ]
         }
 
-        static func bodyAttributes(size: CGFloat = 14, color: UIColor = .black) -> [NSAttributedString.Key: Any] {
+        private static func bodyAttributes(
+            size: CGFloat = 14,
+            color: UIColor = .black
+        ) -> [NSAttributedString.Key: Any] {
             [
                 .font: UIFont.systemFont(ofSize: size),
                 .foregroundColor: color
             ]
         }
 
-        static func footerAttributes() -> [NSAttributedString.Key: Any] {
+        private static func footerAttributes() -> [NSAttributedString.Key: Any] {
             [
                 .font: UIFont.systemFont(ofSize: 12),
                 .foregroundColor: UIColor.gray
             ]
         }
 
-        static func draw(_ text: String, at point: CGPoint, attributes: [NSAttributedString.Key: Any]) {
+        private static func draw(_ text: String, at point: CGPoint, attributes: [NSAttributedString.Key: Any]) {
             text.draw(at: point, withAttributes: attributes)
         }
 
-        static func draw(_ text: String, in rect: CGRect, attributes: [NSAttributedString.Key: Any]) {
+        private static func draw(_ text: String, in rect: CGRect, attributes: [NSAttributedString.Key: Any]) {
             text.draw(in: rect, withAttributes: attributes)
         }
     }
 
     private enum PDFListRenderer {
-        static func drawBulletedList(
+        private static func drawBulletedList(
             _ items: [String],
             startY: CGFloat,
             margin: CGFloat,
@@ -173,7 +180,11 @@ public class ConsolidatedPDFExporter {
 
         // Footer
         let footer = "Erstellt mit AcoustiScan Consolidated Tool"
-        PDFStyling.draw(footer, at: CGPoint(x: margin, y: pageRect.height - 100), attributes: PDFStyling.footerAttributes())
+        PDFStyling.draw(
+            footer,
+            at: CGPoint(x: margin, y: pageRect.height - 100),
+            attributes: PDFStyling.footerAttributes()
+        )
     }
     
     private static func drawMetadataPage(pageRect: CGRect, data: ReportData) {
@@ -196,13 +207,23 @@ public class ConsolidatedPDFExporter {
         """
         
         let textAttrs = PDFStyling.bodyAttributes()
-        PDFStyling.draw(metadataText, at: CGPoint(x: margin, y: yPosition), attributes: textAttrs)
+        PDFStyling.draw(
+            metadataText,
+            at: CGPoint(x: margin, y: yPosition),
+            attributes: textAttrs
+        )
         yPosition += 120
 
         let surfaceLines = data.surfaces.map { surface in
-            "\(surface.name): \(String(format: "%.2f", surface.area)) m² - \(surface.material.name)"
+            let areaFormatted = String(format: "%.2f", surface.area)
+            return "\(surface.name): \(areaFormatted) m² - \(surface.material.name)"
         }
-        _ = PDFListRenderer.drawBulletedList(surfaceLines, startY: yPosition, margin: margin + 20, attributes: textAttrs)
+        _ = PDFListRenderer.drawBulletedList(
+            surfaceLines,
+            startY: yPosition,
+            margin: margin + 20,
+            attributes: textAttrs
+        )
     }
     
     private static func drawRT60AnalysisPage(pageRect: CGRect, data: ReportData) {
@@ -211,7 +232,11 @@ public class ConsolidatedPDFExporter {
 
         let pageTitle = "RT60-Frequenzanalyse"
         let titleAttrs = PDFStyling.titleAttributes(size: 20, weight: .bold)
-        PDFStyling.draw(pageTitle, at: CGPoint(x: margin, y: yPosition), attributes: titleAttrs)
+        PDFStyling.draw(
+            pageTitle,
+            at: CGPoint(x: margin, y: yPosition),
+            attributes: titleAttrs
+        )
         yPosition += 40
 
         // RT60 values table

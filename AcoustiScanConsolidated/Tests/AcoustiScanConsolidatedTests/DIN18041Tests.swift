@@ -21,12 +21,21 @@ final class DIN18041ModuleTests: XCTestCase {
         // Check that 500-1000 Hz has reasonable values for classroom
         let midFreqTargets = targets.filter { $0.frequency == 500 || $0.frequency == 1000 }
         XCTAssertTrue(midFreqTargets.allSatisfy { $0.targetRT60 <= 0.8 }) // Should be relatively low for speech
-        
+
         // Verify frequency-dependent adjustments
-        let lowFreq = targets.first { $0.frequency == 125 }!
-        let midFreq = targets.first { $0.frequency == 1000 }!
-        let highFreq = targets.first { $0.frequency == 4000 }!
-        
+        guard let lowFreq = targets.first(where: { $0.frequency == 125 }) else {
+            XCTFail("Expected to find 125 Hz target")
+            return
+        }
+        guard let midFreq = targets.first(where: { $0.frequency == 1000 }) else {
+            XCTFail("Expected to find 1000 Hz target")
+            return
+        }
+        guard let highFreq = targets.first(where: { $0.frequency == 4000 }) else {
+            XCTFail("Expected to find 4000 Hz target")
+            return
+        }
+
         XCTAssertTrue(lowFreq.targetRT60 > midFreq.targetRT60) // Low frequencies should have higher RT60
         XCTAssertTrue(highFreq.targetRT60 < midFreq.targetRT60) // High frequencies should have lower RT60
     }

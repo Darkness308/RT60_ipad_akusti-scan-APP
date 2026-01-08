@@ -13,19 +13,30 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../AcoustiScanConsolidated")
+        .package(path: "../AcoustiScanConsolidated"),
+        .package(path: "../Modules/Export")
     ],
     targets: [
         .target(
             name: "AcoustiScanApp",
             dependencies: [
-                .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated")
+                .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated"),
+                .product(name: "ReportExport", package: "ReportExport")
             ],
-            path: "AcoustiScanApp"
+            path: "AcoustiScanApp",
+            swiftSettings: [
+                .enableUpcomingFeature("BareSlashRegexLiterals")
+            ],
+            linkerSettings: [
+                .linkedFramework("Charts", .when(platforms: [.iOS]))
+            ]
         ),
         .testTarget(
             name: "AcoustiScanAppTests",
-            dependencies: ["AcoustiScanApp"],
+            dependencies: [
+                "AcoustiScanApp",
+                .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated")
+            ],
             path: "AcoustiScanAppTests"
         )
     ]

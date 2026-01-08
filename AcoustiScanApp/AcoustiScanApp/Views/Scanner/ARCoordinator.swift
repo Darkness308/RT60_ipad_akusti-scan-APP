@@ -39,7 +39,8 @@ final class MSHARCoordinator: NSObject, ARSessionDelegate, ObservableObject {
     
     // MARK: - ARSessionDelegate
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             self.currentFrame = frame
         }
     }

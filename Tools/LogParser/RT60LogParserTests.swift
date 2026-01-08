@@ -4,7 +4,12 @@ final class RT60LogParserTests: XCTestCase {
 
     func loadFixture(_ name: String) -> String {
         let url = URL(fileURLWithPath: "Tools/LogParser/fixtures/\(name)")
-        return (try? String(contentsOf: url, encoding: .utf8)) ?? ""
+        do {
+            return try String(contentsOf: url, encoding: .utf8)
+        } catch {
+            XCTFail("Failed to load fixture '\(name)': \(error.localizedDescription)")
+            return ""
+        }
     }
 
     func test_parse_valid_log_produces_expected_json() throws {
@@ -17,7 +22,10 @@ final class RT60LogParserTests: XCTestCase {
     func test_dashdot_is_invalid_band() throws {
         let text = loadFixture("2025-07-21_RT60_011_Report.txt")
         let model = try RT60LogParser().parse(text: text, sourceFile: "011")
-        let b500 = model.bands.first{ $0.freq_hz == 500 }!
+        guard let b500 = model.bands.first(where: { $0.freq_hz == 500 }) else {
+            XCTFail("Expected to find 500 Hz band")
+            return
+        }
         XCTAssertFalse(b500.valid)
         XCTAssertNil(b500.t20_s)
         XCTAssertTrue(b500.note.contains("no data"))
@@ -26,7 +34,10 @@ final class RT60LogParserTests: XCTestCase {
     func test_low_correlation_sets_note() throws {
         let text = loadFixture("2025-07-21_RT60_012_Report.txt")
         let model = try RT60LogParser().parse(text: text, sourceFile: "012")
-        let b250 = model.bands.first{ $0.freq_hz == 250 }!
+        guard let b250 = model.bands.first(where: { $0.freq_hz == 250 }) else {
+            XCTFail("Expected to find 250 Hz band")
+            return
+        }
         XCTAssertTrue(b250.note.contains("low correlation"))
     }
 
