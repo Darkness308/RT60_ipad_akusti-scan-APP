@@ -56,16 +56,18 @@ jobs:
               });
               
               console.log(`✅ Successfully triggered retry for workflow run ${workflow_run.id}`);
-              
-              // Create a comment on PR if this is a PR
-              if (workflow_run.pull_requests && workflow_run.pull_requests.length > 0) {
-                const pr_number = workflow_run.pull_requests[0].number;
-                await github.rest.issues.createComment({
-                  owner: repo.owner,
-                  repo: repo.repo,
-                  issue_number: pr_number,
-                  body: `🔄 Auto-retry ${retryCount + 1}/${process.env.MAX_AUTO_RETRIES} triggered for failed workflow "${workflow_run.name}"`
-                });
+
+              // Create a comment on PR if this is a PR (with null checks)
+              if (workflow_run.pull_requests && Array.isArray(workflow_run.pull_requests) && workflow_run.pull_requests.length > 0) {
+                const pr_number = workflow_run.pull_requests[0]?.number;
+                if (pr_number) {
+                  await github.rest.issues.createComment({
+                    owner: repo.owner,
+                    repo: repo.repo,
+                    issue_number: pr_number,
+                    body: `🔄 Auto-retry ${retryCount + 1}/${process.env.MAX_AUTO_RETRIES} triggered for failed workflow "${workflow_run.name}"`
+                  });
+                }
               }
             } catch (error) {
               console.error(`❌ Failed to trigger retry: ${error.message}`);
@@ -122,15 +124,17 @@ jobs:
               
               console.log(`📝 Created issue #${issue.data.number} for manual intervention`);
               
-              // Also comment on PR if this is a PR
-              if (workflow_run.pull_requests && workflow_run.pull_requests.length > 0) {
-                const pr_number = workflow_run.pull_requests[0].number;
-                await github.rest.issues.createComment({
-                  owner: repo.owner,
-                  repo: repo.repo,
-                  issue_number: pr_number,
-                  body: `❌ Workflow "${workflow_run.name}" failed after ${retryCount} attempts. Created issue #${issue.data.number} for tracking. Manual intervention required.`
-                });
+              // Also comment on PR if this is a PR (with null checks)
+              if (workflow_run.pull_requests && Array.isArray(workflow_run.pull_requests) && workflow_run.pull_requests.length > 0) {
+                const pr_number = workflow_run.pull_requests[0]?.number;
+                if (pr_number) {
+                  await github.rest.issues.createComment({
+                    owner: repo.owner,
+                    repo: repo.repo,
+                    issue_number: pr_number,
+                    body: `❌ Workflow "${workflow_run.name}" failed after ${retryCount} attempts. Created issue #${issue.data.number} for tracking. Manual intervention required.`
+                  });
+                }
               }
             } catch (error) {
               console.error(`❌ Failed to create issue: ${error.message}`);
