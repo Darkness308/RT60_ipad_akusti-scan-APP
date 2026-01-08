@@ -125,7 +125,7 @@ public final class ReportHTMLRenderer {
         """
 
         let bands = """
-        <h2>RT60 je Frequenz (T20 in s)</h2>
+        <h2>\(NSLocalizedString(LocalizationKeys.rt60PerFrequency, bundle: .module, comment: "RT60 per frequency section"))</h2>
         <table>
           <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, bundle: .module, comment: "Frequency Hz"))</th><th>\(NSLocalizedString(LocalizationKeys.t20Seconds, bundle: .module, comment: "T20 seconds"))</th></tr></thead>
           <tbody>
