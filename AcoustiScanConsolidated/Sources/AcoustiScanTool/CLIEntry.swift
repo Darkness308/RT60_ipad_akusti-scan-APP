@@ -162,7 +162,11 @@ struct AcoustiScanTool {
             do {
                 try pdfData.write(to: URL(fileURLWithPath: outputPath))
                 print("✅ Report generated successfully: \(outputPath)")
-                print("📏 Report size: \(ByteCountFormatter.string(fromByteCount: Int64(pdfData.count), countStyle: .file))")
+                let reportSize = ByteCountFormatter.string(
+                    fromByteCount: Int64(pdfData.count),
+                    countStyle: .file
+                )
+                print("📏 Report size: \(reportSize)")
             } catch {
                 print("❌ Failed to save report: \(error)")
             }

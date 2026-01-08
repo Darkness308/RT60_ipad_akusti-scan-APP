@@ -113,7 +113,11 @@ public struct PDFPageRenderer {
         let titleAttrs = PDFStyleConfiguration.Typography.attributes(
             for: PDFStyleConfiguration.Typography.pageTitle
         )
-        NSLocalizedString(LocalizationKeys.rt60Measurements, comment: "RT60 measurements title").draw(at: CGPoint(x: margin, y: y), withAttributes: titleAttrs)
+        let rt60Title = NSLocalizedString(
+            LocalizationKeys.rt60Measurements,
+            comment: "RT60 measurements title"
+        )
+        rt60Title.draw(at: CGPoint(x: margin, y: y), withAttributes: titleAttrs)
         y += PDFStyleConfiguration.Spacing.section
 
         // Draw chart
@@ -158,7 +162,11 @@ public struct PDFPageRenderer {
         let titleAttrs = PDFStyleConfiguration.Typography.attributes(
             for: PDFStyleConfiguration.Typography.pageTitle
         )
-        NSLocalizedString(LocalizationKeys.dinClassification, comment: "DIN 18041 classification title").draw(at: CGPoint(x: margin, y: y), withAttributes: titleAttrs)
+        let dinTitle = NSLocalizedString(
+            LocalizationKeys.dinClassification,
+            comment: "DIN 18041 classification title"
+        )
+        dinTitle.draw(at: CGPoint(x: margin, y: y), withAttributes: titleAttrs)
         y += PDFStyleConfiguration.Spacing.section
 
         // Calculate compliance
@@ -205,7 +213,11 @@ public struct PDFPageRenderer {
         let titleAttrs = PDFStyleConfiguration.Typography.attributes(
             for: PDFStyleConfiguration.Typography.pageTitle
         )
-        NSLocalizedString(LocalizationKeys.materialOverview, comment: "Material overview title").draw(at: CGPoint(x: margin, y: y), withAttributes: titleAttrs)
+        let materialTitle = NSLocalizedString(
+            LocalizationKeys.materialOverview,
+            comment: "Material overview title"
+        )
+        materialTitle.draw(at: CGPoint(x: margin, y: y), withAttributes: titleAttrs)
         y += PDFStyleConfiguration.Spacing.section
 
         // Room volume
@@ -213,18 +225,22 @@ public struct PDFPageRenderer {
             for: PDFStyleConfiguration.Typography.body,
             color: PDFStyleConfiguration.Colors.textSecondary
         )
-        "\(NSLocalizedString(LocalizationKeys.roomVolume, comment: "Room volume label")): \(String(format: "%.1f", volume)) m³".draw(
-            at: CGPoint(x: margin, y: y),
-            withAttributes: infoAttrs
+        let volumeLabel = NSLocalizedString(
+            LocalizationKeys.roomVolume,
+            comment: "Room volume label"
         )
+        let volumeText = "\(volumeLabel): \(String(format: "%.1f", volume)) m³"
+        volumeText.draw(at: CGPoint(x: margin, y: y), withAttributes: infoAttrs)
         y += PDFStyleConfiguration.Spacing.xl
 
         // Total area
         let totalArea = surfaces.reduce(0) { $0 + $1.area }
-        "\(NSLocalizedString(LocalizationKeys.totalArea, comment: "Total area label")): \(String(format: "%.1f", totalArea)) m²".draw(
-            at: CGPoint(x: margin, y: y),
-            withAttributes: infoAttrs
+        let areaLabel = NSLocalizedString(
+            LocalizationKeys.totalArea,
+            comment: "Total area label"
         )
+        let areaText = "\(areaLabel): \(String(format: "%.1f", totalArea)) m²"
+        areaText.draw(at: CGPoint(x: margin, y: y), withAttributes: infoAttrs)
         y += PDFStyleConfiguration.Spacing.xxl
 
         // Draw surfaces table
@@ -254,7 +270,11 @@ public struct PDFPageRenderer {
         let titleAttrs = PDFStyleConfiguration.Typography.attributes(
             for: PDFStyleConfiguration.Typography.pageTitle
         )
-        NSLocalizedString(LocalizationKeys.recommendationsTitle, comment: "Recommendations title").draw(at: CGPoint(x: margin, y: y), withAttributes: titleAttrs)
+        let recommendationsTitle = NSLocalizedString(
+            LocalizationKeys.recommendationsTitle,
+            comment: "Recommendations title"
+        )
+        recommendationsTitle.draw(at: CGPoint(x: margin, y: y), withAttributes: titleAttrs)
         y += PDFStyleConfiguration.Spacing.section
 
         // Intro text
@@ -379,11 +399,23 @@ public struct PDFPageRenderer {
         compliance: (compliant: Int, warning: Int, critical: Int)
     ) -> (status: String, color: UIColor) {
         if compliance.critical > 0 {
-            return (NSLocalizedString(LocalizationKeys.criticalActionRequired, comment: "Critical action required"), PDFStyleConfiguration.Colors.critical)
+            let criticalText = NSLocalizedString(
+                LocalizationKeys.criticalActionRequired,
+                comment: "Critical action required"
+            )
+            return (criticalText, PDFStyleConfiguration.Colors.critical)
         } else if compliance.warning > 0 {
-            return (NSLocalizedString(LocalizationKeys.partiallyCompliant, comment: "Partially compliant"), PDFStyleConfiguration.Colors.warning)
+            let warningText = NSLocalizedString(
+                LocalizationKeys.partiallyCompliant,
+                comment: "Partially compliant"
+            )
+            return (warningText, PDFStyleConfiguration.Colors.warning)
         } else {
-            return (NSLocalizedString(LocalizationKeys.conformDIN, comment: "Conform to DIN"), PDFStyleConfiguration.Colors.success)
+            let successText = NSLocalizedString(
+                LocalizationKeys.conformDIN,
+                comment: "Conform to DIN"
+            )
+            return (successText, PDFStyleConfiguration.Colors.success)
         }
     }
 
@@ -397,10 +429,14 @@ public struct PDFPageRenderer {
         let boxWidth = width / 3 - 20
         let boxHeight = PDFStyleConfiguration.Dimensions.trafficLightBoxHeight
 
+        let compliantLabel = NSLocalizedString(LocalizationKeys.compliant, comment: "Compliant")
+        let warningLabel = NSLocalizedString(LocalizationKeys.warning, comment: "Warning")
+        let criticalLabel = NSLocalizedString(LocalizationKeys.critical, comment: "Critical")
+
         let data = [
-            (NSLocalizedString(LocalizationKeys.compliant, comment: "Compliant"), compliance.compliant, PDFStyleConfiguration.Colors.success),
-            (NSLocalizedString(LocalizationKeys.warning, comment: "Warning"), compliance.warning, PDFStyleConfiguration.Colors.warning),
-            (NSLocalizedString(LocalizationKeys.critical, comment: "Critical"), compliance.critical, PDFStyleConfiguration.Colors.critical)
+            (compliantLabel, compliance.compliant, PDFStyleConfiguration.Colors.success),
+            (warningLabel, compliance.warning, PDFStyleConfiguration.Colors.warning),
+            (criticalLabel, compliance.critical, PDFStyleConfiguration.Colors.critical)
         ]
 
         for (index, (label, count, color)) in data.enumerated() {

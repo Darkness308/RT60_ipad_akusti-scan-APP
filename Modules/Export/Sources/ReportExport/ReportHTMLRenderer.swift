@@ -56,7 +56,12 @@ public final class ReportHTMLRenderer {
             <title>\(NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title"))</title>
             <style>
                 :root { --fg:#111; --muted:#555; --acc:#0a84ff; --bg:#fff; --card:#fafafa; }
-                body { font-family:-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto; color:var(--fg); background:var(--bg); margin:0; }
+                body {
+                    font-family:-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto;
+                    color:var(--fg);
+                    background:var(--bg);
+                    margin:0;
+                }
                 .container { max-width: 860px; margin: 40px auto; padding: 0 20px; }
                 h1 { font-size: 28px; margin: 16px 0 8px; }
                 h2 { font-size: 20px; margin: 24px 0 8px; border-bottom:1px solid #eaeaea; padding-bottom:6px;}

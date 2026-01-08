@@ -47,9 +47,15 @@ struct MaterialEditorView: View {
                 .accessibilityAddTraits(.isButton)
             }
 
-            Section(header: Text(LocalizationKeys.savedMaterials.localized(comment: "Header for saved materials section"))
+            Section(
+                header: Text(
+                    LocalizationKeys.savedMaterials.localized(
+                        comment: "Header for saved materials section"
+                    )
+                )
                 .accessibilityAddTraits(.isHeader)
-                .accessibilityIdentifier("savedMaterialsHeader")) {
+                .accessibilityIdentifier("savedMaterialsHeader")
+            ) {
                 ForEach(materialManager.customMaterials, id: \.name) { material in
                     VStack(alignment: .leading) {
                         Text(material.name)

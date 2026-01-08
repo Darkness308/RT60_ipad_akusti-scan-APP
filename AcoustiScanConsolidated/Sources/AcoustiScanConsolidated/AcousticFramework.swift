@@ -50,15 +50,33 @@ public struct AcousticFramework {
                       category: .general, scaleLabel: ["gar keiner", "sehr großer"],
                       isUnipolar: true, isDichotom: false, isDegreeScale: false),
 
-        AudioParameter(nameId: 1, name: "Klangfarbe hell-dunkel",
-                      definition: "Klangeindruck, der durch das Verhältnis hoher zu tiefer Frequenzanteile bestimmt wird.",
-                      category: .klangfarbe, scaleLabel: ["dunkler", "heller"],
-                      isUnipolar: false, isDichotom: false, isDegreeScale: false),
+        AudioParameter(
+            nameId: 1,
+            name: "Klangfarbe hell-dunkel",
+            definition: """
+            Klangeindruck, der durch das Verhältnis hoher zu tiefer Frequenzanteile \
+            bestimmt wird.
+            """,
+            category: .klangfarbe,
+            scaleLabel: ["dunkler", "heller"],
+            isUnipolar: false,
+            isDichotom: false,
+            isDegreeScale: false
+        ),
 
-        AudioParameter(nameId: 5, name: "Schärfe",
-                      definition: "Klangeindruck, der z.B. auf den Kraftaufwand schließen lässt, mit dem eine Klangquelle angeregt wird.",
-                      category: .klangfarbe, scaleLabel: ["schwächer ausgeprägt", "stärker ausgeprägt"],
-                      isUnipolar: false, isDichotom: false, isDegreeScale: false)
+        AudioParameter(
+            nameId: 5,
+            name: "Schärfe",
+            definition: """
+            Klangeindruck, der z.B. auf den Kraftaufwand schließen lässt, \
+            mit dem eine Klangquelle angeregt wird.
+            """,
+            category: .klangfarbe,
+            scaleLabel: ["schwächer ausgeprägt", "stärker ausgeprägt"],
+            isUnipolar: false,
+            isDichotom: false,
+            isDegreeScale: false
+        )
         // Add more parameters as needed - this is a representative subset
     ]
 

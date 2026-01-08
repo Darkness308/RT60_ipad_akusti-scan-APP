@@ -229,11 +229,20 @@ public struct PDFTableRenderer {
         let deviation = abs(measured - target)
 
         if deviation <= tolerance {
-            return (NSLocalizedString(LocalizationKeys.statusOk, comment: "Status OK"), PDFStyleConfiguration.Colors.success)
+            let statusOk = NSLocalizedString(LocalizationKeys.statusOk, comment: "Status OK")
+            return (statusOk, PDFStyleConfiguration.Colors.success)
         } else if deviation <= tolerance * 1.5 {
-            return (NSLocalizedString(LocalizationKeys.statusTolerance, comment: "Status tolerance"), PDFStyleConfiguration.Colors.warning)
+            let statusTolerance = NSLocalizedString(
+                LocalizationKeys.statusTolerance,
+                comment: "Status tolerance"
+            )
+            return (statusTolerance, PDFStyleConfiguration.Colors.warning)
         } else {
-            return (NSLocalizedString(LocalizationKeys.statusCritical, comment: "Status critical"), PDFStyleConfiguration.Colors.critical)
+            let statusCritical = NSLocalizedString(
+                LocalizationKeys.statusCritical,
+                comment: "Status critical"
+            )
+            return (statusCritical, PDFStyleConfiguration.Colors.critical)
         }
     }
 }

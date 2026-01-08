@@ -33,7 +33,10 @@ public class SurfaceStore: ObservableObject {
     @Published public var roomVolume: Double = 0.0
     
     /// Room name
-    @Published public var roomName: String = NSLocalizedString(LocalizationKeys.unnamedRoom, comment: "Default room name")
+    @Published public var roomName: String = NSLocalizedString(
+        LocalizationKeys.unnamedRoom,
+        comment: "Default room name"
+    )
     
     /// Room dimensions (optional)
     @Published public var roomDimensions: (width: Double, height: Double, depth: Double)?
@@ -184,7 +187,12 @@ public class SurfaceStore: ObservableObject {
             case surfaces, roomVolume, roomName, dimensionWidth, dimensionHeight, dimensionDepth
         }
         
-        init(surfaces: [Surface], roomVolume: Double, roomName: String, roomDimensions: (width: Double, height: Double, depth: Double)?) {
+        init(
+            surfaces: [Surface],
+            roomVolume: Double,
+            roomName: String,
+            roomDimensions: (width: Double, height: Double, depth: Double)?
+        ) {
             self.surfaces = surfaces
             self.roomVolume = roomVolume
             self.roomName = roomName

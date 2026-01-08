@@ -430,7 +430,12 @@ private class ZIPReader {
                 stream.src_ptr = sourceBuffer.baseAddress!.assumingMemoryBound(to: UInt8.self)
                 stream.src_size = data.count
 
-                guard compression_stream_init(&stream, COMPRESSION_STREAM_DECODE, COMPRESSION_ZLIB) == COMPRESSION_STATUS_OK else {
+                let initResult = compression_stream_init(
+                    &stream,
+                    COMPRESSION_STREAM_DECODE,
+                    COMPRESSION_ZLIB
+                )
+                guard initResult == COMPRESSION_STATUS_OK else {
                     return 0
                 }
 
