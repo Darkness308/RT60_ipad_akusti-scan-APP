@@ -20,9 +20,9 @@ public struct AbsorptionData: Codable, Equatable {
     
     /// Get absorption coefficient for a specific frequency
     /// - Parameter frequency: Frequency in Hz
-    /// - Returns: Absorption coefficient or 0.1 if not found (default)
+    /// - Returns: Absorption coefficient or 0.0 if not found (default)
     public func coefficient(at frequency: Int) -> Float {
-        return values[frequency] ?? 0.1
+        return values[frequency] ?? 0.0
     }
     
     /// Standard octave band frequencies used in acoustic measurements
