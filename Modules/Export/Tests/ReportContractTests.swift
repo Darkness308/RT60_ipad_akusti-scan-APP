@@ -44,20 +44,20 @@ final class ReportContractTests: XCTestCase {
             "audit", "demohash"
         ]
         for t in commonTokens {
-            XCTAssertTrue(pdfText.contains(t), "PDF fehlt Token: \(t)")
-            XCTAssertTrue(htmlText.contains(t), "HTML fehlt Token: \(t)")
+            XCTAssertTrue(pdfText.contains(t), "PDF missing token: \(t)")
+            XCTAssertTrue(htmlText.contains(t), "HTML missing token: \(t)")
         }
         
         // PDF-specific tokens (German)
         let pdfTokens = ["rt60 bericht", "metadaten", "gerät", "toleranz"]
         for t in pdfTokens {
-            XCTAssertTrue(pdfText.contains(t), "PDF fehlt Token: \(t)")
+            XCTAssertTrue(pdfText.contains(t), "PDF missing token: \(t)")
         }
         
         // HTML-specific tokens (English from localization)
         let htmlTokens = ["rt60 report", "metadata", "device", "tolerance"]
         for t in htmlTokens {
-            XCTAssertTrue(htmlText.contains(t), "HTML fehlt Token: \(t)")
+            XCTAssertTrue(htmlText.contains(t), "HTML missing token: \(t)")
         }
     }
 
