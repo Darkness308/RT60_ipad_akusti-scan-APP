@@ -36,8 +36,16 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .officeSpace, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 0.5 }) // Office spaces should have uniform low RT60
+        // Office spaces should have low RT60 with volume scaling
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.4 && $0.targetRT60 < 0.6 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.1 })
+        
+        // Speech frequencies (500-2000 Hz) should have slightly lower RT60
+        let speechFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 2000 }
+        let otherFreqTargets = targets.filter { $0.frequency < 500 || $0.frequency > 2000 }
+        XCTAssertTrue(speechFreqTargets.allSatisfy { speech in
+            otherFreqTargets.allSatisfy { other in speech.targetRT60 <= other.targetRT60 }
+        })
     }
     
     func testConferenceRoomTargets() {
@@ -45,8 +53,16 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .conference, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 0.7 })
+        // Conference rooms have volume-adjusted RT60 around 0.7-0.8 range
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.65 && $0.targetRT60 < 0.85 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.15 })
+        
+        // Speech frequencies (500-4000 Hz) should have optimized (lower) RT60
+        let speechFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 4000 }
+        let lowFreqTargets = targets.filter { $0.frequency < 500 }
+        XCTAssertTrue(speechFreqTargets.allSatisfy { speech in
+            lowFreqTargets.allSatisfy { low in speech.targetRT60 < low.targetRT60 }
+        })
     }
     
     func testLectureHallTargets() {
@@ -54,8 +70,22 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .lecture, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 0.8 })
+        // Lecture halls have volume-adjusted RT60 with higher volume scaling
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.7 && $0.targetRT60 < 1.2 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.15 })
+        
+        // Low frequencies (≤250 Hz) should have higher RT60 for warmth
+        let lowFreqTargets = targets.filter { $0.frequency <= 250 }
+        let midFreqTargets = targets.filter { $0.frequency > 250 && $0.frequency < 4000 }
+        XCTAssertTrue(lowFreqTargets.allSatisfy { low in
+            midFreqTargets.allSatisfy { mid in low.targetRT60 > mid.targetRT60 }
+        })
+        
+        // High frequencies (≥4000 Hz) should have lower RT60 for clarity
+        let highFreqTargets = targets.filter { $0.frequency >= 4000 }
+        XCTAssertTrue(highFreqTargets.allSatisfy { high in
+            midFreqTargets.allSatisfy { mid in high.targetRT60 < mid.targetRT60 }
+        })
     }
     
     func testMusicRoomTargets() {
@@ -63,8 +93,20 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .music, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 1.5 }) // Music rooms need longer reverberation
+        // Music rooms need longer reverberation with significant volume scaling
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 1.5 && $0.targetRT60 < 2.2 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.2 })
+        
+        // Low frequencies (125 Hz) should have fuller bass response
+        let lowFreqTarget = targets.first { $0.frequency == 125 }!
+        let midFreqTargets = targets.filter { $0.frequency > 125 && $0.frequency < 4000 }
+        XCTAssertTrue(midFreqTargets.allSatisfy { mid in lowFreqTarget.targetRT60 > mid.targetRT60 })
+        
+        // High frequencies (≥4000 Hz) should have controlled brilliance
+        let highFreqTargets = targets.filter { $0.frequency >= 4000 }
+        XCTAssertTrue(highFreqTargets.allSatisfy { high in
+            midFreqTargets.allSatisfy { mid in high.targetRT60 < mid.targetRT60 }
+        })
     }
     
     func testSportsHallTargets() {
@@ -72,8 +114,16 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .sports, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 2.0 }) // Sports halls can have highest RT60
+        // Sports halls have highest RT60 with significant volume scaling for large spaces
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 2.0 && $0.targetRT60 < 3.0 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.3 })
+        
+        // Speech/PA frequencies (500-2000 Hz) should have better clarity
+        let paFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 2000 }
+        let otherFreqTargets = targets.filter { $0.frequency < 500 || $0.frequency > 2000 }
+        XCTAssertTrue(paFreqTargets.allSatisfy { pa in
+            otherFreqTargets.allSatisfy { other in pa.targetRT60 <= other.targetRT60 }
+        })
     }
     
     func testFrequencyCoverage() {
