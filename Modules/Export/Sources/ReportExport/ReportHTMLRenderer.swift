@@ -118,7 +118,7 @@ public final class ReportHTMLRenderer {
             \(renderKV(m.metadata))
           </div>
           <div class="card">
-            <div class="mb8"><strong>Validität</strong></div>
+            <div class="mb8"><strong>\(NSLocalizedString(LocalizationKeys.validity, bundle: .module, comment: "Validity section"))</strong></div>
             \(renderKV(m.validity))
           </div>
         </div>
