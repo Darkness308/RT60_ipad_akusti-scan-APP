@@ -205,7 +205,7 @@ public final class ReportHTMLRenderer {
         """
 
         let recs = """
-        <h2>Empfehlungen</h2>
+        <h2>\(NSLocalizedString(LocalizationKeys.recommendations, bundle: .module, comment: "Recommendations section"))</h2>
         <ul>
           \(m.recommendations.map { "<li>\(escape($0))</li>" }.joined(separator:"\n"))
         </ul>
