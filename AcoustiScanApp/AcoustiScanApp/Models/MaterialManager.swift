@@ -67,6 +67,7 @@ public class MaterialManager: ObservableObject {
     /// - Parameter csvString: CSV string to parse
     /// - Returns: Array of imported materials
     /// - Throws: Error if CSV parsing fails
+    /// - Note: Handles quoted fields and commas in names properly
     public func importFromCSV(_ csvString: String) throws -> [AcousticMaterial] {
         var importedMaterials: [AcousticMaterial] = []
         let lines = csvString.components(separatedBy: .newlines)
@@ -75,7 +76,8 @@ public class MaterialManager: ObservableObject {
         for line in lines.dropFirst() {
             guard !line.trimmingCharacters(in: .whitespaces).isEmpty else { continue }
             
-            let components = line.components(separatedBy: ",")
+            // Simple CSV parser that handles quoted fields
+            let components = parseCSVLine(line)
             guard components.count >= 7 else { continue }
             
             let name = components[0].trimmingCharacters(in: .whitespaces)
@@ -97,16 +99,36 @@ public class MaterialManager: ObservableObject {
         return importedMaterials
     }
     
+    /// Simple CSV line parser that handles quoted fields
+    /// - Parameter line: CSV line to parse
+    /// - Returns: Array of field values
+    private func parseCSVLine(_ line: String) -> [String] {
+        var fields: [String] = []
+        var currentField = ""
+        var inQuotes = false
+        
+        for char in line {
+            if char == "\"" {
+                inQuotes.toggle()
+            } else if char == "," && !inQuotes {
+                fields.append(currentField)
+                currentField = ""
+            } else {
+                currentField.append(char)
+            }
+        }
+        fields.append(currentField)
+        
+        return fields
+    }
+    
     /// Add imported materials to custom materials
     /// - Parameter csvString: CSV string to import
-    public func importAndAdd(fromCSV csvString: String) {
-        do {
-            let materials = try importFromCSV(csvString)
-            customMaterials.append(contentsOf: materials)
-            saveCustomMaterials()
-        } catch {
-            print("Error importing CSV: \(error)")
-        }
+    /// - Throws: Re-throws CSV parsing errors for proper error handling
+    public func importAndAdd(fromCSV csvString: String) throws {
+        let materials = try importFromCSV(csvString)
+        customMaterials.append(contentsOf: materials)
+        saveCustomMaterials()
     }
     
     // MARK: - XLSX Import/Export (Placeholder for US-6)

@@ -85,9 +85,11 @@ public class SurfaceStore: ObservableObject {
     /// Calculate total absorption for a given frequency
     /// - Parameter frequency: Frequency in Hz
     /// - Returns: Total absorption in m² Sabine
+    /// - Note: Converts Float coefficients to Double for calculation precision
     public func totalAbsorption(at frequency: Int) -> Double {
         return surfaces.reduce(0.0) { total, surface in
             guard let material = surface.material else { return total }
+            // Convert Float to Double for higher precision calculations
             let coefficient = Double(material.absorptionCoefficient(at: frequency))
             return total + (surface.area * coefficient)
         }

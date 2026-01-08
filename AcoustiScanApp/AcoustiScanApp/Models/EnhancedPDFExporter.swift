@@ -14,6 +14,20 @@ import PDFKit
 /// Enhanced PDF Exporter for RT60 Reports with visual enhancements
 public class EnhancedPDFExporter {
     
+    // MARK: - Constants
+    
+    /// A4 page dimensions in points (72 points per inch)
+    private struct PageSize {
+        static let a4Width: CGFloat = 595.2  // 210mm
+        static let a4Height: CGFloat = 841.8 // 297mm
+    }
+    
+    /// Page layout constants
+    private struct Layout {
+        static let margin: CGFloat = 72 // 1 inch margin
+        static let pageBreakThreshold: CGFloat = 100 // Space needed before page break
+    }
+    
     public init() {}
     
     #if canImport(UIKit)
@@ -44,9 +58,7 @@ public class EnhancedPDFExporter {
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
         
-        let pageWidth: CGFloat = 595.2  // A4 width in points
-        let pageHeight: CGFloat = 841.8 // A4 height in points
-        let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
+        let pageRect = CGRect(x: 0, y: 0, width: PageSize.a4Width, height: PageSize.a4Height)
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
         
         return renderer.pdfData { context in
@@ -709,9 +721,9 @@ public class EnhancedPDFExporter {
             y += max(circleSize, textHeight) + 25
             
             // Add page break if needed
-            if y > pageRect.height - 100 && index < recommendations.count - 1 {
+            if y > pageRect.height - Layout.pageBreakThreshold && index < recommendations.count - 1 {
                 context.beginPage()
-                y = margin
+                y = Layout.margin
             }
         }
     }

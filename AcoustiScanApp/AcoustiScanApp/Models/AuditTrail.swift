@@ -220,7 +220,9 @@ public class AuditTrailManager {
 
 // MARK: - Convenience Extensions
 
-extension Dictionary {
+/// Extension for Dictionary to transform keys
+/// Note: Private to avoid conflicts with potential future Swift standard library additions
+private extension Dictionary {
     func mapKeys<T: Hashable>(_ transform: (Key) -> T) -> [T: Value] {
         var result: [T: Value] = [:]
         for (key, value) in self {
