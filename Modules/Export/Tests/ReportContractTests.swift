@@ -34,16 +34,29 @@ final class ReportContractTests: XCTestCase {
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .lowercased()
 
-        // Assert – Kerntokens (Werte & Labels) müssen in beiden vorkommen
-        let tokens = [
-            "rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0",
+        // Assert - Core data values must appear in both outputs
+        // Note: PDF uses hardcoded German text, HTML uses localized strings (English in CI)
+        let commonTokens = [
+            "ipadpro", "version", "1.0.0",
             "125", "0.70",
             "250", "0.60",
-            "din 18041", "toleranz", "0.20",
+            "din 18041", "0.20",
             "audit", "demohash"
         ]
-        for t in tokens {
+        for t in commonTokens {
             XCTAssertTrue(pdfText.contains(t), "PDF fehlt Token: \(t)")
+            XCTAssertTrue(htmlText.contains(t), "HTML fehlt Token: \(t)")
+        }
+        
+        // PDF-specific tokens (German)
+        let pdfTokens = ["rt60 bericht", "metadaten", "gerät", "toleranz"]
+        for t in pdfTokens {
+            XCTAssertTrue(pdfText.contains(t), "PDF fehlt Token: \(t)")
+        }
+        
+        // HTML-specific tokens (English from localization)
+        let htmlTokens = ["rt60 report", "metadata", "device", "tolerance"]
+        for t in htmlTokens {
             XCTAssertTrue(htmlText.contains(t), "HTML fehlt Token: \(t)")
         }
     }
