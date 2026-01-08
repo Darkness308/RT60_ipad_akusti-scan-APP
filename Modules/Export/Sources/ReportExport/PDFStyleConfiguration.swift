@@ -9,6 +9,7 @@ import UIKit
 /// Centralized styling configuration for PDF exports
 public struct PDFStyleConfiguration {
 
+    #if canImport(CoreGraphics)
     // MARK: - Page Layout
 
     public struct PageLayout {
@@ -27,6 +28,7 @@ public struct PDFStyleConfiguration {
             a4Width - (2 * margin)
         }
     }
+    #endif
 
     // MARK: - Typography
 
@@ -51,6 +53,7 @@ public struct PDFStyleConfiguration {
     }
     #endif
 
+    #if canImport(CoreGraphics)
     // MARK: - Spacing
 
     public struct Spacing {
@@ -66,4 +69,5 @@ public struct PDFStyleConfiguration {
         /// Large spacing (20pt)
         public static let lg: CGFloat = 20
     }
+    #endif
 }
