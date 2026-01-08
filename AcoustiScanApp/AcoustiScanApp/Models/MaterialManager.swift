@@ -107,15 +107,35 @@ public class MaterialManager: ObservableObject {
         var currentField = ""
         var inQuotes = false
         
-        for char in line {
+        let characters = Array(line)
+        var index = 0
+        
+        while index < characters.count {
+            let char = characters[index]
+            
             if char == "\"" {
-                inQuotes.toggle()
+                if inQuotes {
+                    // Handle escaped quote ("") inside a quoted field
+                    if index + 1 < characters.count && characters[index + 1] == "\"" {
+                        currentField.append("\"")
+                        index += 2
+                        continue
+                    } else {
+                        // Closing quote for the current quoted field
+                        inQuotes = false
+                    }
+                } else {
+                    // Opening quote for a quoted field
+                    inQuotes = true
+                }
             } else if char == "," && !inQuotes {
                 fields.append(currentField)
                 currentField = ""
             } else {
                 currentField.append(char)
             }
+            
+            index += 1
         }
         fields.append(currentField)
         
