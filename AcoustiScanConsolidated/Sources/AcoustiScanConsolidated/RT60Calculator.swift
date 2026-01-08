@@ -43,36 +43,18 @@ public class RT60Calculator {
     }
 
     /// Evaluate RT60 measurements against DIN 18041 targets
+    /// - Note: This method delegates to RT60Evaluator for consistency
     public static func evaluateDINCompliance(
         measurements: [RT60Measurement],
         roomType: RoomType,
         volume: Double
     ) -> [RT60Deviation] {
-        let targets = DIN18041Database.targets(for: roomType, volume: volume)
-        
-        return measurements.compactMap { measurement in
-            guard let target = targets.first(where: { $0.frequency == measurement.frequency }) else {
-                return nil
-            }
-            
-            let diff = measurement.rt60 - target.targetRT60
-            let status: EvaluationStatus
-            
-            if abs(diff) <= target.tolerance {
-                status = .withinTolerance
-            } else if diff > 0 {
-                status = .tooHigh
-            } else {
-                status = .tooLow
-            }
-            
-            return RT60Deviation(
-                frequency: measurement.frequency,
-                measuredRT60: measurement.rt60,
-                targetRT60: target.targetRT60,
-                status: status
-            )
-        }
+        // Delegate to the canonical implementation in RT60Evaluator
+        return RT60Evaluator.evaluateDINCompliance(
+            measurements: measurements,
+            roomType: roomType,
+            volume: volume
+        )
     }
 }
 
