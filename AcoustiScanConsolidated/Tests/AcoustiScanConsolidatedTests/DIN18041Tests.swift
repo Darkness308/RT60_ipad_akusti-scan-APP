@@ -98,7 +98,10 @@ final class DIN18041ModuleTests: XCTestCase {
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.2 })
         
         // Low frequencies (125 Hz) should have fuller bass response
-        let lowFreqTarget = targets.first { $0.frequency == 125 }!
+        guard let lowFreqTarget = targets.first(where: { $0.frequency == 125 }) else {
+            XCTFail("Expected to find 125 Hz target")
+            return
+        }
         let midFreqTargets = targets.filter { $0.frequency > 125 && $0.frequency < 4000 }
         XCTAssertTrue(midFreqTargets.allSatisfy { mid in lowFreqTarget.targetRT60 > mid.targetRT60 })
         
