@@ -252,6 +252,148 @@ swift build
 
 ---
 
+## 🎓 Für Auszubildende / Einsteiger
+
+Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu leisten.
+
+### Erste Schritte
+
+1. **Repository klonen und bauen**:
+   ```bash
+   git clone https://github.com/Darkness308/RT60_ipad_akusti-scan-APP.git
+   cd RT60_ipad_akusti-scan-APP
+
+   # Backend testen
+   cd AcoustiScanConsolidated
+   swift build && swift test
+   cd ..
+
+   # Xcode öffnen
+   open AcoustiScanApp/AcoustiScanApp.xcodeproj
+   ```
+
+2. **Lies CONTRIBUTING.md** - Dort findest du alle Entwicklungsrichtlinien.
+
+3. **Verstehe die Architektur** (siehe Diagramm unten).
+
+### Architektur-Übersicht
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        AcoustiScan App                          │
+│                     (SwiftUI / iPadOS)                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
+│  │   Scanner   │  │    RT60     │  │   Export    │             │
+│  │    Tab      │  │    Tab      │  │    Tab      │             │
+│  │  (LiDAR)    │  │  (Messung)  │  │   (PDF)     │             │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘             │
+│         │                │                │                     │
+│         └────────────────┼────────────────┘                     │
+│                          │                                      │
+│                    ┌─────▼─────┐                                │
+│                    │ViewModel  │  @StateObject / @Published    │
+│                    │  Layer    │                                │
+│                    └─────┬─────┘                                │
+│                          │                                      │
+├──────────────────────────┼──────────────────────────────────────┤
+│                          │                                      │
+│  ┌───────────────────────▼────────────────────────────────────┐ │
+│  │            AcoustiScanConsolidated (Swift Package)         │ │
+│  │                                                            │ │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │ │
+│  │  │ RT60         │  │ DIN 18041    │  │ Material     │     │ │
+│  │  │ Calculator   │  │ Evaluator    │  │ Database     │     │ │
+│  │  │              │  │              │  │              │     │ │
+│  │  │ Sabine-      │  │ Raumtyp-     │  │ 500+         │     │ │
+│  │  │ Formel       │  │ Klassierung  │  │ Materialien  │     │ │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘     │ │
+│  │                                                            │ │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │ │
+│  │  │ Measurement  │  │ Acoustic     │  │ PDF Report   │     │ │
+│  │  │ Quality      │  │ Framework    │  │ Generator    │     │ │
+│  │  │              │  │              │  │              │     │ │
+│  │  │ ISO 3382-1   │  │ 48 Parameter │  │ 6-Seiten     │     │ │
+│  │  │ Konformität  │  │ Klangfarbe+  │  │ Gutachten    │     │ │
+│  │  └──────────────┘  └──────────────┘  └──────────────┘     │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Wichtige Konzepte
+
+| Konzept | Erklärung | Datei(en) |
+|---------|-----------|-----------|
+| **RT60** | Nachhallzeit - Zeit bis Schall um 60 dB abfällt | `RT60Calculator.swift` |
+| **Sabine-Formel** | RT60 = 0.161 × V / A (V=Volumen, A=Absorption) | `RT60Calculator.swift:10-14` |
+| **DIN 18041** | Deutsche Norm für Raumakustik | `RT60Evaluator.swift`, `RoomType.swift` |
+| **LiDAR** | Laser-Entfernungsmessung für 3D-Raumscan | `LiDARScanView.swift` |
+| **RoomPlan** | Apple API für automatische Raumerkennung | `RoomScanView.swift` |
+| **ARKit** | Augmented Reality Framework | `LiDARScanView.swift` |
+| **SwiftUI** | Deklaratives UI-Framework | `Views/*.swift` |
+| **MVVM** | Model-View-ViewModel Architekturmuster | Gesamtprojekt |
+
+### Lernpfad
+
+**Woche 1-2: Grundlagen**
+- [ ] Swift-Syntax lernen ([Swift Tour](https://docs.swift.org/swift-book/GuidedTour/GuidedTour.html))
+- [ ] SwiftUI-Basics ([Apple Tutorial](https://developer.apple.com/tutorials/swiftui))
+- [ ] Git-Grundlagen (clone, commit, push, pull request)
+
+**Woche 3-4: Projekt verstehen**
+- [ ] README.md und CONTRIBUTING.md lesen
+- [ ] Projektstruktur erkunden
+- [ ] Erste kleine Änderung machen (z.B. Typo fixen)
+
+**Woche 5-6: Akustik-Grundlagen**
+- [ ] Was ist RT60? (YouTube: "Reverberation Time Explained")
+- [ ] DIN 18041 verstehen (Zusammenfassung lesen)
+- [ ] `RT60Calculator.swift` durchlesen
+
+**Woche 7-8: Eigene Features**
+- [ ] Issue auswählen und bearbeiten
+- [ ] Pull Request erstellen
+- [ ] Code Review durchlaufen
+
+### Häufige Aufgaben für Anfänger
+
+1. **Lokalisierung hinzufügen**
+   - Neue Strings in `LocalizationKeys.swift` eintragen
+   - Übersetzungen in `Localizable.strings` (de/en)
+
+2. **UI-Test schreiben**
+   - Beispiel in `AcoustiScanAppTests/` ansehen
+   - `XCTAssert` für Assertions verwenden
+
+3. **Material zur Datenbank hinzufügen**
+   - `MaterialDatabase.swift` bearbeiten
+   - Absorptionskoeffizienten recherchieren
+
+4. **Bug fixen**
+   - Issue-Liste durchsuchen
+   - `[good first issue]` Label suchen
+
+### Hilfe bekommen
+
+- **Im Code**: Kommentare lesen, `// MARK:` Abschnitte beachten
+- **Dokumentation**: Apple Developer Documentation
+- **Fragen**: Issue im Repository erstellen
+- **Pair Programming**: Mentor um Session bitten
+
+### Wichtige Dateien zum Studieren
+
+| Priorität | Datei | Warum wichtig |
+|-----------|-------|---------------|
+| 1 | `RT60Calculator.swift` | Kernalgorithmus |
+| 2 | `ContentView.swift` | App-Einstiegspunkt |
+| 3 | `RoomScanView.swift` | LiDAR-Integration |
+| 4 | `Surface.swift` | Datenmodell |
+| 5 | `MeasurementQuality.swift` | ISO-Konformität |
+
+---
+
 ## 📜 Lizenz
 
 Proprietary - Alle Rechte vorbehalten
