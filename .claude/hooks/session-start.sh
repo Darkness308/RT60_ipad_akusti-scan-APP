@@ -29,8 +29,14 @@ else
   if command -v brew &> /dev/null; then
     brew install swiftlint || echo "⚠️ SwiftLint installation failed"
   elif command -v apt-get &> /dev/null; then
-    # Try installing via apt on Linux
-    sudo apt-get update -qq && sudo apt-get install -y swiftlint 2>/dev/null || echo "⚠️ SwiftLint not available via apt"
+    # Try installing via apt on Linux (may require sudo)
+    echo "SwiftLint is not installed. It can be installed via 'sudo apt-get install -y swiftlint'."
+    read -r -p "Do you want to run this command with sudo now? [y/N]: " swiftlint_apt_confirm
+    if [[ "$swiftlint_apt_confirm" =~ ^[Yy]$ ]]; then
+      sudo apt-get update -qq && sudo apt-get install -y swiftlint 2>/dev/null || echo "⚠️ SwiftLint not available via apt or installation failed"
+    else
+      echo "ℹ️ Skipping SwiftLint installation via apt at user request."
+    fi
   else
     echo "⚠️ Cannot install SwiftLint - no package manager found"
   fi
