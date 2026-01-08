@@ -6,7 +6,7 @@ import PDFKit
 
 /// PDF report renderer that uses the same ReportModel as ReportHTMLRenderer
 /// Refactored to use modular components for better maintainability
-public final class PDFReportRenderer_Refactored {
+public final class PDFReportRenderer {
 
     public init() {}
 
@@ -22,7 +22,7 @@ public final class PDFReportRenderer_Refactored {
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan RT60 Tool",
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
-            kCGPDFContextTitle: NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title")
+            kCGPDFContextTitle: NSLocalizedString(LocalizationKeys.rt60Report, bundle: .module, comment: "RT60 Report title")
         ]
 
         let format = UIGraphicsPDFRendererFormat()
@@ -42,7 +42,7 @@ public final class PDFReportRenderer_Refactored {
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan RT60 Tool",
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
-            kCGPDFContextTitle: NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title")
+            kCGPDFContextTitle: NSLocalizedString(LocalizationKeys.rt60Report, bundle: .module, comment: "RT60 Report title")
         ]
 
         let format = UIGraphicsPDFRendererFormat()
@@ -90,18 +90,18 @@ public final class PDFReportRenderer_Refactored {
         }
 
         layout.addSpacing(PDFStyleConfiguration.Spacing.md)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.metadata, comment: "Metadata section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.metadata, bundle: .module, comment: "Metadata section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.md)
 
         // Always include default device/version, then actual values if different
-        layout.drawLine("\(NSLocalizedString(LocalizationKeys.device, comment: "Device label")): \(defaultDevice)", attributes: textAttrs)
-        layout.drawLine("\(NSLocalizedString(LocalizationKeys.version, comment: "Version label")): \(defaultVersion)", attributes: textAttrs)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.device, bundle: .module, comment: "Device label")): \(defaultDevice)", attributes: textAttrs)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.version, bundle: .module, comment: "Version label")): \(defaultVersion)", attributes: textAttrs)
         if let actualDevice = model.metadata["device"], actualDevice.lowercased() != defaultDevice {
-            layout.drawLine("\(NSLocalizedString(LocalizationKeys.currentDevice, comment: "Current device label")): \(actualDevice)", attributes: textAttrs)
+            layout.drawLine("\(NSLocalizedString(LocalizationKeys.currentDevice, bundle: .module, comment: "Current device label")): \(actualDevice)", attributes: textAttrs)
         }
         if let actualVersion = model.metadata["app_version"], actualVersion != defaultVersion {
-            layout.drawLine("\(NSLocalizedString(LocalizationKeys.currentVersion, comment: "Current version label")): \(actualVersion)", attributes: textAttrs)
+            layout.drawLine("\(NSLocalizedString(LocalizationKeys.currentVersion, bundle: .module, comment: "Current version label")): \(actualVersion)", attributes: textAttrs)
         }
-        layout.drawLine("\(NSLocalizedString(LocalizationKeys.date, comment: "Date label")): \(PDFFormatHelpers.formattedString(model.metadata["date"]))", attributes: textAttrs, spacing: PDFStyleConfiguration.Spacing.md)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.date, bundle: .module, comment: "Date label")): \(PDFFormatHelpers.formattedString(model.metadata["date"]))", attributes: textAttrs, spacing: PDFStyleConfiguration.Spacing.md)
 
         let filteredMetadata = model.metadata.filter { !["device", "app_version", "date"].contains($0.key) }
         for (key, value) in filteredMetadata.sorted(by: { $0.key < $1.key }) {
@@ -110,15 +110,15 @@ public final class PDFReportRenderer_Refactored {
 
         if !model.validity.isEmpty {
             layout.addSpacing(PDFStyleConfiguration.Spacing.sm)
-            layout.drawLine(NSLocalizedString(LocalizationKeys.validity, comment: "Validity section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+            layout.drawLine(NSLocalizedString(LocalizationKeys.validity, bundle: .module, comment: "Validity section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
             for (key, value) in model.validity.sorted(by: { $0.key < $1.key }) {
                 layout.drawLine("\(key): \(PDFFormatHelpers.formattedString(value))", attributes: textAttrs)
             }
         }
 
         layout.addSpacing(PDFStyleConfiguration.Spacing.md)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60PerFrequency, comment: "RT60 per frequency section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.frequencyHeader, comment: "Frequency header"), attributes: textAttrs)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60PerFrequency, bundle: .module, comment: "RT60 per frequency section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.frequencyHeader, bundle: .module, comment: "Frequency header"), attributes: textAttrs)
 
         for freq in requiredFrequencies {
             let matchingBand = model.rt60_bands.first { band in
@@ -144,8 +144,8 @@ public final class PDFReportRenderer_Refactored {
         }
 
         layout.addSpacing(PDFStyleConfiguration.Spacing.md)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetTolerance, comment: "DIN 18041 target & tolerance section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetToleranceHeader, comment: "DIN target tolerance header"), attributes: textAttrs)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetTolerance, bundle: .module, comment: "DIN 18041 target & tolerance section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetToleranceHeader, bundle: .module, comment: "DIN target tolerance header"), attributes: textAttrs)
 
         // Always show representative DIN 18041 standard values
         for (freq, targetRT60, tolerance) in representativeDINValues {
@@ -181,14 +181,14 @@ public final class PDFReportRenderer_Refactored {
         }
 
         layout.addSpacing(PDFStyleConfiguration.Spacing.md)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.recommendations, comment: "Recommendations section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.recommendations, bundle: .module, comment: "Recommendations section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
         for (index, rec) in model.recommendations.enumerated() {
             let line = "\(index + 1). \(rec)"
             layout.drawMultiline(line, attributes: textAttrs, width: layout.contentWidth)
         }
 
         layout.addSpacing(PDFStyleConfiguration.Spacing.md)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.audit, comment: "Audit section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.audit, bundle: .module, comment: "Audit section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
         for (key, value) in model.audit.sorted(by: { $0.key < $1.key }) {
             layout.drawLine("\(key): \(PDFFormatHelpers.formattedString(value))", attributes: textAttrs)
         }
@@ -213,29 +213,29 @@ public final class PDFReportRenderer_Refactored {
         let sectionAttrs = PDFStyleConfiguration.Typography.attributes(for: PDFStyleConfiguration.Typography.sectionHeader)
         let textAttrs = PDFStyleConfiguration.Typography.attributes(for: PDFStyleConfiguration.Typography.body)
 
-        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title"), attributes: titleAttrs, spacing: PDFStyleConfiguration.Spacing.lg)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60Report, bundle: .module, comment: "RT60 Report title"), attributes: titleAttrs, spacing: PDFStyleConfiguration.Spacing.lg)
 
         // Draw core tokens first to ensure they appear on the first page
-        layout.drawLine(NSLocalizedString(LocalizationKeys.coreTokens, comment: "Core Tokens section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.coreTokens, bundle: .module, comment: "Core Tokens section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
         for token in coreTokens {
             layout.drawLine(token, attributes: textAttrs)
         }
 
         layout.addSpacing(PDFStyleConfiguration.Spacing.md)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.metadata, comment: "Metadata section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.md)
-        layout.drawLine("\(NSLocalizedString(LocalizationKeys.device, comment: "Device label")): ipadpro", attributes: textAttrs)
-        layout.drawLine("\(NSLocalizedString(LocalizationKeys.version, comment: "Version label")): 1.0.0", attributes: textAttrs)
-        layout.drawLine("\(NSLocalizedString(LocalizationKeys.date, comment: "Date label")): -", attributes: textAttrs, spacing: PDFStyleConfiguration.Spacing.md)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.metadata, bundle: .module, comment: "Metadata section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.md)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.device, bundle: .module, comment: "Device label")): ipadpro", attributes: textAttrs)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.version, bundle: .module, comment: "Version label")): 1.0.0", attributes: textAttrs)
+        layout.drawLine("\(NSLocalizedString(LocalizationKeys.date, bundle: .module, comment: "Date label")): -", attributes: textAttrs, spacing: PDFStyleConfiguration.Spacing.md)
 
-        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60PerFrequency, comment: "RT60 per frequency section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.frequencyHeader, comment: "Frequency header"), attributes: textAttrs)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.rt60PerFrequency, bundle: .module, comment: "RT60 per frequency section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.frequencyHeader, bundle: .module, comment: "Frequency header"), attributes: textAttrs)
         for freq in requiredFrequencies {
             layout.drawLine("\(freq) Hz: - s", attributes: textAttrs)
         }
 
         layout.addSpacing(PDFStyleConfiguration.Spacing.md)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetTolerance, comment: "DIN 18041 target & tolerance section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
-        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetToleranceHeader, comment: "DIN target tolerance header"), attributes: textAttrs)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetTolerance, bundle: .module, comment: "DIN 18041 target & tolerance section"), attributes: sectionAttrs, spacing: PDFStyleConfiguration.Spacing.sm)
+        layout.drawLine(NSLocalizedString(LocalizationKeys.dinTargetToleranceHeader, bundle: .module, comment: "DIN target tolerance header"), attributes: textAttrs)
         // Show representative DIN 18041 standard values
         for (freq, targetRT60, tolerance) in representativeDINValues {
             layout.drawLine("\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s", attributes: textAttrs)

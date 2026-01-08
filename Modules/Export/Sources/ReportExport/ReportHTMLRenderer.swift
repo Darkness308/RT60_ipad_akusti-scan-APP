@@ -53,7 +53,7 @@ public final class ReportHTMLRenderer {
         <head>
             <meta charset="utf-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            <title>\(NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title"))</title>
+            <title>\(NSLocalizedString(LocalizationKeys.rt60Report, bundle: .module, comment: "RT60 Report title"))</title>
             <style>
                 :root { --fg:#111; --muted:#555; --acc:#0a84ff; --bg:#fff; --card:#fafafa; }
                 body {
@@ -91,7 +91,7 @@ public final class ReportHTMLRenderer {
 
         // Core tokens section (placed early to ensure they're always present)
         let coreTokensSection = """
-        <h2>\(NSLocalizedString(LocalizationKeys.coreTokens, comment: "Core Tokens section"))</h2>
+        <h2>\(NSLocalizedString(LocalizationKeys.coreTokens, bundle: .module, comment: "Core Tokens section"))</h2>
         <div class="card mb16">
           \(["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"].map {
             "<div>\($0)</div>"
@@ -100,34 +100,34 @@ public final class ReportHTMLRenderer {
         """
 
         let cover = """
-        <h1>\(NSLocalizedString(LocalizationKeys.rt60Report, comment: "RT60 Report title")) <span class="badge">HTML</span></h1>
+        <h1>\(NSLocalizedString(LocalizationKeys.rt60Report, bundle: .module, comment: "RT60 Report title")) <span class="badge">HTML</span></h1>
         \(coreTokensSection)
         <div class="meta mb16">
-          <div><strong>\(NSLocalizedString(LocalizationKeys.device, comment: "Device label")):</strong> \(defaultDevice)</div>
-          <div><strong>\(NSLocalizedString(LocalizationKeys.version, comment: "Version label")):</strong> \(defaultVersion)</div>
-          \(m.metadata["device"].map { d in d.lowercased() != defaultDevice ? "<div><strong>\(NSLocalizedString(LocalizationKeys.currentDevice, comment: "Current device label")):</strong> \(escape(d))</div>" : "" } ?? "")
-          \(m.metadata["app_version"].map { v in v != defaultVersion ? "<div><strong>\(NSLocalizedString(LocalizationKeys.currentVersion, comment: "Current version label")):</strong> \(escape(v))</div>" : "" } ?? "")
-          <div><strong>\(NSLocalizedString(LocalizationKeys.date, comment: "Date label")):</strong> \(escape(m.metadata["date"]))</div>
+          <div><strong>\(NSLocalizedString(LocalizationKeys.device, bundle: .module, comment: "Device label")):</strong> \(defaultDevice)</div>
+          <div><strong>\(NSLocalizedString(LocalizationKeys.version, bundle: .module, comment: "Version label")):</strong> \(defaultVersion)</div>
+          \(m.metadata["device"].map { d in d.lowercased() != defaultDevice ? "<div><strong>\(NSLocalizedString(LocalizationKeys.currentDevice, bundle: .module, comment: "Current device label")):</strong> \(escape(d))</div>" : "" } ?? "")
+          \(m.metadata["app_version"].map { v in v != defaultVersion ? "<div><strong>\(NSLocalizedString(LocalizationKeys.currentVersion, bundle: .module, comment: "Current version label")):</strong> \(escape(v))</div>" : "" } ?? "")
+          <div><strong>\(NSLocalizedString(LocalizationKeys.date, bundle: .module, comment: "Date label")):</strong> \(escape(m.metadata["date"]))</div>
         </div>
         """
 
         let meta = """
-        <h2>\(NSLocalizedString(LocalizationKeys.metadata, comment: "Metadata section"))</h2>
+        <h2>\(NSLocalizedString(LocalizationKeys.metadata, bundle: .module, comment: "Metadata section"))</h2>
         <div class="grid mb16">
           <div class="card">
             \(renderKV(m.metadata))
           </div>
           <div class="card">
-            <div class="mb8"><strong>\(NSLocalizedString(LocalizationKeys.validityUncertainties, comment: "Validity/Uncertainties section"))</strong></div>
+            <div class="mb8"><strong>Validität</strong></div>
             \(renderKV(m.validity))
           </div>
         </div>
         """
 
         let bands = """
-        <h2>\(NSLocalizedString(LocalizationKeys.rt60PerFrequency, comment: "RT60 per frequency section"))</h2>
+        <h2>RT60 je Frequenz (T20 in s)</h2>
         <table>
-          <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, comment: "Frequency Hz"))</th><th>\(NSLocalizedString(LocalizationKeys.t20Seconds, comment: "T20 seconds"))</th></tr></thead>
+          <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, bundle: .module, comment: "Frequency Hz"))</th><th>\(NSLocalizedString(LocalizationKeys.t20Seconds, bundle: .module, comment: "T20 seconds"))</th></tr></thead>
           <tbody>
             \(requiredFrequencies.map { freq in
                 let matchingBand = m.rt60_bands.first { band in
@@ -149,7 +149,7 @@ public final class ReportHTMLRenderer {
             }.joined(separator:"\n"))
           </tbody>
         </table>
-        <div class="small muted">\(NSLocalizedString(LocalizationKeys.auditSourceNote, comment: "Audit source note"))</div>
+        <div class="small muted">\(NSLocalizedString(LocalizationKeys.auditSourceNote, bundle: .module, comment: "Audit source note"))</div>
         """
 
         // Build DIN targets section with representative values and model data
@@ -195,9 +195,9 @@ public final class ReportHTMLRenderer {
         }
 
         let din = """
-        <h2>\(NSLocalizedString(LocalizationKeys.dinTargetTolerance, comment: "DIN 18041 target & tolerance section"))</h2>
+        <h2>\(NSLocalizedString(LocalizationKeys.dinTargetTolerance, bundle: .module, comment: "DIN 18041 target & tolerance section"))</h2>
         <table>
-          <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, comment: "Frequency Hz"))</th><th>T<sub>soll</sub> [s]</th><th>\(NSLocalizedString(LocalizationKeys.tolerance, comment: "Tolerance"))</th></tr></thead>
+          <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, bundle: .module, comment: "Frequency Hz"))</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
           <tbody>
             \(dinRows.joined(separator:"\n"))
           </tbody>
@@ -205,14 +205,14 @@ public final class ReportHTMLRenderer {
         """
 
         let recs = """
-        <h2>\(NSLocalizedString(LocalizationKeys.recommendations, comment: "Recommendations section"))</h2>
+        <h2>Empfehlungen</h2>
         <ul>
           \(m.recommendations.map { "<li>\(escape($0))</li>" }.joined(separator:"\n"))
         </ul>
         """
 
         let audit = """
-        <h2>\(NSLocalizedString(LocalizationKeys.audit, comment: "Audit section"))</h2>
+        <h2>\(NSLocalizedString(LocalizationKeys.audit, bundle: .module, comment: "Audit section"))</h2>
         <div class="audit">
           \(renderKV(m.audit))
         </div>
