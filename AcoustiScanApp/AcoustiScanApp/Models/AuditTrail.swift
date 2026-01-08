@@ -205,15 +205,26 @@ public class AuditTrailManager {
     // MARK: - Persistence
     
     private func saveEntries() {
-        if let data = try? JSONEncoder().encode(entries) {
+        do {
+            let data = try JSONEncoder().encode(entries)
             UserDefaults.standard.set(data, forKey: storageKey)
+        } catch {
+            // Persisting audit entries is critical; log encoding failures instead of silently ignoring them.
+            print("AuditTrailManager.saveEntries - Failed to encode audit entries: \(error)")
         }
     }
     
     private func loadEntries() {
-        if let data = UserDefaults.standard.data(forKey: storageKey),
-           let decoded = try? JSONDecoder().decode([AuditEntry].self, from: data) {
+        guard let data = UserDefaults.standard.data(forKey: storageKey) else {
+            return
+        }
+        
+        do {
+            let decoded = try JSONDecoder().decode([AuditEntry].self, from: data)
             entries = decoded
+        } catch {
+            // Loading audit entries is critical; log decoding failures instead of silently ignoring them.
+            print("AuditTrailManager.loadEntries - Failed to decode audit entries: \(error)")
         }
     }
 }
