@@ -94,7 +94,7 @@ public final class RoomScanCoordinator: NSObject, ObservableObject, RoomCaptureS
         // werden.
         let exampleArea: Float = 20.0
         let examplePosition = SIMD3<Float>(0, 0, 0)
-        store.add(name: "Boden", position: examplePosition, area: exampleArea, absorptionCoefficient: 0.0)
+        store.add(name: LocalizationKeys.floor.localized(comment: "Floor surface"), position: examplePosition, area: exampleArea, absorptionCoefficient: 0.0)
     }
 }
 
@@ -111,8 +111,11 @@ public struct RoomScanView: View {
 
     public var body: some View {
         VStack(spacing: 16) {
-            Text(coordinator.isScanning ? "Scanning…" : "Scan bereit")
+            Text(coordinator.isScanning ? LocalizationKeys.scanning.localized(comment: "Scanning status") : LocalizationKeys.scanReady.localized(comment: "Scan ready status"))
                 .font(.headline)
+                .accessibilityLabel(coordinator.isScanning ? "Scanning in progress" : "Scan ready")
+                .accessibilityIdentifier("scanStatusLabel")
+                .accessibilityAddTraits(.isHeader)
             Button(action: {
                 if coordinator.isScanning {
                     coordinator.stopScanning()
@@ -120,7 +123,7 @@ public struct RoomScanView: View {
                     coordinator.startScanning()
                 }
             }) {
-                Text(coordinator.isScanning ? "Scan beenden" : "Scan starten")
+                Text(coordinator.isScanning ? LocalizationKeys.stopScan.localized(comment: "Stop scan button") : LocalizationKeys.startScan.localized(comment: "Start scan button"))
                     .bold()
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -128,9 +131,13 @@ public struct RoomScanView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
+            .accessibilityLabel(coordinator.isScanning ? "Stop scan" : "Start scan")
+            .accessibilityHint(coordinator.isScanning ? "Stops the room scanning process" : "Starts the room scanning process using LiDAR")
+            .accessibilityIdentifier("scanToggleButton")
+            .accessibilityAddTraits(.isButton)
         }
         .padding()
-        .navigationTitle("LiDAR‑Scan")
+        .navigationTitle(LocalizationKeys.lidarScan.localized(comment: "LiDAR scan navigation title"))
     }
 }
 

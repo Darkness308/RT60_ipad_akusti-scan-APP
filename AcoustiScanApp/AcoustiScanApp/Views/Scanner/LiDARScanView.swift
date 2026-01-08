@@ -2,18 +2,18 @@ import SwiftUI
 import RealityKit
 import ARKit
 
-class ARCoordinator: NSObject {
-    var arView: ARView?
-    var store: SurfaceStore?
+internal class ARCoordinator: NSObject {
+    internal var arView: ARView?
+    internal weak var store: SurfaceStore?
 
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+    @objc internal func handleTap(_ sender: UITapGestureRecognizer) {
         guard let view = arView else { return }
         let location = sender.location(in: view)
         guard let result = view.raycast(from: location, allowing: .estimatedPlane, alignment: .any).first else { return }
 
         let position = simd_make_float3(result.worldTransform.columns.3)
         let areaEstimate: Float = 1.0 // placeholder
-        let name = "Fläche \(store?.surfaces.count ?? 0 + 1)"
+        let name = "\(LocalizationKeys.surface.localized(comment: "Surface label")) \(store?.surfaces.count ?? 0 + 1)"
 
         store?.add(name: name, position: position, area: areaEstimate)
 
@@ -45,6 +45,13 @@ struct LiDARScanView: UIViewRepresentable {
 
         let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(ARCoordinator.handleTap(_:)))
         arView.addGestureRecognizer(tap)
+
+        // Accessibility configuration
+        arView.isAccessibilityElement = true
+        arView.accessibilityLabel = "LiDAR scanning view"
+        arView.accessibilityHint = "Tap to mark a surface for measurement. Move your device to scan the room."
+        arView.accessibilityTraits = .allowsDirectInteraction
+        arView.accessibilityIdentifier = "lidarARView"
 
         return arView
     }

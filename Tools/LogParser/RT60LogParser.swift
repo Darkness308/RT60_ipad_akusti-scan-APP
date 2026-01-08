@@ -32,8 +32,8 @@ public enum RT60LogParserError: Error, CustomStringConvertible {
     case checksum(String)
     public var description: String {
         switch self {
-        case .format(let s): return "Formatfehler: \(s)"
-        case .checksum(let s): return "Checksumme ungültig: \(s)"
+        case .format(let s): return "\(NSLocalizedString(LocalizationKeys.formatError, comment: "Format error")): \(s)"
+        case .checksum(let s): return "\(NSLocalizedString(LocalizationKeys.checksumInvalid, comment: "Checksum invalid")): \(s)"
         }
     }
 }
@@ -87,7 +87,7 @@ public final class RT60LogParser {
         // Metadaten
         let meta = AuditMetadata(
             source_file: sourceFile,
-            timestamp_iso: (setup["Date"] != nil ? "\(setup["Date"]!)T00:00:00Z" : ISO8601DateFormatter().string(from: Date())),
+            timestamp_iso: setup["Date"].map { "\($0)T00:00:00Z" } ?? ISO8601DateFormatter().string(from: Date()),
             device: setup["Device"] ?? "unknown",
             app_version: setup["AppVersion"] ?? "unknown"
         )
@@ -103,7 +103,7 @@ public final class RT60LogParser {
             let t20Val = Self.parseNumber(t20raw)
             let corrVal = Self.parseNumber(corrRaw)
             let isNoData = (t20raw == "-.--")
-            let isValid = !isNoData && (t20Val != nil) && (corrVal != nil) && (corrVal! >= 95.0)
+            let isValid = !isNoData && (t20Val != nil) && (corrVal.map { $0 >= 95.0 } ?? false)
             var note: [String] = []
             if isNoData { note.append("no data") }
             if let c = corrVal, c < 95.0 { note.append("low correlation") }

@@ -14,40 +14,40 @@ public class ConsolidatedPDFExporter {
 
     #if canImport(UIKit)
     private enum PDFStyling {
-        static let margin: CGFloat = 72
+        private static let margin: CGFloat = 72
 
-        static func titleAttributes(size: CGFloat, weight: UIFont.Weight = .regular, color: UIColor = .black) -> [NSAttributedString.Key: Any] {
+        private static func titleAttributes(size: CGFloat, weight: UIFont.Weight = .regular, color: UIColor = .black) -> [NSAttributedString.Key: Any] {
             [
                 .font: UIFont.systemFont(ofSize: size, weight: weight),
                 .foregroundColor: color
             ]
         }
 
-        static func bodyAttributes(size: CGFloat = 14, color: UIColor = .black) -> [NSAttributedString.Key: Any] {
+        private static func bodyAttributes(size: CGFloat = 14, color: UIColor = .black) -> [NSAttributedString.Key: Any] {
             [
                 .font: UIFont.systemFont(ofSize: size),
                 .foregroundColor: color
             ]
         }
 
-        static func footerAttributes() -> [NSAttributedString.Key: Any] {
+        private static func footerAttributes() -> [NSAttributedString.Key: Any] {
             [
                 .font: UIFont.systemFont(ofSize: 12),
                 .foregroundColor: UIColor.gray
             ]
         }
 
-        static func draw(_ text: String, at point: CGPoint, attributes: [NSAttributedString.Key: Any]) {
+        private static func draw(_ text: String, at point: CGPoint, attributes: [NSAttributedString.Key: Any]) {
             text.draw(at: point, withAttributes: attributes)
         }
 
-        static func draw(_ text: String, in rect: CGRect, attributes: [NSAttributedString.Key: Any]) {
+        private static func draw(_ text: String, in rect: CGRect, attributes: [NSAttributedString.Key: Any]) {
             text.draw(in: rect, withAttributes: attributes)
         }
     }
 
     private enum PDFListRenderer {
-        static func drawBulletedList(
+        private static func drawBulletedList(
             _ items: [String],
             startY: CGFloat,
             margin: CGFloat,

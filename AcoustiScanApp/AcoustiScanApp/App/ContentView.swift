@@ -13,9 +13,15 @@ struct ContentView: View {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
+                .accessibilityLabel("Globe icon")
+                .accessibilityIdentifier("globeIcon")
             Text("Hello, world!")
+                .accessibilityLabel("Hello, world!")
+                .accessibilityIdentifier("welcomeText")
         }
         .padding()
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("contentView")
     }
 }
 

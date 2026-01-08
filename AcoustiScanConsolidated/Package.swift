@@ -19,13 +19,15 @@ let package = Package(
             targets: ["AcoustiScanTool"]
         )
     ],
-    dependencies: [
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "AcoustiScanConsolidated",
             dependencies: [],
-            path: "Sources/AcoustiScanConsolidated"
+            path: "Sources/AcoustiScanConsolidated",
+            swiftSettings: [
+                .enableUpcomingFeature("BareSlashRegexLiterals")
+            ]
         ),
         .executableTarget(
             name: "AcoustiScanTool",
@@ -34,9 +36,7 @@ let package = Package(
         ),
         .testTarget(
             name: "AcoustiScanConsolidatedTests",
-            dependencies: [
-                "AcoustiScanConsolidated"
-            ],
+            dependencies: ["AcoustiScanConsolidated"],
             path: "Tests/AcoustiScanConsolidatedTests"
         )
     ]

@@ -33,7 +33,7 @@ public class SurfaceStore: ObservableObject {
     @Published public var roomVolume: Double = 0.0
     
     /// Room name
-    @Published public var roomName: String = "Unbenannter Raum"
+    @Published public var roomName: String = NSLocalizedString(LocalizationKeys.unnamedRoom, comment: "Default room name")
     
     /// Room dimensions (optional)
     @Published public var roomDimensions: (width: Double, height: Double, depth: Double)?
@@ -72,7 +72,7 @@ public class SurfaceStore: ObservableObject {
     public func clearAll() {
         surfaces.removeAll()
         roomVolume = 0.0
-        roomName = "Unbenannter Raum"
+        roomName = NSLocalizedString(LocalizationKeys.unnamedRoom, comment: "Default room name")
         roomDimensions = nil
         saveSurfaces()
     }
@@ -132,7 +132,7 @@ public class SurfaceStore: ObservableObject {
     }
     
     // MARK: - Persistence
-    
+
     private func saveSurfaces() {
         let data = SurfaceStoreData(
             surfaces: surfaces,
@@ -140,19 +140,36 @@ public class SurfaceStore: ObservableObject {
             roomName: roomName,
             roomDimensions: roomDimensions
         )
-        
-        if let encoded = try? JSONEncoder().encode(data) {
+
+        do {
+            let encoded = try JSONEncoder().encode(data)
             UserDefaults.standard.set(encoded, forKey: "surfaceStore")
+        } catch {
+            ErrorLogger.log(
+                error,
+                context: "SurfaceStore.saveSurfaces",
+                level: .error
+            )
         }
     }
-    
+
     private func loadSurfaces() {
-        if let data = UserDefaults.standard.data(forKey: "surfaceStore"),
-           let decoded = try? JSONDecoder().decode(SurfaceStoreData.self, from: data) {
+        guard let data = UserDefaults.standard.data(forKey: "surfaceStore") else {
+            return
+        }
+
+        do {
+            let decoded = try JSONDecoder().decode(SurfaceStoreData.self, from: data)
             surfaces = decoded.surfaces
             roomVolume = decoded.roomVolume
             roomName = decoded.roomName
             roomDimensions = decoded.roomDimensions
+        } catch {
+            ErrorLogger.log(
+                error,
+                context: "SurfaceStore.loadSurfaces",
+                level: .error
+            )
         }
     }
     
@@ -179,12 +196,20 @@ public class SurfaceStore: ObservableObject {
             surfaces = try container.decode([Surface].self, forKey: .surfaces)
             roomVolume = try container.decode(Double.self, forKey: .roomVolume)
             roomName = try container.decode(String.self, forKey: .roomName)
-            
-            if let width = try? container.decode(Double.self, forKey: .dimensionWidth),
-               let height = try? container.decode(Double.self, forKey: .dimensionHeight),
-               let depth = try? container.decode(Double.self, forKey: .dimensionDepth) {
+
+            // Decode optional room dimensions - these are optional fields
+            do {
+                let width = try container.decode(Double.self, forKey: .dimensionWidth)
+                let height = try container.decode(Double.self, forKey: .dimensionHeight)
+                let depth = try container.decode(Double.self, forKey: .dimensionDepth)
                 roomDimensions = (width, height, depth)
-            } else {
+            } catch {
+                // Room dimensions are optional - log as debug info only
+                ErrorLogger.log(
+                    message: "Room dimensions not found in stored data (this is acceptable for older data)",
+                    context: "SurfaceStoreData.decode",
+                    level: .debug
+                )
                 roomDimensions = nil
             }
         }

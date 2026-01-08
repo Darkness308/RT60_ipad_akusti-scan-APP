@@ -13,10 +13,19 @@ let package = Package(
             targets: ["ReportExport"]
         )
     ],
+    dependencies: [],
     targets: [
         .target(
             name: "ReportExport",
-            dependencies: []
+            dependencies: [],
+            path: "Sources/ReportExport",
+            swiftSettings: [
+                .enableUpcomingFeature("BareSlashRegexLiterals")
+            ],
+            linkerSettings: [
+                .linkedFramework("UIKit", .when(platforms: [.iOS])),
+                .linkedFramework("PDFKit", .when(platforms: [.iOS, .macOS]))
+            ]
         ),
         .testTarget(
             name: "ReportExportTests",

@@ -12,36 +12,61 @@ struct RoomDimensionView: View {
 
     var body: some View {
         Form {
-            Section(header: Text("Raummaße in Metern")) {
+            Section(header: Text(LocalizationKeys.roomDimensionsInMeters.localized(comment: "Header for room dimensions in meters"))
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityIdentifier("dimensionsHeader")) {
                 HStack {
-                    Text("Länge")
+                    Text(LocalizationKeys.length.localized(comment: "Length label"))
+                        .accessibilityHidden(true)
                     Spacer()
-                    TextField("z. B. 7.5", value: $length, format: .number)
+                    TextField("z. B. 7.5", value: $length, format: .number)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
+                        .accessibilityLabel("Room length in meters")
+                        .accessibilityHint("Enter the length of the room")
+                        .accessibilityValue(String(format: "%.2f meters", length))
+                        .accessibilityIdentifier("lengthTextField")
                 }
+                .accessibilityElement(children: .combine)
 
                 HStack {
-                    Text("Breite")
+                    Text(LocalizationKeys.width.localized(comment: "Width label"))
+                        .accessibilityHidden(true)
                     Spacer()
-                    TextField("z. B. 5.0", value: $width, format: .number)
+                    TextField("z. B. 5.0", value: $width, format: .number)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
+                        .accessibilityLabel("Room width in meters")
+                        .accessibilityHint("Enter the width of the room")
+                        .accessibilityValue(String(format: "%.2f meters", width))
+                        .accessibilityIdentifier("widthTextField")
                 }
+                .accessibilityElement(children: .combine)
 
                 HStack {
-                    Text("Höhe")
+                    Text(LocalizationKeys.height.localized(comment: "Height label"))
+                        .accessibilityHidden(true)
                     Spacer()
-                    TextField("z. B. 3.2", value: $height, format: .number)
+                    TextField("z. B. 3.2", value: $height, format: .number)
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
+                        .accessibilityLabel("Room height in meters")
+                        .accessibilityHint("Enter the height of the room")
+                        .accessibilityValue(String(format: "%.2f meters", height))
+                        .accessibilityIdentifier("heightTextField")
                 }
+                .accessibilityElement(children: .combine)
             }
 
-            Section(header: Text("Volumen")) {
+            Section(header: Text(LocalizationKeys.volume.localized(comment: "Volume header"))
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityIdentifier("volumeHeader")) {
                 Text(String(format: "%.2f m³", volume))
+                    .accessibilityLabel("Room volume")
+                    .accessibilityValue(String(format: "%.2f cubic meters", volume))
+                    .accessibilityIdentifier("volumeText")
             }
         }
-        .navigationTitle("Raumdimensionen")
+        .navigationTitle(LocalizationKeys.roomDimensions.localized(comment: "Room dimensions navigation title"))
     }
 }

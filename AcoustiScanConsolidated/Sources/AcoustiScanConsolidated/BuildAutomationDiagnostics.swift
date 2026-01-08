@@ -4,14 +4,14 @@
 
 import Foundation
 
-enum BuildAutomationDiagnostics {
-    static func parseErrors(from output: String) -> [BuildAutomation.BuildError] {
+internal enum BuildAutomationDiagnostics {
+    internal static func parseErrors(from output: String) -> [BuildAutomation.BuildError] {
         return output
             .components(separatedBy: .newlines)
             .compactMap(parseErrorLine)
     }
 
-    static func parseErrorLine(_ line: String) -> BuildAutomation.BuildError? {
+    internal static func parseErrorLine(_ line: String) -> BuildAutomation.BuildError? {
         let pattern = #"(.+?):(\d+):(\d+):\s*(error|warning):\s*(.+)"#
 
         guard let regex = try? NSRegularExpression(pattern: pattern),
@@ -19,11 +19,19 @@ enum BuildAutomationDiagnostics {
             return nil
         }
 
-        let file = String(line[Range(match.range(at: 1), in: line)!])
-        let lineNum = Int(String(line[Range(match.range(at: 2), in: line)!])) ?? 0
-        let column = Int(String(line[Range(match.range(at: 3), in: line)!])) ?? 0
-        let severity = String(line[Range(match.range(at: 4), in: line)!])
-        let message = String(line[Range(match.range(at: 5), in: line)!])
+        guard let fileRange = Range(match.range(at: 1), in: line),
+              let lineRange = Range(match.range(at: 2), in: line),
+              let columnRange = Range(match.range(at: 3), in: line),
+              let severityRange = Range(match.range(at: 4), in: line),
+              let messageRange = Range(match.range(at: 5), in: line) else {
+            return nil
+        }
+
+        let file = String(line[fileRange])
+        let lineNum = Int(String(line[lineRange])) ?? 0
+        let column = Int(String(line[columnRange])) ?? 0
+        let severity = String(line[severityRange])
+        let message = String(line[messageRange])
 
         guard severity == "error" else { return nil }
 
@@ -38,7 +46,7 @@ enum BuildAutomationDiagnostics {
         )
     }
 
-    static func classifyError(message: String) -> BuildAutomation.BuildError.ErrorType {
+    internal static func classifyError(message: String) -> BuildAutomation.BuildError.ErrorType {
         if message.contains("import") || message.contains("module") {
             return .missingImport
         } else if message.contains("unresolved identifier") || message.contains("undeclared") {
@@ -54,7 +62,7 @@ enum BuildAutomationDiagnostics {
         }
     }
 
-    static func extractMissingModule(from message: String) -> String? {
+    internal static func extractMissingModule(from message: String) -> String? {
         let patterns = [
             #"No such module '(.+?)'"#,
             #"module '(.+?)' not found"#,
@@ -63,8 +71,9 @@ enum BuildAutomationDiagnostics {
 
         for pattern in patterns {
             if let regex = try? NSRegularExpression(pattern: pattern),
-               let match = regex.firstMatch(in: message, range: NSRange(message.startIndex..., in: message)) {
-                return String(message[Range(match.range(at: 1), in: message)!])
+               let match = regex.firstMatch(in: message, range: NSRange(message.startIndex..., in: message)),
+               let moduleRange = Range(match.range(at: 1), in: message) {
+                return String(message[moduleRange])
             }
         }
 

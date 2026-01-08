@@ -151,43 +151,81 @@ public class MaterialManager: ObservableObject {
         saveCustomMaterials()
     }
     
-    // MARK: - XLSX Import/Export (Placeholder for US-6)
-    
+    // MARK: - XLSX Import/Export
+
     /// Export materials to XLSX format
-    /// - Parameter materials: Materials to export
-    /// - Returns: XLSX data
-    /// - Note: This is a placeholder. Full XLSX support requires additional library
+    /// - Parameter materials: Materials to export (defaults to custom materials)
+    /// - Returns: XLSX data, or nil if export fails
     public func exportToXLSX(materials: [AcousticMaterial]? = nil) -> Data? {
-        // TODO: Implement XLSX export using a library like CoreXLSX or similar
-        // For now, return nil to indicate not yet implemented
-        print("XLSX export not yet implemented (US-6)")
-        return nil
+        let materialsToExport = materials ?? customMaterials
+
+        do {
+            return try XLSXExporter.export(materials: materialsToExport)
+        } catch {
+            ErrorLogger.log(
+                error,
+                context: "MaterialManager.exportToXLSX",
+                level: .error
+            )
+            return nil
+        }
     }
-    
+
     /// Import materials from XLSX data
     /// - Parameter xlsxData: XLSX file data
     /// - Returns: Array of imported materials
-    /// - Note: This is a placeholder. Full XLSX support requires additional library
+    /// - Throws: XLSXImportError if parsing fails
     public func importFromXLSX(_ xlsxData: Data) throws -> [AcousticMaterial] {
-        // TODO: Implement XLSX import using a library like CoreXLSX or similar
-        print("XLSX import not yet implemented (US-6)")
-        throw NSError(domain: "MaterialManager", code: 1, userInfo: [
-            NSLocalizedDescriptionKey: "XLSX import not yet implemented"
-        ])
+        do {
+            return try XLSXImporter.import(data: xlsxData)
+        } catch {
+            ErrorLogger.log(
+                error,
+                context: "MaterialManager.importFromXLSX",
+                level: .error
+            )
+            throw error
+        }
+    }
+
+    /// Add imported materials from XLSX to custom materials
+    /// - Parameter xlsxData: XLSX data to import
+    /// - Throws: Re-throws XLSX parsing errors for proper error handling
+    public func importAndAdd(fromXLSX xlsxData: Data) throws {
+        let materials = try importFromXLSX(xlsxData)
+        customMaterials.append(contentsOf: materials)
+        saveCustomMaterials()
     }
     
     // MARK: - Persistence
-    
+
     private func saveCustomMaterials() {
-        if let encoded = try? JSONEncoder().encode(customMaterials) {
+        do {
+            let encoded = try JSONEncoder().encode(customMaterials)
             UserDefaults.standard.set(encoded, forKey: "customMaterials")
+        } catch {
+            ErrorLogger.log(
+                error,
+                context: "MaterialManager.saveCustomMaterials",
+                level: .error
+            )
         }
     }
-    
+
     private func loadCustomMaterials() {
-        if let data = UserDefaults.standard.data(forKey: "customMaterials"),
-           let decoded = try? JSONDecoder().decode([AcousticMaterial].self, from: data) {
+        guard let data = UserDefaults.standard.data(forKey: "customMaterials") else {
+            return
+        }
+
+        do {
+            let decoded = try JSONDecoder().decode([AcousticMaterial].self, from: data)
             customMaterials = decoded
+        } catch {
+            ErrorLogger.log(
+                error,
+                context: "MaterialManager.loadCustomMaterials",
+                level: .error
+            )
         }
     }
     
