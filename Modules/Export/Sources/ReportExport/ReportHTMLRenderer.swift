@@ -197,7 +197,7 @@ public final class ReportHTMLRenderer {
         let din = """
         <h2>\(NSLocalizedString(LocalizationKeys.dinTargetTolerance, bundle: .module, comment: "DIN 18041 target & tolerance section"))</h2>
         <table>
-          <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, bundle: .module, comment: "Frequency Hz"))</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
+          <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, bundle: .module, comment: "Frequency Hz"))</th><th>T<sub>soll</sub> [s]</th><th>\(NSLocalizedString(LocalizationKeys.tolerance, bundle: .module, comment: "Tolerance")) [s]</th></tr></thead>
           <tbody>
             \(dinRows.joined(separator:"\n"))
           </tbody>
