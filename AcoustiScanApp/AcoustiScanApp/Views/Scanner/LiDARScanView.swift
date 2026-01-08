@@ -204,16 +204,25 @@ internal class ARCoordinator: NSObject {
         var foundMesh = false
 
         for (_, meshData) in trackedMeshes {
-            // Check if any vertex is within radius of the point
+            let totalVertices = meshData.vertices.count
+            guard totalVertices > 0 else { continue }
+
+            var nearbyVertexCount = 0
+
+            // Count how many vertices are within the radius of the point
             for vertex in meshData.vertices {
                 let worldVertex = transformVertex(vertex, by: meshData.transform)
                 let distance = simd_length(worldVertex - point)
 
                 if distance < radius {
-                    foundMesh = true
-                    relevantArea += meshData.calculatedArea
-                    break
+                    nearbyVertexCount += 1
                 }
+            }
+
+            if nearbyVertexCount > 0 {
+                foundMesh = true
+                let fraction = Double(nearbyVertexCount) / Double(totalVertices)
+                relevantArea += meshData.calculatedArea * fraction
             }
         }
 
