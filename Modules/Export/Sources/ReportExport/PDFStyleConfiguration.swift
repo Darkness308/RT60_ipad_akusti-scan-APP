@@ -17,11 +17,11 @@ public struct PDFStyleConfiguration {
         public static let margin: CGFloat = 72
 
         public static var pageRect: CGRect {
-            CGRect(x: 0, y: 0, width: a4Width, height: a4Height)
+            CGRect(x: 0, y: 0, width: Self.a4Width, height: Self.a4Height)
         }
 
         public static var contentWidth: CGFloat {
-            a4Width - (2 * margin)
+            Self.a4Width - (2 * Self.margin)
         }
     }
 
