@@ -15,7 +15,13 @@ public struct AbsorptionData: Codable, Equatable {
     /// Initialize with frequency-value pairs
     /// - Parameter values: Dictionary mapping frequency (Hz) to absorption coefficient (0.0-1.0)
     public init(values: [Int: Float]) {
-        self.values = values
+        var sanitizedValues: [Int: Float] = [:]
+        for (frequency, coefficient) in values {
+            // Clamp coefficient to the valid physical range [0.0, 1.0]
+            let clamped = max(0.0, min(1.0, coefficient))
+            sanitizedValues[frequency] = clamped
+        }
+        self.values = sanitizedValues
     }
     
     /// Get absorption coefficient for a specific frequency
