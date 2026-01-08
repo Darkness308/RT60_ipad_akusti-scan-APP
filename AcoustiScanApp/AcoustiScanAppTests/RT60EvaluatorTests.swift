@@ -1,11 +1,12 @@
 
 import XCTest
-@testable import iPadScannerApp
+@testable import AcoustiScanConsolidated
 
 final class RT60EvaluatorTests: XCTestCase {
 
     func testEvaluationWithinTolerance() {
-        let measurement = RT60Measurement(frequency: 1000, simulated: 0.49, measured: nil)
+        // RT60Measurement uses (frequency, rt60) constructor
+        let measurement = RT60Measurement(frequency: 1000, rt60: 0.49)
         let deviations = RT60Evaluator.evaluate(
             measurements: [measurement],
             roomType: RoomType.classroom,
@@ -16,7 +17,7 @@ final class RT60EvaluatorTests: XCTestCase {
     }
 
     func testEvaluationTooHigh() {
-        let measurement = RT60Measurement(frequency: 1000, simulated: 0.65, measured: nil)
+        let measurement = RT60Measurement(frequency: 1000, rt60: 0.75)
         let deviations = RT60Evaluator.evaluate(
             measurements: [measurement],
             roomType: RoomType.classroom,
