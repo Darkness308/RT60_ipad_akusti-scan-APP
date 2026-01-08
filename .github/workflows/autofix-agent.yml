@@ -14,20 +14,30 @@ on:
         required: true
         type: choice
         options:
+          - auto
+          - import-error
           - pdf-test-failure
-          - build-error
+          - type-error
           - lint-error
-          - general
+          - dependency-error
+          - build-error
 
 permissions:
   contents: write
   pull-requests: write
   issues: write
 
+env:
+  MAX_FIX_ATTEMPTS: 5
+
 jobs:
   autofix:
     runs-on: macos-15
     timeout-minutes: 30
+
+    outputs:
+      fix_applied: ${{ steps.apply_fixes.outputs.fix_applied }}
+      error_type: ${{ steps.analyze.outputs.error_type }}
 
     steps:
     - name: Checkout repository
@@ -42,190 +52,351 @@ jobs:
       with:
         xcode-version: '16.1'
 
-    - name: Extract error information
-      id: extract_errors
+    - name: Install Tools
       run: |
-        echo "🔍 Analyzing error information..."
+        brew install swiftlint swiftformat || true
 
-        ERROR_SUMMARY="${{ github.event.client_payload.error_summary || 'No error summary provided' }}"
-        echo "Error summary: $ERROR_SUMMARY"
+    - name: Download and analyze error logs
+      id: analyze
+      run: |
+        echo "🔍 Analyzing CI failure..."
 
-        # Detect error type based on error summary
-        if echo "$ERROR_SUMMARY" | grep -qi "PDF\|PDFRobustness\|ReportContract"; then
-          echo "error_type=pdf-test" >> $GITHUB_OUTPUT
-        elif echo "$ERROR_SUMMARY" | grep -qi "build\|compile\|linker"; then
-          echo "error_type=build" >> $GITHUB_OUTPUT
-        elif echo "$ERROR_SUMMARY" | grep -qi "lint\|swiftlint\|format"; then
-          echo "error_type=lint" >> $GITHUB_OUTPUT
+        # Get error information from dispatch payload
+        ERROR_SUMMARY="${{ github.event.client_payload.error_summary || 'No error summary' }}"
+        FAILED_STEP="${{ github.event.client_payload.failed_step || 'unknown' }}"
+        WORKFLOW_RUN_ID="${{ github.event.client_payload.workflow_run_id || '0' }}"
+        ATTEMPT="${{ github.event.client_payload.attempt || '1' }}"
+        INPUT_ERROR_TYPE="${{ github.event.inputs.error_type || 'auto' }}"
+
+        echo "Error Summary: $ERROR_SUMMARY"
+        echo "Failed Step: $FAILED_STEP"
+        echo "Attempt: $ATTEMPT of $MAX_FIX_ATTEMPTS"
+
+        # Save error info to file for analysis
+        echo "$ERROR_SUMMARY" > /tmp/ci_error.log
+        echo "Failed step: $FAILED_STEP" >> /tmp/ci_error.log
+
+        # Detect error type if auto
+        if [ "$INPUT_ERROR_TYPE" = "auto" ]; then
+          # Pattern matching for error types
+          if echo "$ERROR_SUMMARY" | grep -qiE "import (iPadScannerApp|OldModule)"; then
+            ERROR_TYPE="import-error"
+          elif echo "$ERROR_SUMMARY" | grep -qiE "PDFRobustness|ReportContract|PDF.*missing"; then
+            ERROR_TYPE="pdf-test-failure"
+          elif echo "$ERROR_SUMMARY" | grep -qiE "cannot find type|undeclared type"; then
+            ERROR_TYPE="type-error"
+          elif echo "$ERROR_SUMMARY" | grep -qiE "SwiftLint|swiftformat|formatting"; then
+            ERROR_TYPE="lint-error"
+          elif echo "$ERROR_SUMMARY" | grep -qiE "package.*resolution|dependency"; then
+            ERROR_TYPE="dependency-error"
+          elif echo "$ERROR_SUMMARY" | grep -qiE "build.*failed|compile.*error"; then
+            ERROR_TYPE="build-error"
+          else
+            ERROR_TYPE="unknown"
+          fi
         else
-          echo "error_type=unknown" >> $GITHUB_OUTPUT
+          ERROR_TYPE="$INPUT_ERROR_TYPE"
         fi
 
-        echo "attempt=${{ github.event.client_payload.attempt || 1 }}" >> $GITHUB_OUTPUT
+        echo "Detected error type: $ERROR_TYPE"
 
-    - name: Run diagnostic tests
+        echo "error_type=$ERROR_TYPE" >> $GITHUB_OUTPUT
+        echo "attempt=$ATTEMPT" >> $GITHUB_OUTPUT
+        echo "workflow_run_id=$WORKFLOW_RUN_ID" >> $GITHUB_OUTPUT
+
+    - name: Run diagnostic build
       id: diagnostics
       continue-on-error: true
       run: |
-        echo "🔬 Running diagnostic tests..."
+        echo "🔬 Running diagnostic build to capture errors..."
 
-        # Test AcoustiScanConsolidated
+        # Build AcoustiScanConsolidated and capture errors
         cd AcoustiScanConsolidated
-        swift build 2>&1 | tee /tmp/build_acoustiscan.log || echo "build_failed=true" >> $GITHUB_OUTPUT
-        swift test 2>&1 | tee /tmp/test_acoustiscan.log || echo "test_acoustiscan_failed=true" >> $GITHUB_OUTPUT
+        swift build 2>&1 | tee /tmp/build_acoustiscan.log
+        BUILD_RESULT=${PIPESTATUS[0]}
         cd ..
 
-        # Test Export module
+        # Build Export module
         cd Modules/Export
-        swift build 2>&1 | tee /tmp/build_export.log || echo "build_export_failed=true" >> $GITHUB_OUTPUT
-        swift test 2>&1 | tee /tmp/test_export.log || echo "test_export_failed=true" >> $GITHUB_OUTPUT
+        swift build 2>&1 | tee /tmp/build_export.log
+        EXPORT_BUILD_RESULT=${PIPESTATUS[0]}
+
+        # Run tests to capture test failures
+        swift test 2>&1 | tee /tmp/test_export.log || true
         cd ../..
 
-        # Extract specific test failures
-        if [ -f /tmp/test_export.log ]; then
-          grep -E "(XCTAssert|failed|error:)" /tmp/test_export.log | head -50 > /tmp/test_failures.txt || true
-          cat /tmp/test_failures.txt
+        # Combine all error logs
+        cat /tmp/build_acoustiscan.log >> /tmp/ci_error.log
+        cat /tmp/build_export.log >> /tmp/ci_error.log
+        cat /tmp/test_export.log >> /tmp/ci_error.log
+
+        # Report status
+        if [ $BUILD_RESULT -ne 0 ]; then
+          echo "build_failed=true" >> $GITHUB_OUTPUT
+        fi
+        if [ $EXPORT_BUILD_RESULT -ne 0 ]; then
+          echo "export_build_failed=true" >> $GITHUB_OUTPUT
         fi
 
-    - name: Apply PDF test fixes
-      if: steps.extract_errors.outputs.error_type == 'pdf-test' || steps.diagnostics.outputs.test_export_failed == 'true'
+    - name: Apply intelligent fixes
+      id: apply_fixes
       run: |
-        echo "🔧 Applying PDF test fixes..."
+        echo "🔧 Applying intelligent fixes..."
 
-        # Fix 1: Ensure all required tokens are present in PDF output
-        # The tests expect specific tokens that must always appear
+        ERROR_TYPE="${{ steps.analyze.outputs.error_type }}"
+        CHANGES_MADE=false
 
-        PDF_RENDERER="Modules/Export/Sources/ReportExport/PDFReportRenderer.swift"
-        HTML_RENDERER="Modules/Export/Sources/ReportExport/ReportHTMLRenderer.swift"
+        # Make autofix engine executable
+        chmod +x .github/scripts/autofix-engine.sh
 
-        # Check if core tokens section exists at the beginning
-        if ! grep -q "Draw core tokens first" "$PDF_RENDERER" 2>/dev/null; then
-          echo "⚠️ Core tokens section may be missing or misplaced"
-        fi
+        # Run the autofix engine
+        .github/scripts/autofix-engine.sh /tmp/ci_error.log "$ERROR_TYPE" || true
 
-        # Verify required frequencies are present
-        if ! grep -q "requiredFrequencies = \[125, 1000, 4000\]" "$PDF_RENDERER" 2>/dev/null; then
-          echo "⚠️ Required frequencies may be missing"
-        fi
+        # ============================================================
+        # SPECIFIC FIX STRATEGIES
+        # ============================================================
 
-        # Verify DIN values are present
-        if ! grep -q "0.48" "$PDF_RENDERER" 2>/dev/null; then
-          echo "⚠️ DIN value 0.48 may be missing"
-        fi
+        case "$ERROR_TYPE" in
+          "import-error")
+            echo "📦 Fixing import errors..."
 
-        # Run tests again to verify
-        cd Modules/Export
-        swift test 2>&1 | tee /tmp/test_after_fix.log || true
-        cd ../..
+            # Fix broken imports in test files
+            find . -name "*.swift" -type f | while read file; do
+              if grep -q "import iPadScannerApp" "$file" 2>/dev/null; then
+                echo "  Fixing: $file"
+                sed -i '' 's/import iPadScannerApp/import AcoustiScanConsolidated/g' "$file" 2>/dev/null || \
+                sed -i 's/import iPadScannerApp/import AcoustiScanConsolidated/g' "$file"
+                CHANGES_MADE=true
+              fi
+              if grep -q "@testable import iPadScannerApp" "$file" 2>/dev/null; then
+                echo "  Fixing @testable: $file"
+                sed -i '' 's/@testable import iPadScannerApp/@testable import AcoustiScanConsolidated/g' "$file" 2>/dev/null || \
+                sed -i 's/@testable import iPadScannerApp/@testable import AcoustiScanConsolidated/g' "$file"
+                CHANGES_MADE=true
+              fi
+            done
 
-        # Check if tests pass now
-        if grep -q "Test Suite.*passed" /tmp/test_after_fix.log; then
-          echo "✅ Tests passing after fix verification"
-          echo "fix_applied=true" >> $GITHUB_OUTPUT
-        else
-          echo "❌ Tests still failing, may need additional fixes"
+            # Fix class name references
+            find . -name "*.swift" -type f | while read file; do
+              if grep -q "RT60Calculation\." "$file" 2>/dev/null; then
+                echo "  Fixing class name in: $file"
+                sed -i '' 's/RT60Calculation\./RT60Calculator./g' "$file" 2>/dev/null || \
+                sed -i 's/RT60Calculation\./RT60Calculator./g' "$file"
+                CHANGES_MADE=true
+              fi
+            done
+            ;;
+
+          "pdf-test-failure")
+            echo "📄 Analyzing PDF test failures..."
+
+            # Check if required elements exist in renderers
+            PDF_RENDERER="Modules/Export/Sources/ReportExport/PDFReportRenderer.swift"
+
+            if [ -f "$PDF_RENDERER" ]; then
+              # Verify core tokens section exists
+              if ! grep -q "Core Tokens" "$PDF_RENDERER"; then
+                echo "  ⚠️ Core Tokens section may need review"
+              fi
+
+              # Verify required frequencies
+              if ! grep -q "125.*1000.*4000" "$PDF_RENDERER"; then
+                echo "  ⚠️ Required frequencies may need review"
+              fi
+
+              # Verify DIN values
+              for val in "0.6" "0.5" "0.48"; do
+                if ! grep -q "$val" "$PDF_RENDERER"; then
+                  echo "  ⚠️ DIN value $val may be missing"
+                fi
+              done
+            fi
+            ;;
+
+          "lint-error")
+            echo "🧹 Fixing lint errors..."
+
+            # Run SwiftFormat
+            swiftformat . --swiftversion 5.9 2>&1 || true
+            CHANGES_MADE=true
+
+            # Run SwiftLint autocorrect
+            swiftlint --fix 2>&1 || true
+            ;;
+
+          "dependency-error")
+            echo "📦 Fixing dependency errors..."
+
+            # Clean and resolve for each package
+            for dir in "AcoustiScanConsolidated" "Modules/Export"; do
+              if [ -d "$dir" ]; then
+                cd "$dir"
+                rm -rf .build Package.resolved 2>/dev/null || true
+                swift package clean 2>/dev/null || true
+                swift package resolve 2>&1 || true
+                cd - > /dev/null
+              fi
+            done
+            CHANGES_MADE=true
+            ;;
+
+          "build-error"|"type-error")
+            echo "🔨 Attempting build error fixes..."
+
+            # Clean all build artifacts
+            find . -name ".build" -type d -exec rm -rf {} + 2>/dev/null || true
+            find . -name "Package.resolved" -delete 2>/dev/null || true
+
+            # Resolve packages fresh
+            for dir in "AcoustiScanConsolidated" "Modules/Export"; do
+              if [ -d "$dir" ]; then
+                cd "$dir"
+                swift package clean 2>/dev/null || true
+                swift package resolve 2>&1 || true
+                cd - > /dev/null
+              fi
+            done
+            ;;
+
+          *)
+            echo "❓ Unknown error type - attempting general fixes..."
+
+            # Run all formatters
+            swiftformat . --swiftversion 5.9 2>&1 || true
+            swiftlint --fix 2>&1 || true
+
+            # Clean rebuild
+            for dir in "AcoustiScanConsolidated" "Modules/Export"; do
+              if [ -d "$dir" ]; then
+                cd "$dir"
+                swift package clean 2>/dev/null || true
+                swift package resolve 2>&1 || true
+                cd - > /dev/null
+              fi
+            done
+            ;;
+        esac
+
+        # Check if any files were changed
+        if git diff --quiet && git diff --staged --quiet; then
           echo "fix_applied=false" >> $GITHUB_OUTPUT
+          echo "No changes detected"
+        else
+          echo "fix_applied=true" >> $GITHUB_OUTPUT
+          echo "✅ Changes detected and ready to commit"
         fi
 
-    - name: Apply build fixes
-      if: steps.extract_errors.outputs.error_type == 'build' || steps.diagnostics.outputs.build_failed == 'true'
+    - name: Verify fixes
+      id: verify
+      if: steps.apply_fixes.outputs.fix_applied == 'true'
+      continue-on-error: true
       run: |
-        echo "🔧 Applying build fixes..."
+        echo "🔍 Verifying fixes..."
 
-        # Clean build artifacts
-        rm -rf .build
-        rm -rf ~/Library/Developer/Xcode/DerivedData/*AcoustiScan* || true
+        VERIFY_SUCCESS=true
 
-        # Resolve dependencies fresh
+        # Test AcoustiScanConsolidated build
         cd AcoustiScanConsolidated
-        swift package clean
-        swift package resolve
-        swift build 2>&1 | tee /tmp/build_retry.log || true
+        if swift build 2>&1; then
+          echo "✅ AcoustiScanConsolidated builds successfully"
+        else
+          echo "❌ AcoustiScanConsolidated still has build errors"
+          VERIFY_SUCCESS=false
+        fi
         cd ..
 
+        # Test Export module build
         cd Modules/Export
-        swift package clean
-        swift package resolve
-        swift build 2>&1 | tee /tmp/build_export_retry.log || true
-        cd ../..
-
-        if grep -q "Build complete" /tmp/build_retry.log && grep -q "Build complete" /tmp/build_export_retry.log; then
-          echo "✅ Build successful after clean rebuild"
-          echo "fix_applied=true" >> $GITHUB_OUTPUT
+        if swift build 2>&1; then
+          echo "✅ Export module builds successfully"
+        else
+          echo "❌ Export module still has build errors"
+          VERIFY_SUCCESS=false
         fi
+        cd ..
 
-    - name: Apply lint fixes
-      if: steps.extract_errors.outputs.error_type == 'lint'
-      run: |
-        echo "🔧 Applying lint fixes..."
-
-        # Install tools if needed
-        brew install swiftlint swiftformat || true
-
-        # Auto-fix formatting issues
-        swiftformat . --swiftversion 5.9 || true
-
-        # Check for remaining issues
-        swiftlint --fix || true
-
-        echo "fix_applied=true" >> $GITHUB_OUTPUT
+        if [ "$VERIFY_SUCCESS" = true ]; then
+          echo "verify_success=true" >> $GITHUB_OUTPUT
+        else
+          echo "verify_success=false" >> $GITHUB_OUTPUT
+        fi
 
     - name: Commit and push fixes
-      id: commit_fix
+      id: commit
+      if: steps.apply_fixes.outputs.fix_applied == 'true'
       run: |
-        echo "📝 Checking for changes to commit..."
+        echo "📝 Committing fixes..."
 
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-        # Check if there are any changes
+        # Check for actual changes
         if git diff --quiet && git diff --staged --quiet; then
           echo "No changes to commit"
-          echo "has_changes=false" >> $GITHUB_OUTPUT
-        else
-          git add -A
-          ATTEMPT="${{ steps.extract_errors.outputs.attempt }}"
-          ERROR_TYPE="${{ steps.extract_errors.outputs.error_type }}"
-
-          git commit -m "fix(ci): auto-fix $ERROR_TYPE issues [attempt $ATTEMPT]
-
-          Applied automatic fixes for CI failure.
-          Error type: $ERROR_TYPE
-          Attempt: $ATTEMPT of 5
-
-          [skip ci]" || echo "Nothing to commit"
-
-          git push origin HEAD 2>&1 || {
-            echo "⚠️ Push failed, trying with force"
-            git push origin HEAD --force-with-lease 2>&1 || echo "Push failed"
-          }
-
-          echo "has_changes=true" >> $GITHUB_OUTPUT
-          echo "✅ Changes committed and pushed"
+          echo "committed=false" >> $GITHUB_OUTPUT
+          exit 0
         fi
 
+        git add -A
+
+        ERROR_TYPE="${{ steps.analyze.outputs.error_type }}"
+        ATTEMPT="${{ steps.analyze.outputs.attempt }}"
+        VERIFY_STATUS="${{ steps.verify.outputs.verify_success }}"
+
+        # Create detailed commit message
+        COMMIT_MSG="fix(ci): auto-fix $ERROR_TYPE issues [attempt $ATTEMPT]
+
+Automatic fixes applied by Self-Healing CI:
+- Error type: $ERROR_TYPE
+- Attempt: $ATTEMPT of $MAX_FIX_ATTEMPTS
+- Verification: $VERIFY_STATUS
+
+Changes made by autofix-agent workflow.
+"
+
+        git commit -m "$COMMIT_MSG" || {
+          echo "Nothing to commit"
+          echo "committed=false" >> $GITHUB_OUTPUT
+          exit 0
+        }
+
+        # Push changes
+        BRANCH="${{ github.event.client_payload.branch || github.event.inputs.branch || 'main' }}"
+        git push origin HEAD:"$BRANCH" 2>&1 || {
+          echo "Push failed, trying force-with-lease..."
+          git push origin HEAD:"$BRANCH" --force-with-lease 2>&1 || {
+            echo "Push failed completely"
+            echo "committed=false" >> $GITHUB_OUTPUT
+            exit 1
+          }
+        }
+
+        echo "committed=true" >> $GITHUB_OUTPUT
+        echo "✅ Fixes committed and pushed"
+
     - name: Trigger CI re-run
-      if: steps.commit_fix.outputs.has_changes == 'true'
+      if: steps.commit.outputs.committed == 'true'
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          console.log('🔄 Triggering CI re-run after applying fixes...');
+          console.log('🔄 Triggering CI re-run after fixes...');
 
-          // Wait a bit for the push to be processed
+          // Wait for push to propagate
           await new Promise(resolve => setTimeout(resolve, 5000));
 
-          // Trigger the build workflow
+          const branch = '${{ github.event.client_payload.branch || github.event.inputs.branch || 'main' }}';
+
           try {
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'build-test.yml',
-              ref: '${{ github.event.client_payload.branch || github.event.inputs.branch || 'main' }}'
+              ref: branch
             });
-            console.log('✅ Build workflow triggered');
+            console.log('✅ Build workflow triggered on branch: ' + branch);
           } catch (error) {
-            console.log(`⚠️ Could not trigger workflow: ${error.message}`);
+            console.log('⚠️ Could not trigger workflow: ' + error.message);
           }
 
     - name: Update issue with results
@@ -234,40 +405,95 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const issueNumber = ${{ github.event.client_payload.issue_number || 0 }};
+          const issueNumber = parseInt('${{ github.event.client_payload.issue_number }}') || 0;
 
           if (issueNumber === 0) {
             console.log('No issue number provided, skipping update');
             return;
           }
 
-          const hasChanges = '${{ steps.commit_fix.outputs.has_changes }}' === 'true';
-          const errorType = '${{ steps.extract_errors.outputs.error_type }}';
-          const attempt = '${{ steps.extract_errors.outputs.attempt }}';
+          const fixApplied = '${{ steps.apply_fixes.outputs.fix_applied }}' === 'true';
+          const committed = '${{ steps.commit.outputs.committed }}' === 'true';
+          const verifySuccess = '${{ steps.verify.outputs.verify_success }}' === 'true';
+          const errorType = '${{ steps.analyze.outputs.error_type }}';
+          const attempt = '${{ steps.analyze.outputs.attempt }}';
 
-          let statusEmoji = hasChanges ? '🔧' : '❓';
-          let statusText = hasChanges
-            ? `Applied fixes for **${errorType}** issues`
-            : `No automatic fixes could be applied for **${errorType}** issues`;
+          let statusEmoji, statusText;
 
-          const comment = `
-          ## 🤖 Autofix Agent Report
+          if (committed && verifySuccess) {
+            statusEmoji = '✅';
+            statusText = 'Fixes applied and verified successfully';
+          } else if (committed) {
+            statusEmoji = '🔧';
+            statusText = 'Fixes applied, awaiting verification';
+          } else if (fixApplied) {
+            statusEmoji = '⚠️';
+            statusText = 'Changes detected but commit failed';
+          } else {
+            statusEmoji = '❌';
+            statusText = 'No automatic fixes could be applied';
+          }
+
+          const comment = `## 🤖 Autofix Agent Report
 
           ${statusEmoji} **Status:** ${statusText}
 
-          ### Details
-          - **Error Type:** ${errorType}
-          - **Attempt:** ${attempt}/5
-          - **Changes Applied:** ${hasChanges ? 'Yes' : 'No'}
+          ### Analysis Details
+          | Property | Value |
+          |----------|-------|
+          | Error Type | \`${errorType}\` |
+          | Attempt | ${attempt}/${process.env.MAX_FIX_ATTEMPTS || 5} |
+          | Fix Applied | ${fixApplied ? '✅ Yes' : '❌ No'} |
+          | Committed | ${committed ? '✅ Yes' : '❌ No'} |
+          | Verified | ${verifySuccess ? '✅ Pass' : '⏳ Pending'} |
 
-          ${hasChanges ? '🔄 **Next:** CI workflow has been triggered. Waiting for results...' : '⚠️ **Note:** Manual intervention may be required.'}
-          `;
+          ${committed ? '🔄 **Next:** CI workflow has been triggered. Monitoring for results...' : ''}
+          ${!fixApplied ? '⚠️ **Note:** This error type may require manual intervention.' : ''}
 
-          await github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: issueNumber,
-            body: comment
-          });
+          ---
+          <sub>Generated by Self-Healing CI • Attempt ${attempt}</sub>`;
 
-          console.log(`📝 Updated issue #${issueNumber} with results`);
+          try {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: comment
+            });
+            console.log('📝 Updated issue #' + issueNumber);
+          } catch (error) {
+            console.log('Failed to update issue: ' + error.message);
+          }
+
+    - name: Generate fix report artifact
+      if: always()
+      run: |
+        mkdir -p artifacts
+
+        echo "# Autofix Report" > artifacts/autofix-report.md
+        echo "Generated: $(date)" >> artifacts/autofix-report.md
+        echo "" >> artifacts/autofix-report.md
+        echo "## Summary" >> artifacts/autofix-report.md
+        echo "- Error Type: ${{ steps.analyze.outputs.error_type }}" >> artifacts/autofix-report.md
+        echo "- Fix Applied: ${{ steps.apply_fixes.outputs.fix_applied }}" >> artifacts/autofix-report.md
+        echo "- Committed: ${{ steps.commit.outputs.committed }}" >> artifacts/autofix-report.md
+        echo "- Verified: ${{ steps.verify.outputs.verify_success }}" >> artifacts/autofix-report.md
+        echo "" >> artifacts/autofix-report.md
+
+        if [ -f /tmp/autofix.log ]; then
+          echo "## Fix Log" >> artifacts/autofix-report.md
+          cat /tmp/autofix.log >> artifacts/autofix-report.md
+        fi
+
+        if [ -f /tmp/ci_error.log ]; then
+          echo "## Error Log (truncated)" >> artifacts/autofix-report.md
+          head -100 /tmp/ci_error.log >> artifacts/autofix-report.md
+        fi
+
+    - name: Upload artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: autofix-report-${{ github.run_id }}
+        path: artifacts/
+        retention-days: 14

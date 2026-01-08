@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "version": "1.0.0",
-  "description": "Configuration for Self-Healing CI system",
+  "version": "2.0.0",
+  "description": "Configuration for Self-Healing CI system with intelligent auto-fix",
 
   "settings": {
     "max_heal_attempts": 5,
@@ -9,10 +9,28 @@
     "escalation_enabled": true,
     "auto_close_on_success": true,
     "create_pr_for_fixes": false,
-    "notify_on_escalation": true
+    "notify_on_escalation": true,
+    "verify_before_commit": true,
+    "auto_trigger_ci": true
   },
 
   "error_patterns": {
+    "import-error": {
+      "patterns": [
+        "import iPadScannerApp",
+        "import OldModule",
+        "No such module",
+        "cannot find module"
+      ],
+      "files_to_check": [
+        "**/*Tests.swift",
+        "**/Sources/**/*.swift"
+      ],
+      "auto_fix_strategy": "fix_imports",
+      "priority": "critical",
+      "can_auto_fix": true
+    },
+
     "pdf_test_failure": {
       "patterns": [
         "PDFRobustnessTests",
@@ -28,7 +46,19 @@
         "Modules/Export/Sources/ReportExport/ReportHTMLRenderer.swift"
       ],
       "auto_fix_strategy": "ensure_required_elements",
-      "priority": "high"
+      "priority": "high",
+      "can_auto_fix": true
+    },
+
+    "type-error": {
+      "patterns": [
+        "cannot find type",
+        "undeclared type",
+        "has no member"
+      ],
+      "auto_fix_strategy": "fix_type_references",
+      "priority": "high",
+      "can_auto_fix": false
     },
 
     "build_failure": {
@@ -40,7 +70,8 @@
         "Compilation failed"
       ],
       "auto_fix_strategy": "clean_rebuild",
-      "priority": "high"
+      "priority": "high",
+      "can_auto_fix": true
     },
 
     "lint_failure": {
@@ -52,7 +83,8 @@
         "indentation"
       ],
       "auto_fix_strategy": "run_formatters",
-      "priority": "medium"
+      "priority": "medium",
+      "can_auto_fix": true
     },
 
     "dependency_failure": {
@@ -62,7 +94,8 @@
         "version solving failed"
       ],
       "auto_fix_strategy": "clean_resolve",
-      "priority": "medium"
+      "priority": "medium",
+      "can_auto_fix": true
     },
 
     "test_timeout": {
@@ -71,11 +104,26 @@
         "exceeded time limit"
       ],
       "auto_fix_strategy": "increase_timeout",
-      "priority": "low"
+      "priority": "low",
+      "can_auto_fix": false
     }
   },
 
   "fix_strategies": {
+    "fix_imports": {
+      "description": "Fix broken or outdated module imports",
+      "steps": [
+        "find_files_with_bad_imports",
+        "replace_module_names",
+        "fix_class_references",
+        "verify_compilation"
+      ],
+      "replacements": {
+        "iPadScannerApp": "AcoustiScanConsolidated",
+        "RT60Calculation": "RT60Calculator"
+      }
+    },
+
     "ensure_required_elements": {
       "description": "Ensure all required PDF/HTML elements are present",
       "steps": [
@@ -111,13 +159,6 @@
         "clean_caches",
         "resolve_packages"
       ]
-    },
-
-    "increase_timeout": {
-      "description": "Increase test timeout values",
-      "steps": [
-        "update_test_timeout_config"
-      ]
     }
   },
 
@@ -144,6 +185,11 @@
   },
 
   "ai_agents": {
+    "autofix_engine": {
+      "enabled": true,
+      "script": ".github/scripts/autofix-engine.sh",
+      "capabilities": ["import_fix", "lint_fix", "dependency_fix", "build_fix"]
+    },
     "copilot": {
       "enabled": true,
       "trigger": "@copilot",
