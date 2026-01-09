@@ -25,7 +25,7 @@ public struct PDFStyleConfiguration {
         }
 
         public static var contentWidth: CGFloat {
-            a4Width - (2 * margin)
+            self.a4Width - (2 * self.margin)
         }
     }
     #endif
