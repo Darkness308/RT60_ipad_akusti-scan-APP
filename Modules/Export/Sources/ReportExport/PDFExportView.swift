@@ -49,11 +49,11 @@ import Foundation
 
 public struct PDFExportView {
     public let reportModel: ReportModel
-    
-    public init(reportModel: ReportModel) { 
-        self.reportModel = reportModel 
+
+    public init(reportModel: ReportModel) {
+        self.reportModel = reportModel
     }
-    
+
     /// Generate PDF data for non-UIKit platforms
     public func generatePDF() -> Data {
         return PDFReportRenderer().render(reportModel)
