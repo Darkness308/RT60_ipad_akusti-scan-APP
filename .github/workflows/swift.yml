@@ -17,18 +17,18 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
-    
+
     - uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: ${{ env.XCODE_VERSION }}
-    
+
     - name: Clean and build AcoustiScanConsolidated with retry
       id: build_acoustiscan
       run: |
         set +e  # Don't exit on error
         cd AcoustiScanConsolidated
         swift package clean
-        
+
         attempt=1
         while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
           echo "🔨 AcoustiScan build attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
@@ -54,7 +54,7 @@ jobs:
       run: |
         set +e  # Don't exit on error
         cd AcoustiScanConsolidated
-        
+
         attempt=1
         while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
           echo "🧪 AcoustiScan test attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
@@ -80,7 +80,7 @@ jobs:
       run: |
         set +e  # Don't exit on error
         cd Modules/Export
-        
+
         attempt=1
         while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
           echo "🔨 Export module build attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
@@ -107,7 +107,7 @@ jobs:
       run: |
         set +e  # Don't exit on error
         cd Modules/Export
-        
+
         attempt=1
         while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
           echo "🧪 Export module test attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
@@ -127,20 +127,20 @@ jobs:
           sleep 2
         done
         cd ../..
-    
+
     - name: Create success summary
       if: success()
       run: |
         echo "🎉 All builds and tests completed successfully!"
         echo "✅ AcoustiScanConsolidated: Built and tested"
         echo "✅ Export Module: Built and tested"
-        
+
     - name: Report failures
       if: failure()
       run: |
         echo "❌ Swift build and test workflow failed"
         echo "Check the specific step outputs for detailed error information"
         [ "${{ steps.build_acoustiscan.outputs.acoustiscan_build_failed }}" = "true" ] && echo "- AcoustiScan build failed"
-        [ "${{ steps.test_acoustiscan.outputs.acoustiscan_tests_failed }}" = "true" ] && echo "- AcoustiScan tests failed" 
+        [ "${{ steps.test_acoustiscan.outputs.acoustiscan_tests_failed }}" = "true" ] && echo "- AcoustiScan tests failed"
         [ "${{ steps.build_export.outputs.export_build_failed }}" = "true" ] && echo "- Export module build failed"
         [ "${{ steps.test_export.outputs.export_tests_failed }}" = "true" ] && echo "- Export module tests failed"

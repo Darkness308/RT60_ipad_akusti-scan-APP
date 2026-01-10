@@ -35,13 +35,13 @@ Agents communicate exclusively through an event-bus system, ensuring:
 class DashboardOrchestrator {
     private let eventBus: EventBus
     private var agents: [Agent] = []
-    
+
     func initialize() {
         // Initialize all agents
         registerAgents()
         setupEventHandlers()
     }
-    
+
     func cleanup() {
         // Cleanup all agents
         agents.forEach { $0.cleanup() }
@@ -211,12 +211,12 @@ protocol EventBus {
 class SafeEventBus: EventBus {
     private var eventLog: [EventLogEntry] = []
     private let errorHandler: ErrorHandler
-    
+
     func emit(event: String, data: Any?) {
         do {
             // Log event
             logEvent(event, data)
-            
+
             // Deliver to subscribers with timeout
             let timeout = DispatchTime.now() + .seconds(5)
             try deliverWithTimeout(event, data, timeout)
@@ -328,16 +328,16 @@ Each agent must have:
 class RT60AgentTests: XCTestCase {
     var agent: RT60Agent!
     var mockEventBus: MockEventBus!
-    
+
     override func setUp() {
         mockEventBus = MockEventBus()
         agent = RT60Agent(eventBus: mockEventBus)
     }
-    
+
     func testMeasurementSuccess() {
         // Test successful measurement flow
     }
-    
+
     func testMeasurementError() {
         // Test error handling
     }
@@ -504,7 +504,7 @@ For AI-driven agents:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2025-11-23  
-**Maintainer**: Architecture Team  
+**Document Version**: 1.0
+**Last Updated**: 2025-11-23
+**Maintainer**: Architecture Team
 **Review Cycle**: Quarterly
