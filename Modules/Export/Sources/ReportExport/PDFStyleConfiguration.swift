@@ -1,6 +1,9 @@
 import Foundation
+
 #if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
 #endif
 
 /// Centralized styling configuration for PDF exports
@@ -8,6 +11,7 @@ public struct PDFStyleConfiguration {
 
     // MARK: - Page Layout
 
+    #if canImport(UIKit) || canImport(AppKit)
     public struct PageLayout {
         /// A4 page dimensions in points (72 points per inch)
         public static let a4Width: CGFloat = 595.2  // 210mm
@@ -24,6 +28,7 @@ public struct PDFStyleConfiguration {
             self.a4Width - (2 * self.margin)
         }
     }
+    #endif
 
     // MARK: - Typography
 
