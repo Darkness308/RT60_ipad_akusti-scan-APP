@@ -21,7 +21,7 @@ The following code signing settings have been configured in the project:
 - ✅ `CODE_SIGN_STYLE = Manual` - Manual code signing for full control
 - ✅ `CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements` - Points to entitlements file
 - ✅ `PRODUCT_BUNDLE_IDENTIFIER = com.acoustiscan.app` - App bundle identifier
-- ⚠️  `DEVELOPMENT_TEAM = ""` - **Needs to be set by you** (see below)
+- ⚠  `DEVELOPMENT_TEAM = ""` - **Needs to be set by you** (see below)
 
 ### 2. Entitlements File (`AcoustiScanApp/AcoustiScan.entitlements`)
 
