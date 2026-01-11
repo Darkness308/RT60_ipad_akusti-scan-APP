@@ -169,7 +169,7 @@ final class ReportContractTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq)")
         }
         
-        // Assert - Required DIN values should always appear in PDF  
+        // Assert - Required DIN values should always appear in PDF
         let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value)")

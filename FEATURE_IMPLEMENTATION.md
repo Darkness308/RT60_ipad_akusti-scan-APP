@@ -425,6 +425,6 @@ struct ContentView: View {
 
 ---
 
-**Erstellt:** 2025-01-08  
-**Version:** 1.0.0  
+**Erstellt:** 2025-01-08
+**Version:** 1.0.0
 **Autor:** GitHub Copilot Workspace

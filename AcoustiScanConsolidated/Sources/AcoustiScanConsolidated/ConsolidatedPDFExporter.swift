@@ -169,7 +169,7 @@ public class ConsolidatedPDFExporter {
         DIN 18041 Konformität: \(String(format: "%.1f", compliancePercentage))%
         Frequenzbereiche in Toleranz: \(withinTolerance)/\(totalMeasurements)
         
-        Bewertung: \(compliancePercentage >= 80 ? "Sehr gut" : 
+        Bewertung: \(compliancePercentage >= 80 ? "Sehr gut" :
                     compliancePercentage >= 60 ? "Gut" : "Verbesserungsbedarf")
         """
         

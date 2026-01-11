@@ -51,9 +51,9 @@ public struct ImpulseResponseAnalyzer {
     /// - Returns: Normalised energy decay curve (0 dB at the start)
     /// - Throws: AnalysisError if input is invalid
     public static func energyDecayCurve(ir: [Float]) throws -> [Float] {
-        guard !ir.isEmpty else { 
+        guard !ir.isEmpty else {
             logError("Empty impulse response provided for energy decay calculation")
-            throw AnalysisError.emptyInput 
+            throw AnalysisError.emptyInput
         }
         
         guard ir.count > 1 else {
@@ -77,9 +77,9 @@ public struct ImpulseResponseAnalyzer {
         let energy = Array(cumulative.reversed())
         
         // Normalise to start at 0 dB (divide by max)
-        guard let maxVal = energy.first, maxVal > 0 else { 
+        guard let maxVal = energy.first, maxVal > 0 else {
             logWarning("Energy curve has zero or negative maximum value")
-            return energy 
+            return energy
         }
         
         let normalized = energy.map { $0 / maxVal }

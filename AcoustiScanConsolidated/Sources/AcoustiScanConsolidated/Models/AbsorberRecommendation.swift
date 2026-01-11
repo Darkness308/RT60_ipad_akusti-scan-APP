@@ -52,7 +52,7 @@ public struct AbsorberRecommendation: Codable, Equatable {
     ///   - totalCost: Total cost in euros
     ///   - expectedAbsorption: Expected absorption improvement
     ///   - priority: Recommendation priority
-    public init(frequency: Int, product: AbsorberProduct, areaNeeded: Double, 
+    public init(frequency: Int, product: AbsorberProduct, areaNeeded: Double,
                 totalCost: Double, expectedAbsorption: Double, priority: Priority) {
         self.frequency = frequency
         self.product = product
@@ -69,7 +69,7 @@ public struct AbsorberRecommendation: Codable, Equatable {
     ///   - areaNeeded: Required area in square meters
     ///   - expectedAbsorption: Expected absorption improvement
     ///   - priority: Recommendation priority
-    public init(frequency: Int, product: AbsorberProduct, areaNeeded: Double, 
+    public init(frequency: Int, product: AbsorberProduct, areaNeeded: Double,
                 expectedAbsorption: Double, priority: Priority) {
         self.frequency = frequency
         self.product = product

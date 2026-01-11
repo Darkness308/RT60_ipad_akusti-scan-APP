@@ -17,7 +17,7 @@
           {
             "regex": "No such module '([^']+)'",
             "category": "missing_import",
-            "severity": "error", 
+            "severity": "error",
             "auto_fix": true,
             "fix_strategy": "add_import_statement"
           },
@@ -72,7 +72,7 @@
           "timeout_seconds": 120
         },
         {
-          "name": "resolve_dependencies", 
+          "name": "resolve_dependencies",
           "command": "swift package resolve",
           "retry_on_failure": true,
           "max_retries": 3,
@@ -118,7 +118,7 @@
             "replacement": "let t20Val = Self.parseNumber(t20raw)"
           },
           {
-            "pattern": "corrVal", 
+            "pattern": "corrVal",
             "replacement": "let corrVal = Self.parseNumber(corrRaw)"
           }
         ]
@@ -183,7 +183,7 @@
         "minimum_coverage": 80,
         "critical_components": [
           "RT60Calculator",
-          "ReportModel", 
+          "ReportModel",
           "PDFReportRenderer",
           "AudioProcessor"
         ]

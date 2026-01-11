@@ -33,7 +33,7 @@ public struct AbsorberProduct: Codable, Equatable {
     /// Product category classification
     public enum ProductCategory: String, CaseIterable, Codable {
         case foam = "foam"
-        case fabric = "fabric" 
+        case fabric = "fabric"
         case wood = "wood"
         case mineral = "mineral"
         case perforated = "perforated"
@@ -60,7 +60,7 @@ public struct AbsorberProduct: Codable, Equatable {
     ///   - category: Product category
     ///   - thickness: Product thickness in mm (optional)
     ///   - manufacturer: Manufacturer name (optional)
-    public init(name: String, frequencyBand: Int, absorptionCoefficient: Double, 
+    public init(name: String, frequencyBand: Int, absorptionCoefficient: Double,
                 pricePerSquareMeter: Double, category: ProductCategory = .other,
                 thickness: Double? = nil, manufacturer: String? = nil) {
         self.name = name
