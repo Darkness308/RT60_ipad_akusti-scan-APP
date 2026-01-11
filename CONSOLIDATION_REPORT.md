@@ -132,7 +132,7 @@ AcoustiScanTool compare
 
 [chart] RT60 Analysis Results:
 Room Type: Klassenzimmer
-Volume: 150.0 m³
+Volume: 150.0 m^3
 
 Frequency Analysis:
 [x]  125 Hz:  0.72 s (Innerhalb Toleranz)

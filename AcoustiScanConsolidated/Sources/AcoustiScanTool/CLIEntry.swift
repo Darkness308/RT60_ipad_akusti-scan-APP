@@ -83,7 +83,7 @@ struct AcoustiScanTool {
         // Display results
         print("\n[chart] RT60 Analysis Results:")
         print("Room Type: \(configuration.roomType.displayName)")
-        print("Volume: \(configuration.volume) m³")
+        print("Volume: \(configuration.volume) m^3")
         print("\nFrequency Analysis:")
 
         for measurement in measurements.sorted(by: { $0.frequency < $1.frequency }) {
@@ -187,7 +187,7 @@ struct AcoustiScanTool {
             print("\n[folder] \(category) (\(parameters.count) parameters)")
 
             for parameter in parameters.prefix(3) { // Show first 3 of each category
-                print("  • \(parameter.name)")
+                print("  - \(parameter.name)")
                 print("    \(parameter.definition)")
                 print("    Scale: \(parameter.scaleLabel.joined(separator: " -> "))")
             }
@@ -226,12 +226,12 @@ struct AcoustiScanTool {
         print("[chart] Comprehensive PDF reporting implemented")
 
         print("\n[clipboard] Consolidation Summary:")
-        print("  • RT60 calculation engine: [x] Consolidated")
-        print("  • PDF export functionality: [x] Enhanced")
-        print("  • DIN 18041 compliance: [x] Integrated")
-        print("  • Build automation: [x] Implemented")
-        print("  • Error detection: [x] Automated")
-        print("  • 48-parameter framework: [x] Integrated")
-        print("  • Professional reporting: [x] Complete")
+        print("  - RT60 calculation engine: [x] Consolidated")
+        print("  - PDF export functionality: [x] Enhanced")
+        print("  - DIN 18041 compliance: [x] Integrated")
+        print("  - Build automation: [x] Implemented")
+        print("  - Error detection: [x] Automated")
+        print("  - 48-parameter framework: [x] Integrated")
+        print("  - Professional reporting: [x] Complete")
     }
 }

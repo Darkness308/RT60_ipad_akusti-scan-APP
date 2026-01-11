@@ -22,7 +22,7 @@ public class EnhancedPDFExporter {
     /// Generate enhanced PDF report with charts and traffic light system
     /// - Parameters:
     ///   - roomName: Name of the room
-    ///   - volume: Room volume in m³
+    ///   - volume: Room volume in m^3
     ///   - rt60Values: RT60 measurements by frequency
     ///   - dinTargets: DIN 18041 target values by frequency
     ///   - surfaces: Room surfaces with materials

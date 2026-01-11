@@ -267,7 +267,7 @@ extension AuditTrailManager {
     /// Log a room scan event
     /// - Parameters:
     ///   - roomName: Name of the room
-    ///   - volume: Room volume in m³
+    ///   - volume: Room volume in m^3
     ///   - surfaceCount: Number of surfaces detected
     public func logRoomScan(roomName: String, volume: Double, surfaceCount: Int) {
         log(

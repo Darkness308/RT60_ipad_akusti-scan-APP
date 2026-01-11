@@ -37,7 +37,7 @@ Dieses Update implementiert die offenen Tasks aus dem Product Backlog und erweit
 - Raumvolumen und Gesamtfläche
 - Tabelle mit allen Oberflächen:
   - Flächenname
-  - Fläche in m²
+  - Fläche in m^2
   - Zugewiesenes Material
 - Alternierende Zeilenfarben für bessere Lesbarkeit
 
@@ -79,7 +79,7 @@ let pdfData = exporter.generateReport(
         (name: "Wände", area: 120.0, material: "Gipskarton")
     ],
     recommendations: [
-        "Installation von Akustikabsorbern an der Rückwand (ca. 10 m²)",
+        "Installation von Akustikabsorbern an der Rückwand (ca. 10 m^2)",
         "Teppichboden auf mindestens 60% der Bodenfläche erweitern",
         "Akustikvorhänge an Fenstern anbringen"
     ]

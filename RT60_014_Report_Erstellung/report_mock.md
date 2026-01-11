@@ -12,8 +12,8 @@ Erstellt mit *AcoustiScan* (MVP)
 
 ## 2. Metadaten
 - **Raumtyp:** Klassenraum
-- **Volumen:** 180 m³
-- **Flächen:** 60 m² Boden, 58 m² Decke, 120 m² Wände
+- **Volumen:** 180 m^3
+- **Flächen:** 60 m^2 Boden, 58 m^2 Decke, 120 m^2 Wände
 - **Messmethode:** Impulsantwort, T20/T30-Auswertung
 - **Mikrofon:** USB-Referenzmikro, kalibriert
 
