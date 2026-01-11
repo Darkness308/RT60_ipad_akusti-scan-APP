@@ -31,7 +31,7 @@ Das AcoustiScan Consolidated Tool ist die Konsolidierung aller Swift-Implementie
 ### Automatisierte Build-Prozesse
 
 - 🔧 **Automatische Fehlererkennung**: Identifizierung häufiger Swift-Compilation-Fehler
-- 🛠️ **Automatische Fehlerbehebung**: Behebung von Import-Fehlern und Syntax-Problemen
+- 🛠 **Automatische Fehlerbehebung**: Behebung von Import-Fehlern und Syntax-Problemen
 - 🔄 **Retry-Mechanismus**: Automatische Wiederholung nach Fehlerbehebung
 - 📊 **Build-Monitoring**: Detaillierte Logging und Status-Berichte
 
@@ -84,7 +84,7 @@ swift test
 swift build -c release
 ```
 
-## 🛠️ Verwendung
+## 🛠 Verwendung
 
 ### Command-Line Interface
 

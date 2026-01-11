@@ -271,7 +271,7 @@ public class ContinuousIntegration {
         print("🔍 Running code quality checks...")
         let qualityResult = runQualityChecks(projectPath: projectPath)
         if !qualityResult {
-            print("⚠️ Code quality issues detected")
+            print("⚠ Code quality issues detected")
             // Don't fail CI for quality issues, just warn
         }
         

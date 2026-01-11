@@ -108,7 +108,7 @@ struct AcoustiScanTool {
         } else if compliancePercentage >= 60 {
             print("👍 Good acoustic performance")
         } else {
-            print("⚠️ Room acoustic improvements recommended")
+            print("⚠ Room acoustic improvements recommended")
         }
     }
     
@@ -174,7 +174,7 @@ struct AcoustiScanTool {
             print("❌ Failed to generate PDF report")
         }
         #else
-        print("⚠️ PDF generation requires UIKit (iOS/macOS)")
+        print("⚠ PDF generation requires UIKit (iOS/macOS)")
         #endif
     }
     
@@ -222,7 +222,7 @@ struct AcoustiScanTool {
         print("📁 Found Swift implementations in repository")
         print("🔧 Consolidation completed in AcoustiScanConsolidated package")
         print("✨ Enhanced with 48-parameter framework integration")
-        print("🛠️ Added automated build and error detection")
+        print("🛠 Added automated build and error detection")
         print("📊 Comprehensive PDF reporting implemented")
         
         print("\n📋 Consolidation Summary:")

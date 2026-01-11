@@ -11,7 +11,7 @@ AcoustiScan ist eine professionelle iOS-App für akustische Raumanalyse mit LiDA
 - 📊 **DIN 18041 Klassifizierung**: Automatische Bewertung nach deutscher Norm
 - 📄 **PDF-Export**: 6-seitiger Gutachten-Report mit Frequenzgrafiken
 - 🎨 **Material-Datenbank**: 500+ akustische Materialien mit Absorptionskoeffizienten
-- 🏗️ **Absorber-Planer**: Automatische Berechnung erforderlicher Absorptionsflächen
+- 🏗 **Absorber-Planer**: Automatische Berechnung erforderlicher Absorptionsflächen
 
 ---
 
@@ -76,7 +76,7 @@ Die App benötigt folgende iOS-Berechtigungen (in Info.plist konfiguriert):
 
 ---
 
-## 🛠️ Entwicklung
+## 🛠 Entwicklung
 
 ### Backend (Swift Package)
 

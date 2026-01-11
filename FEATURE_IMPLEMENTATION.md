@@ -238,7 +238,7 @@ let todaysEntries = auditTrail.getEntries(from: today, to: tomorrow)
 
 ---
 
-## 🏗️ Zusätzliche Infrastruktur
+## 🏗 Zusätzliche Infrastruktur
 
 ### AbsorptionData - Frequenzabhängige Koeffizienten
 

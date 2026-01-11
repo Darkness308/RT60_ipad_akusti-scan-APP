@@ -88,7 +88,7 @@ Der swift_coding Ordner enthält **5 ZIP-Archive** mit insgesamt **143 einzigart
 5. **Dokumentation**: Deutsche Kommentare, klare Funktionsbeschreibungen
 6. **DIN-Konformität**: Korrekte DIN 18041-Implementierung
 
-### ⚠️ Redundanz-Probleme
+### ⚠ Redundanz-Probleme
 
 1. **Duplikate**: iPadScannerApp_Source (2).zip ist identisch zu iPadScannerApp_Source.zip
 2. **Code-Überlappung**: ~80% der Funktionalität ist zwischen den Archiven dupliziert
@@ -113,9 +113,9 @@ Das konsolidierte AcoustiScanConsolidated-System hat bereits:
 | RT60-Berechnung | ✅ Identisch implementiert | ✅ Konsolidiert + optimiert |
 | DIN 18041 | ✅ Vollständig | ✅ Erweitert (6 Raumtypen) |
 | PDF-Export | ✅ Basis-Implementation | ✅ Professional (mehrseitig) |
-| Testing | ⚠️ Fragmentiert | ✅ Umfassend (16 Tests) |
+| Testing | ⚠ Fragmentiert | ✅ Umfassend (16 Tests) |
 | Build-System | ❌ Nicht vorhanden | ✅ Automatisiert |
-| Dokumentation | ⚠️ Code-Kommentare | ✅ Comprehensive |
+| Dokumentation | ⚠ Code-Kommentare | ✅ Comprehensive |
 
 ## Empfehlungen
 

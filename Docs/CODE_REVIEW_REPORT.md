@@ -220,11 +220,11 @@ public enum ErrorLogger {
 |-------------|--------|
 | App Icon (1024x1024) | ✅ Erstellt |
 | Launch Screen | ✅ Auto-generiert |
-| Privacy Policy URL | ⚠️ Extern erforderlich |
+| Privacy Policy URL | ⚠ Extern erforderlich |
 | Code Signing Certificate | ✅ Konfiguriert (Team-ID eintragen) |
 | Provisioning Profile | ✅ Manual Signing bereit |
-| iPad Screenshots | ⚠️ Bei Testflight erstellen |
-| App Store Beschreibung | ⚠️ Marketing-Text erforderlich |
+| iPad Screenshots | ⚠ Bei Testflight erstellen |
+| App Store Beschreibung | ⚠ Marketing-Text erforderlich |
 | Entitlements | ✅ Camera + Microphone |
 | Testflight Build | ✅ Bereit nach Team-ID |
 | Accessibility | ✅ VoiceOver komplett |

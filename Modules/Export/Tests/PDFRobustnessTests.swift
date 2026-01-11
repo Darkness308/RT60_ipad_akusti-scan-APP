@@ -157,7 +157,7 @@ final class PDFRobustnessTests: XCTestCase {
         }
         
         if !missingProblemDINs.isEmpty {
-            print("⚠️ Problem statement DIN values missing: \(missingProblemDINs)")
+            print("⚠ Problem statement DIN values missing: \(missingProblemDINs)")
             print("💡 Current implementation now uses proper DIN 18041 values: 0.6, 0.5, 0.48")
             print("📝 Problem statement examples: 0.6, 0.5, 0.1")
             // Values now align with DIN 18041 standard
