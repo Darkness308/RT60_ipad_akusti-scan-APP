@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ResultsView: View {
     @ObservedObject var store: SurfaceStore
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -19,7 +19,7 @@ struct ResultsView: View {
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityIdentifier("roomInfoHeader")
-                    
+
                     HStack {
                         Text(store.roomName)
                             .font(.body)
@@ -28,7 +28,7 @@ struct ResultsView: View {
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel("Room name: \(store.roomName)")
                     .accessibilityIdentifier("roomNameText")
-                    
+
                     if store.roomVolume > 0 {
                         HStack {
                             Text(LocalizationKeys.roomVolume.localized(comment: "Room Volume"))
@@ -39,7 +39,7 @@ struct ResultsView: View {
                         .accessibilityLabel("Room volume: \(String(format: "%.2f cubic meters", store.roomVolume))")
                         .accessibilityIdentifier("roomVolumeText")
                     }
-                    
+
                     HStack {
                         Text(LocalizationKeys.surfaces.localized(comment: "Surfaces"))
                         Spacer()
@@ -53,7 +53,7 @@ struct ResultsView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(12)
                 .padding(.horizontal)
-                
+
                 // RT60 Chart Preview
                 if !store.surfaces.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
@@ -61,7 +61,7 @@ struct ResultsView: View {
                             .font(.headline)
                             .accessibilityAddTraits(.isHeader)
                             .accessibilityIdentifier("rt60MeasurementsHeader")
-                        
+
                         RT60ChartView(store: store)
                             .frame(height: 200)
                             .accessibilityLabel("RT60 frequency response chart")
@@ -72,14 +72,14 @@ struct ResultsView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
                 }
-                
+
                 // DIN 18041 Classification
                 VStack(alignment: .leading, spacing: 12) {
                     Text(LocalizationKeys.dinClassification.localized(comment: "DIN 18041 Classification"))
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityIdentifier("dinClassificationHeader")
-                    
+
                     if store.surfaces.isEmpty {
                         VStack(spacing: 12) {
                             Image(systemName: "exclamationmark.triangle")
@@ -87,14 +87,14 @@ struct ResultsView: View {
                                 .foregroundColor(.orange)
                                 .accessibilityLabel("Warning icon")
                                 .accessibilityIdentifier("noDataIcon")
-                            
+
                             Text(LocalizationKeys.noDataAvailable.localized(comment: "No data available"))
                                 .font(.body)
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
                                 .accessibilityLabel(LocalizationKeys.noDataAvailable.localized(comment: "No data available"))
                                 .accessibilityIdentifier("noDataText")
-                            
+
                             Text(LocalizationKeys.scanRoomToSeeResults.localized(comment: "Scan room to see results"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -115,7 +115,7 @@ struct ResultsView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(12)
                 .padding(.horizontal)
-                
+
                 Spacer()
             }
             .padding(.vertical)
