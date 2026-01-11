@@ -47,13 +47,13 @@ final class ReportContractTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(t), "PDF missing token: \(t)")
             XCTAssertTrue(htmlText.contains(t), "HTML missing token: \(t)")
         }
-        
+
         // PDF-specific tokens (German)
         let pdfTokens = ["rt60 bericht", "metadaten", "gerät", "toleranz"]
         for t in pdfTokens {
             XCTAssertTrue(pdfText.contains(t), "PDF missing token: \(t)")
         }
-        
+
         // HTML-specific tokens (English from localization)
         let htmlTokens = ["rt60 report", "metadata", "device", "tolerance"]
         for t in htmlTokens {
@@ -76,15 +76,15 @@ final class ReportContractTests: XCTestCase {
             recommendations: [],
             audit: [:]
         )
-        
+
         // Act
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData)
-        
+
         let htmlData = ReportHTMLRenderer().render(model)
         let htmlText = String(decoding: htmlData, as: UTF8.self)
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
-        
+
         // Assert – Fehlende Werte sollten als "-" dargestellt werden
         // Prüfe auf "-" in der Nähe von Frequenzen mit fehlenden Werten
         XCTAssertTrue(pdfText.contains("-"), "PDF sollte '-' für fehlende Werte enthalten")
@@ -108,16 +108,16 @@ final class ReportContractTests: XCTestCase {
             recommendations: [],
             audit: [:]
         )
-        
+
         // Act
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData).lowercased()
-        
+
         let htmlData = ReportHTMLRenderer().render(model)
         let htmlText = String(decoding: htmlData, as: UTF8.self)
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .lowercased()
-        
+
         // Assert – Alle Frequenzen sollten in beiden Ausgaben vorkommen
         let frequencies = ["125", "1000", "4000"]  // Representative frequencies as per DIN 18041
         for freq in frequencies {
@@ -139,16 +139,16 @@ final class ReportContractTests: XCTestCase {
             recommendations: [],
             audit: [:]
         )
-        
+
         // Act
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData).lowercased()
-        
+
         let htmlData = ReportHTMLRenderer().render(model)
         let htmlText = String(decoding: htmlData, as: UTF8.self)
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .lowercased()
-        
+
         // Assert – DIN-Zielwerte sollten in beiden Ausgaben vorkommen
         let targetValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in targetValues {
@@ -171,29 +171,29 @@ final class ReportContractTests: XCTestCase {
             recommendations: [],
             audit: [:]
         )
-        
+
         // Act
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData).lowercased()
-        
+
         // Assert – Required frequencies should always appear in PDF
         let requiredFrequencies = ["125", "1000", "4000"]  // Representative frequencies as per DIN 18041
         for freq in requiredFrequencies {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq)")
         }
-        
-        // Assert – Required DIN values should always appear in PDF  
+
+        // Assert – Required DIN values should always appear in PDF
         let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value)")
         }
-        
+
         // Assert – Core tokens should always appear in PDF
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
         for token in coreTokens {
             XCTAssertTrue(pdfText.contains(token), "PDF fehlt Core-Token: \(token)")
         }
-        
+
         // Assert – Missing values should be represented as "-"
         XCTAssertTrue(pdfText.contains("-"), "PDF sollte '-' für fehlende Werte enthalten")
     }
