@@ -11,7 +11,7 @@
 //  decibels, and estimate the slope of the decay between defined
 //  limits (e.g. 5-25 dB for T20 or 5-35 dB for T30).  The resulting
 //  T20/T30 values are extrapolated to RT60 by multiplying by 3 or 2
-//  respectively【473764854244230†L186-L204】.
+//  respectively.
 
 import Foundation
 
