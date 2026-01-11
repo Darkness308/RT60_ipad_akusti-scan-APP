@@ -1,4 +1,4 @@
-# AcoustiScan – iPad Raumakustik‑App (MVP)
+# AcoustiScan - iPad Raumakustik‑App (MVP)
 
 Dieses Repository enthält den Quellcode für **AcoustiScan**, einen
 experimentellen Prototyp zur orientierenden Messung der Raumakustik
