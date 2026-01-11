@@ -8,16 +8,16 @@ import Foundation
 /// This structure represents the target reverberation time and tolerance
 /// for a specific frequency band according to DIN 18041 standard.
 public struct DIN18041Target: Codable, Equatable {
-    
+
     /// Frequency band in Hz
     public let frequency: Int
-    
+
     /// Target RT60 value in seconds according to DIN 18041
     public let targetRT60: Double
-    
+
     /// Tolerance range in seconds (±tolerance)
     public let tolerance: Double
-    
+
     /// Initialize a new DIN 18041 target
     /// - Parameters:
     ///   - frequency: Frequency band in Hz
@@ -28,24 +28,24 @@ public struct DIN18041Target: Codable, Equatable {
         self.targetRT60 = targetRT60
         self.tolerance = tolerance
     }
-    
+
     /// Lower bound of acceptable RT60 range
     public var lowerBound: Double {
         return targetRT60 - tolerance
     }
-    
+
     /// Upper bound of acceptable RT60 range
     public var upperBound: Double {
         return targetRT60 + tolerance
     }
-    
+
     /// Check if a measured RT60 value is within tolerance
     /// - Parameter measuredRT60: Measured RT60 value in seconds
     /// - Returns: True if within acceptable range
     public func isWithinTolerance(_ measuredRT60: Double) -> Bool {
         return measuredRT60 >= lowerBound && measuredRT60 <= upperBound
     }
-    
+
     /// Evaluate compliance status for a measured value
     /// - Parameter measuredRT60: Measured RT60 value in seconds
     /// - Returns: Evaluation status

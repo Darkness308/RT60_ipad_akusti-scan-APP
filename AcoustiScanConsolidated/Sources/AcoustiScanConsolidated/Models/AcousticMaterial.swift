@@ -29,7 +29,7 @@ public struct AcousticMaterial: Identifiable, Codable, Equatable {
         self.name = name
         self.absorptionCoefficients = absorptionCoefficients
     }
-    
+
     /// Initialize with specific ID (for testing or known materials)
     /// - Parameters:
     ///   - id: Unique identifier

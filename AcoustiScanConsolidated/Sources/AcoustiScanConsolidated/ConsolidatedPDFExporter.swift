@@ -95,42 +95,42 @@ public class ConsolidatedPDFExporter {
             kCGPDFContextTitle: "Gutachterlicher Raumakustik Report",
             kCGPDFContextSubject: "RT60 Messung und DIN 18041 Bewertung"
         ]
-        
+
         let format = UIGraphicsPDFRendererFormat()
         format.documentInfo = pdfMetaData as [String: Any]
-        
+
         let pageWidth = 595.2  // A4 width in points
         let pageHeight = 841.8 // A4 height in points
         let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
-        
+
         return renderer.pdfData { context in
             // Page 1: Title and Executive Summary
             context.beginPage()
             drawTitlePage(pageRect: pageRect, data: data)
-            
+
             // Page 2: Measurement Metadata and Room Information
             context.beginPage()
             drawMetadataPage(pageRect: pageRect, data: data)
-            
+
             // Page 3: RT60 Curves and Frequency Analysis
             context.beginPage()
             drawRT60AnalysisPage(pageRect: pageRect, data: data)
-            
+
             // Page 4: DIN 18041 Compliance Results
             context.beginPage()
             drawDINCompliancePage(pageRect: pageRect, data: data)
-            
+
             // Page 5: 48-Parameter Acoustic Framework Results
             context.beginPage()
             drawAcousticFrameworkPage(pageRect: pageRect, data: data)
-            
+
             // Page 6: Recommendations and Action Items
             context.beginPage()
             drawRecommendationsPage(pageRect: pageRect, data: data)
         }
     }
-    
+
     private static func drawTitlePage(pageRect: CGRect, data: ReportData) {
         let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
@@ -146,7 +146,7 @@ public class ConsolidatedPDFExporter {
         let subtitleAttrs = PDFStyling.titleAttributes(size: 18, color: .darkGray)
         PDFStyling.draw(subtitle, at: CGPoint(x: margin, y: yPosition), attributes: subtitleAttrs)
         yPosition += 80
-        
+
         // Executive Summary Box
         let summaryRect = CGRect(x: margin, y: yPosition, width: pageRect.width - 2*margin, height: 200)
         UIColor.lightGray.withAlphaComponent(0.1).setFill()
@@ -155,24 +155,24 @@ public class ConsolidatedPDFExporter {
         let summaryTitle = "Executive Summary"
         let summaryTitleAttrs = PDFStyling.titleAttributes(size: 16, weight: .bold)
         PDFStyling.draw(summaryTitle, at: CGPoint(x: margin + 20, y: yPosition + 20), attributes: summaryTitleAttrs)
-        
+
         // Summary content
         let withinTolerance = data.dinResults.filter { $0.status == .withinTolerance }.count
         let totalMeasurements = data.dinResults.count
         let compliancePercentage = totalMeasurements > 0 ? Double(withinTolerance) / Double(totalMeasurements) * 100 : 0
-        
+
         let summaryText = """
         Raum: \(data.roomType.displayName)
         Volumen: \(String(format: "%.1f", data.volume)) m³
         Messdatum: \(data.date)
-        
+
         DIN 18041 Konformität: \(String(format: "%.1f", compliancePercentage))%
         Frequenzbereiche in Toleranz: \(withinTolerance)/\(totalMeasurements)
-        
+
         Bewertung: \(compliancePercentage >= 80 ? "Sehr gut" :
                     compliancePercentage >= 60 ? "Gut" : "Verbesserungsbedarf")
         """
-        
+
         let summaryAttrs = PDFStyling.bodyAttributes()
         PDFStyling.draw(summaryText, in: CGRect(x: margin + 20, y: yPosition + 50,
                                                 width: pageRect.width - 2*margin - 40, height: 140),
@@ -186,7 +186,7 @@ public class ConsolidatedPDFExporter {
             attributes: PDFStyling.footerAttributes()
         )
     }
-    
+
     private static func drawMetadataPage(pageRect: CGRect, data: ReportData) {
         let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
@@ -195,17 +195,17 @@ public class ConsolidatedPDFExporter {
         let titleAttrs = PDFStyling.titleAttributes(size: 20, weight: .bold)
         PDFStyling.draw(pageTitle, at: CGPoint(x: margin, y: yPosition), attributes: titleAttrs)
         yPosition += 40
-        
+
         let metadataText = """
         Grunddaten:
         - Messung durchgeführt am: \(data.date)
         - Raumtyp: \(data.roomType.displayName)
         - Raumvolumen: \(String(format: "%.2f", data.volume)) m³
         - Anzahl Oberflächenelemente: \(data.surfaces.count)
-        
+
         Oberflächenkonfiguration:
         """
-        
+
         let textAttrs = PDFStyling.bodyAttributes()
         PDFStyling.draw(
             metadataText,
@@ -225,7 +225,7 @@ public class ConsolidatedPDFExporter {
             attributes: textAttrs
         )
     }
-    
+
     private static func drawRT60AnalysisPage(pageRect: CGRect, data: ReportData) {
         let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
@@ -254,7 +254,7 @@ public class ConsolidatedPDFExporter {
             yPosition += 18
         }
     }
-    
+
     private static func drawDINCompliancePage(pageRect: CGRect, data: ReportData) {
         let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
@@ -282,7 +282,7 @@ public class ConsolidatedPDFExporter {
             yPosition += 18
         }
     }
-    
+
     private static func drawAcousticFrameworkPage(pageRect: CGRect, data: ReportData) {
         let margin = PDFStyling.margin
         var yPosition: CGFloat = margin
@@ -311,7 +311,7 @@ public class ConsolidatedPDFExporter {
             yPosition += 18
         }
     }
-    
+
     private static func drawRecommendationsPage(pageRect: CGRect, data: ReportData) {
         let margin = PDFStyling.margin
         var yPosition: CGFloat = margin

@@ -8,32 +8,32 @@ import Foundation
 /// This structure represents a specific recommendation for acoustic treatment,
 /// combining a product with the calculated area needed and associated costs.
 public struct AbsorberRecommendation: Codable, Equatable {
-    
+
     /// Frequency band this recommendation targets (Hz)
     public let frequency: Int
-    
+
     /// Recommended absorber product
     public let product: AbsorberProduct
-    
+
     /// Required area of this product in square meters
     public let areaNeeded: Double
-    
+
     /// Total cost for the recommended area in euros
     public let totalCost: Double
-    
+
     /// Expected absorption improvement in Sabine units
     public let expectedAbsorption: Double
-    
+
     /// Recommendation priority based on acoustic analysis
     public let priority: Priority
-    
+
     /// Priority classification for recommendations
     public enum Priority: String, CaseIterable, Codable {
         case low = "low"
         case medium = "medium"
         case high = "high"
         case critical = "critical"
-        
+
         public var displayName: String {
             switch self {
             case .low: return "Niedrig"
@@ -43,7 +43,7 @@ public struct AbsorberRecommendation: Codable, Equatable {
             }
         }
     }
-    
+
     /// Initialize a new absorber recommendation
     /// - Parameters:
     ///   - frequency: Target frequency band in Hz
@@ -61,7 +61,7 @@ public struct AbsorberRecommendation: Codable, Equatable {
         self.expectedAbsorption = expectedAbsorption
         self.priority = priority
     }
-    
+
     /// Convenience initializer that calculates total cost automatically
     /// - Parameters:
     ///   - frequency: Target frequency band in Hz
@@ -78,7 +78,7 @@ public struct AbsorberRecommendation: Codable, Equatable {
         self.expectedAbsorption = expectedAbsorption
         self.priority = priority
     }
-    
+
     /// Cost per unit of absorption improvement (€/Sabine)
     public var costEffectiveness: Double {
         guard expectedAbsorption > 0 else { return Double.infinity }

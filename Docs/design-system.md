@@ -343,7 +343,7 @@ Container for related content:
 VStack(alignment: .leading, spacing: 12) {
     Text("Room Information")
         .font(.headline)
-    
+
     // Content
 }
 .padding(16)
@@ -367,7 +367,7 @@ VStack(alignment: .leading, spacing: 8) {
     Text("Room Name")
         .font(.subheadline)
         .foregroundColor(.secondary)
-    
+
     TextField("Enter room name", text: $roomName)
         .textFieldStyle(.roundedBorder)
         .accessibilityLabel("Room name")
@@ -756,23 +756,23 @@ struct MeasurementCard: View {
     let value: String
     let unit: String
     let status: ComplianceStatus
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-            
+
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(value)
                     .font(.title)
                     .fontWeight(.semibold)
-                
+
                 Text(unit)
                     .font(.body)
                     .foregroundColor(.secondary)
             }
-            
+
             StatusBadge(status: status)
         }
         .padding(16)
