@@ -7,22 +7,22 @@ Das Repo bietet eine klare README mit Zielgruppe, Zweck, Funktionsumfang, Archit
 **Was fehlt?**  
 - Ein Installations-/Quickstart-Abschnitt für absolute Einsteiger  
 - Screenshots oder Demo-Videos (optional, aber hilfreich)  
-- Ein „Liesmich“/README auf Projektebene (Root), falls jemand nicht direkt in /swift_coding/ schaut
+- Ein "Liesmich"/README auf Projektebene (Root), falls jemand nicht direkt in /swift_coding/ schaut
 
 ## 2. Struktur & Organisation
 
 **Status:** Überdurchschnittlich  
 Das Repo ist modular aufgebaut:  
-- **App/** – Einstiegspunkt, Ressourcen  
-- **Modules/** – Scanner, Akustik, Material, DIN18041, Export, UI usw.  
-- **Docs/** – Komplette Doku inkl. Messleitfaden, Backlog, Risiken, Changelog  
-- **Tests/** – Unit- und Integrationstests  
-- **Data/** – CSV/XLSX-Import/Export, JSON-Audit-Trail
+- **App/** - Einstiegspunkt, Ressourcen  
+- **Modules/** - Scanner, Akustik, Material, DIN18041, Export, UI usw.  
+- **Docs/** - Komplette Doku inkl. Messleitfaden, Backlog, Risiken, Changelog  
+- **Tests/** - Unit- und Integrationstests  
+- **Data/** - CSV/XLSX-Import/Export, JSON-Audit-Trail
 
 **Vergleich zu Top 20/Schlechtesten 20 GitHub-Repos:**  
 - **Top 20:** Diese Repos sind meistens vorbildlich strukturiert, haben automatisierte Tests, CI/CD, vollständige Dokumentation, Community-Interaktion und sind einfach onboardbar.  
   → Dein Repo ist thematisch und strukturell sehr nahe dran, es fehlen ggf. noch Community-Features, Screenshots, ein Installationsvideo, und automatisierte Checks (z.B. GitHub Actions).  
-- **Bottom 20:** Chaotisch, ohne README, keine Doku, kein Test, keine Struktur – dein Repo ist um Welten besser organisiert und dokumentiert als die schlechtesten 20.
+- **Bottom 20:** Chaotisch, ohne README, keine Doku, kein Test, keine Struktur - dein Repo ist um Welten besser organisiert und dokumentiert als die schlechtesten 20.
 
 ## 3. Modularität, Flexibilität, Granularität
 
@@ -77,4 +77,4 @@ Das Repo ist modular aufgebaut:
 ---
 
 **Fazit:**  
-Dein Repo ist klar überdurchschnittlich, in der oberen Hälfte des GitHub-Benchmarks und für die Zielgruppe sehr gut verständlich und nutzbar. Mit ein paar kleinen Ergänzungen (Quickstart, Screenshots, Root-README, optional Community-Features) ist es „top-tier“-ready.
+Dein Repo ist klar überdurchschnittlich, in der oberen Hälfte des GitHub-Benchmarks und für die Zielgruppe sehr gut verständlich und nutzbar. Mit ein paar kleinen Ergänzungen (Quickstart, Screenshots, Root-README, optional Community-Features) ist es "top-tier"-ready.
