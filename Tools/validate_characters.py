@@ -16,6 +16,9 @@ import sys
 import unicodedata
 from pathlib import Path
 
+# Threshold for ASCII control characters
+ASCII_CONTROL_THRESHOLD = 32
+
 # Characters to check for
 PROBLEMATIC_CHARS = {
     '\u00A0': 'Non-breaking space (NBSP)',
@@ -63,18 +66,34 @@ def check_file(filepath):
             issues.append(('ENCODING', f'Not valid UTF-8: {e}', 1, []))
             return issues
         
+        # Build line offset map for efficient line number lookup
+        line_offsets = [0]  # Start of first line is position 0
+        for i, char in enumerate(content):
+            if char == '\n':
+                line_offsets.append(i + 1)
+        
+        def get_line_number(position):
+            """Get line number for a character position using binary search."""
+            # Binary search would be more efficient, but for simplicity use simple loop
+            for line_num, offset in enumerate(line_offsets, 1):
+                if line_num == len(line_offsets):
+                    return line_num
+                if offset <= position < line_offsets[line_num]:
+                    return line_num
+            return len(line_offsets)
+        
         # Check for problematic Unicode characters
         for char, description in PROBLEMATIC_CHARS.items():
             if char in content:
                 positions = [i for i, c in enumerate(content) if c == char]
-                line_numbers = [content[:pos].count('\n') + 1 for pos in positions[:5]]
+                line_numbers = [get_line_number(pos) for pos in positions[:5]]
                 issues.append(('UNICODE', f'{description} (U+{ord(char):04X})', len(positions), line_numbers))
         
         # Check for control characters (except \n, \t, \r)
         control_chars = []
         for i, char in enumerate(content):
-            if ord(char) < 32 and char not in '\n\t\r':
-                line_num = content[:i].count('\n') + 1
+            if ord(char) < ASCII_CONTROL_THRESHOLD and char not in '\n\t\r':
+                line_num = get_line_number(i)
                 control_chars.append((line_num, ord(char)))
         
         if control_chars:
