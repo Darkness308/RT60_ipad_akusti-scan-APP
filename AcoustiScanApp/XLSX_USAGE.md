@@ -292,16 +292,16 @@ The generated XLSX files contain the following structure:
 
 ```
 materials.xlsx (ZIP archive)
-├── [Content_Types].xml       - MIME types for all files
-├── _rels/
-│   └── .rels                  - Relationships
-├── xl/
-│   ├── workbook.xml          - Workbook definition
-│   ├── styles.xml            - Minimal styling
-│   ├── worksheets/
-│   │   └── sheet1.xml        - Material data
-│   └── _rels/
-│       └── workbook.xml.rels - Workbook relationships
+|---- [Content_Types].xml       - MIME types for all files
+|---- _rels/
+|   |__-- .rels                  - Relationships
+|---- xl/
+|   |---- workbook.xml          - Workbook definition
+|   |---- styles.xml            - Minimal styling
+|   |---- worksheets/
+|   |   |__-- sheet1.xml        - Material data
+|   |__-- _rels/
+|       |__-- workbook.xml.rels - Workbook relationships
 ```
 
 ### Key Features
@@ -337,12 +337,12 @@ Export process:
 
 The implementation includes comprehensive tests in `MaterialManagerXLSXTests.swift`:
 
-- ✅ Export/Import round-trip preservation
-- ✅ Special character handling
-- ✅ Empty data handling
-- ✅ Invalid data error handling
-- ✅ Performance tests with large datasets
-- ✅ Edge cases (zero values, max values, long names)
+- [x] Export/Import round-trip preservation
+- [x] Special character handling
+- [x] Empty data handling
+- [x] Invalid data error handling
+- [x] Performance tests with large datasets
+- [x] Edge cases (zero values, max values, long names)
 
 Run tests:
 ```bash
@@ -364,11 +364,11 @@ let xlsxData = materialManager.exportToXLSX()
 ```
 
 Benefits of XLSX over CSV:
-- ✅ Better Excel integration
-- ✅ Preserves numeric types
-- ✅ Handles special characters without escaping issues
-- ✅ Standard format for data exchange
-- ✅ More professional appearance
+- [x] Better Excel integration
+- [x] Preserves numeric types
+- [x] Handles special characters without escaping issues
+- [x] Standard format for data exchange
+- [x] More professional appearance
 
 ## Future Enhancements
 

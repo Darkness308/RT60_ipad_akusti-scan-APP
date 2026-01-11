@@ -45,12 +45,12 @@ BUILD AUTOMATION:
 - Test: swift test --enable-code-coverage
 
 QUALITY GATES:
-✓ Code compiles without warnings
-✓ All tests pass with >80% coverage
-✓ SwiftLint rules satisfied
-✓ No force unwrapping in production
-✓ RT60 calculations validated
-✓ Error handling comprehensive
+[x] Code compiles without warnings
+[x] All tests pass with >80% coverage
+[x] SwiftLint rules satisfied
+[x] No force unwrapping in production
+[x] RT60 calculations validated
+[x] Error handling comprehensive
 
 EMERGENCY RECOVERY:
 1. rm -rf .build && swift package clean

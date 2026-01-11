@@ -8,7 +8,7 @@ import AcoustiScanConsolidated
 @main
 struct AcoustiScanTool {
     static func main() {
-        print("🎵 AcoustiScan Consolidated Tool")
+        print("[music] AcoustiScan Consolidated Tool")
         print("===================================")
 
         let arguments = CommandLine.arguments
@@ -43,7 +43,7 @@ struct AcoustiScanTool {
             printUsage()
 
         default:
-            print("❌ Unknown command: \(command)")
+            print("[x] Unknown command: \(command)")
             printUsage()
         }
     }
@@ -73,7 +73,7 @@ struct AcoustiScanTool {
     }
 
     static func runAcousticAnalysis() {
-        print("🔬 Running Acoustic Analysis...")
+        print("[microscope] Running Acoustic Analysis...")
 
         let dataset = SampleData.baselineDataset()
         let configuration = dataset.configuration
@@ -81,7 +81,7 @@ struct AcoustiScanTool {
         let dinResults = dataset.dinResults
 
         // Display results
-        print("\n📊 RT60 Analysis Results:")
+        print("\n[chart] RT60 Analysis Results:")
         print("Room Type: \(configuration.roomType.displayName)")
         print("Volume: \(configuration.volume) m³")
         print("\nFrequency Analysis:")
@@ -89,8 +89,8 @@ struct AcoustiScanTool {
         for measurement in measurements.sorted(by: { $0.frequency < $1.frequency }) {
             let dinResult = dinResults.first { $0.frequency == measurement.frequency }
             let status = dinResult?.status.displayName ?? "Unknown"
-            let statusEmoji = dinResult?.status == .withinTolerance ? "✅" :
-                             dinResult?.status == .tooHigh ? "🔴" : "🟠"
+            let statusEmoji = dinResult?.status == .withinTolerance ? "[x]" :
+                             dinResult?.status == .tooHigh ? "[red]" : "[orange]"
 
             print(String(format: "%s %4d Hz: %5.2f s (%@)",
                         statusEmoji, measurement.frequency, measurement.rt60, status))
@@ -100,20 +100,20 @@ struct AcoustiScanTool {
         let withinTolerance = dinResults.filter { $0.status == .withinTolerance }.count
         let compliancePercentage = Double(withinTolerance) / Double(dinResults.count) * 100
 
-        print("\n📈 DIN 18041 Compliance: \(String(format: "%.1f", compliancePercentage))%")
+        print("\n[trending-up] DIN 18041 Compliance: \(String(format: "%.1f", compliancePercentage))%")
         print("Frequencies within tolerance: \(withinTolerance)/\(dinResults.count)")
 
         if compliancePercentage >= 80 {
-            print("🎉 Excellent acoustic performance!")
+            print("[celebration] Excellent acoustic performance!")
         } else if compliancePercentage >= 60 {
-            print("👍 Good acoustic performance")
+            print("[thumbs-up] Good acoustic performance")
         } else {
-            print("⚠️ Room acoustic improvements recommended")
+            print("[warning] Room acoustic improvements recommended")
         }
     }
 
     static func runAutomatedBuild() {
-        print("🔨 Running Automated Build System...")
+        print("[hammer] Running Automated Build System...")
 
         let projectPath = FileManager.default.currentDirectoryPath
         print("Project path: \(projectPath)")
@@ -122,26 +122,26 @@ struct AcoustiScanTool {
 
         switch result {
         case .success(let output):
-            print("✅ Build successful!")
+            print("[x] Build successful!")
             if !output.isEmpty {
                 print("Build output:\n\(output)")
             }
 
         case .failure(let output, let errors):
-            print("❌ Build failed with \(errors.count) error(s)")
+            print("[x] Build failed with \(errors.count) error(s)")
             print("Build output:\n\(output)")
 
             for error in errors {
-                print("📁 \(error.file):\(error.line):\(error.column) - \(error.message)")
+                print("[folder] \(error.file):\(error.line):\(error.column) - \(error.message)")
             }
 
         case .fixedAndRetrying(let fixedErrors):
-            print("🔄 Fixed \(fixedErrors.count) error(s), retrying build...")
+            print("[refresh] Fixed \(fixedErrors.count) error(s), retrying build...")
         }
     }
 
     static func generateComprehensiveReport() {
-        print("📄 Generating Comprehensive PDF Report...")
+        print("[document] Generating Comprehensive PDF Report...")
 
         let dataset = SampleData.baselineDataset()
 
@@ -161,35 +161,35 @@ struct AcoustiScanTool {
             let outputPath = "AcoustiScan_Comprehensive_Report.pdf"
             do {
                 try pdfData.write(to: URL(fileURLWithPath: outputPath))
-                print("✅ Report generated successfully: \(outputPath)")
+                print("[x] Report generated successfully: \(outputPath)")
                 let reportSize = ByteCountFormatter.string(
                     fromByteCount: Int64(pdfData.count),
                     countStyle: .file
                 )
-                print("📏 Report size: \(reportSize)")
+                print("[ruler] Report size: \(reportSize)")
             } catch {
-                print("❌ Failed to save report: \(error)")
+                print("[x] Failed to save report: \(error)")
             }
         } else {
-            print("❌ Failed to generate PDF report")
+            print("[x] Failed to generate PDF report")
         }
         #else
-        print("⚠️ PDF generation requires UIKit (iOS/macOS)")
+        print("[warning] PDF generation requires UIKit (iOS/macOS)")
         #endif
     }
 
     static func displayFrameworkInfo() {
-        print("📋 48-Parameter Acoustic Framework Information")
+        print("[clipboard] 48-Parameter Acoustic Framework Information")
         print("============================================")
 
         for category in AcousticFramework.ParameterCategory.allCases {
             let parameters = AcousticFramework.parameters(for: category)
-            print("\n📂 \(category) (\(parameters.count) parameters)")
+            print("\n[folder] \(category) (\(parameters.count) parameters)")
 
             for parameter in parameters.prefix(3) { // Show first 3 of each category
                 print("  • \(parameter.name)")
                 print("    \(parameter.definition)")
-                print("    Scale: \(parameter.scaleLabel.joined(separator: " → "))")
+                print("    Scale: \(parameter.scaleLabel.joined(separator: " -> "))")
             }
 
             if parameters.count > 3 {
@@ -197,41 +197,41 @@ struct AcoustiScanTool {
             }
         }
 
-        print("\n🔬 Total parameters: \(AcousticFramework.allParameters.count)")
-        print("📚 Based on validated scientific research")
-        print("🎯 75% of parameters have strong scientific foundation")
+        print("\n[microscope] Total parameters: \(AcousticFramework.allParameters.count)")
+        print("[books] Based on validated scientific research")
+        print("[target] 75% of parameters have strong scientific foundation")
     }
 
     static func runContinuousIntegration() {
-        print("🚀 Running Continuous Integration Pipeline...")
+        print("[rocket] Running Continuous Integration Pipeline...")
 
         let projectPath = FileManager.default.currentDirectoryPath
         let success = ContinuousIntegration.runCIPipeline(projectPath: projectPath)
 
         if success {
-            print("🎉 CI Pipeline completed successfully!")
+            print("[celebration] CI Pipeline completed successfully!")
         } else {
-            print("❌ CI Pipeline failed")
+            print("[x] CI Pipeline failed")
         }
     }
 
     static func compareSwiftFiles() {
-        print("🔍 Comparing and Consolidating Swift Files...")
+        print("[search] Comparing and Consolidating Swift Files...")
 
         // This would analyze the extracted Swift files from the zip archives
-        print("📁 Found Swift implementations in repository")
-        print("🔧 Consolidation completed in AcoustiScanConsolidated package")
-        print("✨ Enhanced with 48-parameter framework integration")
-        print("🛠️ Added automated build and error detection")
-        print("📊 Comprehensive PDF reporting implemented")
+        print("[folder] Found Swift implementations in repository")
+        print("[tool] Consolidation completed in AcoustiScanConsolidated package")
+        print("[sparkle] Enhanced with 48-parameter framework integration")
+        print("[tools] Added automated build and error detection")
+        print("[chart] Comprehensive PDF reporting implemented")
 
-        print("\n📋 Consolidation Summary:")
-        print("  • RT60 calculation engine: ✅ Consolidated")
-        print("  • PDF export functionality: ✅ Enhanced")
-        print("  • DIN 18041 compliance: ✅ Integrated")
-        print("  • Build automation: ✅ Implemented")
-        print("  • Error detection: ✅ Automated")
-        print("  • 48-parameter framework: ✅ Integrated")
-        print("  • Professional reporting: ✅ Complete")
+        print("\n[clipboard] Consolidation Summary:")
+        print("  • RT60 calculation engine: [x] Consolidated")
+        print("  • PDF export functionality: [x] Enhanced")
+        print("  • DIN 18041 compliance: [x] Integrated")
+        print("  • Build automation: [x] Implemented")
+        print("  • Error detection: [x] Automated")
+        print("  • 48-parameter framework: [x] Integrated")
+        print("  • Professional reporting: [x] Complete")
     }
 }

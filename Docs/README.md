@@ -6,7 +6,7 @@ This directory contains comprehensive documentation for the AcoustiScan applicat
 
 ## Core Documentation
 
-### 📋 [agents.md](./agents.md)
+### [clipboard] [agents.md](./agents.md)
 **Agent Architecture & System Design**
 
 Complete documentation of the agent-based architecture including:
@@ -25,7 +25,7 @@ Complete documentation of the agent-based architecture including:
 - Testing Strategy
 - Monitoring and Observability
 
-### 🎨 [design-system.md](./design-system.md)
+### [art] [design-system.md](./design-system.md)
 **UI/UX & Accessibility Guidelines**
 
 Complete design system ensuring WCAG AA compliance:
@@ -47,7 +47,7 @@ Complete design system ensuring WCAG AA compliance:
 - Interaction Patterns
 - Quality Checklist
 
-### 📊 [ARCHITECTURE_ANALYSIS_RESPONSE.md](./ARCHITECTURE_ANALYSIS_RESPONSE.md)
+### [chart] [ARCHITECTURE_ANALYSIS_RESPONSE.md](./ARCHITECTURE_ANALYSIS_RESPONSE.md)
 **Analysis Response & Risk Mitigation**
 
 Comprehensive response to architectural analysis addressing:
@@ -59,21 +59,21 @@ Comprehensive response to architectural analysis addressing:
 - Next steps and recommendations
 
 **Addressed Concerns**:
-- ✅ Event-bus error handling and monitoring
-- ✅ AI manipulation security and auditing
-- ✅ Dynamic compliance standard updates
-- ✅ Accessibility and screenreader support
-- ✅ Error handling consistency
-- ✅ Design system consistency
+- [x] Event-bus error handling and monitoring
+- [x] AI manipulation security and auditing
+- [x] Dynamic compliance standard updates
+- [x] Accessibility and screenreader support
+- [x] Error handling consistency
+- [x] Design system consistency
 
 ## Technical Specifications
 
-### 🔊 [dsp_filtering.md](./dsp_filtering.md)
+### [speaker] [dsp_filtering.md](./dsp_filtering.md)
 **Digital Signal Processing**
 
 DSP filtering specifications for audio processing.
 
-### ✓ [iso3382_report_checklist.md](./iso3382_report_checklist.md)
+### [x] [iso3382_report_checklist.md](./iso3382_report_checklist.md)
 **ISO 3382-1 Compliance**
 
 Checklist for ISO 3382-1 report compliance:
@@ -107,25 +107,25 @@ The AcoustiScan application adheres to the following standards:
 
 ```
 AcoustiScan Application
-├── Agent Layer
-│   ├── DashboardOrchestrator (coordination)
-│   ├── RT60Agent (measurements)
-│   ├── ScannerAgent (LiDAR)
-│   ├── ComplianceAgent (standards)
-│   ├── MaterialAgent (database)
-│   ├── ExportAgent (reports)
-│   └── KISystemAgent (AI workflows)
-├── Event-Bus System
-│   ├── Event emission/subscription
-│   ├── Error handling
-│   ├── Monitoring and logging
-│   └── Deadlock detection
-└── UI Layer (SwiftUI)
-    ├── Scanner views
-    ├── RT60 measurement views
-    ├── Results and classification
-    ├── Export and sharing
-    └── Material database
+|---- Agent Layer
+|   |---- DashboardOrchestrator (coordination)
+|   |---- RT60Agent (measurements)
+|   |---- ScannerAgent (LiDAR)
+|   |---- ComplianceAgent (standards)
+|   |---- MaterialAgent (database)
+|   |---- ExportAgent (reports)
+|   |__-- KISystemAgent (AI workflows)
+|---- Event-Bus System
+|   |---- Event emission/subscription
+|   |---- Error handling
+|   |---- Monitoring and logging
+|   |__-- Deadlock detection
+|__-- UI Layer (SwiftUI)
+    |---- Scanner views
+    |---- RT60 measurement views
+    |---- Results and classification
+    |---- Export and sharing
+    |__-- Material database
 ```
 
 ## Key Features Documented

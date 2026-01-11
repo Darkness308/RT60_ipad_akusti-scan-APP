@@ -38,17 +38,17 @@ Erstellt mit *AcoustiScan* (MVP)
 
 | Frequenz [Hz] | Soll [s] | Ist [s] | Bewertung |
 |---------------|----------|---------|-----------|
-| 125           | 0.70     | 0.85    | 🔴 zu lang |
-| 250           | 0.70     | 0.72    | 🟡 grenzwertig |
-| 500           | 0.65     | 0.65    | 🟢 ok |
-| 1000          | 0.60     | 0.62    | 🟡 leicht zu lang |
-| 2000          | 0.60     | 0.60    | 🟢 ok |
-| 4000          | 0.55     | 0.58    | 🟡 leicht zu lang |
+| 125           | 0.70     | 0.85    | [red] zu lang |
+| 250           | 0.70     | 0.72    | [yellow] grenzwertig |
+| 500           | 0.65     | 0.65    | [green] ok |
+| 1000          | 0.60     | 0.62    | [yellow] leicht zu lang |
+| 2000          | 0.60     | 0.60    | [green] ok |
+| 4000          | 0.55     | 0.58    | [yellow] leicht zu lang |
 
 ---
 
 ## 5. Empfohlene Maßnahmen
-- **Wände:** Zusätzliche Wandabsorber einbringen (α ≥ 0.8 bei 250-1000 Hz).
+- **Wände:** Zusätzliche Wandabsorber einbringen (alpha >= 0.8 bei 250-1000 Hz).
 - **Decke:** Breitband-Deckensegel über 50 % der Fläche ergänzen.
 - **Mobiliar:** Teppichböden oder Vorhänge einsetzen zur Reduktion hoher Frequenzen.
 

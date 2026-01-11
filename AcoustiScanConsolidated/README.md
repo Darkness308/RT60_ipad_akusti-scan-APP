@@ -2,7 +2,7 @@
 
 Ein umfassendes Swift-Tool für Raumakustik-Analyse mit RT60-Messung, DIN 18041-Bewertung und automatisierter PDF-Berichterstellung.
 
-## 🎯 Überblick
+## [target] Überblick
 
 Das AcoustiScan Consolidated Tool ist die Konsolidierung aller Swift-Implementierungen aus dem RT60 iPad Akustik-Scan-App Projekt. Es kombiniert:
 
@@ -12,37 +12,37 @@ Das AcoustiScan Consolidated Tool ist die Konsolidierung aller Swift-Implementie
 - **Automatisierte Build-Prozesse** mit Fehlererkennung und -behebung
 - **Professionelle PDF-Berichterstellung** für gutachterliche Zwecke
 
-## 🚀 Funktionen
+## [rocket] Funktionen
 
 ### Kern-Funktionalitäten
 
-- ✅ **RT60-Berechnung**: Präzise Nachhallzeiten-Berechnung für alle Standardfrequenzen
-- ✅ **DIN 18041-Bewertung**: Automatische Konformitätsprüfung für verschiedene Raumtypen
-- ✅ **Multi-Frequenz-Analyse**: Analyse von 125 Hz bis 8 kHz
-- ✅ **Material-Datenbank**: Umfassende Absorptionskoeffizienten-Datenbank
-- ✅ **Oberflächenmodellierung**: Detaillierte Raummodellierung mit verschiedenen Materialien
+- [x] **RT60-Berechnung**: Präzise Nachhallzeiten-Berechnung für alle Standardfrequenzen
+- [x] **DIN 18041-Bewertung**: Automatische Konformitätsprüfung für verschiedene Raumtypen
+- [x] **Multi-Frequenz-Analyse**: Analyse von 125 Hz bis 8 kHz
+- [x] **Material-Datenbank**: Umfassende Absorptionskoeffizienten-Datenbank
+- [x] **Oberflächenmodellierung**: Detaillierte Raummodellierung mit verschiedenen Materialien
 
 ### 48-Parameter Akustik-Framework
 
-- 📊 **8 Hauptkategorien**: Klangfarbe, Tonalität, Geometrie, Raum, Zeitverhalten, Dynamik, Artefakte
-- 🔬 **Wissenschaftlich validiert**: 75% der Parameter haben starke wissenschaftliche Grundlage
-- 📈 **Umfassende Bewertung**: Über einfache RT60-Messungen hinausgehende Analyse
+- [chart] **8 Hauptkategorien**: Klangfarbe, Tonalität, Geometrie, Raum, Zeitverhalten, Dynamik, Artefakte
+- [microscope] **Wissenschaftlich validiert**: 75% der Parameter haben starke wissenschaftliche Grundlage
+- [trending-up] **Umfassende Bewertung**: Über einfache RT60-Messungen hinausgehende Analyse
 
 ### Automatisierte Build-Prozesse
 
-- 🔧 **Automatische Fehlererkennung**: Identifizierung häufiger Swift-Compilation-Fehler
-- 🛠️ **Automatische Fehlerbehebung**: Behebung von Import-Fehlern und Syntax-Problemen
-- 🔄 **Retry-Mechanismus**: Automatische Wiederholung nach Fehlerbehebung
-- 📊 **Build-Monitoring**: Detaillierte Logging und Status-Berichte
+- [tool] **Automatische Fehlererkennung**: Identifizierung häufiger Swift-Compilation-Fehler
+- [tools] **Automatische Fehlerbehebung**: Behebung von Import-Fehlern und Syntax-Problemen
+- [refresh] **Retry-Mechanismus**: Automatische Wiederholung nach Fehlerbehebung
+- [chart] **Build-Monitoring**: Detaillierte Logging und Status-Berichte
 
 ### PDF-Berichterstellung
 
-- 📄 **Mehrseitige Berichte**: Deckblatt, Metadaten, RT60-Kurven, DIN-Ampellogik, Maßnahmen
-- 🎨 **Professionelles Layout**: Gutachterlicher Standard mit Corporate Design
-- 📊 **Visualisierungen**: Graphische Darstellung von Messergebnissen
-- 🔍 **Detailanalyse**: Umfassende Dokumentation aller Parameter
+- [document] **Mehrseitige Berichte**: Deckblatt, Metadaten, RT60-Kurven, DIN-Ampellogik, Maßnahmen
+- [art] **Professionelles Layout**: Gutachterlicher Standard mit Corporate Design
+- [chart] **Visualisierungen**: Graphische Darstellung von Messergebnissen
+- [search] **Detailanalyse**: Umfassende Dokumentation aller Parameter
 
-## 📦 Installation
+## [package] Installation
 
 ### Voraussetzungen
 
@@ -84,7 +84,7 @@ swift test
 swift build -c release
 ```
 
-## 🛠️ Verwendung
+## [tools] Verwendung
 
 ### Command-Line Interface
 
@@ -155,26 +155,26 @@ let reportData = ConsolidatedPDFExporter.ReportData(
 let pdfData = ConsolidatedPDFExporter.generateReport(data: reportData)
 ```
 
-## 📊 Architektur
+## [chart] Architektur
 
 ### Modul-Struktur
 
 ```
 AcoustiScanConsolidated/
-├── Sources/
-│   ├── AcoustiScanConsolidated/
-│   │   ├── AcousticFramework.swift     # 48-Parameter Framework
-│   │   ├── RT60Calculator.swift        # RT60-Berechnungen
-│   │   ├── ConsolidatedPDFExporter.swift # PDF-Export
-│   │   └── BuildAutomation.swift       # Build-Automation
-│   └── AcoustiScanTool/
-│       └── main.swift                  # CLI Interface
-├── Tests/
-│   └── AcoustiScanConsolidatedTests/
-│       └── AcoustiScanConsolidatedTests.swift
-├── Package.swift                       # Swift Package Manager
-├── build.sh                           # Automatisierte Build-Skripte
-└── README.md                          # Diese Datei
+|---- Sources/
+|   |---- AcoustiScanConsolidated/
+|   |   |---- AcousticFramework.swift     # 48-Parameter Framework
+|   |   |---- RT60Calculator.swift        # RT60-Berechnungen
+|   |   |---- ConsolidatedPDFExporter.swift # PDF-Export
+|   |   |__-- BuildAutomation.swift       # Build-Automation
+|   |__-- AcoustiScanTool/
+|       |__-- main.swift                  # CLI Interface
+|---- Tests/
+|   |__-- AcoustiScanConsolidatedTests/
+|       |__-- AcoustiScanConsolidatedTests.swift
+|---- Package.swift                       # Swift Package Manager
+|---- build.sh                           # Automatisierte Build-Skripte
+|__-- README.md                          # Diese Datei
 ```
 
 ### Kern-Komponenten
@@ -185,7 +185,7 @@ AcoustiScanConsolidated/
 4. **ConsolidatedPDFExporter**: Professionelle PDF-Berichterstellung
 5. **BuildAutomation**: Intelligente Build-Automatisierung mit Fehlerbehebung
 
-## 🧪 Tests
+## [test-tube] Tests
 
 Das Projekt enthält umfassende Test-Suites:
 
@@ -206,30 +206,30 @@ swift test --filter AcousticFrameworkTests
 - **Build Tests**: Automatisierte Build-Prozesse
 - **Cross-Platform Tests**: Kompatibilität verschiedener Plattformen
 
-## 🔧 Automatisierte Build-Features
+## [tool] Automatisierte Build-Features
 
 ### Fehlererkennung
 
-- ✅ Import-Fehler automatisch erkannt und behoben
-- ✅ Syntax-Fehler identifiziert
-- ✅ Type-Errors klassifiziert
-- ✅ Deprecated API-Warnungen
+- [x] Import-Fehler automatisch erkannt und behoben
+- [x] Syntax-Fehler identifiziert
+- [x] Type-Errors klassifiziert
+- [x] Deprecated API-Warnungen
 
 ### Auto-Fix Capabilities
 
-- 🔧 Automatisches Hinzufügen fehlender Import-Statements
-- 🔧 Grundlegende Syntax-Korrekturen
-- 🔧 Access-Control-Fixes
-- 🔧 Build-Retry mit exponential backoff
+- [tool] Automatisches Hinzufügen fehlender Import-Statements
+- [tool] Grundlegende Syntax-Korrekturen
+- [tool] Access-Control-Fixes
+- [tool] Build-Retry mit exponential backoff
 
 ### CI/CD Integration
 
-- 📊 Automatische Test-Ausführung
-- 📦 Release-Package-Erstellung
-- 📚 Dokumentations-Generierung
-- 🔍 Code-Quality-Checks
+- [chart] Automatische Test-Ausführung
+- [package] Release-Package-Erstellung
+- [books] Dokumentations-Generierung
+- [search] Code-Quality-Checks
 
-## 📈 Konsolidierte Features
+## [trending-up] Konsolidierte Features
 
 ### Aus Original-Implementierungen
 
@@ -240,12 +240,12 @@ swift test --filter AcousticFrameworkTests
 
 ### Neue Verbesserungen
 
-- 🚀 **Performance-Optimierung**: 3x schnellere RT60-Berechnungen
-- 🔧 **Automatisierte Builds**: Zero-Touch-Deployment
-- 📊 **Erweiterte Analytik**: Umfassende Akustik-Parameter
-- 📄 **Professionelle Reports**: Gutachterliche Qualität
+- [rocket] **Performance-Optimierung**: 3x schnellere RT60-Berechnungen
+- [tool] **Automatisierte Builds**: Zero-Touch-Deployment
+- [chart] **Erweiterte Analytik**: Umfassende Akustik-Parameter
+- [document] **Professionelle Reports**: Gutachterliche Qualität
 
-## 🎯 Anwendungsfälle
+## [target] Anwendungsfälle
 
 ### Akustik-Ingenieure
 
@@ -265,7 +265,7 @@ swift test --filter AcousticFrameworkTests
 - Wissenschaftliche Datenanalyse
 - Reproduzierbare Messungen
 
-## 📋 Roadmap
+## [clipboard] Roadmap
 
 ### Version 1.1 (Q2 2025)
 
@@ -285,7 +285,7 @@ swift test --filter AcousticFrameworkTests
 - [ ] Virtual Reality Integration
 - [ ] IoT-Sensor-Support
 
-## 🤝 Contributing
+## [handshake] Contributing
 
 Beiträge sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für Details.
 
@@ -306,18 +306,18 @@ git commit -m "feat: add new feature"
 git push origin feature-branch
 ```
 
-## 📄 Lizenz
+## [document] Lizenz
 
 Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE) für Details.
 
-## 🙏 Danksagungen
+## [prayer] Danksagungen
 
 - **MSH-Audio-Gruppe** für die Original-Implementierungen
 - **DIN 18041 Committee** für die Normungsarbeit
 - **Swift Community** für die ausgezeichneten Tools
 - **Akustik-Community** für wissenschaftliche Validierung
 
-## 📞 Support
+## [phone] Support
 
 - **Issues**: [GitHub Issues](https://github.com/repo/issues)
 - **Dokumentation**: [Wiki](https://github.com/repo/wiki)
@@ -325,4 +325,4 @@ Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE) für Details
 
 ---
 
-**AcoustiScan Consolidated Tool** - Professionelle Raumakustik-Analyse made in Swift 🎵
+**AcoustiScan Consolidated Tool** - Professionelle Raumakustik-Analyse made in Swift [music]

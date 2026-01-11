@@ -219,13 +219,13 @@ guard measurement.correlation >= 95.0 else {
 ## Quality Checkpoints
 
 Before completing any change:
-1. ✅ Code compiles without warnings
-2. ✅ All tests pass
-3. ✅ SwiftLint rules satisfied
-4. ✅ No force unwrapping in production paths
-5. ✅ RT60 calculations maintain accuracy
-6. ✅ Error handling is comprehensive
-7. ✅ Documentation is updated if needed
+1. [x] Code compiles without warnings
+2. [x] All tests pass
+3. [x] SwiftLint rules satisfied
+4. [x] No force unwrapping in production paths
+5. [x] RT60 calculations maintain accuracy
+6. [x] Error handling is comprehensive
+7. [x] Documentation is updated if needed
 
 ## Emergency Recovery
 

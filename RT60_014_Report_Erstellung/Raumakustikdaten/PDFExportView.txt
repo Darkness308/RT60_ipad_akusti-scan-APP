@@ -97,7 +97,7 @@ struct PDFExportView: View {
             recTitle.draw(at: CGPoint(x: 40, y: yOffset))
             yOffset += 20
             let recommendations = """
-            - 125-500 Hz: Glaswolle (α = 0.8-0.9), Deckenbaffeln
+            - 125-500 Hz: Glaswolle (alpha = 0.8-0.9), Deckenbaffeln
             - 1000-4000 Hz: Akustikschaum, Wandabsorber
             - Maßnahmen: 10 m² zusätzliche Absorberfläche
             """

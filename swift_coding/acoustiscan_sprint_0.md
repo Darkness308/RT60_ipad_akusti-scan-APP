@@ -3,59 +3,59 @@
 ## Repository-Struktur
 ```
 repo/
-├─ App/
-│  └─ AppEntry.swift
-├─ Modules/
-│  ├─ UI/TabRootView.swift
-│  ├─ Scanner/
-│  │   ├─ ARCoordinator.swift
-│  │   ├─ LiDARScanView.swift
-│  │   ├─ RoomScanView.swift
-│  │   ├─ SurfaceStore.swift
-│  │   └─ RoomDimensionView.swift
-│  ├─ Acoustics/RT60/
-│  │   ├─ RT60Calculation.swift
-│  │   ├─ RT60ChartView.swift
-│  │   ├─ RT60View.swift
-│  │   └─ ImpulseResponseAnalyzer.swift
-│  ├─ DIN18041/
-│  │   ├─ RoomType.swift
-│  │   ├─ DIN18041Database.swift
-│  │   ├─ DIN18041Target.swift
-│  │   ├─ RT60Evaluator.swift
-│  │   ├─ RT60Deviation.swift
-│  │   ├─ RT60Measurement.swift
-│  │   └─ RT60ClassificationView.swift
-│  ├─ Material/
-│  │   ├─ MaterialDatabase.swift
-│  │   ├─ MaterialManager.swift
-│  │   ├─ MaterialEditorView.swift
-│  │   └─ MaterialCSVImporter.swift
-│  ├─ Export/
-│  │   ├─ PDFExportView.swift
-│  │   ├─ ExportView.swift
-│  │   └─ ShareSheet.swift
-│  └─ AbsorberCalculation/
-│      ├─ AbsorberCalculator.swift
-│      ├─ AbsorberPlanner.swift
-│      ├─ AbsorberProduct.swift
-│      ├─ AbsorberRecommendation.swift
-│      └─ AbsorptionRequirement.swift
-├─ Docs/
-│  ├─ README.md
-│  ├─ Messleitfaden.md
-│  ├─ CHANGELOG.md
-│  ├─ backlog.md
-│  └─ risks.md
-└─ Tests/
-   ├─ Unit/
-   │  ├─ RT60Tests.swift
-   │  ├─ RT60EvaluatorTests.swift
-   │  ├─ RT60ChartViewTests.swift
-   │  ├─ AbsorberCalculatorTests.swift
-   │  ├─ MockMaterialDatabase.swift
-   │  └─ MockSurfaceStore.swift
-   └─ Integration/
+|--- App/
+|  |__- AppEntry.swift
+|--- Modules/
+|  |--- UI/TabRootView.swift
+|  |--- Scanner/
+|  |   |--- ARCoordinator.swift
+|  |   |--- LiDARScanView.swift
+|  |   |--- RoomScanView.swift
+|  |   |--- SurfaceStore.swift
+|  |   |__- RoomDimensionView.swift
+|  |--- Acoustics/RT60/
+|  |   |--- RT60Calculation.swift
+|  |   |--- RT60ChartView.swift
+|  |   |--- RT60View.swift
+|  |   |__- ImpulseResponseAnalyzer.swift
+|  |--- DIN18041/
+|  |   |--- RoomType.swift
+|  |   |--- DIN18041Database.swift
+|  |   |--- DIN18041Target.swift
+|  |   |--- RT60Evaluator.swift
+|  |   |--- RT60Deviation.swift
+|  |   |--- RT60Measurement.swift
+|  |   |__- RT60ClassificationView.swift
+|  |--- Material/
+|  |   |--- MaterialDatabase.swift
+|  |   |--- MaterialManager.swift
+|  |   |--- MaterialEditorView.swift
+|  |   |__- MaterialCSVImporter.swift
+|  |--- Export/
+|  |   |--- PDFExportView.swift
+|  |   |--- ExportView.swift
+|  |   |__- ShareSheet.swift
+|  |__- AbsorberCalculation/
+|      |--- AbsorberCalculator.swift
+|      |--- AbsorberPlanner.swift
+|      |--- AbsorberProduct.swift
+|      |--- AbsorberRecommendation.swift
+|      |__- AbsorptionRequirement.swift
+|--- Docs/
+|  |--- README.md
+|  |--- Messleitfaden.md
+|  |--- CHANGELOG.md
+|  |--- backlog.md
+|  |__- risks.md
+|__- Tests/
+   |--- Unit/
+   |  |--- RT60Tests.swift
+   |  |--- RT60EvaluatorTests.swift
+   |  |--- RT60ChartViewTests.swift
+   |  |--- AbsorberCalculatorTests.swift
+   |  |--- MockMaterialDatabase.swift
+   |  |__- MockSurfaceStore.swift
+   |__- Integration/
 ```
 
 ---
@@ -68,7 +68,7 @@ Beschreibt Ziel, Umfang und Aufbau der App **AcoustiScan** (iPad-App zur orienti
 ### Messleitfaden.md
 Enthält praxisnahe Anleitung für Nutzer:
 - Vorbereitungen (Mikrofon, Raum frei räumen, Störquellen reduzieren)
-- Ablauf: Scannen → Material zuordnen → Messung (T20/T30) → DIN-Vergleich → PDF-Export
+- Ablauf: Scannen -> Material zuordnen -> Messung (T20/T30) -> DIN-Vergleich -> PDF-Export
 - Kalibrierhinweise und Transparenz gemäß EU AI Act.
 
 ### CHANGELOG.md
@@ -129,4 +129,4 @@ Erweitert um CSV-Import/Export-Funktionen (Datei + String).
 
 ---
 
-📦 **Finale Artefakte Sprint 0-2** sind jetzt vollständig in Klartext (Markdown) und Swift-Code strukturiert und einsatzbereit.
+[package] **Finale Artefakte Sprint 0-2** sind jetzt vollständig in Klartext (Markdown) und Swift-Code strukturiert und einsatzbereit.

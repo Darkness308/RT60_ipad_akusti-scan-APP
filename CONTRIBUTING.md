@@ -95,41 +95,41 @@ In Xcode:
 
 ```
 RT60_ipad_akusti-scan-APP/
-│
-├── AcoustiScanApp/                 # iOS App (SwiftUI)
-│   ├── AcoustiScanApp.xcodeproj    # Xcode-Projekt
-│   └── AcoustiScanApp/
-│       ├── App/                    # App-Einstiegspunkt
-│       │   ├── AcoustiScanApp.swift    # @main App
-│       │   └── ContentView.swift       # Root View
-│       ├── Views/                  # UI-Komponenten
-│       │   ├── Scanner/           # LiDAR-Scanner Views
-│       │   ├── RT60/              # Messungs-Views
-│       │   ├── Material/          # Material-Editor
-│       │   ├── Room/              # Raumeingabe
-│       │   └── Export/            # PDF-Export
-│       └── Resources/
-│           ├── Info.plist         # App-Konfiguration
-│           └── Assets.xcassets/   # Icons & Farben
-│
-├── AcoustiScanConsolidated/        # Backend Swift Package
-│   ├── Package.swift              # Package-Definition
-│   ├── Sources/
-│   │   └── AcoustiScanConsolidated/
-│   │       ├── RT60Calculator.swift    # Sabine-Formel
-│   │       ├── RT60Evaluator.swift     # DIN 18041 Bewertung
-│   │       ├── MaterialDatabase.swift  # 500+ Materialien
-│   │       └── AcousticFramework.swift # 48 Akustik-Parameter
-│   └── Tests/                     # Unit Tests
-│
-├── Modules/Export/                 # Separates Export-Modul
-│   ├── Sources/ReportExport/      # PDF/XLSX-Export
-│   └── Tests/                     # Export-Tests
-│
-└── .github/workflows/             # CI/CD Pipelines
-    ├── build-test.yml             # Haupt-Build
-    ├── swift.yml                  # Swift Tests
-    └── self-healing.yml           # Auto-Fix
+|
+|---- AcoustiScanApp/                 # iOS App (SwiftUI)
+|   |---- AcoustiScanApp.xcodeproj    # Xcode-Projekt
+|   |__-- AcoustiScanApp/
+|       |---- App/                    # App-Einstiegspunkt
+|       |   |---- AcoustiScanApp.swift    # @main App
+|       |   |__-- ContentView.swift       # Root View
+|       |---- Views/                  # UI-Komponenten
+|       |   |---- Scanner/           # LiDAR-Scanner Views
+|       |   |---- RT60/              # Messungs-Views
+|       |   |---- Material/          # Material-Editor
+|       |   |---- Room/              # Raumeingabe
+|       |   |__-- Export/            # PDF-Export
+|       |__-- Resources/
+|           |---- Info.plist         # App-Konfiguration
+|           |__-- Assets.xcassets/   # Icons & Farben
+|
+|---- AcoustiScanConsolidated/        # Backend Swift Package
+|   |---- Package.swift              # Package-Definition
+|   |---- Sources/
+|   |   |__-- AcoustiScanConsolidated/
+|   |       |---- RT60Calculator.swift    # Sabine-Formel
+|   |       |---- RT60Evaluator.swift     # DIN 18041 Bewertung
+|   |       |---- MaterialDatabase.swift  # 500+ Materialien
+|   |       |__-- AcousticFramework.swift # 48 Akustik-Parameter
+|   |__-- Tests/                     # Unit Tests
+|
+|---- Modules/Export/                 # Separates Export-Modul
+|   |---- Sources/ReportExport/      # PDF/XLSX-Export
+|   |__-- Tests/                     # Export-Tests
+|
+|__-- .github/workflows/             # CI/CD Pipelines
+    |---- build-test.yml             # Haupt-Build
+    |---- swift.yml                  # Swift Tests
+    |__-- self-healing.yml           # Auto-Fix
 ```
 
 ### Architektur-Muster
@@ -137,24 +137,24 @@ RT60_ipad_akusti-scan-APP/
 Das Projekt verwendet **MVVM** (Model-View-ViewModel):
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                    View (SwiftUI)                   │
-│  RoomScanView, RT60View, MaterialEditorView, etc.   │
-└─────────────────────┬───────────────────────────────┘
-                      │ @StateObject / @ObservedObject
-┌─────────────────────▼───────────────────────────────┐
-│                    ViewModel                        │
-│  SurfaceStore, MaterialStore, RT60ViewModel         │
-│  - Geschäftslogik                                   │
-│  - @Published Properties                            │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────┐
-│                    Model                            │
-│  Surface, Material, RT60Measurement, RoomType       │
-│  - Reine Datenstrukturen                            │
-│  - Codable für Persistenz                           │
-└─────────────────────────────────────────────────────┘
+,---------------------------------------------------------.
+|                    View (SwiftUI)                   |
+|  RoomScanView, RT60View, MaterialEditorView, etc.   |
+|__----------------------+--------------------------------__/
+                      | @StateObject / @ObservedObject
+,-----------------------v---------------------------------.
+|                    ViewModel                        |
+|  SurfaceStore, MaterialStore, RT60ViewModel         |
+|  - Geschäftslogik                                   |
+|  - @Published Properties                            |
+|__----------------------+--------------------------------__/
+                      |
+,-----------------------v---------------------------------.
+|                    Model                            |
+|  Surface, Material, RT60Measurement, RoomType       |
+|  - Reine Datenstrukturen                            |
+|  - Codable für Persistenz                           |
+|__-----------------------------------------------------__/
 ```
 
 ---
@@ -363,8 +363,8 @@ swift test -v
 swift test --filter RT60CalculatorTests.testSabineFormula
 
 # In Xcode
-# ⌘U = Alle Tests
-# ⌘⌥U = Test an Cursor-Position
+# CmdU = Alle Tests
+# CmdOptU = Test an Cursor-Position
 ```
 
 ### UI Tests (in Xcode)

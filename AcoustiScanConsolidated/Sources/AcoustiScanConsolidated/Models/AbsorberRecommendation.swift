@@ -79,7 +79,7 @@ public struct AbsorberRecommendation: Codable, Equatable {
         self.priority = priority
     }
 
-    /// Cost per unit of absorption improvement (€/Sabine)
+    /// Cost per unit of absorption improvement (EUR/Sabine)
     public var costEffectiveness: Double {
         guard expectedAbsorption > 0 else { return Double.infinity }
         return totalCost / expectedAbsorption

@@ -143,9 +143,9 @@ final class PDFRobustnessTests: XCTestCase {
         print("=== END DEBUG OUTPUT ===")
 
         // Problem statement mentions these specific values should appear:
-        // Frequencies: 125, 1000, 4000 Hz ✓
+        // Frequencies: 125, 1000, 4000 Hz [x]
         // DIN values: 0.6, 0.5, 0.1 - now properly implemented as 0.6, 0.5, 0.48 from DIN 18041 standard
-        // Core tokens: metadata, device, version, etc. ✓
+        // Core tokens: metadata, device, version, etc. [x]
 
         // Check if problem statement's DIN values are present (this may fail)
         let problemStatementDINValues = ["0.6", "0.5", "0.1"]
@@ -157,9 +157,9 @@ final class PDFRobustnessTests: XCTestCase {
         }
 
         if !missingProblemDINs.isEmpty {
-            print("⚠️ Problem statement DIN values missing: \(missingProblemDINs)")
-            print("💡 Current implementation now uses proper DIN 18041 values: 0.6, 0.5, 0.48")
-            print("📝 Problem statement examples: 0.6, 0.5, 0.1")
+            print("[warning] Problem statement DIN values missing: \(missingProblemDINs)")
+            print("[idea] Current implementation now uses proper DIN 18041 values: 0.6, 0.5, 0.48")
+            print("[memo] Problem statement examples: 0.6, 0.5, 0.1")
             // Values now align with DIN 18041 standard
         }
 

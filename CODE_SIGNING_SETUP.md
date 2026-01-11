@@ -18,26 +18,26 @@ The following code signing settings have been configured in the project:
 ### 1. Project Configuration (`project.pbxproj`)
 
 **Both Debug and Release configurations:**
-- ✅ `CODE_SIGN_STYLE = Manual` - Manual code signing for full control
-- ✅ `CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements` - Points to entitlements file
-- ✅ `PRODUCT_BUNDLE_IDENTIFIER = com.acoustiscan.app` - App bundle identifier
-- ⚠️  `DEVELOPMENT_TEAM = ""` - **Needs to be set by you** (see below)
+- [x] `CODE_SIGN_STYLE = Manual` - Manual code signing for full control
+- [x] `CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements` - Points to entitlements file
+- [x] `PRODUCT_BUNDLE_IDENTIFIER = com.acoustiscan.app` - App bundle identifier
+- [warning]  `DEVELOPMENT_TEAM = ""` - **Needs to be set by you** (see below)
 
 ### 2. Entitlements File (`AcoustiScanApp/AcoustiScan.entitlements`)
 
 The entitlements file has been created and configured with:
-- ✅ Camera access (`com.apple.security.device.camera`)
-- ✅ Microphone access (`com.apple.security.device.audio-input`)
+- [x] Camera access (`com.apple.security.device.camera`)
+- [x] Microphone access (`com.apple.security.device.audio-input`)
 
 These entitlements are required for the app's LiDAR scanning and RT60 measurement features.
 
 ### 3. Info.plist (`AcoustiScanApp/Resources/Info.plist`)
 
 All required keys are already configured:
-- ✅ Bundle identifier: `com.acoustiscan.app`
-- ✅ Privacy descriptions for camera and microphone access
-- ✅ Required device capabilities (ARKit, LiDAR)
-- ✅ App display name and version information
+- [x] Bundle identifier: `com.acoustiscan.app`
+- [x] Privacy descriptions for camera and microphone access
+- [x] Required device capabilities (ARKit, LiDAR)
+- [x] App display name and version information
 
 ## What You Need to Do
 
@@ -186,20 +186,20 @@ Set up your CI environment with the following secrets:
 
 ```
 AcoustiScanApp/
-├── AcoustiScanApp.xcodeproj/
-│   └── project.pbxproj              # Contains CODE_SIGN_STYLE and DEVELOPMENT_TEAM settings
-├── AcoustiScanApp/
-│   ├── AcoustiScan.entitlements     # App entitlements (camera, microphone)
-│   └── Resources/
-│       └── Info.plist                # Bundle identifier and privacy descriptions
+|---- AcoustiScanApp.xcodeproj/
+|   |__-- project.pbxproj              # Contains CODE_SIGN_STYLE and DEVELOPMENT_TEAM settings
+|---- AcoustiScanApp/
+|   |---- AcoustiScan.entitlements     # App entitlements (camera, microphone)
+|   |__-- Resources/
+|       |__-- Info.plist                # Bundle identifier and privacy descriptions
 ```
 
 ## Summary
 
 The project is now configured for manual code signing and ready for development. To get started:
 
-1. ✅ Set your `DEVELOPMENT_TEAM` ID in project.pbxproj (or via Xcode)
-2. ✅ Create/download provisioning profiles from Apple Developer portal
-3. ✅ Build and run the app on your device or simulator
+1. [x] Set your `DEVELOPMENT_TEAM` ID in project.pbxproj (or via Xcode)
+2. [x] Create/download provisioning profiles from Apple Developer portal
+3. [x] Build and run the app on your device or simulator
 
 All other code signing configuration is complete and ready to use!

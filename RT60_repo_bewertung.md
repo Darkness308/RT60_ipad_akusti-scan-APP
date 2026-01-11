@@ -21,7 +21,7 @@ Das Repo ist modular aufgebaut:
 
 **Vergleich zu Top 20/Schlechtesten 20 GitHub-Repos:**
 - **Top 20:** Diese Repos sind meistens vorbildlich strukturiert, haben automatisierte Tests, CI/CD, vollständige Dokumentation, Community-Interaktion und sind einfach onboardbar.
-  → Dein Repo ist thematisch und strukturell sehr nahe dran, es fehlen ggf. noch Community-Features, Screenshots, ein Installationsvideo, und automatisierte Checks (z.B. GitHub Actions).
+  -> Dein Repo ist thematisch und strukturell sehr nahe dran, es fehlen ggf. noch Community-Features, Screenshots, ein Installationsvideo, und automatisierte Checks (z.B. GitHub Actions).
 - **Bottom 20:** Chaotisch, ohne README, keine Doku, kein Test, keine Struktur - dein Repo ist um Welten besser organisiert und dokumentiert als die schlechtesten 20.
 
 ## 3. Modularität, Flexibilität, Granularität

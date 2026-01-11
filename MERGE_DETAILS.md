@@ -1,4 +1,4 @@
-# Merge Details: main → copilot/fix-9fae47c8-9630-4ae1-90f1-4695b65c0227
+# Merge Details: main -> copilot/fix-9fae47c8-9630-4ae1-90f1-4695b65c0227
 
 ## Summary
 
@@ -97,12 +97,12 @@ The following files were also resolved to complete the merge:
 ## Verification
 
 ### Build Status
-✅ **AcoustiScanConsolidated**: Build successful
-✅ **Modules/Export**: Build successful
+[x] **AcoustiScanConsolidated**: Build successful
+[x] **Modules/Export**: Build successful
 
 ### Test Status
-✅ **AcoustiScanConsolidated Tests**: 60 tests passed, 0 failures
-✅ **Export Module Tests**: 14 tests passed, 1 skipped, 0 failures
+[x] **AcoustiScanConsolidated Tests**: 60 tests passed, 0 failures
+[x] **Export Module Tests**: 14 tests passed, 1 skipped, 0 failures
 
 ## New Files Added from Main
 
