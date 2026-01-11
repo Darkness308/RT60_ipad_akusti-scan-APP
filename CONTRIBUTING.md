@@ -329,7 +329,7 @@ final class RT60CalculatorTests: XCTestCase {
 
     func testSabineFormula() {
         // Given
-        let volume: Double = 100.0  // m³
+        let volume: Double = 100.0  // m3
         let absorptionArea: Double = 20.0  // m²
 
         // When

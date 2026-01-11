@@ -21,7 +21,7 @@ public struct PDFPageRenderer {
     /// - Parameters:
     ///   - pageRect: Page bounds
     ///   - roomName: Name of the room
-    ///   - volume: Room volume in m³
+    ///   - volume: Room volume in m3
     ///   - date: Report date
     public static func drawCoverPage(
         in pageRect: CGRect,
@@ -69,7 +69,7 @@ public struct PDFPageRenderer {
             withAttributes: infoAttrs
         )
         y += 35
-        "Volumen: \(String(format: "%.1f", volume)) m³".draw(
+        "Volumen: \(String(format: "%.1f", volume)) m3".draw(
             at: CGPoint(x: margin + 20, y: y),
             withAttributes: infoAttrs
         )
@@ -200,7 +200,7 @@ public struct PDFPageRenderer {
     /// - Parameters:
     ///   - pageRect: Page bounds
     ///   - surfaces: Room surfaces with materials
-    ///   - volume: Room volume in m³
+    ///   - volume: Room volume in m3
     public static func drawMaterialsPage(
         in pageRect: CGRect,
         surfaces: [(name: String, area: Double, material: String)],
@@ -229,7 +229,7 @@ public struct PDFPageRenderer {
             LocalizationKeys.roomVolume,
             comment: "Room volume label"
         )
-        let volumeText = "\(volumeLabel): \(String(format: "%.1f", volume)) m³"
+        let volumeText = "\(volumeLabel): \(String(format: "%.1f", volume)) m3"
         volumeText.draw(at: CGPoint(x: margin, y: y), withAttributes: infoAttrs)
         y += PDFStyleConfiguration.Spacing.xl
 

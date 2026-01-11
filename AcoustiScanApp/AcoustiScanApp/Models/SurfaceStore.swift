@@ -29,7 +29,7 @@ public class SurfaceStore: ObservableObject {
     /// Published array of detected surfaces
     @Published public var surfaces: [Surface] = []
 
-    /// Room volume in m³
+    /// Room volume in m3
     @Published public var roomVolume: Double = 0.0
 
     /// Room name

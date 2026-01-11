@@ -38,10 +38,10 @@ jobs:
           const fs = require('fs');
           const workflow_run = context.payload.workflow_run;
 
-          console.log(`🔍 Analyzing failed workflow: ${workflow_run.name}`);
-          console.log(`📋 Run ID: ${workflow_run.id}`);
-          console.log(`🌿 Branch: ${workflow_run.head_branch}`);
-          console.log(`📝 Commit: ${workflow_run.head_sha}`);
+          console.log(`[CHECK] Analyzing failed workflow: ${workflow_run.name}`);
+          console.log(`[LIST] Run ID: ${workflow_run.id}`);
+          console.log(`[BRANCH] Branch: ${workflow_run.head_branch}`);
+          console.log(`[NOTE] Commit: ${workflow_run.head_sha}`);
 
           // Get the jobs for this workflow run
           const jobs = await github.rest.actions.listJobsForWorkflowRun({
@@ -55,7 +55,7 @@ jobs:
 
           for (const job of jobs.data.jobs) {
             if (job.conclusion === 'failure') {
-              console.log(`❌ Failed job: ${job.name}`);
+              console.log(`[FAILED] Failed job: ${job.name}`);
 
               // Get failed steps
               for (const step of job.steps || []) {
@@ -65,7 +65,7 @@ jobs:
                     step: step.name,
                     number: step.number
                   });
-                  console.log(`  ❌ Failed step: ${step.name}`);
+                  console.log(`  [FAILED] Failed step: ${step.name}`);
                 }
               }
 
@@ -102,7 +102,7 @@ jobs:
                   errors: relevantLines.join('\n')
                 });
               } catch (e) {
-                console.log(`⚠️ Could not fetch logs for job ${job.name}: ${e.message}`);
+                console.log(`[WARNING]️ Could not fetch logs for job ${job.name}: ${e.message}`);
               }
             }
           }
@@ -144,7 +144,7 @@ jobs:
           const currentAttempts = attempts[sha] || 0;
           const newAttempts = currentAttempts + 1;
 
-          console.log(`🔄 Heal attempt ${newAttempts}/${process.env.MAX_HEAL_ATTEMPTS} for commit ${sha.substring(0, 7)}`);
+          console.log(`[RETRY] Heal attempt ${newAttempts}/${process.env.MAX_HEAL_ATTEMPTS} for commit ${sha.substring(0, 7)}`);
 
           core.setOutput('attempt_count', newAttempts);
           core.setOutput('max_reached', newAttempts > parseInt(process.env.MAX_HEAL_ATTEMPTS));
@@ -163,10 +163,10 @@ jobs:
           console.log('🤖 Triggering AI Agent for automatic fix...');
 
           // Create an issue that will trigger Copilot/Claude agent
-          const issueTitle = `🔧 [AUTO-FIX] CI Failure - Attempt ${{ steps.check_attempts.outputs.attempt_count }}/${{ env.MAX_HEAL_ATTEMPTS }}`;
+          const issueTitle = `[FIX] [AUTO-FIX] CI Failure - Attempt ${{ steps.check_attempts.outputs.attempt_count }}/${{ env.MAX_HEAL_ATTEMPTS }}`;
 
           const issueBody = `
-          ## 🚨 Automated CI Failure Detection
+          ## [ALERT] Automated CI Failure Detection
 
           **This issue was automatically created to trigger an AI coding agent fix.**
 
@@ -178,7 +178,7 @@ jobs:
           - **Heal Attempt:** ${{ steps.check_attempts.outputs.attempt_count }} of ${{ env.MAX_HEAL_ATTEMPTS }}
 
           ### Failed Steps
-          ${errorInfo.failed_steps.map(s => `- ❌ **${s.job}** → ${s.step}`).join('\n') || 'No specific steps identified'}
+          ${errorInfo.failed_steps.map(s => `- [FAILED] **${s.job}** → ${s.step}`).join('\n') || 'No specific steps identified'}
 
           ### Error Log Summary
           \`\`\`
@@ -199,9 +199,9 @@ jobs:
 
           ### Common Fix Categories
           - 🧪 **Test failures:** Fix failing assertions or test logic
-          - 🔧 **Build errors:** Fix compilation issues, missing imports
-          - 📝 **Lint errors:** Fix code style violations
-          - 📦 **Dependency issues:** Update or fix package dependencies
+          - [FIX] **Build errors:** Fix compilation issues, missing imports
+          - [NOTE] **Lint errors:** Fix code style violations
+          - [PACKAGE] **Dependency issues:** Update or fix package dependencies
 
           ### Files to Check
           - \`Modules/Export/Sources/ReportExport/PDFReportRenderer.swift\`
@@ -223,7 +223,7 @@ jobs:
               labels: ['auto-fix', 'ci-failure', 'bot']
             });
 
-            console.log(`✅ Created auto-fix issue #${issue.data.number}`);
+            console.log(`[DONE] Created auto-fix issue #${issue.data.number}`);
             core.setOutput('issue_number', issue.data.number);
 
             // Also trigger repository dispatch for any listening workflows
@@ -240,10 +240,10 @@ jobs:
               }
             });
 
-            console.log('📡 Dispatched ci-failure-autofix event');
+            console.log('[MONITOR] Dispatched ci-failure-autofix event');
 
           } catch (error) {
-            console.error(`❌ Failed to create issue: ${error.message}`);
+            console.error(`[FAILED] Failed to create issue: ${error.message}`);
             core.setFailed(error.message);
           }
 
@@ -285,12 +285,12 @@ jobs:
             errorInfo = { workflow: 'Unknown', branch: 'Unknown', sha: 'Unknown' };
           }
 
-          console.log('🚨 Maximum heal attempts reached - escalating to human intervention');
+          console.log('[ALERT] Maximum heal attempts reached - escalating to human intervention');
 
-          const issueTitle = `🚨 [HUMAN REQUIRED] CI Failure after ${process.env.MAX_HEAL_ATTEMPTS} auto-fix attempts`;
+          const issueTitle = `[ALERT] [HUMAN REQUIRED] CI Failure after ${process.env.MAX_HEAL_ATTEMPTS} auto-fix attempts`;
 
           const issueBody = `
-          ## ⚠️ Automatic Healing Failed
+          ## [WARNING]️ Automatic Healing Failed
 
           **The AI coding agents were unable to fix this CI failure after ${process.env.MAX_HEAL_ATTEMPTS} attempts.**
 
@@ -302,26 +302,26 @@ jobs:
 
           ### What Was Tried
           The following automatic fixes were attempted:
-          1. ✅ Error log analysis
-          2. ✅ AI agent issue creation
-          3. ✅ Repository dispatch events
-          4. ❌ All ${process.env.MAX_HEAL_ATTEMPTS} attempts failed to resolve the issue
+          1. [DONE] Error log analysis
+          2. [DONE] AI agent issue creation
+          3. [DONE] Repository dispatch events
+          4. [FAILED] All ${process.env.MAX_HEAL_ATTEMPTS} attempts failed to resolve the issue
 
           ### Required Actions
 
           **A human developer must now:**
 
-          1. 🔍 **Review** the [workflow logs](${errorInfo.html_url || '#'})
-          2. 🐛 **Debug** the issue locally:
+          1. [CHECK] **Review** the [workflow logs](${errorInfo.html_url || '#'})
+          2. [BUG] **Debug** the issue locally:
              \`\`\`bash
              cd AcoustiScanConsolidated
              swift build && swift test
              cd ../Modules/Export
              swift build && swift test
              \`\`\`
-          3. 🔧 **Fix** the underlying issue
-          4. ✅ **Verify** the fix passes CI
-          5. 🗑️ **Close** this issue once resolved
+          3. [FIX] **Fix** the underlying issue
+          4. [DONE] **Verify** the fix passes CI
+          5. [DELETE]️ **Close** this issue once resolved
 
           ### Error Summary
           \`\`\`
@@ -330,7 +330,7 @@ jobs:
 
           ---
 
-          **Priority:** 🔴 High
+          **Priority:** [ERROR] High
           **Auto-generated by:** Self-Healing CI Workflow
           `;
 
@@ -344,7 +344,7 @@ jobs:
               assignees: [] // Add maintainers here if needed
             });
 
-            console.log(`📝 Created human intervention issue #${issue.data.number}`);
+            console.log(`[NOTE] Created human intervention issue #${issue.data.number}`);
 
             // Close any open auto-fix issues for this SHA
             const openIssues = await github.rest.issues.listForRepo({
@@ -363,12 +363,12 @@ jobs:
                   state: 'closed',
                   body: issue.body + '\n\n---\n**Closed:** Escalated to human intervention (max attempts reached)'
                 });
-                console.log(`🔒 Closed auto-fix issue #${issue.number}`);
+                console.log(`[SECURE] Closed auto-fix issue #${issue.number}`);
               }
             }
 
           } catch (error) {
-            console.error(`❌ Failed to create escalation issue: ${error.message}`);
+            console.error(`[FAILED] Failed to create escalation issue: ${error.message}`);
           }
 
   # Job to close auto-fix issues when CI passes
@@ -384,8 +384,8 @@ jobs:
         script: |
           const workflow_run = context.payload.workflow_run;
 
-          console.log(`✅ Workflow "${workflow_run.name}" succeeded`);
-          console.log(`🔍 Checking for open auto-fix issues to close...`);
+          console.log(`[DONE] Workflow "${workflow_run.name}" succeeded`);
+          console.log(`[CHECK] Checking for open auto-fix issues to close...`);
 
           // Find and close any open auto-fix issues
           const openIssues = await github.rest.issues.listForRepo({
@@ -408,12 +408,12 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                body: `✅ **Auto-closed:** CI workflow "${workflow_run.name}" passed successfully!\n\n🔗 [View successful run](${workflow_run.html_url})`
+                body: `[DONE] **Auto-closed:** CI workflow "${workflow_run.name}" passed successfully!\n\n[LINK] [View successful run](${workflow_run.html_url})`
               });
 
-              console.log(`✅ Closed auto-fix issue #${issue.number}`);
+              console.log(`[DONE] Closed auto-fix issue #${issue.number}`);
             }
           }
 
           // Also reset heal attempts for this SHA
-          console.log(`🔄 CI passed - heal attempts will be reset on next failure`);
+          console.log(`[RETRY] CI passed - heal attempts will be reset on next failure`);
