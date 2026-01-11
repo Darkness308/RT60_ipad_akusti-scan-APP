@@ -27,9 +27,9 @@ All potentially problematic Unicode characters were checked across the entire co
 | U+2019 | RIGHT SINGLE QUOTATION MARK (') | ✅ Not found |
 | U+201C | LEFT DOUBLE QUOTATION MARK (") | ✅ Not found |
 | U+201D | RIGHT DOUBLE QUOTATION MARK (") | ✅ Not found |
-| U+2013 | EN DASH (–) | ✅ Not found |
-| U+2014 | EM DASH (—) | ✅ Not found |
-| U+2026 | HORIZONTAL ELLIPSIS (…) | ✅ Not found |
+| U+2013 | EN DASH | ✅ Not found |
+| U+2014 | EM DASH | ✅ Not found |
+| U+2026 | HORIZONTAL ELLIPSIS | ✅ Not found |
 | U+00A0 | NO-BREAK SPACE | ✅ Not found |
 | U+00AD | SOFT HYPHEN | ✅ Not found |
 | U+200B | ZERO WIDTH SPACE | ✅ Not found |
@@ -110,10 +110,10 @@ To verify this report, run:
 grep -r '[""]' --include="*.swift" --include="*.md" . --exclude="CHARACTER_CLEANUP_REPORT.md"
 
 # Check for ellipsis (excluding this report)
-grep -r '…' --include="*.swift" --include="*.md" . --exclude="CHARACTER_CLEANUP_REPORT.md"
+grep -r $'\u2026' --include="*.swift" --include="*.md" . --exclude="CHARACTER_CLEANUP_REPORT.md"
 
 # Check for em/en dashes (excluding this report)
-grep -r '[–—]' --include="*.swift" --include="*.md" . --exclude="CHARACTER_CLEANUP_REPORT.md"
+grep -r $'[\u2013\u2014]' --include="*.swift" --include="*.md" . --exclude="CHARACTER_CLEANUP_REPORT.md"
 ```
 
 All commands should return no results (empty output).
