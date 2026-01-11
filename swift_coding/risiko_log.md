@@ -14,4 +14,3 @@ Einschätzung (hoch/mittel/niedrig) und ggf. eine Gegenmaßnahme.
 | **Fehlerhafte Materialdaten** - ungenaue Absorptionswerte verfälschen Ergebnisse. | mittel | Referenz‑CSV pflegen; Importvalidierung |
 | **UX‑Risiken** - Nutzer versteht Wizard nicht, Barrierefreiheit fehlt. | mittel | Iteratives UX‑Testing; klare Tooltips |
 | **Geräteabhängigkeit** - RoomPlan läuft nur auf LiDAR‑fähigen iPads. | mittel | Gerätekompatibilität dokumentieren; Fallback anbieten |
-
