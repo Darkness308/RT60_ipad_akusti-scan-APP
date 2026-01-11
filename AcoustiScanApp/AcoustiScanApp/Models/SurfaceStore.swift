@@ -14,7 +14,7 @@ public struct Surface: Identifiable, Codable {
     public var name: String
     public var area: Double  // in m²
     public var material: AcousticMaterial?
-    
+
     public init(id: UUID = UUID(), name: String, area: Double, material: AcousticMaterial? = nil) {
         self.id = id
         self.name = name
@@ -25,34 +25,34 @@ public struct Surface: Identifiable, Codable {
 
 /// Manager for room surfaces detected from scanning
 public class SurfaceStore: ObservableObject {
-    
+
     /// Published array of detected surfaces
     @Published public var surfaces: [Surface] = []
-    
+
     /// Room volume in m³
     @Published public var roomVolume: Double = 0.0
-    
+
     /// Room name
     @Published public var roomName: String = NSLocalizedString(
         LocalizationKeys.unnamedRoom,
         comment: "Default room name"
     )
-    
+
     /// Room dimensions (optional)
     @Published public var roomDimensions: (width: Double, height: Double, depth: Double)?
-    
+
     /// Initialize empty store
     public init() {
         loadSurfaces()
     }
-    
+
     /// Add a new surface
     /// - Parameter surface: Surface to add
     public func add(_ surface: Surface) {
         surfaces.append(surface)
         saveSurfaces()
     }
-    
+
     /// Update an existing surface
     /// - Parameters:
     ///   - id: Surface ID
@@ -63,14 +63,14 @@ public class SurfaceStore: ObservableObject {
             saveSurfaces()
         }
     }
-    
+
     /// Remove surfaces at indices
     /// - Parameter offsets: Index set of surfaces to remove
     public func remove(at offsets: IndexSet) {
         surfaces.remove(atOffsets: offsets)
         saveSurfaces()
     }
-    
+
     /// Clear all surfaces
     public func clearAll() {
         surfaces.removeAll()
@@ -79,12 +79,12 @@ public class SurfaceStore: ObservableObject {
         roomDimensions = nil
         saveSurfaces()
     }
-    
+
     /// Total surface area
     public var totalArea: Double {
         return surfaces.reduce(0) { $0 + $1.area }
     }
-    
+
     /// Calculate total absorption for a given frequency
     /// - Parameter frequency: Frequency in Hz
     /// - Returns: Total absorption in m² Sabine
@@ -97,7 +97,7 @@ public class SurfaceStore: ObservableObject {
             return total + (surface.area * coefficient)
         }
     }
-    
+
     /// Calculate RT60 using Sabine formula for a specific frequency
     /// - Parameter frequency: Frequency in Hz
     /// - Returns: RT60 value in seconds, or nil if volume is zero
@@ -105,11 +105,11 @@ public class SurfaceStore: ObservableObject {
         guard roomVolume > 0 else { return nil }
         let absorption = totalAbsorption(at: frequency)
         guard absorption > 0 else { return nil }
-        
+
         // Sabine formula: RT60 = 0.161 * V / A
         return 0.161 * roomVolume / absorption
     }
-    
+
     /// Calculate RT60 for all standard frequencies
     /// - Returns: Dictionary of frequency to RT60 value
     public func calculateRT60Spectrum() -> [Int: Double] {
@@ -121,19 +121,19 @@ public class SurfaceStore: ObservableObject {
         }
         return spectrum
     }
-    
+
     /// Check if all surfaces have materials assigned
     public var allSurfacesHaveMaterials: Bool {
         return !surfaces.isEmpty && surfaces.allSatisfy { $0.material != nil }
     }
-    
+
     /// Progress of material assignment (0.0 to 1.0)
     public var materialAssignmentProgress: Double {
         guard !surfaces.isEmpty else { return 0.0 }
         let assignedCount = surfaces.filter { $0.material != nil }.count
         return Double(assignedCount) / Double(surfaces.count)
     }
-    
+
     // MARK: - Persistence
 
     private func saveSurfaces() {
@@ -175,18 +175,18 @@ public class SurfaceStore: ObservableObject {
             )
         }
     }
-    
+
     /// Helper struct for encoding/decoding
     private struct SurfaceStoreData: Codable {
         let surfaces: [Surface]
         let roomVolume: Double
         let roomName: String
         let roomDimensions: (width: Double, height: Double, depth: Double)?
-        
+
         enum CodingKeys: String, CodingKey {
             case surfaces, roomVolume, roomName, dimensionWidth, dimensionHeight, dimensionDepth
         }
-        
+
         init(
             surfaces: [Surface],
             roomVolume: Double,
@@ -198,7 +198,7 @@ public class SurfaceStore: ObservableObject {
             self.roomName = roomName
             self.roomDimensions = roomDimensions
         }
-        
+
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             surfaces = try container.decode([Surface].self, forKey: .surfaces)
@@ -221,13 +221,13 @@ public class SurfaceStore: ObservableObject {
                 roomDimensions = nil
             }
         }
-        
+
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(surfaces, forKey: .surfaces)
             try container.encode(roomVolume, forKey: .roomVolume)
             try container.encode(roomName, forKey: .roomName)
-            
+
             if let dims = roomDimensions {
                 try container.encode(dims.width, forKey: .dimensionWidth)
                 try container.encode(dims.height, forKey: .dimensionHeight)

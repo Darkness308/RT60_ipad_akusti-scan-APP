@@ -33,7 +33,7 @@ The analysis identified several critical areas requiring attention:
 class SafeEventBus: EventBus {
     private var eventLog: [EventLogEntry] = []
     private let errorHandler: ErrorHandler
-    
+
     func emit(event: String, data: Any?) {
         // Log event with timestamp
         // Deliver with timeout (5 seconds)

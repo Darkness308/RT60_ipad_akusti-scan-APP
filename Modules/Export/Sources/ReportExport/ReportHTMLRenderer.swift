@@ -11,7 +11,7 @@ public struct ReportModel {
     public let validity: [String: String]
     public let recommendations: [String]
     public let audit: [String: String]
-    
+
     public init(
         metadata: [String: String],
         rt60_bands: [[String: Double?]],
@@ -46,7 +46,7 @@ public final class ReportHTMLRenderer {
     private func buildHTML(_ m: ReportModel) -> String {
         // Required frequencies that should always appear (using representative frequencies as per DIN 18041)
         let requiredFrequencies = [125, 1000, 4000]
-        
+
         let head = """
         <!doctype html>
         <html lang="de">
@@ -160,12 +160,12 @@ public final class ReportHTMLRenderer {
         ]
 
         var dinRows: [String] = []
-        
+
         // Add representative DIN 18041 standard values first
         for (freq, targetRT60, tolerance) in representativeDINValues {
             dinRows.append("<tr><td>\(freq)</td><td>\(String(format: "%.2f", targetRT60))</td><td>\(String(format: "%.2f", tolerance))</td></tr>")
         }
-        
+
         // Add model DIN targets that aren't already covered
         for row in m.din_targets {
             if let freq = row["freq_hz"], let actualFreq = freq {

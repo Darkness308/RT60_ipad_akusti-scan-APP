@@ -40,7 +40,7 @@ struct PDFExportView: View {
         print("🚀 Using AcoustiScan Consolidated Tool for PDF generation")
         print("📊 Integrating 48-parameter framework results")
         print("✅ Professional gutachterliche report format applied")
-        
+
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan Consolidated Tool",
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
@@ -71,7 +71,7 @@ struct PDFExportView: View {
             // DIN 18041-Konformitätsbewertung
             ctx.beginPage()
             drawDINResults(pageRect: pageRect)
-            
+
             // 48-Parameter Framework Ergebnisse
             ctx.beginPage()
             drawFrameworkResults(pageRect: pageRect)
@@ -98,7 +98,7 @@ struct PDFExportView: View {
             .font: UIFont.boldSystemFont(ofSize: 24)
         ]
         title.draw(at: CGPoint(x: 72, y: 72), withAttributes: attrs)
-        
+
         // Executive Summary Box
         let summaryText = """
         Executive Summary:
@@ -107,7 +107,7 @@ struct PDFExportView: View {
         - Professionelle Bewertung
         - Maßnahmenempfehlungen
         """
-        
+
         let summaryAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
         ]
@@ -118,7 +118,7 @@ struct PDFExportView: View {
             let logoRect = CGRect(x: pageRect.width - 172, y: 72, width: 100, height: 100)
             logo.draw(in: logoRect)
         }
-        
+
         // Quality assurance note
         let qaNote = "Erstellt mit AcoustiScan Consolidated Tool"
         let qaAttrs: [NSAttributedString.Key: Any] = [
@@ -168,11 +168,11 @@ struct PDFExportView: View {
             .font: UIFont.boldSystemFont(ofSize: 18)
         ]
         title.draw(at: CGPoint(x: 72, y: 72), withAttributes: attrs)
-        
+
         let frameworkText = """
         Erweiterte akustische Bewertung basierend auf dem validierten
         48-Parameter-Framework:
-        
+
         - Klangfarbe: Hell-Dunkel-Balance, Schärfe
         - Tonalität: Tonhaltigkeit, Dopplereffekt
         - Geometrie: Räumliche Wahrnehmung
@@ -180,10 +180,10 @@ struct PDFExportView: View {
         - Zeitverhalten: Echos, Knackigkeit
         - Dynamik: Lautheit, Kompression
         - Artefakte: Störgeräusche
-        
+
         Wissenschaftlich validiert: 75% starke Evidenz
         """
-        
+
         let textAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 12)
         ]
@@ -193,23 +193,23 @@ struct PDFExportView: View {
     private func drawRecommendations(pageRect: CGRect) {
         let text = """
         Empfohlene Maßnahmen (AcoustiScan Consolidated Tool):
-        
+
         1. Absorberfläche vergrößern:
            - Deckenabsorber um 15% erweitern
            - Wandabsorber in kritischen Bereichen
-        
+
         2. Materialien optimieren:
            - Höhere Absorptionsgrade einsetzen
            - Frequenzselektive Absorber verwenden
-        
+
         3. Nachmessung:
            - Nach 3 Monaten Kontrollmessung
            - Validierung der Maßnahmen
-        
+
         4. Qualitätssicherung:
            - DIN 18041-konforme Messung
            - 48-Parameter Framework-Bewertung
-        
+
         Gutachterliche Bestätigung:
         Diese Analyse entspricht wissenschaftlichen Standards.
         """
