@@ -1,7 +1,7 @@
 # Character Cleanup Verification Report
 
 ## Task Reference
-**Pull Request:** #117  
+**Pull Request:** #117
 **Task:** Identifiziere und entferne alle störenden zeichen in jeder datei (Identify and remove all disturbing characters in every file)
 
 ## Status: ✅ ALREADY COMPLETED
