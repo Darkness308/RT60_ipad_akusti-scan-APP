@@ -12,4 +12,3 @@ kommenden Sprints. Die EKS-Priorisierung (1 = höchste Priorität) orientiert si
 | US-5 | Als User möchte ich einen PDF-Report mit Kurven, Ampel und Maßnahmenblock exportieren. | S3 | 2 | offen |
 | US-6 | Als User möchte ich Materialdaten via CSV/XLSX importieren und exportieren. | S2 | 4 | erledigt (CSV), XLSX offen |
 | US-7 | Als User möchte ich einen JSON-Audit-Trail erzeugen können, damit die Messung nachvollziehbar bleibt. | S4 | 4 | offen |
-

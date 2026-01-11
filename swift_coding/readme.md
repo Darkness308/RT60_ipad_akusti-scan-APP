@@ -58,4 +58,3 @@ Die App dient ausschließlich der **orientierenden Messung**. Sie ersetzt keine 
 ## Compliance
 - EU AI Act Transparenz: Alle Berechnungen und Annahmen dokumentiert
 - Keine Verarbeitung sensibler personenbezogener Daten
-

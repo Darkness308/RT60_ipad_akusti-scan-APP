@@ -57,4 +57,3 @@ Erstellt mit *AcoustiScan* (MVP)
 ### Hinweis (Scope)
 Dieser Report ist eine **orientierende Messung** nach DIN 18041.
 Er ersetzt **keine Abnahmeprüfung** nach DIN EN ISO 3382.
-
