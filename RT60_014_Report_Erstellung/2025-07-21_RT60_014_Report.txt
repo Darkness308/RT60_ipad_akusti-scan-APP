@@ -1,7 +1,6 @@
 XL2 RT60 Reporting:		MyProject\2025-07-21_RT60_014_Report.txt
 -------------------
 
-
 # Hardware Configuration
 	Device Info:    	XL2, SNo. A2A-08559-E0, FW4.94
 	Mic Sensitivity:	31.0 mV/Pa
@@ -12,7 +11,6 @@ XL2 RT60 Reporting:		MyProject\2025-07-21_RT60_014_Report.txt
 	Profile:        	Full mode
 	Resolution:     	1/1 Octave
 	Range:          	40 - 140 dB
-
 
 # Time
 	Start:          	2025-07-21, 15:09:10
@@ -31,7 +29,6 @@ XL2 RT60 Reporting:		MyProject\2025-07-21_RT60_014_Report.txt
 	4000    	1.77     	1.51
 	8000    	0.00     	-.--
 
-
 # RT60 Cycle Results
 
 	Band [Hz]:	63      	        	125     	        	250     	        	500     	        	1000    	        	2000    	        	4000    	        	8000
@@ -43,8 +40,6 @@ XL2 RT60 Reporting:		MyProject\2025-07-21_RT60_014_Report.txt
 	02        	-.--    	-.--    	3.33    	99.56   	3.00    	99.67   	3.07    	99.96   	2.60    	99.89   	2.65    	99.96   	2.40    	99.96   	-.--    	-.--
 	03        	-.--    	-.--    	2.97    	99.87   	3.16    	99.91   	3.06    	99.90   	2.73    	99.89   	2.65    	99.97   	2.35    	99.91   	-.--    	-.--
 	04        	-.--    	-.--    	3.12    	99.63   	2.95    	99.81   	3.33    	99.95   	2.69    	99.95   	2.64    	99.96   	2.32    	99.92   	-.--    	-.--
-
-
 
 #CheckSum
 	8AA465F794F7FF3B731E76896D588BBF
