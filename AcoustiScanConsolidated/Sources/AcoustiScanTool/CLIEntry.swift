@@ -187,7 +187,7 @@ struct AcoustiScanTool {
             print("\n📂 \(category) (\(parameters.count) parameters)")
 
             for parameter in parameters.prefix(3) { // Show first 3 of each category
-                print("  • \(parameter.name)")
+                print("  - \(parameter.name)")
                 print("    \(parameter.definition)")
                 print("    Scale: \(parameter.scaleLabel.joined(separator: " → "))")
             }
@@ -226,12 +226,12 @@ struct AcoustiScanTool {
         print("📊 Comprehensive PDF reporting implemented")
 
         print("\n📋 Consolidation Summary:")
-        print("  • RT60 calculation engine: ✅ Consolidated")
-        print("  • PDF export functionality: ✅ Enhanced")
-        print("  • DIN 18041 compliance: ✅ Integrated")
-        print("  • Build automation: ✅ Implemented")
-        print("  • Error detection: ✅ Automated")
-        print("  • 48-parameter framework: ✅ Integrated")
-        print("  • Professional reporting: ✅ Complete")
+        print("  - RT60 calculation engine: ✅ Consolidated")
+        print("  - PDF export functionality: ✅ Enhanced")
+        print("  - DIN 18041 compliance: ✅ Integrated")
+        print("  - Build automation: ✅ Implemented")
+        print("  - Error detection: ✅ Automated")
+        print("  - 48-parameter framework: ✅ Integrated")
+        print("  - Professional reporting: ✅ Complete")
     }
 }
