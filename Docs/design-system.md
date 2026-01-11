@@ -16,7 +16,7 @@ All interface elements must meet **WCAG 2.1 Level AA** requirements:
 - Minimum contrast ratio: **4.5:1**
 - Recommended contrast ratio: **7:1** (AAA)
 
-**Large Text (≥ 18pt or ≥ 14pt bold)**:
+**Large Text (>= 18pt or >= 14pt bold)**:
 - Minimum contrast ratio: **3:1**
 - Recommended contrast ratio: **4.5:1** (AAA)
 
@@ -182,18 +182,18 @@ struct Colors {
 ### Color Usage Guidelines
 
 **Do's**:
-✅ Use color + text/icon to convey meaning
-✅ Ensure sufficient contrast for all text
-✅ Test in both light and dark modes
-✅ Use semantic color names
-✅ Support system color preferences
+[x] Use color + text/icon to convey meaning
+[x] Ensure sufficient contrast for all text
+[x] Test in both light and dark modes
+[x] Use semantic color names
+[x] Support system color preferences
 
 **Don'ts**:
-❌ Use color alone to convey information
-❌ Use text gradients on colored backgrounds
-❌ Mix warm and cool colors excessively
-❌ Use pure black (#000000) on pure white (#FFFFFF)
-❌ Override system colors unnecessarily
+[x] Use color alone to convey information
+[x] Use text gradients on colored backgrounds
+[x] Mix warm and cool colors excessively
+[x] Use pure black (#000000) on pure white (#FFFFFF)
+[x] Override system colors unnecessarily
 
 ## Typography
 
@@ -234,18 +234,18 @@ Text("RT60 Measurement")
 ### Typography Guidelines
 
 **Do's**:
-✅ Use system fonts (SF Pro)
-✅ Support Dynamic Type
-✅ Maintain clear hierarchy
-✅ Test with large text sizes
-✅ Use appropriate line heights
+[x] Use system fonts (SF Pro)
+[x] Support Dynamic Type
+[x] Maintain clear hierarchy
+[x] Test with large text sizes
+[x] Use appropriate line heights
 
 **Don'ts**:
-❌ Use custom fonts without accessibility testing
-❌ Use font sizes smaller than 11 pt
-❌ Mix too many font weights
-❌ Disable Dynamic Type
-❌ Use all caps for long text
+[x] Use custom fonts without accessibility testing
+[x] Use font sizes smaller than 11 pt
+[x] Mix too many font weights
+[x] Disable Dynamic Type
+[x] Use all caps for long text
 
 ## Spacing System
 
@@ -528,15 +528,15 @@ Use SF Symbols for consistency:
 
 | Icon | Name | Usage |
 |------|------|-------|
-| 📷 | `camera.fill` | Start scan |
-| 🎙️ | `mic.fill` | Start measurement |
-| 📊 | `chart.bar.fill` | View results |
-| 📄 | `doc.fill` | View report |
-| ⚙️ | `gear` | Settings |
-| ℹ️ | `info.circle` | Help/info |
-| ✓ | `checkmark.circle.fill` | Success |
-| ⚠️ | `exclamationmark.triangle.fill` | Warning |
-| ✕ | `xmark.circle.fill` | Error |
+| [camera] | `camera.fill` | Start scan |
+| [microphone] | `mic.fill` | Start measurement |
+| [chart] | `chart.bar.fill` | View results |
+| [document] | `doc.fill` | View report |
+| [settings] | `gear` | Settings |
+| [info] | `info.circle` | Help/info |
+| [x] | `checkmark.circle.fill` | Success |
+| [warning] | `exclamationmark.triangle.fill` | Warning |
+| x | `xmark.circle.fill` | Error |
 
 **Icon Sizes**:
 - Small: 16x16 pt
@@ -599,16 +599,16 @@ Test all screens in both modes:
 ### Guidelines
 
 **Do's**:
-✅ Use semantic system colors
-✅ Test contrast in both modes
-✅ Adjust shadows for dark mode
-✅ Maintain visual hierarchy
+[x] Use semantic system colors
+[x] Test contrast in both modes
+[x] Adjust shadows for dark mode
+[x] Maintain visual hierarchy
 
 **Don'ts**:
-❌ Hardcode colors
-❌ Assume light mode only
-❌ Forget to test icons
-❌ Use pure black/white
+[x] Hardcode colors
+[x] Assume light mode only
+[x] Forget to test icons
+[x] Use pure black/white
 
 ## Motion and Animation
 
@@ -655,66 +655,66 @@ ProgressView()
 #### Layout
 
 **Do**:
-✅ Use Auto Layout / SwiftUI layout system
-✅ Support all iPad orientations
-✅ Respect safe areas
-✅ Test on different iPad sizes
-✅ Use standard margins and spacing
+[x] Use Auto Layout / SwiftUI layout system
+[x] Support all iPad orientations
+[x] Respect safe areas
+[x] Test on different iPad sizes
+[x] Use standard margins and spacing
 
 **Don't**:
-❌ Hardcode positions
-❌ Assume specific screen size
-❌ Overlap safe area content
-❌ Use pixel values (use points)
-❌ Create cramped layouts
+[x] Hardcode positions
+[x] Assume specific screen size
+[x] Overlap safe area content
+[x] Use pixel values (use points)
+[x] Create cramped layouts
 
 #### Accessibility
 
 **Do**:
-✅ Test with VoiceOver
-✅ Provide text alternatives
-✅ Use sufficient contrast
-✅ Support Dynamic Type
-✅ Test with assistive technologies
+[x] Test with VoiceOver
+[x] Provide text alternatives
+[x] Use sufficient contrast
+[x] Support Dynamic Type
+[x] Test with assistive technologies
 
 **Don't**:
-❌ Use color alone to convey info
-❌ Create keyboard traps
-❌ Forget focus indicators
-❌ Use inaccessible controls
-❌ Disable accessibility features
+[x] Use color alone to convey info
+[x] Create keyboard traps
+[x] Forget focus indicators
+[x] Use inaccessible controls
+[x] Disable accessibility features
 
 #### Navigation
 
 **Do**:
-✅ Maintain clear hierarchy
-✅ Provide back navigation
-✅ Use standard navigation patterns
-✅ Show current location
-✅ Keep navigation consistent
+[x] Maintain clear hierarchy
+[x] Provide back navigation
+[x] Use standard navigation patterns
+[x] Show current location
+[x] Keep navigation consistent
 
 **Don't**:
-❌ Use icon-only navigation without labels
-❌ Create dead ends
-❌ Hide navigation unpredictably
-❌ Use unclear icons
-❌ Change navigation patterns
+[x] Use icon-only navigation without labels
+[x] Create dead ends
+[x] Hide navigation unpredictably
+[x] Use unclear icons
+[x] Change navigation patterns
 
 #### Forms
 
 **Do**:
-✅ Label all fields clearly
-✅ Show validation errors
-✅ Provide helpful hints
-✅ Use appropriate keyboards
-✅ Save progress automatically
+[x] Label all fields clearly
+[x] Show validation errors
+[x] Provide helpful hints
+[x] Use appropriate keyboards
+[x] Save progress automatically
 
 **Don't**:
-❌ Use placeholder as label
-❌ Hide validation rules
-❌ Use cryptic error messages
-❌ Require unnecessary fields
-❌ Lose user data on errors
+[x] Use placeholder as label
+[x] Hide validation rules
+[x] Use cryptic error messages
+[x] Require unnecessary fields
+[x] Lose user data on errors
 
 ## Technical Resources
 

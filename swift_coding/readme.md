@@ -9,13 +9,13 @@ anschließend in einem PDF-Bericht exportiert werden.
 
 ## Archive-Status
 
-📊 **Siehe [ZIP_ANALYSIS_REPORT.md](../ZIP_ANALYSIS_REPORT.md)** für detaillierte Analyse der 5 ZIP-Archive in diesem Ordner.
+[chart] **Siehe [ZIP_ANALYSIS_REPORT.md](../ZIP_ANALYSIS_REPORT.md)** für detaillierte Analyse der 5 ZIP-Archive in diesem Ordner.
 
 **Zusammenfassung:**
-- ✅ **4 wertvolle Archive** + 1 Duplikat (entfernbar)
-- ✅ **150 Swift-Dateien** dokumentieren Entwicklungshistorie
-- ✅ **Ergänzen das Hauptsystem** (machen es nicht komplizierter)
-- ✅ **Backup + Test-Ressourcen** für das konsolidierte System
+- [x] **4 wertvolle Archive** + 1 Duplikat (entfernbar)
+- [x] **150 Swift-Dateien** dokumentieren Entwicklungshistorie
+- [x] **Ergänzen das Hauptsystem** (machen es nicht komplizierter)
+- [x] **Backup + Test-Ressourcen** für das konsolidierte System
 
 ---
 

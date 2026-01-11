@@ -67,10 +67,10 @@ swift test
 ```
 
 Test results:
-- ✅ Core tokens present in both outputs
-- ✅ Frequency labels match between PDF and HTML
-- ✅ DIN target values consistent
-- ✅ Missing values shown as "-" in both formats
+- [x] Core tokens present in both outputs
+- [x] Frequency labels match between PDF and HTML
+- [x] DIN target values consistent
+- [x] Missing values shown as "-" in both formats
 
 ## Integration with Existing Code
 
@@ -115,7 +115,7 @@ func convertToReportModel(_ reportData: ReportData) -> ReportModel {
 
 ### Contract Tests
 - Verify content equivalence between PDF and HTML
-- Test missing value handling (nil → "-")
+- Test missing value handling (nil -> "-")
 - Frequency and target value validation
 - Token-based content comparison (case-insensitive)
 

@@ -50,7 +50,7 @@ public struct LabeledSurface: Identifiable, Codable, Equatable {
         self.absorptionCoefficient = absorptionCoefficient
     }
 
-    /// Calculate absorption area (area × absorption coefficient)
+    /// Calculate absorption area (area x absorption coefficient)
     public var absorptionArea: Double {
         return area * absorptionCoefficient
     }

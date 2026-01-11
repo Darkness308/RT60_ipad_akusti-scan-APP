@@ -84,14 +84,14 @@ final class DIN18041ModuleTests: XCTestCase {
         XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.7 && $0.targetRT60 < 1.2 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.15 })
 
-        // Low frequencies (≤250 Hz) should have higher RT60 for warmth
+        // Low frequencies (<=250 Hz) should have higher RT60 for warmth
         let lowFreqTargets = targets.filter { $0.frequency <= 250 }
         let midFreqTargets = targets.filter { $0.frequency > 250 && $0.frequency < 4000 }
         XCTAssertTrue(lowFreqTargets.allSatisfy { low in
             midFreqTargets.allSatisfy { mid in low.targetRT60 > mid.targetRT60 }
         })
 
-        // High frequencies (≥4000 Hz) should have lower RT60 for clarity
+        // High frequencies (>=4000 Hz) should have lower RT60 for clarity
         let highFreqTargets = targets.filter { $0.frequency >= 4000 }
         XCTAssertTrue(highFreqTargets.allSatisfy { high in
             midFreqTargets.allSatisfy { mid in high.targetRT60 < mid.targetRT60 }
@@ -116,7 +116,7 @@ final class DIN18041ModuleTests: XCTestCase {
         let midFreqTargets = targets.filter { $0.frequency > 125 && $0.frequency < 4000 }
         XCTAssertTrue(midFreqTargets.allSatisfy { mid in lowFreqTarget.targetRT60 > mid.targetRT60 })
 
-        // High frequencies (≥4000 Hz) should have controlled brilliance
+        // High frequencies (>=4000 Hz) should have controlled brilliance
         let highFreqTargets = targets.filter { $0.frequency >= 4000 }
         XCTAssertTrue(highFreqTargets.allSatisfy { high in
             midFreqTargets.allSatisfy { mid in high.targetRT60 < mid.targetRT60 }

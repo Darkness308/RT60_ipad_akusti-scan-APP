@@ -7,9 +7,9 @@
 //  Produktionsreifer PDF-Export: erzeugt mehrseitige Reports mit
 //  Deckblatt, Metadaten, RT60-Kurven, DIN-Ampellogik und Maßnahmenblock.
 //
-//  ✅ ENHANCED: Now integrates with 48-parameter framework
-//  ✅ ENHANCED: Professional gutachterliche reports
-//  ✅ ENHANCED: Automated build integration
+//  [x] ENHANCED: Now integrates with 48-parameter framework
+//  [x] ENHANCED: Professional gutachterliche reports
+//  [x] ENHANCED: Automated build integration
 
 import SwiftUI
 import PDFKit
@@ -37,9 +37,9 @@ struct PDFExportView: View {
 
     private func generateReport() {
         // ENHANCED: Use consolidated PDF exporter for professional reports
-        print("🚀 Using AcoustiScan Consolidated Tool for PDF generation")
-        print("📊 Integrating 48-parameter framework results")
-        print("✅ Professional gutachterliche report format applied")
+        print("[rocket] Using AcoustiScan Consolidated Tool for PDF generation")
+        print("[chart] Integrating 48-parameter framework results")
+        print("[x] Professional gutachterliche report format applied")
 
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan Consolidated Tool",

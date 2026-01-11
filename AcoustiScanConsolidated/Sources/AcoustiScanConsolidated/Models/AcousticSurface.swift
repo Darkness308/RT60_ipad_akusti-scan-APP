@@ -31,7 +31,7 @@ public struct AcousticSurface: Codable, Equatable {
 
     /// Calculate absorption area for a specific frequency
     /// - Parameter frequency: Frequency in Hz
-    /// - Returns: Absorption area in square meters (area × absorption coefficient)
+    /// - Returns: Absorption area in square meters (area x absorption coefficient)
     public func absorptionArea(at frequency: Int) -> Double {
         return area * material.absorptionCoefficient(at: frequency)
     }

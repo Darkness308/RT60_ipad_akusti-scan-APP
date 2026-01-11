@@ -6,16 +6,16 @@ AcoustiScan ist eine professionelle iOS-App für akustische Raumanalyse mit LiDA
 
 ### Features
 
-- 🎯 **LiDAR-Raumscan**: Automatische 3D-Raumerfassung mit RoomPlan API
-- 🔊 **RT60-Messung**: Frequenzabhängige Nachhallzeitmessung (125 Hz - 4 kHz)
-- 📊 **DIN 18041 Klassifizierung**: Automatische Bewertung nach deutscher Norm
-- 📄 **PDF-Export**: 6-seitiger Gutachten-Report mit Frequenzgrafiken
-- 🎨 **Material-Datenbank**: 500+ akustische Materialien mit Absorptionskoeffizienten
-- 🏗️ **Absorber-Planer**: Automatische Berechnung erforderlicher Absorptionsflächen
+- [target] **LiDAR-Raumscan**: Automatische 3D-Raumerfassung mit RoomPlan API
+- [speaker] **RT60-Messung**: Frequenzabhängige Nachhallzeitmessung (125 Hz - 4 kHz)
+- [chart] **DIN 18041 Klassifizierung**: Automatische Bewertung nach deutscher Norm
+- [document] **PDF-Export**: 6-seitiger Gutachten-Report mit Frequenzgrafiken
+- [art] **Material-Datenbank**: 500+ akustische Materialien mit Absorptionskoeffizienten
+- [construction] **Absorber-Planer**: Automatische Berechnung erforderlicher Absorptionsflächen
 
 ---
 
-## 📱 iPad App
+## [mobile] iPad App
 
 ### Voraussetzungen
 
@@ -27,7 +27,7 @@ AcoustiScan ist eine professionelle iOS-App für akustische Raumanalyse mit LiDA
 
 1. Öffne `AcoustiScanApp/AcoustiScanApp.xcodeproj` in Xcode
 2. Wähle dein iPad als Target (Device oder Simulator)
-3. Build & Run (⌘R)
+3. Build & Run (CmdR)
 
 ```bash
 # Clone Repository
@@ -42,20 +42,20 @@ open AcoustiScanApp/AcoustiScanApp.xcodeproj
 
 ```
 AcoustiScanApp (SwiftUI UI Layer)
-    │
-    ├── Views/
-    │   ├── Scanner/     # LiDAR + RoomPlan Integration
-    │   ├── RT60/        # Impulsmessung + Frequenzanalyse
-    │   ├── Material/    # Material-Datenbank Editor
-    │   ├── Room/        # Manuelle Raumeingabe
-    │   └── Export/      # PDF-Generation + Sharing
-    │
-    └── Dependencies:
-        └── AcoustiScanConsolidated (Swift Package)
-            ├── RT60 Calculation Engine
-            ├── DIN 18041 Evaluator
-            ├── PDF Report Generator
-            └── Material Database
+    |
+    |---- Views/
+    |   |---- Scanner/     # LiDAR + RoomPlan Integration
+    |   |---- RT60/        # Impulsmessung + Frequenzanalyse
+    |   |---- Material/    # Material-Datenbank Editor
+    |   |---- Room/        # Manuelle Raumeingabe
+    |   |__-- Export/      # PDF-Generation + Sharing
+    |
+    |__-- Dependencies:
+        |__-- AcoustiScanConsolidated (Swift Package)
+            |---- RT60 Calculation Engine
+            |---- DIN 18041 Evaluator
+            |---- PDF Report Generator
+            |__-- Material Database
 ```
 
 ### Tab-Navigation
@@ -76,7 +76,7 @@ Die App benötigt folgende iOS-Berechtigungen (in Info.plist konfiguriert):
 
 ---
 
-## 🛠️ Entwicklung
+## [tools] Entwicklung
 
 ### Backend (Swift Package)
 
@@ -96,47 +96,47 @@ cd AcoustiScanConsolidated
 swift test
 
 # App Tests (in Xcode)
-# Product > Test (⌘U)
+# Product > Test (CmdU)
 ```
 
 ### Projektstruktur
 
 ```
 RT60_ipad_akusti-scan-APP/
-│
-├── AcoustiScanApp/                 # iOS App (SwiftUI)
-│   ├── AcoustiScanApp.xcodeproj    # Xcode-Projekt
-│   ├── Package.swift               # SPM Integration
-│   ├── AcoustiScanApp/
-│   │   ├── App/                    # App Entry Point
-│   │   │   ├── AcoustiScanApp.swift
-│   │   │   └── ContentView.swift
-│   │   ├── Views/                  # UI Layer (13 Views)
-│   │   │   ├── RT60/               # RT60View, ChartView, ClassificationView
-│   │   │   ├── Scanner/            # LiDAR, RoomScan, ARCoordinator
-│   │   │   ├── Material/           # MaterialEditorView
-│   │   │   ├── Room/               # RoomDimensionView
-│   │   │   └── Export/             # ExportView, ShareSheet
-│   │   └── Resources/
-│   │       ├── Info.plist          # App Configuration
-│   │       └── Assets.xcassets/    # App Icon, AccentColor
-│   └── AcoustiScanAppTests/        # UI Tests
-│
-└── AcoustiScanConsolidated/        # Backend (Swift Package)
-    ├── Package.swift
-    ├── Sources/
-    │   └── AcoustiScanConsolidated/
-    │       ├── RT60/               # RT60 Calculation Engine
-    │       ├── DIN18041/           # Evaluator + Classification
-    │       ├── Export/             # PDF Report Generator
-    │       ├── Material/           # Material Database
-    │       └── Room/               # Room Model + Calculations
-    └── Tests/
+|
+|---- AcoustiScanApp/                 # iOS App (SwiftUI)
+|   |---- AcoustiScanApp.xcodeproj    # Xcode-Projekt
+|   |---- Package.swift               # SPM Integration
+|   |---- AcoustiScanApp/
+|   |   |---- App/                    # App Entry Point
+|   |   |   |---- AcoustiScanApp.swift
+|   |   |   |__-- ContentView.swift
+|   |   |---- Views/                  # UI Layer (13 Views)
+|   |   |   |---- RT60/               # RT60View, ChartView, ClassificationView
+|   |   |   |---- Scanner/            # LiDAR, RoomScan, ARCoordinator
+|   |   |   |---- Material/           # MaterialEditorView
+|   |   |   |---- Room/               # RoomDimensionView
+|   |   |   |__-- Export/             # ExportView, ShareSheet
+|   |   |__-- Resources/
+|   |       |---- Info.plist          # App Configuration
+|   |       |__-- Assets.xcassets/    # App Icon, AccentColor
+|   |__-- AcoustiScanAppTests/        # UI Tests
+|
+|__-- AcoustiScanConsolidated/        # Backend (Swift Package)
+    |---- Package.swift
+    |---- Sources/
+    |   |__-- AcoustiScanConsolidated/
+    |       |---- RT60/               # RT60 Calculation Engine
+    |       |---- DIN18041/           # Evaluator + Classification
+    |       |---- Export/             # PDF Report Generator
+    |       |---- Material/           # Material Database
+    |       |__-- Room/               # Room Model + Calculations
+    |__-- Tests/
 ```
 
 ---
 
-## 📊 Features im Detail
+## [chart] Features im Detail
 
 ### 1. LiDAR-Scanner (RoomPlan)
 
@@ -179,7 +179,7 @@ RT60_ipad_akusti-scan-APP/
 
 ---
 
-## 🚀 Deployment
+## [rocket] Deployment
 
 ### TestFlight (Beta)
 
@@ -202,13 +202,13 @@ Erforderliche Assets:
 
 ---
 
-## 📖 Dokumentation
+## [book] Dokumentation
 
 ### RT60-Berechnung
 
 Nach Sabine-Formel:
 ```
-RT60 = 0.161 × V / A
+RT60 = 0.161 x V / A
 ```
 
 - **V**: Raumvolumen in m³
@@ -225,7 +225,7 @@ RT60 = 0.161 × V / A
 
 ---
 
-## 🔧 Troubleshooting
+## [tool] Troubleshooting
 
 ### Build-Fehler
 
@@ -241,7 +241,7 @@ swift build
 **Problem**: LiDAR-Funktionen nicht verfügbar
 
 **Lösung**:
-- Simulator unterstützt kein LiDAR → Physisches iPad verwenden
+- Simulator unterstützt kein LiDAR -> Physisches iPad verwenden
 - iPad muss LiDAR-Sensor haben (iPad Pro 2020+)
 
 **Problem**: Kamera/Mikrofon-Berechtigungen fehlen
@@ -252,7 +252,7 @@ swift build
 
 ---
 
-## 🎓 Für Auszubildende / Einsteiger
+## [graduation] Für Auszubildende / Einsteiger
 
 Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu leisten.
 
@@ -279,47 +279,47 @@ Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu lei
 ### Architektur-Übersicht
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        AcoustiScan App                          │
-│                     (SwiftUI / iPadOS)                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
-│  │   Scanner   │  │    RT60     │  │   Export    │             │
-│  │    Tab      │  │    Tab      │  │    Tab      │             │
-│  │  (LiDAR)    │  │  (Messung)  │  │   (PDF)     │             │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘             │
-│         │                │                │                     │
-│         └────────────────┼────────────────┘                     │
-│                          │                                      │
-│                    ┌─────▼─────┐                                │
-│                    │ViewModel  │  @StateObject / @Published    │
-│                    │  Layer    │                                │
-│                    └─────┬─────┘                                │
-│                          │                                      │
-├──────────────────────────┼──────────────────────────────────────┤
-│                          │                                      │
-│  ┌───────────────────────▼────────────────────────────────────┐ │
-│  │            AcoustiScanConsolidated (Swift Package)         │ │
-│  │                                                            │ │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │ │
-│  │  │ RT60         │  │ DIN 18041    │  │ Material     │     │ │
-│  │  │ Calculator   │  │ Evaluator    │  │ Database     │     │ │
-│  │  │              │  │              │  │              │     │ │
-│  │  │ Sabine-      │  │ Raumtyp-     │  │ 500+         │     │ │
-│  │  │ Formel       │  │ Klassierung  │  │ Materialien  │     │ │
-│  │  └──────────────┘  └──────────────┘  └──────────────┘     │ │
-│  │                                                            │ │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │ │
-│  │  │ Measurement  │  │ Acoustic     │  │ PDF Report   │     │ │
-│  │  │ Quality      │  │ Framework    │  │ Generator    │     │ │
-│  │  │              │  │              │  │              │     │ │
-│  │  │ ISO 3382-1   │  │ 48 Parameter │  │ 6-Seiten     │     │ │
-│  │  │ Konformität  │  │ Klangfarbe+  │  │ Gutachten    │     │ │
-│  │  └──────────────┘  └──────────────┘  └──────────────┘     │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+,---------------------------------------------------------------------.
+|                        AcoustiScan App                          |
+|                     (SwiftUI / iPadOS)                          |
+|-------------------------------------------------------------------|-
+|                                                                 |
+|  ,-----------------.  ,-----------------.  ,-----------------.             |
+|  |   Scanner   |  |    RT60     |  |   Export    |             |
+|  |    Tab      |  |    Tab      |  |    Tab      |             |
+|  |  (LiDAR)    |  |  (Messung)  |  |   (PDF)     |             |
+|  |__-------+-------__/  |__-------+-------__/  |__-------+-------__/             |
+|         |                |                |                     |
+|         |__-----------------+-----------------__/                     |
+|                          |                                      |
+|                    ,-------v-------.                                |
+|                    |ViewModel  |  @StateObject / @Published    |
+|                    |  Layer    |                                |
+|                    |__------+------__/                                |
+|                          |                                      |
+|-----------------------------+---------------------------------------|-
+|                          |                                      |
+|  ,-------------------------v--------------------------------------. |
+|  |            AcoustiScanConsolidated (Swift Package)         | |
+|  |                                                            | |
+|  |  ,------------------.  ,------------------.  ,------------------.     | |
+|  |  | RT60         |  | DIN 18041    |  | Material     |     | |
+|  |  | Calculator   |  | Evaluator    |  | Database     |     | |
+|  |  |              |  |              |  |              |     | |
+|  |  | Sabine-      |  | Raumtyp-     |  | 500+         |     | |
+|  |  | Formel       |  | Klassierung  |  | Materialien  |     | |
+|  |  |__--------------__/  |__--------------__/  |__--------------__/     | |
+|  |                                                            | |
+|  |  ,------------------.  ,------------------.  ,------------------.     | |
+|  |  | Measurement  |  | Acoustic     |  | PDF Report   |     | |
+|  |  | Quality      |  | Framework    |  | Generator    |     | |
+|  |  |              |  |              |  |              |     | |
+|  |  | ISO 3382-1   |  | 48 Parameter |  | 6-Seiten     |     | |
+|  |  | Konformität  |  | Klangfarbe+  |  | Gutachten    |     | |
+|  |  |__--------------__/  |__--------------__/  |__--------------__/     | |
+|  |__------------------------------------------------------------__/ |
+|                                                                 |
+|__-----------------------------------------------------------------__/
 ```
 
 ### Wichtige Konzepte
@@ -327,7 +327,7 @@ Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu lei
 | Konzept | Erklärung | Datei(en) |
 |---------|-----------|-----------|
 | **RT60** | Nachhallzeit - Zeit bis Schall um 60 dB abfällt | `RT60Calculator.swift` |
-| **Sabine-Formel** | RT60 = 0.161 × V / A (V=Volumen, A=Absorption) | `RT60Calculator.swift:10-14` |
+| **Sabine-Formel** | RT60 = 0.161 x V / A (V=Volumen, A=Absorption) | `RT60Calculator.swift:10-14` |
 | **DIN 18041** | Deutsche Norm für Raumakustik | `RT60Evaluator.swift`, `RoomType.swift` |
 | **LiDAR** | Laser-Entfernungsmessung für 3D-Raumscan | `LiDARScanView.swift` |
 | **RoomPlan** | Apple API für automatische Raumerkennung | `RoomScanView.swift` |
@@ -394,42 +394,42 @@ Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu lei
 
 ---
 
-## 📜 Lizenz
+## [scroll] Lizenz
 
 Proprietary - Alle Rechte vorbehalten
 
 ---
 
-## 👥 Kontakt
+## [people] Kontakt
 
 **Entwickler**: Marc Schneider-Handrup
 **Repository**: https://github.com/Darkness308/RT60_ipad_akusti-scan-APP
 
 ---
 
-## 📝 Changelog
+## [memo] Changelog
 
 ### Version 1.0 (2025-11-02)
 
-✅ **App Structure**
+[x] **App Structure**
 - Created complete Xcode project for iPadOS 17.0+
 - Integrated 13 SwiftUI views from source archives
 - Linked AcoustiScanConsolidated Swift Package
 
-✅ **Features**
+[x] **Features**
 - Tab 1: LiDAR Scanner (RoomPlan + ARKit)
 - Tab 2: RT60 Measurement (frequency analysis)
 - Tab 3: DIN 18041 Classification (evaluation)
 - Tab 4: PDF Export (6-page reports)
 - Tab 5: Material Database (500+ materials)
 
-✅ **Backend Integration**
+[x] **Backend Integration**
 - RT60 Calculation Engine (consolidated)
 - DIN 18041 Evaluator (production-ready)
 - PDF Report Generator (6-page template)
 - Material Database (500+ entries)
 
-🎯 **Production Status**: Ready for QA Testing
+[target] **Production Status**: Ready for QA Testing
 
 ---
 

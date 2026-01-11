@@ -21,7 +21,7 @@ struct MaterialEditorView: View {
                         Text("\(freq) Hz")
                             .accessibilityHidden(true)
                         Spacer()
-                        TextField("α", value: Binding(
+                        TextField("alpha", value: Binding(
                             get: { values[freq] ?? 0 },
                             set: { values[freq] = $0 }
                         ), formatter: NumberFormatter())
@@ -63,7 +63,7 @@ struct MaterialEditorView: View {
                             .accessibilityAddTraits(.isHeader)
                             .accessibilityIdentifier("materialName\(material.name)")
                         ForEach(material.absorption.values.sorted(by: { $0.key < $1.key }), id: \.key) { freq, alpha in
-                            Text("\(freq) Hz: α = \(String(format: "%.2f", alpha))")
+                            Text("\(freq) Hz: alpha = \(String(format: "%.2f", alpha))")
                                 .font(.caption)
                                 .accessibilityLabel("\(freq) Hertz")
                                 .accessibilityValue("Alpha equals \(String(format: "%.2f", alpha))")

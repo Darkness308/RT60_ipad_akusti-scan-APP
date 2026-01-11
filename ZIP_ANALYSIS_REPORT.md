@@ -60,10 +60,10 @@ Der swift_coding Ordner enthält **5 ZIP-Archive** mit insgesamt **143 einzigart
 
 #### RT60-Kern-Engine
 - **Implementierung**: Identisch in allen Archiven (Sabine-Formel: RT60 = 0.161 * V / A)
-- **Status**: ✅ Wissenschaftlich korrekt, performant
+- **Status**: [x] Wissenschaftlich korrekt, performant
 - **Test-Abdeckung**: 5x RT60EvaluatorTests, 4x RT60Tests implementiert
 
-#### Evolution Sprint1 → Sprint2
+#### Evolution Sprint1 -> Sprint2
 ```diff
 + MaterialCSVImporter.swift    // CSV Import/Export
 + RoomScanView.swift          // RoomPlan Integration
@@ -79,7 +79,7 @@ Der swift_coding Ordner enthält **5 ZIP-Archive** mit insgesamt **143 einzigart
 
 ## Code-Qualitäts-Bewertung
 
-### ✅ Positive Aspekte
+### [x] Positive Aspekte
 
 1. **Konsistente Implementierung**: RT60Calculation.swift ist identisch across alle Archive
 2. **Modulare Architektur**: Klare Trennung von Verantwortlichkeiten
@@ -88,7 +88,7 @@ Der swift_coding Ordner enthält **5 ZIP-Archive** mit insgesamt **143 einzigart
 5. **Dokumentation**: Deutsche Kommentare, klare Funktionsbeschreibungen
 6. **DIN-Konformität**: Korrekte DIN 18041-Implementierung
 
-### ⚠️ Redundanz-Probleme
+### [warning] Redundanz-Probleme
 
 1. **Duplikate**: iPadScannerApp_Source (2).zip ist identisch zu iPadScannerApp_Source.zip
 2. **Code-Überlappung**: ~80% der Funktionalität ist zwischen den Archiven dupliziert
@@ -100,26 +100,26 @@ Der swift_coding Ordner enthält **5 ZIP-Archive** mit insgesamt **143 einzigart
 ### Integration Status
 
 Das konsolidierte AcoustiScanConsolidated-System hat bereits:
-- ✅ **109 Swift-Dateien analysiert und konsolidiert** (laut CONSOLIDATION_REPORT.md)
-- ✅ **RT60-Engine implementiert**
-- ✅ **PDF-Export-System**
-- ✅ **Test-Suite (16 Szenarien, 100% Pass-Rate)**
-- ✅ **Build-Automation**
+- [x] **109 Swift-Dateien analysiert und konsolidiert** (laut CONSOLIDATION_REPORT.md)
+- [x] **RT60-Engine implementiert**
+- [x] **PDF-Export-System**
+- [x] **Test-Suite (16 Szenarien, 100% Pass-Rate)**
+- [x] **Build-Automation**
 
 ### Archive vs. Hauptsystem
 
 | Aspekt | Archive Status | Hauptsystem Status |
 |--------|---------------|-------------------|
-| RT60-Berechnung | ✅ Identisch implementiert | ✅ Konsolidiert + optimiert |
-| DIN 18041 | ✅ Vollständig | ✅ Erweitert (6 Raumtypen) |
-| PDF-Export | ✅ Basis-Implementation | ✅ Professional (mehrseitig) |
-| Testing | ⚠️ Fragmentiert | ✅ Umfassend (16 Tests) |
-| Build-System | ❌ Nicht vorhanden | ✅ Automatisiert |
-| Dokumentation | ⚠️ Code-Kommentare | ✅ Comprehensive |
+| RT60-Berechnung | [x] Identisch implementiert | [x] Konsolidiert + optimiert |
+| DIN 18041 | [x] Vollständig | [x] Erweitert (6 Raumtypen) |
+| PDF-Export | [x] Basis-Implementation | [x] Professional (mehrseitig) |
+| Testing | [warning] Fragmentiert | [x] Umfassend (16 Tests) |
+| Build-System | [x] Nicht vorhanden | [x] Automatisiert |
+| Dokumentation | [warning] Code-Kommentare | [x] Comprehensive |
 
 ## Empfehlungen
 
-### 🔄 **ERGÄNZEN das Hauptsystem** - Archive sind wertvoll
+### [refresh] **ERGÄNZEN das Hauptsystem** - Archive sind wertvoll
 
 **Gründe für Beibehaltung:**
 
@@ -174,7 +174,7 @@ mv swift_coding/iPadScannerApp_TestSuite.zip swift_coding/AcoustiScan_TestSuite_
 
 **"Ergänzen sie das Hauptsystem oder machen sie alles nur komplizierter?"**
 
-### 🟢 **EINDEUTIG: Sie ERGÄNZEN das Hauptsystem**
+### [green] **EINDEUTIG: Sie ERGÄNZEN das Hauptsystem**
 
 #### Quantitative Analyse:
 - **219 Swift-Dateien insgesamt** (143 in Archiven + 76 im Hauptsystem)
@@ -183,11 +183,11 @@ mv swift_coding/iPadScannerApp_TestSuite.zip swift_coding/AcoustiScan_TestSuite_
 - **23% Redundanz-Rate** (nur durch ein Duplikat)
 
 #### Qualitative Bewertung:
-- ✅ **Entwicklungshistorie bewahrt**
-- ✅ **Test-Ressourcen verfügbar**
-- ✅ **Backup-Sicherheit gewährleistet**
-- ✅ **Lernmaterial für Entwickler**
-- ✅ **Sprint-Progress nachvollziehbar**
+- [x] **Entwicklungshistorie bewahrt**
+- [x] **Test-Ressourcen verfügbar**
+- [x] **Backup-Sicherheit gewährleistet**
+- [x] **Lernmaterial für Entwickler**
+- [x] **Sprint-Progress nachvollziehbar**
 
 #### Empfohlene Aktion:
 **BEHALTEN + ORGANISIEREN** statt **ENTFERNEN**
@@ -199,17 +199,17 @@ Die Archive dokumentieren eine professionelle, iterative Entwicklung und stellen
 **Die Archive ERGÄNZEN das Hauptsystem und machen es NICHT komplizierter.**
 
 Das konsolidierte AcoustiScanConsolidated-System ist bereits der aktuelle Stand der Technik. Die Archive dienen als:
-- 📚 **Entwicklungshistorie** (4 Entwicklungsstufen dokumentiert)
-- 🔧 **Referenz-Implementierungen** (150 Swift-Dateien als Backup)
-- 🧪 **Test-Ressourcen** (15 Test-Dateien verschiedener Ansätze)
-- 💾 **Backup-System** (Schutz vor Datenverlust)
-- 📖 **Dokumentation** (Sprint-Progress nachvollziehbar)
+- [books] **Entwicklungshistorie** (4 Entwicklungsstufen dokumentiert)
+- [tool] **Referenz-Implementierungen** (150 Swift-Dateien als Backup)
+- [test-tube] **Test-Ressourcen** (15 Test-Dateien verschiedener Ansätze)
+- [disk] **Backup-System** (Schutz vor Datenverlust)
+- [book] **Dokumentation** (Sprint-Progress nachvollziehbar)
 
 ### Quantifizierte Bewertung:
-- **Nutzen-Faktor**: 🟢 **HOCH** (5/5)
-- **Komplexitäts-Overhead**: 🟡 **NIEDRIG** (1/5)
-- **Wartungsaufwand**: 🟢 **MINIMAL** (Archive sind statisch)
-- **Strategischer Wert**: 🟢 **SEHR HOCH** (Langzeit-Asset)
+- **Nutzen-Faktor**: [green] **HOCH** (5/5)
+- **Komplexitäts-Overhead**: [yellow] **NIEDRIG** (1/5)
+- **Wartungsaufwand**: [green] **MINIMAL** (Archive sind statisch)
+- **Strategischer Wert**: [green] **SEHR HOCH** (Langzeit-Asset)
 
 Die ZIP-Archive sollten **definitiv beibehalten** werden. Nach Entfernung des Duplikats und Umbenennung für bessere Organisation stellen sie eine **wertvolle Ergänzung** zum Hauptsystem dar.
 
@@ -217,5 +217,5 @@ Die ZIP-Archive sollten **definitiv beibehalten** werden. Nach Entfernung des Du
 
 **Analysiert am**: 2025-07-21
 **Gesamte Swift-Dateien**: 150 unique files across 4 meaningful archives
-**Empfohlene Aktion**: ✅ **BEHALTEN + ORGANISIEREN**
-**Integration-Status**: ✅ Bereits konsolidiert im Hauptsystem, Archive als historische Referenz
+**Empfohlene Aktion**: [x] **BEHALTEN + ORGANISIEREN**
+**Integration-Status**: [x] Bereits konsolidiert im Hauptsystem, Archive als historische Referenz
