@@ -13,7 +13,7 @@ public struct PDFExportView: View {
 
     public var body: some View {
         VStack(spacing: 16) {
-            if isBusy { ProgressView("Report wird erstellt …") }
+            if isBusy { ProgressView("Report wird erstellt ...") }
             Button("Report generieren") {
                 isBusy = true
                 Task {
