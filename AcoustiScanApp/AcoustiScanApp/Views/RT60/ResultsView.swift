@@ -88,14 +88,14 @@ struct ResultsView: View {
                                 .accessibilityLabel("Warning icon")
                                 .accessibilityIdentifier("noDataIcon")
                             
-                            Text("No surface data available")
+                            Text(LocalizationKeys.noDataAvailable.localized(comment: "No data available"))
                                 .font(.body)
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
-                                .accessibilityLabel("No surface data available for classification")
+                                .accessibilityLabel(LocalizationKeys.noDataAvailable.localized(comment: "No data available"))
                                 .accessibilityIdentifier("noDataText")
                             
-                            Text("Scan a room or add surfaces manually to see DIN 18041 classification results")
+                            Text(LocalizationKeys.scanRoomToSeeResults.localized(comment: "Scan room to see results"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
@@ -104,7 +104,7 @@ struct ResultsView: View {
                         }
                         .padding()
                     } else {
-                        Text("DIN 18041 compliance results will be displayed here")
+                        Text(LocalizationKeys.classificationResultsPlaceholder.localized(comment: "Classification results placeholder"))
                             .font(.body)
                             .foregroundColor(.secondary)
                             .accessibilityLabel("Classification results placeholder")
@@ -120,7 +120,7 @@ struct ResultsView: View {
             }
             .padding(.vertical)
         }
-        .navigationTitle("Results")
+        .navigationTitle(LocalizationKeys.results.localized(comment: "Results"))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("resultsView")
     }

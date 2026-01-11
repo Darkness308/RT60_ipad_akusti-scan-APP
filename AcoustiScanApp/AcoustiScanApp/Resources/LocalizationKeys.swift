@@ -103,6 +103,10 @@ enum LocalizationKeys {
     static let criticalActionRequired = "critical_action_required"
     static let partiallyCompliant = "partially_compliant"
     static let conformDIN = "conform_din"
+    static let results = "results"
+    static let noDataAvailable = "no_data_available"
+    static let scanRoomToSeeResults = "scan_room_to_see_results"
+    static let classificationResultsPlaceholder = "classification_results_placeholder"
 
     // MARK: - Enhanced PDF Report
 

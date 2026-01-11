@@ -90,8 +90,9 @@ class AcoustiScanUITests: XCTestCase {
         let expectedIdentifiers = [
             "scannerTab",
             "rt60Tab",
-            "materialsTab",
-            "exportTab"
+            "resultsTab",
+            "exportTab",
+            "materialsTab"
         ]
 
         // In a real UI test, we would verify these like:
@@ -101,7 +102,7 @@ class AcoustiScanUITests: XCTestCase {
         //     XCTAssertTrue(app.tabBars.buttons[identifier].exists)
         // }
 
-        XCTAssertTrue(expectedIdentifiers.count == 4, "Should have 4 main tabs")
+        XCTAssertTrue(expectedIdentifiers.count == 5, "Should have 5 main tabs")
     }
 
     func testNavigation_ScannerView_HasCorrectAccessibilityIdentifiers() {
