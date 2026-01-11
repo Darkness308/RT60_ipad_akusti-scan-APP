@@ -10,48 +10,48 @@ import Combine
 
 /// Manager for acoustic materials with CSV and XLSX support
 public class MaterialManager: ObservableObject {
-    
+
     /// Published array of custom materials
     @Published public var customMaterials: [AcousticMaterial] = []
-    
+
     /// Predefined materials database
     public let predefinedMaterials: [AcousticMaterial]
-    
+
     /// Initialize with default materials
     public init() {
         // Load some common predefined materials
         self.predefinedMaterials = Self.loadPredefinedMaterials()
         self.loadCustomMaterials()
     }
-    
+
     /// Add a new material
     /// - Parameter material: Material to add
     public func add(_ material: AcousticMaterial) {
         customMaterials.append(material)
         saveCustomMaterials()
     }
-    
+
     /// Remove materials at indices
     /// - Parameter offsets: Index set of materials to remove
     public func remove(at offsets: IndexSet) {
         customMaterials.remove(atOffsets: offsets)
         saveCustomMaterials()
     }
-    
+
     /// Get all materials (predefined + custom)
     public var allMaterials: [AcousticMaterial] {
         return predefinedMaterials + customMaterials
     }
-    
+
     // MARK: - CSV Import/Export
-    
+
     /// Export materials to CSV format
     /// - Parameter materials: Materials to export (defaults to custom materials)
     /// - Returns: CSV string
     public func exportToCSV(materials: [AcousticMaterial]? = nil) -> String {
         let materialsToExport = materials ?? customMaterials
         var csv = "Name,125Hz,250Hz,500Hz,1kHz,2kHz,4kHz\n"
-        
+
         for material in materialsToExport {
             let name = material.name.replacingOccurrences(of: ",", with: ";")
             let values = AbsorptionData.standardFrequencies.map {
@@ -59,10 +59,10 @@ public class MaterialManager: ObservableObject {
             }
             csv += "\(name),\(values.joined(separator: ","))\n"
         }
-        
+
         return csv
     }
-    
+
     /// Import materials from CSV format
     /// - Parameter csvString: CSV string to parse
     /// - Returns: Array of imported materials
@@ -71,34 +71,34 @@ public class MaterialManager: ObservableObject {
     public func importFromCSV(_ csvString: String) throws -> [AcousticMaterial] {
         var importedMaterials: [AcousticMaterial] = []
         let lines = csvString.components(separatedBy: .newlines)
-        
+
         // Skip header line
         for line in lines.dropFirst() {
             guard !line.trimmingCharacters(in: .whitespaces).isEmpty else { continue }
-            
+
             // Simple CSV parser that handles quoted fields
             let components = parseCSVLine(line)
             guard components.count >= 7 else { continue }
-            
+
             let name = components[0].trimmingCharacters(in: .whitespaces)
             var values: [Int: Float] = [:]
-            
+
             for (index, freq) in AbsorptionData.standardFrequencies.enumerated() {
                 if let value = Float(components[index + 1].trimmingCharacters(in: .whitespaces)) {
                     values[freq] = value
                 }
             }
-            
+
             let material = AcousticMaterial(
                 name: name,
                 absorption: AbsorptionData(values: values)
             )
             importedMaterials.append(material)
         }
-        
+
         return importedMaterials
     }
-    
+
     /// Simple CSV line parser that handles quoted fields
     /// - Parameter line: CSV line to parse
     /// - Returns: Array of field values
@@ -106,13 +106,13 @@ public class MaterialManager: ObservableObject {
         var fields: [String] = []
         var currentField = ""
         var inQuotes = false
-        
+
         let characters = Array(line)
         var index = 0
-        
+
         while index < characters.count {
             let char = characters[index]
-            
+
             if char == "\"" {
                 if inQuotes {
                     // Handle escaped quote ("") inside a quoted field
@@ -134,14 +134,14 @@ public class MaterialManager: ObservableObject {
             } else {
                 currentField.append(char)
             }
-            
+
             index += 1
         }
         fields.append(currentField)
-        
+
         return fields
     }
-    
+
     /// Add imported materials to custom materials
     /// - Parameter csvString: CSV string to import
     /// - Throws: Re-throws CSV parsing errors for proper error handling
@@ -150,7 +150,7 @@ public class MaterialManager: ObservableObject {
         customMaterials.append(contentsOf: materials)
         saveCustomMaterials()
     }
-    
+
     // MARK: - XLSX Import/Export
 
     /// Export materials to XLSX format
@@ -196,7 +196,7 @@ public class MaterialManager: ObservableObject {
         customMaterials.append(contentsOf: materials)
         saveCustomMaterials()
     }
-    
+
     // MARK: - Persistence
 
     private func saveCustomMaterials() {
@@ -228,9 +228,9 @@ public class MaterialManager: ObservableObject {
             )
         }
     }
-    
+
     // MARK: - Predefined Materials
-    
+
     private static func loadPredefinedMaterials() -> [AcousticMaterial] {
         return [
             AcousticMaterial(name: "Beton (glatt)", absorption: AbsorptionData(values: [

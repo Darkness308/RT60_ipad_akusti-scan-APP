@@ -245,9 +245,9 @@ let todaysEntries = auditTrail.getEntries(from: today, to: tomorrow)
 ```swift
 public struct AbsorptionData {
     public var values: [Int: Float]
-    
+
     public static let standardFrequencies = [125, 250, 500, 1000, 2000, 4000]
-    
+
     public var isComplete: Bool {
         // Prüft ob alle Standardfrequenzen vorhanden sind
     }
@@ -261,7 +261,7 @@ public struct AcousticMaterial {
     public let id: UUID
     public var name: String
     public var absorption: AbsorptionData
-    
+
     public var hasCompleteData: Bool { ... }
 }
 ```
@@ -371,18 +371,18 @@ struct ContentView: View {
     @StateObject var materialManager = MaterialManager()
     @StateObject var surfaceStore = SurfaceStore()
     @StateObject var auditTrail = AuditTrailManager()
-    
+
     var body: some View {
         TabView {
             ScannerView(store: surfaceStore)
                 .tabItem { Label("Scanner", systemImage: "camera") }
-            
+
             MaterialEditorView(materialManager: materialManager)
                 .tabItem { Label("Materialien", systemImage: "square.grid.2x2") }
-            
+
             RT60View(store: surfaceStore)
                 .tabItem { Label("Messung", systemImage: "waveform") }
-            
+
             ExportView(
                 store: surfaceStore,
                 materialManager: materialManager,
@@ -425,6 +425,6 @@ struct ContentView: View {
 
 ---
 
-**Erstellt:** 2025-01-08  
-**Version:** 1.0.0  
+**Erstellt:** 2025-01-08
+**Version:** 1.0.0
 **Autor:** GitHub Copilot Workspace
