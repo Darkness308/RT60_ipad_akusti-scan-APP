@@ -6,9 +6,13 @@ struct RT60View: View {
     func calculateRT60(frequency: Int) -> Double {
         var a_f: Double = 0.0
         for surface in store.surfaces {
-            a_f += surface.absorptionCoefficient
+            if let material = surface.material {
+                let alpha = material.absorptionCoefficient(at: frequency)
+                a_f += surface.area * Double(alpha)
+            }
         }
-        let v = store.estimatedVolume
+
+        let v = store.roomVolume
         return a_f > 0 ? 0.161 * v / a_f : 0.0
     }
 
