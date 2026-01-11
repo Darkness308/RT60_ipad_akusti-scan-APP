@@ -7,7 +7,7 @@ import Foundation
 /// DIN 18041 target database with volume-dependent calculations
 public struct DIN18041Database {
 
-    /// Reference volume for base RT60 values (100 m³ is typical reference)
+    /// Reference volume for base RT60 values (100 m^3 is typical reference)
     private static let referenceVolume: Double = 100.0
 
     /// Get DIN 18041 targets for specific room type and volume
@@ -32,7 +32,7 @@ public struct DIN18041Database {
     /// T_soll = T_base * (V / V_ref)^exponent
     /// - Parameters:
     ///   - baseRT60: Base RT60 value for reference volume
-    ///   - volume: Actual room volume in m³
+    ///   - volume: Actual room volume in m^3
     ///   - exponent: Volume scaling exponent (typically 0.05-0.15)
     /// - Returns: Volume-adjusted RT60 target
     private static func volumeAdjustedRT60(baseRT60: Double, volume: Double, exponent: Double = 0.1) -> Double {
@@ -44,7 +44,7 @@ public struct DIN18041Database {
 
     private static func classroomTargets(volume: Double) -> [DIN18041Target] {
         // DIN 18041: Classrooms require speech intelligibility
-        // Base RT60 = 0.6s for 100 m³, with volume scaling exponent 0.08
+        // Base RT60 = 0.6s for 100 m^3, with volume scaling exponent 0.08
         let baseRT60 = 0.6
         let volumeAdjusted = volumeAdjustedRT60(baseRT60: baseRT60, volume: volume, exponent: 0.08)
         let tolerance = 0.1

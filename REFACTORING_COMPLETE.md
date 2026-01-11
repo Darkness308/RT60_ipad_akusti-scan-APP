@@ -92,7 +92,7 @@ Successfully refactored two large PDF export files into **10 modular, maintainab
 - Number formatting (decimals, NaN/infinity handling)
 - String formatting (trimming, empty checks)
 - Date formatting (German locale)
-- Measurement formatting (Hz, s, m³, m²)
+- Measurement formatting (Hz, s, m^3, m^2)
 - Generic value formatting
 
 ---

@@ -211,17 +211,17 @@ Nach Sabine-Formel:
 RT60 = 0.161 x V / A
 ```
 
-- **V**: Raumvolumen in m³
-- **A**: Äquivalente Absorptionsfläche in m² (frequenzabhängig)
+- **V**: Raumvolumen in m^3
+- **A**: Äquivalente Absorptionsfläche in m^2 (frequenzabhängig)
 
 ### DIN 18041 Grenzwerte
 
 | Raumtyp | Volumen | Soll-RT60 | Toleranz |
 |---------|---------|-----------|----------|
-| A1      | < 250 m³ | 0.6 s    | ±20%     |
-| A2      | < 5000 m³ | 0.8 s   | ±15%     |
-| B       | Sprache  | 1.0 s    | ±25%     |
-| C       | Musik    | 1.5 s    | ±30%     |
+| A1      | < 250 m^3 | 0.6 s    | +/-20%     |
+| A2      | < 5000 m^3 | 0.8 s   | +/-15%     |
+| B       | Sprache  | 1.0 s    | +/-25%     |
+| C       | Musik    | 1.5 s    | +/-30%     |
 
 ---
 

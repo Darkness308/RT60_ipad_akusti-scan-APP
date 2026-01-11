@@ -14,7 +14,7 @@ struct PDFExportView: View {
     let projectName = "MyProject"
     let measurementDate = "2025-07-21"
     let roomType = "Büro (DIN 18041)"
-    let volume = 200.0 // m³, angenommen
+    let volume = 200.0 // m^3, angenommen
     let deviceInfo = "XL2, SNo. A2A-08559-E0, FW4.94"
     let micInfo = "NTi Audio M4260, SNo. 4753"
     let checksum = "D547EADF0139AF4D5F86FB29D4CE4AA0"
@@ -62,7 +62,7 @@ struct PDFExportView: View {
             Projekt: \(projectName)
             Datum: \(measurementDate)
             Raumtyp: \(roomType)
-            Volumen: \(volume) m³
+            Volumen: \(volume) m^3
             Messgerät: \(deviceInfo)
             Mikrofon: \(micInfo)
             """
@@ -99,7 +99,7 @@ struct PDFExportView: View {
             let recommendations = """
             - 125-500 Hz: Glaswolle (alpha = 0.8-0.9), Deckenbaffeln
             - 1000-4000 Hz: Akustikschaum, Wandabsorber
-            - Maßnahmen: 10 m² zusätzliche Absorberfläche
+            - Maßnahmen: 10 m^2 zusätzliche Absorberfläche
             """
             let recString = NSAttributedString(string: recommendations, attributes: metaAttributes)
             recString.draw(at: CGPoint(x: 40, y: yOffset))

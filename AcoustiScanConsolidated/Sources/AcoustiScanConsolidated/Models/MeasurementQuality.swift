@@ -9,8 +9,8 @@ import Foundation
 /// Quality metrics for an RT60 measurement according to ISO 3382-1
 public struct MeasurementQuality: Codable, Equatable {
 
-    /// Correlation coefficient (r²) of the decay curve fit
-    /// ISO 3382-1 requires r² >= 0.95 for valid measurements
+    /// Correlation coefficient (r^2) of the decay curve fit
+    /// ISO 3382-1 requires r^2 >= 0.95 for valid measurements
     public let correlationCoefficient: Double
 
     /// Standard uncertainty of the RT60 value in seconds
@@ -325,7 +325,7 @@ public struct MeasurementSession: Codable, Identifiable {
     /// Room description
     public let roomDescription: String?
 
-    /// Room volume in m³
+    /// Room volume in m^3
     public let roomVolume: Double
 
     /// All frequency-band measurements with quality data
@@ -427,11 +427,11 @@ public struct UncertaintyCalculator {
         return sqrt(sumOfSquares)
     }
 
-    /// Calculate correlation coefficient (r²) for linear regression
+    /// Calculate correlation coefficient (r^2) for linear regression
     /// - Parameters:
     ///   - x: Independent variable values (e.g., time)
     ///   - y: Dependent variable values (e.g., sound level in dB)
-    /// - Returns: Correlation coefficient r²
+    /// - Returns: Correlation coefficient r^2
     public static func correlationCoefficient(x: [Double], y: [Double]) -> Double {
         guard x.count == y.count, x.count > 1 else { return 0.0 }
 
@@ -449,6 +449,6 @@ public struct UncertaintyCalculator {
         guard denominatorX > 0, denominatorY > 0 else { return 0.0 }
 
         let r = numerator / sqrt(denominatorX * denominatorY)
-        return r * r // Return r²
+        return r * r // Return r^2
     }
 }

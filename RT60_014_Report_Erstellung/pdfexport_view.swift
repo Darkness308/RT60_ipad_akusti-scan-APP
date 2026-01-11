@@ -102,10 +102,10 @@ struct PDFExportView: View {
         // Executive Summary Box
         let summaryText = """
         Executive Summary:
-        • RT60-Messung nach DIN 18041
-        • 48-Parameter Akustik-Framework
-        • Professionelle Bewertung
-        • Maßnahmenempfehlungen
+        - RT60-Messung nach DIN 18041
+        - 48-Parameter Akustik-Framework
+        - Professionelle Bewertung
+        - Maßnahmenempfehlungen
         """
 
         let summaryAttrs: [NSAttributedString.Key: Any] = [
@@ -132,7 +132,7 @@ struct PDFExportView: View {
         let metaText = """
         Messung durchgeführt am: \(reportData.date)
         Raumtyp: \(reportData.roomType.displayName)
-        Volumen: \(Int(reportData.volume)) m³
+        Volumen: \(Int(reportData.volume)) m^3
         """
         let attrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
@@ -173,13 +173,13 @@ struct PDFExportView: View {
         Erweiterte akustische Bewertung basierend auf dem validierten
         48-Parameter-Framework:
 
-        • Klangfarbe: Hell-Dunkel-Balance, Schärfe
-        • Tonalität: Tonhaltigkeit, Dopplereffekt
-        • Geometrie: Räumliche Wahrnehmung
-        • Raum: Nachhallcharakteristik
-        • Zeitverhalten: Echos, Knackigkeit
-        • Dynamik: Lautheit, Kompression
-        • Artefakte: Störgeräusche
+        - Klangfarbe: Hell-Dunkel-Balance, Schärfe
+        - Tonalität: Tonhaltigkeit, Dopplereffekt
+        - Geometrie: Räumliche Wahrnehmung
+        - Raum: Nachhallcharakteristik
+        - Zeitverhalten: Echos, Knackigkeit
+        - Dynamik: Lautheit, Kompression
+        - Artefakte: Störgeräusche
 
         Wissenschaftlich validiert: 75% starke Evidenz
         """

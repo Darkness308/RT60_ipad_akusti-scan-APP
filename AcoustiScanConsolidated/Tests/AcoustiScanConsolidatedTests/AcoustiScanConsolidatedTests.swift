@@ -9,8 +9,8 @@ import XCTest
 final class RT60CalculatorTests: XCTestCase {
 
     func testRT60CalculationUsingSabineFormula() {
-        let volume = 100.0 // m³
-        let absorptionArea = 20.0 // m²
+        let volume = 100.0 // m^3
+        let absorptionArea = 20.0 // m^2
 
         let rt60 = RT60Calculator.calculateRT60(volume: volume, absorptionArea: absorptionArea)
         let expected = 0.161 * volume / absorptionArea // 0.805 seconds

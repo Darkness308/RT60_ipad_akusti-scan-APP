@@ -9,7 +9,7 @@ public class RT60Calculator {
     /// Calculate RT60 using Sabine formula
     public static func calculateRT60(volume: Double, absorptionArea: Double) -> Double {
         guard absorptionArea > 0 else { return 0.0 }
-        let sabineConstant = 0.161 // For air at 20°C, 50% humidity
+        let sabineConstant = 0.161 // For air at 20 degreesC, 50% humidity
         return sabineConstant * volume / absorptionArea
     }
 

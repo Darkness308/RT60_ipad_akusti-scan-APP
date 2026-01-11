@@ -15,7 +15,7 @@ public struct DIN18041Target: Codable, Equatable {
     /// Target RT60 value in seconds according to DIN 18041
     public let targetRT60: Double
 
-    /// Tolerance range in seconds (±tolerance)
+    /// Tolerance range in seconds (+/-tolerance)
     public let tolerance: Double
 
     /// Initialize a new DIN 18041 target

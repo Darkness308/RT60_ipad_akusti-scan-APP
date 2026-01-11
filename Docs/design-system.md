@@ -92,7 +92,7 @@ Slider(value: $volume, in: 0...100)
 ```swift
 VStack {
     Text("Room Volume")
-    Text("125 m³")
+    Text("125 m^3")
 }
 .accessibilityElement(children: .combine)
 ```
