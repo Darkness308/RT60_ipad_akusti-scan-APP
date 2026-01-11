@@ -18,26 +18,26 @@ The following code signing settings have been configured in the project:
 ### 1. Project Configuration (`project.pbxproj`)
 
 **Both Debug and Release configurations:**
-- ✅ `CODE_SIGN_STYLE = Manual` - Manual code signing for full control
-- ✅ `CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements` - Points to entitlements file
-- ✅ `PRODUCT_BUNDLE_IDENTIFIER = com.acoustiscan.app` - App bundle identifier
-- ⚠️  `DEVELOPMENT_TEAM = ""` - **Needs to be set by you** (see below)
+- [DONE] `CODE_SIGN_STYLE = Manual` - Manual code signing for full control
+- [DONE] `CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements` - Points to entitlements file
+- [DONE] `PRODUCT_BUNDLE_IDENTIFIER = com.acoustiscan.app` - App bundle identifier
+- [WARNING]️  `DEVELOPMENT_TEAM = ""` - **Needs to be set by you** (see below)
 
 ### 2. Entitlements File (`AcoustiScanApp/AcoustiScan.entitlements`)
 
 The entitlements file has been created and configured with:
-- ✅ Camera access (`com.apple.security.device.camera`)
-- ✅ Microphone access (`com.apple.security.device.audio-input`)
+- [DONE] Camera access (`com.apple.security.device.camera`)
+- [DONE] Microphone access (`com.apple.security.device.audio-input`)
 
 These entitlements are required for the app's LiDAR scanning and RT60 measurement features.
 
 ### 3. Info.plist (`AcoustiScanApp/Resources/Info.plist`)
 
 All required keys are already configured:
-- ✅ Bundle identifier: `com.acoustiscan.app`
-- ✅ Privacy descriptions for camera and microphone access
-- ✅ Required device capabilities (ARKit, LiDAR)
-- ✅ App display name and version information
+- [DONE] Bundle identifier: `com.acoustiscan.app`
+- [DONE] Privacy descriptions for camera and microphone access
+- [DONE] Required device capabilities (ARKit, LiDAR)
+- [DONE] App display name and version information
 
 ## What You Need to Do
 
@@ -198,8 +198,8 @@ AcoustiScanApp/
 
 The project is now configured for manual code signing and ready for development. To get started:
 
-1. ✅ Set your `DEVELOPMENT_TEAM` ID in project.pbxproj (or via Xcode)
-2. ✅ Create/download provisioning profiles from Apple Developer portal
-3. ✅ Build and run the app on your device or simulator
+1. [DONE] Set your `DEVELOPMENT_TEAM` ID in project.pbxproj (or via Xcode)
+2. [DONE] Create/download provisioning profiles from Apple Developer portal
+3. [DONE] Build and run the app on your device or simulator
 
 All other code signing configuration is complete and ready to use!

@@ -59,7 +59,7 @@ public class ConsolidatedPDFExporter {
             startY: CGFloat,
             margin: CGFloat,
             attributes: [NSAttributedString.Key: Any],
-            bullet: String = "•",
+            bullet: String = "-",
             width: CGFloat? = nil,
             lineSpacing: CGFloat = 20
         ) -> CGFloat {
@@ -163,7 +163,7 @@ public class ConsolidatedPDFExporter {
 
         let summaryText = """
         Raum: \(data.roomType.displayName)
-        Volumen: \(String(format: "%.1f", data.volume)) m³
+        Volumen: \(String(format: "%.1f", data.volume)) m3
         Messdatum: \(data.date)
 
         DIN 18041 Konformität: \(String(format: "%.1f", compliancePercentage))%
@@ -198,10 +198,10 @@ public class ConsolidatedPDFExporter {
 
         let metadataText = """
         Grunddaten:
-        • Messung durchgeführt am: \(data.date)
-        • Raumtyp: \(data.roomType.displayName)
-        • Raumvolumen: \(String(format: "%.2f", data.volume)) m³
-        • Anzahl Oberflächenelemente: \(data.surfaces.count)
+        - Messung durchgeführt am: \(data.date)
+        - Raumtyp: \(data.roomType.displayName)
+        - Raumvolumen: \(String(format: "%.2f", data.volume)) m3
+        - Anzahl Oberflächenelemente: \(data.surfaces.count)
 
         Oberflächenkonfiguration:
         """

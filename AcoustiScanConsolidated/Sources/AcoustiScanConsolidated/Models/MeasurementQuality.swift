@@ -325,7 +325,7 @@ public struct MeasurementSession: Codable, Identifiable {
     /// Room description
     public let roomDescription: String?
 
-    /// Room volume in m³
+    /// Room volume in m3
     public let roomVolume: Double
 
     /// All frequency-band measurements with quality data

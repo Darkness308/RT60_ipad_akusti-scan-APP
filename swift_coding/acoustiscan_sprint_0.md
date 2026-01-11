@@ -129,5 +129,5 @@ Erweitert um CSV‑Import/Export‑Funktionen (Datei + String).
 
 ---
 
-📦 **Finale Artefakte Sprint 0-2** sind jetzt vollständig in Klartext (Markdown) und Swift‑Code strukturiert und einsatzbereit.
+[PACKAGE] **Finale Artefakte Sprint 0-2** sind jetzt vollständig in Klartext (Markdown) und Swift‑Code strukturiert und einsatzbereit.
 

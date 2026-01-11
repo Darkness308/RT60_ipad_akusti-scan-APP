@@ -35,12 +35,12 @@ jobs:
           swift build -v
           build_result=$?
           if [ $build_result -eq 0 ]; then
-            echo "✅ AcoustiScan built successfully on attempt $attempt"
+            echo "[DONE] AcoustiScan built successfully on attempt $attempt"
             break
           fi
-          echo "⚠️ AcoustiScan build failed on attempt $attempt"
+          echo "[WARNING]️ AcoustiScan build failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ AcoustiScan build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] AcoustiScan build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "acoustiscan_build_failed=true" >> $GITHUB_OUTPUT
             exit 1
           fi
@@ -61,12 +61,12 @@ jobs:
           swift test -v
           test_result=$?
           if [ $test_result -eq 0 ]; then
-            echo "✅ AcoustiScan tests passed on attempt $attempt"
+            echo "[DONE] AcoustiScan tests passed on attempt $attempt"
             break
           fi
-          echo "⚠️ AcoustiScan tests failed on attempt $attempt"
+          echo "[WARNING]️ AcoustiScan tests failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ AcoustiScan tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] AcoustiScan tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "acoustiscan_tests_failed=true" >> $GITHUB_OUTPUT
             exit 1
           fi
@@ -87,12 +87,12 @@ jobs:
           swift build -v
           build_result=$?
           if [ $build_result -eq 0 ]; then
-            echo "✅ Export module built successfully on attempt $attempt"
+            echo "[DONE] Export module built successfully on attempt $attempt"
             break
           fi
-          echo "⚠️ Export module build failed on attempt $attempt"
+          echo "[WARNING]️ Export module build failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ Export module build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] Export module build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "export_build_failed=true" >> $GITHUB_OUTPUT
             exit 1
           fi
@@ -114,12 +114,12 @@ jobs:
           swift test -v
           test_result=$?
           if [ $test_result -eq 0 ]; then
-            echo "✅ Export module tests passed on attempt $attempt"
+            echo "[DONE] Export module tests passed on attempt $attempt"
             break
           fi
-          echo "⚠️ Export module tests failed on attempt $attempt"
+          echo "[WARNING]️ Export module tests failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ Export module tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] Export module tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "export_tests_failed=true" >> $GITHUB_OUTPUT
             exit 1
           fi
@@ -132,13 +132,13 @@ jobs:
       if: success()
       run: |
         echo "🎉 All builds and tests completed successfully!"
-        echo "✅ AcoustiScanConsolidated: Built and tested"
-        echo "✅ Export Module: Built and tested"
+        echo "[DONE] AcoustiScanConsolidated: Built and tested"
+        echo "[DONE] Export Module: Built and tested"
 
     - name: Report failures
       if: failure()
       run: |
-        echo "❌ Swift build and test workflow failed"
+        echo "[FAILED] Swift build and test workflow failed"
         echo "Check the specific step outputs for detailed error information"
         [ "${{ steps.build_acoustiscan.outputs.acoustiscan_build_failed }}" = "true" ] && echo "- AcoustiScan build failed"
         [ "${{ steps.test_acoustiscan.outputs.acoustiscan_tests_failed }}" = "true" ] && echo "- AcoustiScan tests failed"

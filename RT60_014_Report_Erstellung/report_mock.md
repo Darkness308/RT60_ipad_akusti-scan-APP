@@ -12,7 +12,7 @@ Erstellt mit *AcoustiScan* (MVP)
 
 ## 2. Metadaten
 - **Raumtyp:** Klassenraum
-- **Volumen:** 180 m³
+- **Volumen:** 180 m3
 - **Flächen:** 60 m² Boden, 58 m² Decke, 120 m² Wände
 - **Messmethode:** Impulsantwort, T20/T30-Auswertung
 - **Mikrofon:** USB-Referenzmikro, kalibriert
@@ -38,7 +38,7 @@ Erstellt mit *AcoustiScan* (MVP)
 
 | Frequenz [Hz] | Soll [s] | Ist [s] | Bewertung |
 |---------------|----------|---------|-----------|
-| 125           | 0.70     | 0.85    | 🔴 zu lang |
+| 125           | 0.70     | 0.85    | [ERROR] zu lang |
 | 250           | 0.70     | 0.72    | 🟡 grenzwertig |
 | 500           | 0.65     | 0.65    | 🟢 ok |
 | 1000          | 0.60     | 0.62    | 🟡 leicht zu lang |
