@@ -13,7 +13,7 @@ anschließend in einem PDF-Bericht exportiert werden.
 
 **Zusammenfassung:**
 - ✅ **4 wertvolle Archive** + 1 Duplikat (entfernbar)
-- ✅ **150 Swift-Dateien** dokumentieren Entwicklungshistorie  
+- ✅ **150 Swift-Dateien** dokumentieren Entwicklungshistorie
 - ✅ **Ergänzen das Hauptsystem** (machen es nicht komplizierter)
 - ✅ **Backup + Test-Ressourcen** für das konsolidierte System
 

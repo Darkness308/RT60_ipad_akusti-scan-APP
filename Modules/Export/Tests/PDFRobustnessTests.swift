@@ -18,12 +18,12 @@ final class PDFRobustnessTests: XCTestCase {
             audit: [:]
         )
         
-        // Act 
+        // Act
         let pdfData = PDFReportRenderer().render(emptyModel)
         let pdfText = extractPDFText(pdfData).lowercased()
         
         // Assert - Required elements should still appear even with empty model
-        let requiredFrequencies = ["125", "1000", "4000"]  // Representative frequencies as per DIN 18041 
+        let requiredFrequencies = ["125", "1000", "4000"]  // Representative frequencies as per DIN 18041
         for freq in requiredFrequencies {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq) bei leerem Model")
         }
@@ -111,7 +111,7 @@ final class PDFRobustnessTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(freq), "PDF missing required frequency: \(freq)")
         }
         
-        // Check required DIN values - these should ALWAYS be present  
+        // Check required DIN values - these should ALWAYS be present
         let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF missing required DIN value: \(value)")
@@ -147,12 +147,12 @@ final class PDFRobustnessTests: XCTestCase {
         // DIN values: 0.6, 0.5, 0.1 - now properly implemented as 0.6, 0.5, 0.48 from DIN 18041 standard
         // Core tokens: metadata, device, version, etc. ✓
         
-        // Check if problem statement's DIN values are present (this may fail)  
+        // Check if problem statement's DIN values are present (this may fail)
         let problemStatementDINValues = ["0.6", "0.5", "0.1"]
         var missingProblemDINs: [String] = []
         for value in problemStatementDINValues {
             if !pdfText.contains(value) {
-                missingProblemDINs.append(value) 
+                missingProblemDINs.append(value)
             }
         }
         
@@ -226,7 +226,7 @@ final class PDFRobustnessTests: XCTestCase {
         
         // Should still contain required elements
         XCTAssertTrue(pdfText3.contains("125"), "PDF should contain required frequency 125")
-        XCTAssertTrue(pdfText3.contains("1000"), "PDF should contain required frequency 1000") 
+        XCTAssertTrue(pdfText3.contains("1000"), "PDF should contain required frequency 1000")
         XCTAssertTrue(pdfText3.contains("4000"), "PDF should contain required frequency 4000")
         XCTAssertTrue(pdfText3.contains("0.6"), "PDF should contain required DIN value 0.6")
     }

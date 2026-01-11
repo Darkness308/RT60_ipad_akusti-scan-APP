@@ -27,7 +27,7 @@ public struct AbsorptionRequirement: Codable, Equatable {
     ///   - requiredAbsorption: Additional absorption needed in square meters
     ///   - currentAbsorption: Current room absorption
     ///   - targetAbsorption: Target absorption for compliance
-    public init(frequency: Int, requiredAbsorption: Double, 
+    public init(frequency: Int, requiredAbsorption: Double,
                 currentAbsorption: Double = 0, targetAbsorption: Double = 0) {
         self.frequency = frequency
         self.requiredAbsorption = requiredAbsorption

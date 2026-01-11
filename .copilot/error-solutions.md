@@ -90,7 +90,7 @@ import Combine
 
 **Files typically missing:**
 - PDFReportSnapshotTests.swift
-- RT60CalculatorTests.swift  
+- RT60CalculatorTests.swift
 - ReportModelTests.swift
 
 ### 2. Module Dependency Issues
@@ -105,7 +105,7 @@ import Combine
     path: "Sources/Export",
     sources: [
         "ReportModel.swift",
-        "PDFReportRenderer.swift", 
+        "PDFReportRenderer.swift",
         "PDFExportView.swift"
     ]
 )
@@ -121,7 +121,7 @@ import Combine
 func setupAudioSession() {
     do {
         try AVAudioSession.sharedInstance().setCategory(
-            .record, 
+            .record,
             mode: .measurement,
             options: [.defaultToSpeaker]
         )

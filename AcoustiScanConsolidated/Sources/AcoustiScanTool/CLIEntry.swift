@@ -89,10 +89,10 @@ struct AcoustiScanTool {
         for measurement in measurements.sorted(by: { $0.frequency < $1.frequency }) {
             let dinResult = dinResults.first { $0.frequency == measurement.frequency }
             let status = dinResult?.status.displayName ?? "Unknown"
-            let statusEmoji = dinResult?.status == .withinTolerance ? "✅" : 
+            let statusEmoji = dinResult?.status == .withinTolerance ? "✅" :
                              dinResult?.status == .tooHigh ? "🔴" : "🟠"
             
-            print(String(format: "%s %4d Hz: %5.2f s (%@)", 
+            print(String(format: "%s %4d Hz: %5.2f s (%@)",
                         statusEmoji, measurement.frequency, measurement.rt60, status))
         }
         

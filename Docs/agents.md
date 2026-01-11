@@ -504,7 +504,7 @@ For AI-driven agents:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2025-11-23  
-**Maintainer**: Architecture Team  
+**Document Version**: 1.0
+**Last Updated**: 2025-11-23
+**Maintainer**: Architecture Team
 **Review Cycle**: Quarterly

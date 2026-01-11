@@ -77,8 +77,8 @@ public class ReportHTMLRenderer {
     
     private func renderRT60Section(_ rt60_bands: [[String: Double?]]) -> String {
         var rows = ""
-        for band in rt60_bands.sorted(by: { 
-            ($0["freq_hz"] as? Double ?? 0) < ($1["freq_hz"] as? Double ?? 0) 
+        for band in rt60_bands.sorted(by: {
+            ($0["freq_hz"] as? Double ?? 0) < ($1["freq_hz"] as? Double ?? 0)
         }) {
             let freq = Int(band["freq_hz"] as? Double ?? 0)
             if let t20_s = band["t20_s"], let value = t20_s {
@@ -106,8 +106,8 @@ public class ReportHTMLRenderer {
     
     private func renderDINTargetsSection(_ din_targets: [[String: Double]]) -> String {
         var rows = ""
-        for target in din_targets.sorted(by: { 
-            ($0["freq_hz"] ?? 0) < ($1["freq_hz"] ?? 0) 
+        for target in din_targets.sorted(by: {
+            ($0["freq_hz"] ?? 0) < ($1["freq_hz"] ?? 0)
         }) {
             let freq = Int(target["freq_hz"] ?? 0)
             let t_soll = String(format: "%.2f", target["t_soll"] ?? 0)

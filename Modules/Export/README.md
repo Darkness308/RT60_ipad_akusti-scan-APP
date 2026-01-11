@@ -18,7 +18,7 @@ import ReportExport
 let model = ReportModel(
     metadata: [
         "device": "iPadPro",
-        "app_version": "1.0.0", 
+        "app_version": "1.0.0",
         "date": "2025-07-21",
         "room": "Klassenraum A"
     ],
@@ -68,7 +68,7 @@ swift test
 
 Test results:
 - ✅ Core tokens present in both outputs
-- ✅ Frequency labels match between PDF and HTML  
+- ✅ Frequency labels match between PDF and HTML
 - ✅ DIN target values consistent
 - ✅ Missing values shown as "-" in both formats
 
@@ -107,7 +107,7 @@ func convertToReportModel(_ reportData: ReportData) -> ReportModel {
 - German language labels (Gerät, Metadaten, etc.)
 - Structured sections: metadata, RT60 frequencies, DIN targets, recommendations, audit
 
-### PDF Output  
+### PDF Output
 - Cross-platform compatibility (UIKit and non-UIKit)
 - Same content structure as HTML
 - Consistent German terminology

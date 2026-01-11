@@ -6,7 +6,7 @@
 //
 //  Produktionsreifer PDF-Export: erzeugt mehrseitige Reports mit
 //  Deckblatt, Metadaten, RT60-Kurven, DIN-Ampellogik und Maßnahmenblock.
-//  
+//
 //  ✅ ENHANCED: Now integrates with 48-parameter framework
 //  ✅ ENHANCED: Professional gutachterliche reports
 //  ✅ ENHANCED: Automated build integration
@@ -170,7 +170,7 @@ struct PDFExportView: View {
         title.draw(at: CGPoint(x: 72, y: 72), withAttributes: attrs)
         
         let frameworkText = """
-        Erweiterte akustische Bewertung basierend auf dem validierten 
+        Erweiterte akustische Bewertung basierend auf dem validierten
         48-Parameter-Framework:
         
         • Klangfarbe: Hell-Dunkel-Balance, Schärfe
