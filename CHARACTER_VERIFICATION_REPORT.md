@@ -1,7 +1,7 @@
 # Character Verification Report
 
 **Date:** 2026-01-11  
-**PR:** #155 - Identifiziere und entferne alle störenden zeichen in jeder datei  
+**PR:** #155 - Identify and remove all problematic characters in every file  
 **Status:** ✅ VERIFIED CLEAN
 
 ## Executive Summary
@@ -105,13 +105,14 @@ PR #181 ("Add missing final newlines to configuration files") previously address
 
 ## Verification Script
 
-A Python verification script has been created and can be run anytime to verify the repository remains clean:
-
-```bash
-python3 /tmp/verify_no_problematic_characters.py
-```
-
-The script checks all 157 text files in the repository and reports any issues found.
+A Python verification script was created and used to verify the repository. The script checks all 157 text files in the repository and reports any issues found. If needed in the future, a similar verification script can be created to check for:
+- UTF-8 BOM detection
+- Zero-width characters
+- Non-standard spaces
+- Directional formatting characters
+- Line ending consistency
+- Trailing whitespace
+- Invalid UTF-8 encoding
 
 ## Conclusion
 
