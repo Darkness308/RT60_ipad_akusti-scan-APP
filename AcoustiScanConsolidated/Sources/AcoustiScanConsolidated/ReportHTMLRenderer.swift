@@ -5,15 +5,15 @@ import Foundation
 
 /// HTML renderer for ReportModel that produces UTF-8 HTML content
 public class ReportHTMLRenderer {
-    
+
     public init() {}
-    
+
     /// Render ReportModel to HTML data
     public func render(_ model: ReportModel) -> Data {
         let html = generateHTML(model)
         return html.data(using: .utf8) ?? Data()
     }
-    
+
     private func generateHTML(_ model: ReportModel) -> String {
         return """
         <!DOCTYPE html>
@@ -43,14 +43,14 @@ public class ReportHTMLRenderer {
                 <h1>RT60 Bericht</h1>
                 <p>RT60-Messung und DIN 18041-Bewertung</p>
             </div>
-            
+
             \(renderMetadataSection(model.metadata))
             \(renderRT60Section(model.rt60_bands))
             \(renderDINTargetsSection(model.din_targets))
             \(renderValiditySection(model.validity))
             \(renderRecommendationsSection(model.recommendations))
             \(renderAuditSection(model.audit))
-            
+
             <div class="footer">
                 <p>Erstellt mit AcoustiScan Consolidated Tool</p>
             </div>
@@ -58,13 +58,13 @@ public class ReportHTMLRenderer {
         </html>
         """
     }
-    
+
     private func renderMetadataSection(_ metadata: [String: String]) -> String {
         var rows = ""
         for (key, value) in metadata.sorted(by: { $0.key < $1.key }) {
             rows += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>\n"
         }
-        
+
         return """
         <div class="section">
             <h2>Metadaten</h2>
@@ -74,11 +74,11 @@ public class ReportHTMLRenderer {
         </div>
         """
     }
-    
+
     private func renderRT60Section(_ rt60_bands: [[String: Double?]]) -> String {
         var rows = ""
-        for band in rt60_bands.sorted(by: { 
-            ($0["freq_hz"] as? Double ?? 0) < ($1["freq_hz"] as? Double ?? 0) 
+        for band in rt60_bands.sorted(by: {
+            ($0["freq_hz"] as? Double ?? 0) < ($1["freq_hz"] as? Double ?? 0)
         }) {
             let freq = Int(band["freq_hz"] as? Double ?? 0)
             if let t20_s = band["t20_s"], let value = t20_s {
@@ -88,7 +88,7 @@ public class ReportHTMLRenderer {
                 rows += "<tr><td>\(freq)</td><td>-</td></tr>\n"
             }
         }
-        
+
         return """
         <div class="section">
             <h2>RT60 je Frequenz</h2>
@@ -103,18 +103,18 @@ public class ReportHTMLRenderer {
         </div>
         """
     }
-    
+
     private func renderDINTargetsSection(_ din_targets: [[String: Double]]) -> String {
         var rows = ""
-        for target in din_targets.sorted(by: { 
-            ($0["freq_hz"] ?? 0) < ($1["freq_hz"] ?? 0) 
+        for target in din_targets.sorted(by: {
+            ($0["freq_hz"] ?? 0) < ($1["freq_hz"] ?? 0)
         }) {
             let freq = Int(target["freq_hz"] ?? 0)
             let t_soll = String(format: "%.2f", target["t_soll"] ?? 0)
             let tol = String(format: "%.2f", target["tol"] ?? 0)
             rows += "<tr><td>\(freq)</td><td>\(t_soll)</td><td>\(tol)</td></tr>\n"
         }
-        
+
         return """
         <div class="section">
             <h2>DIN 18041 Zielwerte</h2>
@@ -129,13 +129,13 @@ public class ReportHTMLRenderer {
         </div>
         """
     }
-    
+
     private func renderValiditySection(_ validity: [String: String]) -> String {
         var rows = ""
         for (key, value) in validity.sorted(by: { $0.key < $1.key }) {
             rows += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>\n"
         }
-        
+
         return """
         <div class="section">
             <h2>Gültigkeit</h2>
@@ -145,10 +145,10 @@ public class ReportHTMLRenderer {
         </div>
         """
     }
-    
+
     private func renderRecommendationsSection(_ recommendations: [String]) -> String {
         let items = recommendations.map { "<li>\(escapeHTML($0))</li>" }.joined(separator: "\n")
-        
+
         return """
         <div class="section">
             <h2>Empfehlungen</h2>
@@ -158,13 +158,13 @@ public class ReportHTMLRenderer {
         </div>
         """
     }
-    
+
     private func renderAuditSection(_ audit: [String: String]) -> String {
         var rows = ""
         for (key, value) in audit.sorted(by: { $0.key < $1.key }) {
             rows += "<tr><td>\(escapeHTML(key))</td><td>\(escapeHTML(value))</td></tr>\n"
         }
-        
+
         return """
         <div class="section">
             <h2>Audit-Informationen</h2>
@@ -174,7 +174,7 @@ public class ReportHTMLRenderer {
         </div>
         """
     }
-    
+
     /// Escape HTML entities to prevent XSS and ensure proper rendering
     private func escapeHTML(_ text: String) -> String {
         return text
