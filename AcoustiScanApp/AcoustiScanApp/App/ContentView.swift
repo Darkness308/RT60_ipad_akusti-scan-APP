@@ -10,11 +10,11 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var surfaceStore = SurfaceStore()
     @StateObject private var materialManager = MaterialManager()
-    
+
     #if canImport(RoomPlan)
     @StateObject private var roomScanCoordinator = RoomScanCoordinator()
     #endif
-    
+
     var body: some View {
         TabView {
             // Scanner Tab
@@ -31,7 +31,7 @@ struct ContentView: View {
                 Label("Scanner", systemImage: "camera.fill")
             }
             .accessibilityIdentifier("scannerTab")
-            
+
             // RT60 Tab
             NavigationView {
                 RT60View(store: surfaceStore)
@@ -40,7 +40,7 @@ struct ContentView: View {
                 Label("RT60", systemImage: "waveform")
             }
             .accessibilityIdentifier("rt60Tab")
-            
+
             // Results Tab
             NavigationView {
                 ResultsView(store: surfaceStore)
@@ -49,7 +49,7 @@ struct ContentView: View {
                 Label("Results", systemImage: "chart.bar.fill")
             }
             .accessibilityIdentifier("resultsTab")
-            
+
             // Export Tab
             NavigationView {
                 ExportView(store: surfaceStore)
@@ -58,7 +58,7 @@ struct ContentView: View {
                 Label(LocalizationKeys.export.localized(comment: "Export"), systemImage: "square.and.arrow.up")
             }
             .accessibilityIdentifier("exportTab")
-            
+
             // Materials Tab
             NavigationView {
                 MaterialEditorView(materialManager: materialManager)
