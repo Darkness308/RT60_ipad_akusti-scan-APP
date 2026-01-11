@@ -48,7 +48,7 @@ jobs:
             echo "✅ Linting successful on attempt $attempt"
             break
           fi
-          echo "⚠️ Linting failed on attempt $attempt"
+          echo "⚠ Linting failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ Linting failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "lint_failed=true" >> $GITHUB_OUTPUT
@@ -70,7 +70,7 @@ jobs:
             echo "✅ Format check successful on attempt $attempt"
             break
           fi
-          echo "⚠️ Format check failed on attempt $attempt"
+          echo "⚠ Format check failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ Format check failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "format_failed=true" >> $GITHUB_OUTPUT
@@ -101,7 +101,7 @@ jobs:
             echo "✅ Dependencies resolved successfully on attempt $attempt"
             break
           fi
-          echo "⚠️ Dependencies resolution failed on attempt $attempt"
+          echo "⚠ Dependencies resolution failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ Dependencies resolution failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "deps_failed=true" >> $GITHUB_OUTPUT
@@ -145,7 +145,7 @@ jobs:
             echo "✅ Tests passed on attempt $attempt"
             break
           fi
-          echo "⚠️ Tests failed on attempt $attempt"
+          echo "⚠ Tests failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ Tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "tests_failed=true" >> $GITHUB_OUTPUT
@@ -173,7 +173,7 @@ jobs:
             echo "✅ Export module built successfully on attempt $attempt"
             break
           fi
-          echo "⚠️ Export module build failed on attempt $attempt"
+          echo "⚠ Export module build failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ Export module build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "export_build_failed=true" >> $GITHUB_OUTPUT
@@ -198,7 +198,7 @@ jobs:
             echo "✅ Export module tests passed on attempt $attempt"
             break
           fi
-          echo "⚠️ Export module tests failed on attempt $attempt"
+          echo "⚠ Export module tests failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ Export module tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "export_tests_failed=true" >> $GITHUB_OUTPUT
@@ -217,7 +217,7 @@ jobs:
         # Check Tools directory
         if [ -d "Tools/linters" ]; then
           echo "📋 Making linter executable..."
-          chmod +x Tools/linters/report_key_coverage.swift || echo "⚠️ Could not make linter executable"
+          chmod +x Tools/linters/report_key_coverage.swift || echo "⚠ Could not make linter executable"
         fi
         
         # Test if we can compile reporthtml tool
@@ -225,7 +225,7 @@ jobs:
           echo "📊 Building HTML report tool..."
           mkdir -p Artifacts
           swiftc -o reporthtml Tools/reporthtml/main.swift || {
-            echo "⚠️ Could not build HTML report tool"
+            echo "⚠ Could not build HTML report tool"
             echo "tools_build_failed=true" >> $GITHUB_OUTPUT
           }
         fi
@@ -235,7 +235,7 @@ jobs:
           echo "📝 Testing LogParser..."
           cd Tools/LogParser
           swift -emit-executable RT60LogParser.swift -o rt60parser || {
-            echo "⚠️ Could not build LogParser"
+            echo "⚠ Could not build LogParser"
             echo "logparser_build_failed=true" >> $GITHUB_OUTPUT
           }
           cd ../..
@@ -251,7 +251,7 @@ jobs:
         if [ -f "./reporthtml" ] && [ -f "Tools/reporthtml/sample.report.model.json" ]; then
           echo "📊 Generating HTML report..."
           ./reporthtml Tools/reporthtml/sample.report.model.json -o Artifacts/report.html || {
-            echo "⚠️ Could not generate HTML report"
+            echo "⚠ Could not generate HTML report"
           }
         fi
         
@@ -259,7 +259,7 @@ jobs:
         if [ -x "Tools/linters/report_key_coverage.swift" ] && [ -f "Tools/reporthtml/sample.report.model.json" ]; then
           echo "📋 Running key coverage linter..."
           Tools/linters/report_key_coverage.swift Tools/reporthtml/sample.report.model.json || {
-            echo "⚠️ Key coverage linter failed"
+            echo "⚠ Key coverage linter failed"
           }
         fi
         

@@ -128,7 +128,7 @@ The system tracks:
 4. Test the solution thoroughly
 5. Update this README with new capabilities
 
-## 🛡️ Quality Assurance
+## 🛡 Quality Assurance
 
 ### Validation Criteria
 - ✅ All fixes maintain RT60 calculation accuracy
