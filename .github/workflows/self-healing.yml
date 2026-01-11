@@ -102,7 +102,7 @@ jobs:
                   errors: relevantLines.join('\n')
                 });
               } catch (e) {
-                console.log(`⚠️ Could not fetch logs for job ${job.name}: ${e.message}`);
+                console.log(`⚠ Could not fetch logs for job ${job.name}: ${e.message}`);
               }
             }
           }
@@ -211,7 +211,7 @@ jobs:
 
           ---
 
-          ⏱️ **Auto-close:** This issue will be closed automatically when CI passes.
+          ⏱ **Auto-close:** This issue will be closed automatically when CI passes.
           `;
 
           try {
@@ -290,7 +290,7 @@ jobs:
           const issueTitle = `🚨 [HUMAN REQUIRED] CI Failure after ${process.env.MAX_HEAL_ATTEMPTS} auto-fix attempts`;
 
           const issueBody = `
-          ## ⚠️ Automatic Healing Failed
+          ## ⚠ Automatic Healing Failed
 
           **The AI coding agents were unable to fix this CI failure after ${process.env.MAX_HEAL_ATTEMPTS} attempts.**
 
@@ -321,7 +321,7 @@ jobs:
              \`\`\`
           3. 🔧 **Fix** the underlying issue
           4. ✅ **Verify** the fix passes CI
-          5. 🗑️ **Close** this issue once resolved
+          5. 🗑 **Close** this issue once resolved
 
           ### Error Summary
           \`\`\`
