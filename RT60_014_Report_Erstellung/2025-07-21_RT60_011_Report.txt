@@ -1,48 +1,48 @@
-XL2 RT60 Reporting:		MyProject\2025-07-21_RT60_011_Report.txt
+XL2 RT60 Reporting:        MyProject\2025-07-21_RT60_011_Report.txt
 -------------------
 
 
 # Hardware Configuration
-	Device Info:    	XL2, SNo. A2A-08559-E0, FW4.94
-	Mic Type:       	NTi Audio M4260, SNo. 4753, User calibrated 2025-07-20  13:19
-	Mic Sensitivity:	31.0 mV/Pa
-	Time Zone:      	UTC+02:00 (Europe/Berlin, DST)
+    Device Info:        XL2, SNo. A2A-08559-E0, FW4.94
+    Mic Type:           NTi Audio M4260, SNo. 4753, User calibrated 2025-07-20  13:19
+    Mic Sensitivity:    31.0 mV/Pa
+    Time Zone:          UTC+02:00 (Europe/Berlin, DST)
 
 # Measurement Setup
-	Profile:        	Full mode
-	Resolution:     	1/1 Octave
-	Range:          	40 - 140 dB
+    Profile:            Full mode
+    Resolution:         1/1 Octave
+    Range:              40 - 140 dB
 
 
 # Time
-	Start:          	2025-07-21, 15:04:28
-	End:            	2025-07-21, 15:05:07
+    Start:              2025-07-21, 15:04:28
+    End:                2025-07-21, 15:05:07
 
 # RT60 Average Results
 
-	Band    	RT60(T20)	MeasUnct
-	[Hz]    	[s]      	[%]
-	63      	-.--     	-.--
-	125     	2.67     	6.94
-	250     	2.53     	5.31
-	500     	3.01     	3.27
-	1000    	2.38     	2.74
-	2000    	2.28     	1.98
-	4000    	1.91     	1.53
-	8000    	1.58     	-.--
+    Band        RT60(T20)    MeasUnct
+    [Hz]        [s]          [%]
+    63          -.--         -.--
+    125         2.67         6.94
+    250         2.53         5.31
+    500         3.01         3.27
+    1000        2.38         2.74
+    2000        2.28         1.98
+    4000        1.91         1.53
+    8000        1.58         -.--
 
 
 # RT60 Cycle Results
 
-	Band [Hz]:	63      	        	125     	        	250     	        	500     	        	1000    	        	2000    	        	4000    	        	8000
+    Band [Hz]:    63                      125                     250                     500                     1000                    2000                    4000                    8000
 
-	          	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn	T20     	Correltn
-	CYCLE     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]     	[s]     	[%]
+                  T20         Correltn    T20         Correltn    T20         Correltn    T20         Correltn    T20         Correltn    T20         Correltn    T20         Correltn    T20         Correltn
+    CYCLE         [s]         [%]         [s]         [%]         [s]         [%]         [s]         [%]         [s]         [%]         [s]         [%]         [s]         [%]         [s]         [%]
 
-	01        	-.--    	-.--    	2.25    	99.51   	-.--    	-.--    	3.04    	99.76   	-.--    	-.--    	-.--    	-.--    	-.--    	-.--    	-.--    	-.--
-	02        	-.--    	-.--    	2.90    	99.65   	2.49    	99.90   	2.99    	99.68   	2.41    	99.88   	2.31    	99.97   	1.93    	99.95   	-.--    	-.--
-	03        	-.--    	-.--    	2.82    	99.80   	2.43    	99.52   	2.99    	99.81   	2.34    	99.83   	2.29    	99.97   	1.88    	99.99   	-.--    	-.--
-	04        	-.--    	-.--    	2.69    	99.87   	2.67    	99.86   	3.04    	99.84   	2.40    	99.90   	2.23    	99.97   	1.92    	99.98   	1.58    	98.60
+    01            -.--        -.--        2.25        99.51       -.--        -.--        3.04        99.76       -.--        -.--        -.--        -.--        -.--        -.--        -.--        -.--
+    02            -.--        -.--        2.90        99.65       2.49        99.90       2.99        99.68       2.41        99.88       2.31        99.97       1.93        99.95       -.--        -.--
+    03            -.--        -.--        2.82        99.80       2.43        99.52       2.99        99.81       2.34        99.83       2.29        99.97       1.88        99.99       -.--        -.--
+    04            -.--        -.--        2.69        99.87       2.67        99.86       3.04        99.84       2.40        99.90       2.23        99.97       1.92        99.98       1.58        98.60
 
 #CheckSum
-	D547EADF0139AF4D5F86FB29D4CE4AA0
+    D547EADF0139AF4D5F86FB29D4CE4AA0
