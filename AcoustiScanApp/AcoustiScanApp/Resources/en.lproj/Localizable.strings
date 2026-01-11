@@ -98,6 +98,10 @@
 "critical_action_required" = "Critical - Action Required";
 "partially_compliant" = "Partially Compliant - Improvements Recommended";
 "conform_din" = "Compliant - DIN 18041 Fulfilled";
+"results" = "Results";
+"no_data_available" = "No surface data available";
+"scan_room_to_see_results" = "Scan a room or add surfaces manually to see DIN 18041 classification results";
+"classification_results_placeholder" = "DIN 18041 compliance results will be displayed here";
 
 // MARK: - Enhanced PDF Report
 

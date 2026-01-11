@@ -98,6 +98,10 @@
 "critical_action_required" = "Kritisch - Maßnahmen erforderlich";
 "partially_compliant" = "Teilweise konform - Verbesserungen empfohlen";
 "conform_din" = "Konform - DIN 18041 erfüllt";
+"results" = "Ergebnisse";
+"no_data_available" = "Keine Flächendaten verfügbar";
+"scan_room_to_see_results" = "Scannen Sie einen Raum oder fügen Sie manuell Flächen hinzu, um DIN 18041 Klassifizierungsergebnisse zu sehen";
+"classification_results_placeholder" = "DIN 18041 Konformitätsergebnisse werden hier angezeigt";
 
 // MARK: - Enhanced PDF Report
 
