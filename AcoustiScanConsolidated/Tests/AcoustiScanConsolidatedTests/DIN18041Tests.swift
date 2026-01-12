@@ -53,9 +53,14 @@ final class DIN18041ModuleTests: XCTestCase {
         // Speech frequencies (500-2000 Hz) should have slightly lower RT60
         let speechFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 2000 }
         let otherFreqTargets = targets.filter { $0.frequency < 500 || $0.frequency > 2000 }
-        XCTAssertTrue(speechFreqTargets.allSatisfy { speech in
-            otherFreqTargets.allSatisfy { other in speech.targetRT60 <= other.targetRT60 }
-        })
+        
+        // More explicit check to avoid nested allSatisfy issues on some platforms
+        for speech in speechFreqTargets {
+            for other in otherFreqTargets {
+                XCTAssertLessThanOrEqual(speech.targetRT60, other.targetRT60,
+                    "Speech frequency \(speech.frequency) Hz (\(speech.targetRT60)) should be <= other frequency \(other.frequency) Hz (\(other.targetRT60))")
+            }
+        }
     }
     
     func testConferenceRoomTargets() {
@@ -70,9 +75,14 @@ final class DIN18041ModuleTests: XCTestCase {
         // Speech frequencies (500-4000 Hz) should have optimized (lower) RT60
         let speechFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 4000 }
         let lowFreqTargets = targets.filter { $0.frequency < 500 }
-        XCTAssertTrue(speechFreqTargets.allSatisfy { speech in
-            lowFreqTargets.allSatisfy { low in speech.targetRT60 < low.targetRT60 }
-        })
+        
+        // More explicit check to avoid nested allSatisfy issues on some platforms
+        for speech in speechFreqTargets {
+            for low in lowFreqTargets {
+                XCTAssertLessThan(speech.targetRT60, low.targetRT60,
+                    "Speech frequency \(speech.frequency) Hz (\(speech.targetRT60)) should be < low frequency \(low.frequency) Hz (\(low.targetRT60))")
+            }
+        }
     }
     
     func testLectureHallTargets() {
@@ -87,15 +97,25 @@ final class DIN18041ModuleTests: XCTestCase {
         // Low frequencies (≤250 Hz) should have higher RT60 for warmth
         let lowFreqTargets = targets.filter { $0.frequency <= 250 }
         let midFreqTargets = targets.filter { $0.frequency > 250 && $0.frequency < 4000 }
-        XCTAssertTrue(lowFreqTargets.allSatisfy { low in
-            midFreqTargets.allSatisfy { mid in low.targetRT60 > mid.targetRT60 }
-        })
+        
+        // More explicit check to avoid nested allSatisfy issues on some platforms
+        for low in lowFreqTargets {
+            for mid in midFreqTargets {
+                XCTAssertGreaterThan(low.targetRT60, mid.targetRT60,
+                    "Low frequency \(low.frequency) Hz (\(low.targetRT60)) should be > mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
+            }
+        }
         
         // High frequencies (≥4000 Hz) should have lower RT60 for clarity
         let highFreqTargets = targets.filter { $0.frequency >= 4000 }
-        XCTAssertTrue(highFreqTargets.allSatisfy { high in
-            midFreqTargets.allSatisfy { mid in high.targetRT60 < mid.targetRT60 }
-        })
+        
+        // More explicit check to avoid nested allSatisfy issues on some platforms
+        for high in highFreqTargets {
+            for mid in midFreqTargets {
+                XCTAssertLessThan(high.targetRT60, mid.targetRT60,
+                    "High frequency \(high.frequency) Hz (\(high.targetRT60)) should be < mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
+            }
+        }
     }
     
     func testMusicRoomTargets() {
@@ -114,13 +134,23 @@ final class DIN18041ModuleTests: XCTestCase {
             return
         }
         let midFreqTargets = targets.filter { $0.frequency > 125 && $0.frequency < 4000 }
-        XCTAssertTrue(midFreqTargets.allSatisfy { mid in lowFreqTarget.targetRT60 > mid.targetRT60 })
+        
+        // More explicit check to avoid nested allSatisfy issues on some platforms
+        for mid in midFreqTargets {
+            XCTAssertGreaterThan(lowFreqTarget.targetRT60, mid.targetRT60,
+                "Low frequency 125 Hz (\(lowFreqTarget.targetRT60)) should be > mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
+        }
         
         // High frequencies (≥4000 Hz) should have controlled brilliance
         let highFreqTargets = targets.filter { $0.frequency >= 4000 }
-        XCTAssertTrue(highFreqTargets.allSatisfy { high in
-            midFreqTargets.allSatisfy { mid in high.targetRT60 < mid.targetRT60 }
-        })
+        
+        // More explicit check to avoid nested allSatisfy issues on some platforms
+        for high in highFreqTargets {
+            for mid in midFreqTargets {
+                XCTAssertLessThan(high.targetRT60, mid.targetRT60,
+                    "High frequency \(high.frequency) Hz (\(high.targetRT60)) should be < mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
+            }
+        }
     }
     
     func testSportsHallTargets() {
@@ -136,9 +166,14 @@ final class DIN18041ModuleTests: XCTestCase {
         // Speech/PA frequencies (500-2000 Hz) should have better clarity
         let paFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 2000 }
         let otherFreqTargets = targets.filter { $0.frequency < 500 || $0.frequency > 2000 }
-        XCTAssertTrue(paFreqTargets.allSatisfy { pa in
-            otherFreqTargets.allSatisfy { other in pa.targetRT60 <= other.targetRT60 }
-        })
+        
+        // More explicit check to avoid nested allSatisfy issues on some platforms
+        for pa in paFreqTargets {
+            for other in otherFreqTargets {
+                XCTAssertLessThanOrEqual(pa.targetRT60, other.targetRT60,
+                    "PA frequency \(pa.frequency) Hz (\(pa.targetRT60)) should be <= other frequency \(other.frequency) Hz (\(other.targetRT60))")
+            }
+        }
     }
     
     func testFrequencyCoverage() {
