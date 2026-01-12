@@ -1,7 +1,7 @@
 # Resolution: SwiftLint/SwiftFormat Violations in PDFReportRenderer.swift
 
 ## Issues Addressed
-- #91: CI Failure - SwiftFormat violations  
+- #91: CI Failure - SwiftFormat violations
 - #87: CI Failure - SwiftFormat violations
 - #80, #78, #75: Related CI failures
 
@@ -54,7 +54,7 @@ To verify the fix, the CI workflow runs:
 # SwiftLint check
 swiftlint --strict
 
-# SwiftFormat check  
+# SwiftFormat check
 swiftformat --lint .
 ```
 
