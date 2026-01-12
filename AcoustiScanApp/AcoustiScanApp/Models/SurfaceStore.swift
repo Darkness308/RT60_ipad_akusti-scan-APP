@@ -12,7 +12,7 @@ import Combine
 public struct Surface: Identifiable, Codable {
     public let id: UUID
     public var name: String
-    public var area: Double  // in m²
+    public var area: Double  // in m^2
     public var material: AcousticMaterial?
 
     public init(id: UUID = UUID(), name: String, area: Double, material: AcousticMaterial? = nil) {
@@ -87,7 +87,7 @@ public class SurfaceStore: ObservableObject {
 
     /// Calculate total absorption for a given frequency
     /// - Parameter frequency: Frequency in Hz
-    /// - Returns: Total absorption in m² Sabine
+    /// - Returns: Total absorption in m^2 Sabine
     /// - Note: Converts Float coefficients to Double for calculation precision
     public func totalAbsorption(at frequency: Int) -> Double {
         return surfaces.reduce(0.0) { total, surface in

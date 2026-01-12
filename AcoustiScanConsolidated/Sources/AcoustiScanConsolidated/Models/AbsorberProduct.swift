@@ -79,7 +79,7 @@ public struct AbsorberProduct: Codable, Equatable {
         return area * pricePerSquareMeter
     }
 
-    /// Performance-to-cost ratio (absorption coefficient per euro per m²)
+    /// Performance-to-cost ratio (absorption coefficient per euro per m^2)
     public var costEfficiency: Double {
         guard pricePerSquareMeter > 0 else { return 0 }
         return absorptionCoefficient / pricePerSquareMeter

@@ -17,7 +17,7 @@ struct RT60ClassificationView: View {
                     Text("Frequenz \(result.frequency) Hz:")
                         .accessibilityHidden(true)
                     Spacer()
-                    Text(String(format: "%.2f s → %@", result.measuredRT60, result.status.rawValue))
+                    Text(String(format: "%.2f s -> %@", result.measuredRT60, result.status.rawValue))
                         .foregroundColor(result.status == .withinTolerance ? .green : .red)
                         .accessibilityHidden(true)
                 }

@@ -239,7 +239,7 @@ public struct PDFPageRenderer {
             LocalizationKeys.totalArea,
             comment: "Total area label"
         )
-        let areaText = "\(areaLabel): \(String(format: "%.1f", totalArea)) m²"
+        let areaText = "\(areaLabel): \(String(format: "%.1f", totalArea)) m^2"
         areaText.draw(at: CGPoint(x: margin, y: y), withAttributes: infoAttrs)
         y += PDFStyleConfiguration.Spacing.xxl
 

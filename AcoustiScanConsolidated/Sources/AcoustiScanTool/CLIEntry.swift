@@ -189,7 +189,7 @@ struct AcoustiScanTool {
             for parameter in parameters.prefix(3) { // Show first 3 of each category
                 print("  - \(parameter.name)")
                 print("    \(parameter.definition)")
-                print("    Scale: \(parameter.scaleLabel.joined(separator: " → "))")
+                print("    Scale: \(parameter.scaleLabel.joined(separator: " -> "))")
             }
 
             if parameters.count > 3 {

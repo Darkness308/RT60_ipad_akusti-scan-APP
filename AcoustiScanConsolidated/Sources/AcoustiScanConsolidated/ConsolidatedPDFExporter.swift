@@ -216,7 +216,7 @@ public class ConsolidatedPDFExporter {
 
         let surfaceLines = data.surfaces.map { surface in
             let areaFormatted = String(format: "%.2f", surface.area)
-            return "\(surface.name): \(areaFormatted) m² - \(surface.material.name)"
+            return "\(surface.name): \(areaFormatted) m^2 - \(surface.material.name)"
         }
         _ = PDFListRenderer.drawBulletedList(
             surfaceLines,
