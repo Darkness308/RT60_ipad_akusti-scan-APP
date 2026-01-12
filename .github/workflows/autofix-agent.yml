@@ -345,14 +345,14 @@ jobs:
 
         # Create detailed commit message
         COMMIT_MSG="fix(ci): auto-fix $ERROR_TYPE issues [attempt $ATTEMPT]
-
-Automatic fixes applied by Self-Healing CI:
-- Error type: $ERROR_TYPE
-- Attempt: $ATTEMPT of $MAX_FIX_ATTEMPTS
-- Verification: $VERIFY_STATUS
-
-Changes made by autofix-agent workflow.
-"
+        
+        Automatic fixes applied by Self-Healing CI:
+        - Error type: $ERROR_TYPE
+        - Attempt: $ATTEMPT of $MAX_FIX_ATTEMPTS
+        - Verification: $VERIFY_STATUS
+        
+        Changes made by autofix-agent workflow.
+        "
 
         git commit -m "$COMMIT_MSG" || {
           echo "Nothing to commit"
