@@ -96,20 +96,20 @@ public struct PDFFormatHelpers {
     }
 
     /// Formats volume with cubic meters unit
-    /// - Parameter volume: Volume in m³
+    /// - Parameter volume: Volume in m^3
     /// - Returns: Formatted string with unit
     public static func formattedVolume(_ volume: Double?) -> String {
-        guard let volume = volume else { return "- m³" }
-        guard volume.isFinite && !volume.isNaN else { return "- m³" }
-        return String(format: "%.1f m³", volume)
+        guard let volume = volume else { return "- m^3" }
+        guard volume.isFinite && !volume.isNaN else { return "- m^3" }
+        return String(format: "%.1f m^3", volume)
     }
 
     /// Formats area with square meters unit
-    /// - Parameter area: Area in m²
+    /// - Parameter area: Area in m^2
     /// - Returns: Formatted string with unit
     public static func formattedArea(_ area: Double?) -> String {
-        guard let area = area else { return "- m²" }
-        guard area.isFinite && !area.isNaN else { return "- m²" }
-        return String(format: "%.1f m²", area)
+        guard let area = area else { return "- m^2" }
+        guard area.isFinite && !area.isNaN else { return "- m^2" }
+        return String(format: "%.1f m^2", area)
     }
 }
