@@ -109,6 +109,7 @@ final class DIN18041ModuleTests: XCTestCase {
         // High frequencies (≥4000 Hz) should have lower RT60 for clarity
         let highFreqTargets = targets.filter { $0.frequency >= 4000 }
         
+        // More explicit check to avoid nested allSatisfy issues on some platforms
         for high in highFreqTargets {
             for mid in midFreqTargets {
                 XCTAssertLessThan(high.targetRT60, mid.targetRT60,
@@ -143,6 +144,7 @@ final class DIN18041ModuleTests: XCTestCase {
         // High frequencies (≥4000 Hz) should have controlled brilliance
         let highFreqTargets = targets.filter { $0.frequency >= 4000 }
         
+        // More explicit check to avoid nested allSatisfy issues on some platforms
         for high in highFreqTargets {
             for mid in midFreqTargets {
                 XCTAssertLessThan(high.targetRT60, mid.targetRT60,
