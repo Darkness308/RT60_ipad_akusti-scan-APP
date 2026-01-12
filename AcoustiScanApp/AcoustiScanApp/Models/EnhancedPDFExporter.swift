@@ -17,7 +17,7 @@ import PDFKit
 public class EnhancedPDFExporter {
 
     public init() {}
-
+    
     #if canImport(UIKit)
     /// Generate enhanced PDF report with charts and traffic light system
     /// - Parameters:

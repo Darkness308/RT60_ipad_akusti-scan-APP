@@ -18,7 +18,7 @@ struct PDFExportView: View {
     let deviceInfo = "XL2, SNo. A2A-08559-E0, FW4.94"
     let micInfo = "NTi Audio M4260, SNo. 4753"
     let checksum = "D547EADF0139AF4D5F86FB29D4CE4AA0"
-
+    
     let rt60Data: [RT60Data] = [
         RT60Data(frequency: 63, rt60: nil, uncertainty: nil, targetRange: 0.8...1.2, status: "Nicht gemessen"),
         RT60Data(frequency: 125, rt60: 2.67, uncertainty: 6.94, targetRange: 0.6...0.8, status: "Zu hoch"),
@@ -29,22 +29,22 @@ struct PDFExportView: View {
         RT60Data(frequency: 4000, rt60: 1.91, uncertainty: 1.53, targetRange: 0.4...0.6, status: "Zu hoch"),
         RT60Data(frequency: 8000, rt60: 1.58, uncertainty: nil, targetRange: 0.3...0.5, status: "Zu hoch")
     ]
-
+    
     var body: some View {
         Button("PDF exportieren") {
             generatePDF()
         }
     }
-
+    
     func generatePDF() {
         let pdfDocument = PDFDocument()
         let pdfPage = PDFPage()
-
+        
         // PDF-Renderer
         let renderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 595, height: 842)) // A4
         let data = renderer.pdfData { context in
             context.beginPage()
-
+            
             // Titel
             let titleAttributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.boldSystemFont(ofSize: 24),
@@ -52,7 +52,7 @@ struct PDFExportView: View {
             ]
             let title = NSAttributedString(string: "Raumakustik-Bericht\n", attributes: titleAttributes)
             title.draw(at: CGPoint(x: 40, y: 40))
-
+            
             // Metadaten
             let metaAttributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.systemFont(ofSize: 14),
@@ -68,7 +68,7 @@ struct PDFExportView: View {
             """
             let metaString = NSAttributedString(string: metaText, attributes: metaAttributes)
             metaString.draw(at: CGPoint(x: 40, y: 80))
-
+            
             // Tabelle
             let tableAttributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.systemFont(ofSize: 12),
@@ -81,7 +81,7 @@ struct PDFExportView: View {
             )
             tableHeader.draw(at: CGPoint(x: 40, y: yOffset))
             yOffset += 20
-
+            
             for data in rt60Data {
                 let rt60String = data.rt60 != nil ? String(format: "%.2f", data.rt60!) : "-.--"
                 let uncertaintyString = data.uncertainty != nil ? String(format: "%.2f", data.uncertainty!) : "-.--"
@@ -90,7 +90,7 @@ struct PDFExportView: View {
                 rowString.draw(at: CGPoint(x: 40, y: yOffset))
                 yOffset += 20
             }
-
+            
             // Empfehlungen
             yOffset += 20
             let recTitle = NSAttributedString(string: "Empfehlungen\n", attributes: titleAttributes)
@@ -103,18 +103,18 @@ struct PDFExportView: View {
             """
             let recString = NSAttributedString(string: recommendations, attributes: metaAttributes)
             recString.draw(at: CGPoint(x: 40, y: yOffset))
-
+            
             // QR-Code (Platzhalter)
             yOffset += 60
             let qrText = NSAttributedString(string: "QR-Code: [Link zu Cloud-Report]", attributes: metaAttributes)
             qrText.draw(at: CGPoint(x: 40, y: yOffset))
-
+            
             // Checksum
             yOffset += 20
             let checksumText = NSAttributedString(string: "Checksum: \(checksum)", attributes: metaAttributes)
             checksumText.draw(at: CGPoint(x: 40, y: yOffset))
         }
-
+        
         // PDF speichern
         if let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Raumakustik_Bericht.pdf") {
             try? data.write(to: url)

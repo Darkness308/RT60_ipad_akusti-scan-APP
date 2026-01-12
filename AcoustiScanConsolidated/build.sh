@@ -37,7 +37,7 @@ check_swift() {
         print_status $RED "❌ Swift is not installed or not in PATH"
         exit 1
     fi
-
+    
     local swift_version=$(swift --version | head -n 1)
     print_status $GREEN "✅ Swift found: $swift_version"
 }
@@ -55,17 +55,17 @@ clean_build() {
 build_with_retry() {
     local retry_count=0
     local build_success=false
-
+    
     while [ $retry_count -lt $MAX_RETRIES ] && [ "$build_success" = false ]; do
         print_status $BLUE "🔨 Build attempt $((retry_count + 1))/$MAX_RETRIES"
-
+        
         # Run swift build and capture output
         if swift build 2>&1 | tee $BUILD_LOG; then
             build_success=true
             print_status $GREEN "✅ Build successful!"
         else
             print_status $YELLOW "⚠️ Build failed, analyzing errors..."
-
+            
             # Attempt to fix common errors
             if fix_common_errors; then
                 print_status $BLUE "🔧 Applied fixes, retrying build..."
@@ -76,7 +76,7 @@ build_with_retry() {
             fi
         fi
     done
-
+    
     if [ "$build_success" = false ]; then
         print_status $RED "❌ Build failed after $MAX_RETRIES attempts"
         print_status $YELLOW "📋 Build log saved to: $BUILD_LOG"
@@ -91,9 +91,9 @@ build_with_retry() {
 # Function to fix common build errors
 fix_common_errors() {
     local fixed_something=false
-
+    
     print_status $BLUE "🔍 Analyzing build errors..."
-
+    
     # Check for missing import statements
     if grep -q "No such module" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected missing module errors"
@@ -101,7 +101,7 @@ fix_common_errors() {
             fixed_something=true
         fi
     fi
-
+    
     # Check for syntax errors
     if grep -q "expected" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected potential syntax errors"
@@ -109,7 +109,7 @@ fix_common_errors() {
             fixed_something=true
         fi
     fi
-
+    
     # Check for access control issues
     if grep -q "is not accessible" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected access control issues"
@@ -117,7 +117,7 @@ fix_common_errors() {
             fixed_something=true
         fi
     fi
-
+    
     # Check for deprecated API usage
     if grep -q "deprecated" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected deprecated API usage"
@@ -125,7 +125,7 @@ fix_common_errors() {
             fixed_something=true
         fi
     fi
-
+    
     # Check for type mismatch errors
     if grep -q "Cannot convert value of type" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected type conversion errors"
@@ -133,7 +133,7 @@ fix_common_errors() {
             fixed_something=true
         fi
     fi
-
+    
     # Check for package resolution issues
     if grep -q "package dependency" $BUILD_LOG || grep -q "could not resolve" $BUILD_LOG; then
         print_status $YELLOW "🔍 Detected package dependency issues"
@@ -141,25 +141,25 @@ fix_common_errors() {
             fixed_something=true
         fi
     fi
-
+    
     return $([ "$fixed_something" = true ])
 }
 
 # Function to fix missing import statements
 fix_missing_imports() {
     local modules_to_add=()
-
+    
     # Extract missing modules from build log
     while IFS= read -r line; do
         if [[ $line =~ "No such module '"([^\']+)"'" ]]; then
             modules_to_add+=("${BASH_REMATCH[1]}")
         fi
     done < $BUILD_LOG
-
+    
     # Add missing imports to files
     for module in "${modules_to_add[@]}"; do
         print_status $BLUE "📦 Adding import for module: $module"
-
+        
         # Find Swift files that might need this import
         find Sources -name "*.swift" -exec grep -l "$module" {} \; | while read -r file; do
             if ! grep -q "^import $module" "$file"; then
@@ -186,7 +186,7 @@ import $module
 fix_syntax_errors() {
     print_status $BLUE "🔧 Attempting to fix syntax errors..."
     local fixed_any=false
-
+    
     # Look for common syntax issues
     while IFS= read -r line; do
         if [[ $line =~ "expected ',' separator" ]]; then
@@ -200,7 +200,7 @@ fix_syntax_errors() {
             # Could implement specific fixes here
         fi
     done < $BUILD_LOG
-
+    
     return $fixed_any
 }
 
@@ -208,7 +208,7 @@ fix_syntax_errors() {
 fix_access_control_issues() {
     print_status $BLUE "🔧 Attempting to fix access control issues..."
     local fixed_any=false
-
+    
     # Look for access control patterns
     while IFS= read -r line; do
         if [[ $line =~ "'([^']+)' is not accessible due to '([^']+)' protection level" ]]; then
@@ -219,7 +219,7 @@ fix_access_control_issues() {
             # For now, just log the issue
         fi
     done < $BUILD_LOG
-
+    
     return $fixed_any
 }
 
@@ -227,7 +227,7 @@ fix_access_control_issues() {
 fix_deprecated_apis() {
     print_status $BLUE "🔧 Attempting to fix deprecated API usage..."
     local fixed_any=false
-
+    
     # Look for deprecation warnings
     while IFS= read -r line; do
         if [[ $line =~ "'([^']+)' is deprecated" ]]; then
@@ -236,7 +236,7 @@ fix_deprecated_apis() {
             # Log for manual review - automated fixing could be risky
         fi
     done < $BUILD_LOG
-
+    
     return $fixed_any
 }
 
@@ -244,7 +244,7 @@ fix_deprecated_apis() {
 fix_type_errors() {
     print_status $BLUE "🔧 Attempting to fix type conversion errors..."
     local fixed_any=false
-
+    
     # Look for type conversion issues
     while IFS= read -r line; do
         if [[ $line =~ "Cannot convert value of type '([^']+)' to expected argument type '([^']+)'" ]]; then
@@ -254,7 +254,7 @@ fix_type_errors() {
             # Could implement specific type conversion fixes here
         fi
     done < $BUILD_LOG
-
+    
     return $fixed_any
 }
 
@@ -262,21 +262,21 @@ fix_type_errors() {
 fix_package_issues() {
     print_status $BLUE "🔧 Attempting to fix package dependency issues..."
     local fixed_any=false
-
+    
     # Try common package fixes
     print_status $YELLOW "Cleaning package cache..."
     swift package clean
-
+    
     print_status $YELLOW "Resetting package state..."
     rm -rf .build Package.resolved
-
+    
     print_status $YELLOW "Resolving dependencies..."
     if swift package resolve; then
         print_status $GREEN "✅ Dependencies resolved successfully"
         fixed_any=true
     else
         print_status $RED "❌ Could not resolve dependencies"
-
+        
         # Try updating dependencies
         print_status $YELLOW "Attempting to update dependencies..."
         if swift package update; then
@@ -284,14 +284,14 @@ fix_package_issues() {
             fixed_any=true
         fi
     fi
-
+    
     return $([ "$fixed_any" = true ])
 }
 
 # Function to run tests
 run_tests() {
     print_status $BLUE "🧪 Running tests..."
-
+    
     if swift test 2>&1 | tee test.log; then
         print_status $GREEN "✅ All tests passed!"
     else
@@ -308,15 +308,15 @@ run_tests() {
 # Function to build release version
 build_release() {
     print_status $BLUE "🎯 Building release version..."
-
+    
     if swift build -c release; then
         print_status $GREEN "✅ Release build successful!"
-
+        
         # Show binary location
         local binary_path=$(swift build -c release --show-bin-path)/AcoustiScanTool
         if [ -f "$binary_path" ]; then
             print_status $GREEN "📦 Binary available at: $binary_path"
-
+            
             # Show binary size
             local size=$(ls -lh "$binary_path" | awk '{print $5}')
             print_status $BLUE "📏 Binary size: $size"
@@ -330,7 +330,7 @@ build_release() {
 # Function to generate documentation
 generate_docs() {
     print_status $BLUE "📚 Generating documentation..."
-
+    
     # Use swift-docc if available
     if command -v swift-docc &> /dev/null; then
         swift package generate-documentation
@@ -343,20 +343,20 @@ generate_docs() {
 # Function to run code quality checks
 run_quality_checks() {
     print_status $BLUE "🔍 Running code quality checks..."
-
+    
     # Basic file checks
     local swift_files=$(find Sources -name "*.swift" | wc -l)
     local test_files=$(find Tests -name "*.swift" | wc -l)
-
+    
     print_status $GREEN "📊 Found $swift_files Swift source files"
     print_status $GREEN "📊 Found $test_files test files"
-
+    
     # Check for TODOs and FIXMEs
     local todos=$(grep -r "TODO\|FIXME" Sources | wc -l)
     if [ $todos -gt 0 ]; then
         print_status $YELLOW "⚠️ Found $todos TODO/FIXME comments"
     fi
-
+    
     # Check for hardcoded strings (potential localization issues)
     local hardcoded=$(grep -r '"[^"]*"' Sources --include="*.swift" | grep -v "test\|Test" | wc -l)
     print_status $BLUE "📝 Found $hardcoded string literals"
@@ -365,22 +365,22 @@ run_quality_checks() {
 # Function to create package
 create_package() {
     print_status $BLUE "📦 Creating distribution package..."
-
+    
     local package_name="AcoustiScanConsolidated-$(date +%Y%m%d)"
     local package_dir="dist/$package_name"
-
+    
     mkdir -p "$package_dir"
-
+    
     # Copy binary
     local binary_path=$(swift build -c release --show-bin-path)/AcoustiScanTool
     if [ -f "$binary_path" ]; then
         cp "$binary_path" "$package_dir/"
         print_status $GREEN "✅ Binary copied to package"
     fi
-
+    
     # Copy documentation
     cp README.md "$package_dir/" 2>/dev/null || echo "# AcoustiScan Consolidated Tool" > "$package_dir/README.md"
-
+    
     # Create archive
     cd dist
     tar -czf "$package_name.tar.gz" "$package_name"
@@ -391,13 +391,13 @@ create_package() {
 # Main execution
 main() {
     print_status $BLUE "🎵 Starting automated build process..."
-
+    
     # Change to project directory
     cd "$PROJECT_DIR"
-
+    
     # Check prerequisites
     check_swift
-
+    
     # Parse command line arguments
     case "${1:-build}" in
         "clean")
@@ -439,7 +439,7 @@ main() {
             build_with_retry
             ;;
     esac
-
+    
     print_status $GREEN "🎉 Build process completed successfully!"
 }
 

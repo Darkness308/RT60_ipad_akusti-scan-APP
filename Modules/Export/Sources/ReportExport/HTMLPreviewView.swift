@@ -28,7 +28,7 @@ import Foundation
 public struct HTMLPreviewView {
     let htmlData: Data
     public init(htmlData: Data) { self.htmlData = htmlData }
-
+    
     /// Returns the HTML content as a string for non-UIKit platforms
     public var htmlString: String {
         return String(decoding: htmlData, as: UTF8.self)

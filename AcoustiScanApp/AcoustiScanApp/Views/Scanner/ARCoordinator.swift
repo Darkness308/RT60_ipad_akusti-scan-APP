@@ -4,27 +4,27 @@ import Combine
 import SwiftUI
 
 final class MSHARCoordinator: NSObject, ARSessionDelegate, ObservableObject {
-
+    
     // MARK: - Published Properties
     @Published var currentFrame: ARFrame?
     @Published var detectedPlanes: [UUID: ARPlaneAnchor] = [:]
-
+    
     // MARK: - Private
     private let session: ARSession = ARSession()
     private var cancellables = Set<AnyCancellable>()
-
+    
     // MARK: - Initialization
     override init() {
         super.init()
         session.delegate = self
         startSession()
     }
-
+    
     // MARK: - Public Access
     func getSession() -> ARSession {
         return session
     }
-
+    
     // MARK: - Session Management
     private func startSession() {
         let configuration = ARWorldTrackingConfiguration()
@@ -32,11 +32,11 @@ final class MSHARCoordinator: NSObject, ARSessionDelegate, ObservableObject {
         configuration.environmentTexturing = .automatic
         session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
-
+    
     func pauseSession() {
         session.pause()
     }
-
+    
     // MARK: - ARSessionDelegate
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         DispatchQueue.main.async { [weak self] in

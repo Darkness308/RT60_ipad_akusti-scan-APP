@@ -23,9 +23,9 @@ final class ReportHTMLRendererTests: XCTestCase {
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .lowercased()
 
-        // Core sections (checking for English locale used in CI)
-        for token in ["rt60 report","metadata","rt60 per frequency","din 18041","validity","recommendations","audit"] {
-            XCTAssertTrue(text.contains(token), "Missing section: \(token)")
+        // Kernabschnitte
+        for token in ["rt60 bericht","metadaten","rt60 je frequenz","din 18041","validität","empfehlungen","audit"] {
+            XCTAssertTrue(text.contains(token), "Fehlender Abschnitt: \(token)")
         }
         // Werte
         XCTAssertTrue(text.contains("ipadpro"))

@@ -1,4 +1,4 @@
-# AcoustiScan – Sprint 0–2 Artefakte (Finalisiert)
+# AcoustiScan – Sprint 0–2 Artefakte (Finalisiert)
 
 ## Repository-Struktur
 ```
@@ -72,12 +72,12 @@ Enthält praxisnahe Anleitung für Nutzer:
 - Kalibrierhinweise und Transparenz gemäß EU AI Act.
 
 ### CHANGELOG.md
-- **0.1.0 Sprint 0:** Repo‑Skeleton, AppEntry, TabRootView, Docs erstellt
-- **0.2.0 Sprint 1:** RT60‑Pipeline (Schroeder‑Methode), DIN18041‑Formeln, dynamische Klassifikation, neuer RoomType `musicRoom`
-- **0.3.0 Sprint 2:** RoomPlan‑Skeleton (`RoomScanView`), CSV‑Import/Export (`MaterialCSVImporter`), Erweiterungen `MaterialManager`
+- **0.1.0 Sprint 0:** Repo‑Skeleton, AppEntry, TabRootView, Docs erstellt
+- **0.2.0 Sprint 1:** RT60‑Pipeline (Schroeder‑Methode), DIN18041‑Formeln, dynamische Klassifikation, neuer RoomType `musicRoom`
+- **0.3.0 Sprint 2:** RoomPlan‑Skeleton (`RoomScanView`), CSV‑Import/Export (`MaterialCSVImporter`), Erweiterungen `MaterialManager`
 
 ### backlog.md
-User Stories (US‑1 bis US‑5) mit Sprintzuordnung und EKS‑Priorität. Nach Sprint 2 sind US‑1 und US‑2 „in Arbeit“ markiert, US‑3/4 abgeschlossen.
+User Stories (US‑1 bis US‑5) mit Sprintzuordnung und EKS‑Priorität. Nach Sprint 2 sind US‑1 und US‑2 „in Arbeit“ markiert, US‑3/4 abgeschlossen.
 
 ### risks.md
 Liste erkannter Risiken mit Bewertung und Gegenmaßnahmen: Mikrofon‑Kalibrierung, Störgeräusche, Messdauer, Speicher/Performance, EU‑AI‑Act Compliance.
@@ -121,7 +121,7 @@ Erweitert um CSV‑Import/Export‑Funktionen (Datei + String).
 
 ---
 
-## Nächste Schritte (Sprint 3)
+## Nächste Schritte (Sprint 3)
 - PDF‑Export ausbauen (Charts, Ampel, Maßnahmenblock)
 - UX‑Flows: Mess‑Wizard, Fehlerführung, Accessibility
 - Golden‑File‑Tests für PDF
@@ -129,5 +129,5 @@ Erweitert um CSV‑Import/Export‑Funktionen (Datei + String).
 
 ---
 
-📦 **Finale Artefakte Sprint 0–2** sind jetzt vollständig in Klartext (Markdown) und Swift‑Code strukturiert und einsatzbereit.
+📦 **Finale Artefakte Sprint 0–2** sind jetzt vollständig in Klartext (Markdown) und Swift‑Code strukturiert und einsatzbereit.
 

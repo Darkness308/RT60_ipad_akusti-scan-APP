@@ -8,14 +8,14 @@ import PDFKit
 
 /// Helper functions for PDF text extraction in tests
 public struct PDFTextExtractor {
-
+    
     /// Extract text content from PDF data for testing
     public static func extractText(from pdfData: Data) -> String {
         #if canImport(PDFKit)
         guard let pdfDocument = PDFDocument(data: pdfData) else {
             return ""
         }
-
+        
         var text = ""
         for pageIndex in 0..<pdfDocument.pageCount {
             if let page = pdfDocument.page(at: pageIndex) {
@@ -28,7 +28,7 @@ public struct PDFTextExtractor {
         // Fallback for platforms without PDFKit
         // Look for common PDF text markers
         let pdfString = String(data: pdfData, encoding: .ascii) ?? ""
-
+        
         // Extract text between BT and ET markers (simplified PDF text extraction)
         var extractedText = ""
         let components = pdfString.components(separatedBy: "BT")
@@ -45,7 +45,7 @@ public struct PDFTextExtractor {
                 }
             }
         }
-
+        
         return extractedText
         #endif
     }

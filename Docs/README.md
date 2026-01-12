@@ -243,6 +243,6 @@ For questions about:
 
 ---
 
-**Last Updated**: 2025-11-23
-**Maintained By**: Documentation Team
+**Last Updated**: 2025-11-23  
+**Maintained By**: Documentation Team  
 **Repository**: RT60_ipad_akusti-scan-APP

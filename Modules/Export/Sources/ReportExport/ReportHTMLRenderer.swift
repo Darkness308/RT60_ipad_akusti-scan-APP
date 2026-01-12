@@ -11,7 +11,7 @@ public struct ReportModel {
     public let validity: [String: String]
     public let recommendations: [String]
     public let audit: [String: String]
-
+    
     public init(
         metadata: [String: String],
         rt60_bands: [[String: Double?]],
@@ -46,14 +46,14 @@ public final class ReportHTMLRenderer {
     private func buildHTML(_ m: ReportModel) -> String {
         // Required frequencies that should always appear (using representative frequencies as per DIN 18041)
         let requiredFrequencies = [125, 1000, 4000]
-
+        
         let head = """
         <!doctype html>
         <html lang="de">
         <head>
             <meta charset="utf-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            <title>\(NSLocalizedString(LocalizationKeys.rt60Report, bundle: .module, comment: "RT60 Report title"))</title>
+            <title>RT60 Bericht</title>
             <style>
                 :root { --fg:#111; --muted:#555; --acc:#0a84ff; --bg:#fff; --card:#fafafa; }
                 body {
@@ -91,7 +91,7 @@ public final class ReportHTMLRenderer {
 
         // Core tokens section (placed early to ensure they're always present)
         let coreTokensSection = """
-        <h2>\(NSLocalizedString(LocalizationKeys.coreTokens, bundle: .module, comment: "Core Tokens section"))</h2>
+        <h2>Core Tokens</h2>
         <div class="card mb16">
           \(["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"].map {
             "<div>\($0)</div>"
@@ -100,34 +100,34 @@ public final class ReportHTMLRenderer {
         """
 
         let cover = """
-        <h1>\(NSLocalizedString(LocalizationKeys.rt60Report, bundle: .module, comment: "RT60 Report title")) <span class="badge">HTML</span></h1>
+        <h1>RT60 Bericht <span class="badge">HTML</span></h1>
         \(coreTokensSection)
         <div class="meta mb16">
-          <div><strong>\(NSLocalizedString(LocalizationKeys.device, bundle: .module, comment: "Device label")):</strong> \(defaultDevice)</div>
-          <div><strong>\(NSLocalizedString(LocalizationKeys.version, bundle: .module, comment: "Version label")):</strong> \(defaultVersion)</div>
-          \(m.metadata["device"].map { d in d.lowercased() != defaultDevice ? "<div><strong>\(NSLocalizedString(LocalizationKeys.currentDevice, bundle: .module, comment: "Current device label")):</strong> \(escape(d))</div>" : "" } ?? "")
-          \(m.metadata["app_version"].map { v in v != defaultVersion ? "<div><strong>\(NSLocalizedString(LocalizationKeys.currentVersion, bundle: .module, comment: "Current version label")):</strong> \(escape(v))</div>" : "" } ?? "")
-          <div><strong>\(NSLocalizedString(LocalizationKeys.date, bundle: .module, comment: "Date label")):</strong> \(escape(m.metadata["date"]))</div>
+          <div><strong>Gerät:</strong> \(defaultDevice)</div>
+          <div><strong>Version:</strong> \(defaultVersion)</div>
+          \(m.metadata["device"].map { d in d.lowercased() != defaultDevice ? "<div><strong>Aktuelles Gerät:</strong> \(escape(d))</div>" : "" } ?? "")
+          \(m.metadata["app_version"].map { v in v != defaultVersion ? "<div><strong>Aktuelle Version:</strong> \(escape(v))</div>" : "" } ?? "")
+          <div><strong>Datum:</strong> \(escape(m.metadata["date"]))</div>
         </div>
         """
 
         let meta = """
-        <h2>\(NSLocalizedString(LocalizationKeys.metadata, bundle: .module, comment: "Metadata section"))</h2>
+        <h2>Metadaten</h2>
         <div class="grid mb16">
           <div class="card">
             \(renderKV(m.metadata))
           </div>
           <div class="card">
-            <div class="mb8"><strong>\(NSLocalizedString(LocalizationKeys.validity, bundle: .module, comment: "Validity section"))</strong></div>
+            <div class="mb8"><strong>Validität</strong></div>
             \(renderKV(m.validity))
           </div>
         </div>
         """
 
         let bands = """
-        <h2>\(NSLocalizedString(LocalizationKeys.rt60PerFrequency, bundle: .module, comment: "RT60 per frequency section"))</h2>
+        <h2>RT60 je Frequenz (T20 in s)</h2>
         <table>
-          <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, bundle: .module, comment: "Frequency Hz"))</th><th>\(NSLocalizedString(LocalizationKeys.t20Seconds, bundle: .module, comment: "T20 seconds"))</th></tr></thead>
+          <thead><tr><th>Frequenz [Hz]</th><th>T20 [s]</th></tr></thead>
           <tbody>
             \(requiredFrequencies.map { freq in
                 let matchingBand = m.rt60_bands.first { band in
@@ -149,7 +149,7 @@ public final class ReportHTMLRenderer {
             }.joined(separator:"\n"))
           </tbody>
         </table>
-        <div class="small muted">\(NSLocalizedString(LocalizationKeys.auditSourceNote, bundle: .module, comment: "Audit source note"))</div>
+        <div class="small muted">Hinweis: Werte aus Audit-Quelle (T20), Einheiten geprüft.</div>
         """
 
         // Build DIN targets section with representative values and model data
@@ -160,12 +160,12 @@ public final class ReportHTMLRenderer {
         ]
 
         var dinRows: [String] = []
-
+        
         // Add representative DIN 18041 standard values first
         for (freq, targetRT60, tolerance) in representativeDINValues {
             dinRows.append("<tr><td>\(freq)</td><td>\(String(format: "%.2f", targetRT60))</td><td>\(String(format: "%.2f", tolerance))</td></tr>")
         }
-
+        
         // Add model DIN targets that aren't already covered
         for row in m.din_targets {
             if let freq = row["freq_hz"], let actualFreq = freq {
@@ -195,9 +195,9 @@ public final class ReportHTMLRenderer {
         }
 
         let din = """
-        <h2>\(NSLocalizedString(LocalizationKeys.dinTargetTolerance, bundle: .module, comment: "DIN 18041 target & tolerance section"))</h2>
+        <h2>DIN 18041 Ziel & Toleranz</h2>
         <table>
-          <thead><tr><th>\(NSLocalizedString(LocalizationKeys.frequencyHz, bundle: .module, comment: "Frequency Hz"))</th><th>T<sub>soll</sub> [s]</th><th>\(NSLocalizedString(LocalizationKeys.tolerance, bundle: .module, comment: "Tolerance")) [s]</th></tr></thead>
+          <thead><tr><th>Frequenz [Hz]</th><th>T<sub>soll</sub> [s]</th><th>Toleranz [s]</th></tr></thead>
           <tbody>
             \(dinRows.joined(separator:"\n"))
           </tbody>
@@ -205,14 +205,14 @@ public final class ReportHTMLRenderer {
         """
 
         let recs = """
-        <h2>\(NSLocalizedString(LocalizationKeys.recommendations, bundle: .module, comment: "Recommendations section"))</h2>
+        <h2>Empfehlungen</h2>
         <ul>
           \(m.recommendations.map { "<li>\(escape($0))</li>" }.joined(separator:"\n"))
         </ul>
         """
 
         let audit = """
-        <h2>\(NSLocalizedString(LocalizationKeys.audit, bundle: .module, comment: "Audit section"))</h2>
+        <h2>Audit</h2>
         <div class="audit">
           \(renderKV(m.audit))
         </div>

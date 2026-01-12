@@ -15,7 +15,7 @@ public struct AuditEntry: Codable, Identifiable {
     public let details: [String: String]
     public let user: String?
     public let deviceInfo: DeviceInfo
-
+    
     public enum EventType: String, Codable {
         case measurementStarted = "measurement_started"
         case measurementCompleted = "measurement_completed"
@@ -28,20 +28,20 @@ public struct AuditEntry: Codable, Identifiable {
         case dataImported = "data_imported"
         case settingsChanged = "settings_changed"
     }
-
+    
     public struct DeviceInfo: Codable {
         public let model: String
         public let osVersion: String
         public let appVersion: String
         public let locale: String
-
+        
         public init(model: String, osVersion: String, appVersion: String, locale: String) {
             self.model = model
             self.osVersion = osVersion
             self.appVersion = appVersion
             self.locale = locale
         }
-
+        
         /// Get current device info
         public static func current(appVersion: String = "1.0.0") -> DeviceInfo {
             #if canImport(UIKit)
@@ -52,9 +52,9 @@ public struct AuditEntry: Codable, Identifiable {
             let model = "Unknown"
             let osVersion = "Unknown"
             #endif
-
+            
             let locale = Locale.current.identifier
-
+            
             return DeviceInfo(
                 model: model,
                 osVersion: osVersion,
@@ -63,7 +63,7 @@ public struct AuditEntry: Codable, Identifiable {
             )
         }
     }
-
+    
     public init(
         id: UUID = UUID(),
         timestamp: Date = Date(),
@@ -83,18 +83,18 @@ public struct AuditEntry: Codable, Identifiable {
 
 /// Manager for audit trail with JSON export
 public class AuditTrailManager {
-
+    
     private var entries: [AuditEntry] = []
     private let maxEntries: Int
     private let storageKey = "auditTrail"
-
+    
     /// Initialize audit trail manager
     /// - Parameter maxEntries: Maximum number of entries to keep (default 1000)
     public init(maxEntries: Int = 1000) {
         self.maxEntries = maxEntries
         loadEntries()
     }
-
+    
     /// Add a new audit entry
     /// - Parameters:
     ///   - eventType: Type of event
@@ -111,29 +111,29 @@ public class AuditTrailManager {
             user: user,
             deviceInfo: AuditEntry.DeviceInfo.current()
         )
-
+        
         entries.append(entry)
-
+        
         // Keep only the most recent entries
         if entries.count > maxEntries {
             entries.removeFirst(entries.count - maxEntries)
         }
-
+        
         saveEntries()
     }
-
+    
     /// Get all audit entries
     public func getAllEntries() -> [AuditEntry] {
         return entries
     }
-
+    
     /// Get entries for a specific event type
     /// - Parameter eventType: Event type to filter
     /// - Returns: Filtered entries
     public func getEntries(for eventType: AuditEntry.EventType) -> [AuditEntry] {
         return entries.filter { $0.eventType == eventType }
     }
-
+    
     /// Get entries within a date range
     /// - Parameters:
     ///   - start: Start date
@@ -142,7 +142,7 @@ public class AuditTrailManager {
     public func getEntries(from start: Date, to end: Date) -> [AuditEntry] {
         return entries.filter { $0.timestamp >= start && $0.timestamp <= end }
     }
-
+    
     /// Export audit trail as JSON
     /// - Returns: JSON data
     public func exportJSON() -> Data? {
@@ -161,47 +161,47 @@ public class AuditTrailManager {
             return nil
         }
     }
-
+    
     /// Export audit trail as JSON string
     /// - Returns: JSON string
     public func exportJSONString() -> String? {
         guard let data = exportJSON() else { return nil }
         return String(data: data, encoding: .utf8)
     }
-
+    
     /// Import audit trail from JSON
     /// - Parameter jsonData: JSON data to import
     /// - Throws: Decoding error if JSON is invalid
     public func importJSON(_ jsonData: Data) throws {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-
+        
         let importedEntries = try decoder.decode([AuditEntry].self, from: jsonData)
         entries.append(contentsOf: importedEntries)
-
+        
         // Keep only the most recent entries
         if entries.count > maxEntries {
             entries.removeFirst(entries.count - maxEntries)
         }
-
+        
         saveEntries()
     }
-
+    
     /// Clear all audit entries
     public func clearAll() {
         entries.removeAll()
         saveEntries()
     }
-
+    
     /// Get audit trail statistics
     /// - Returns: Dictionary with statistics
     public func getStatistics() -> [String: Any] {
         let eventCounts = Dictionary(grouping: entries, by: { $0.eventType })
             .mapValues { $0.count }
-
+        
         let oldestEntry = entries.first?.timestamp
         let newestEntry = entries.last?.timestamp
-
+        
         return [
             "total_entries": entries.count,
             "event_counts": eventCounts.mapKeys { $0.rawValue },
@@ -210,7 +210,7 @@ public class AuditTrailManager {
             "device_models": Set(entries.map { $0.deviceInfo.model }).sorted()
         ]
     }
-
+    
     // MARK: - Persistence
 
     private func saveEntries() {
@@ -263,7 +263,7 @@ private extension Dictionary {
 // MARK: - Integration Helpers
 
 extension AuditTrailManager {
-
+    
     /// Log a room scan event
     /// - Parameters:
     ///   - roomName: Name of the room
@@ -279,7 +279,7 @@ extension AuditTrailManager {
             ]
         )
     }
-
+    
     /// Log an RT60 measurement
     /// - Parameters:
     ///   - roomName: Name of the room
@@ -296,7 +296,7 @@ extension AuditTrailManager {
             ]
         )
     }
-
+    
     /// Log material assignment
     /// - Parameters:
     ///   - surfaceName: Name of the surface
@@ -310,7 +310,7 @@ extension AuditTrailManager {
             ]
         )
     }
-
+    
     /// Log PDF report generation
     /// - Parameters:
     ///   - roomName: Name of the room
@@ -325,7 +325,7 @@ extension AuditTrailManager {
             ]
         )
     }
-
+    
     /// Log data export
     /// - Parameters:
     ///   - format: Export format (CSV, XLSX, JSON)

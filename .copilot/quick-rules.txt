@@ -3,7 +3,7 @@ COPILOT RULES FOR ACOUSTISCAN RT60 IPAD APP
 
 CRITICAL RULES - NEVER VIOLATE:
 1. NO FORCE UNWRAPPING (!) in production code - use guard/if-let
-2. ALWAYS validate RT60 correlation >= 95% for ISO 3382-1 compliance
+2. ALWAYS validate RT60 correlation >= 95% for ISO 3382-1 compliance  
 3. PRESERVE acoustic measurement precision - RT60 accuracy is critical
 4. HANDLE missing frequency band data gracefully
 5. LOG errors with context for debugging
@@ -39,7 +39,7 @@ PDF REPORT REQUIREMENTS:
 
 BUILD AUTOMATION:
 - Clean command: swift package clean
-- Dependency resolution: swift package resolve
+- Dependency resolution: swift package resolve  
 - Lint: swiftlint --strict (allow non-breaking)
 - Format: swiftformat . (allow non-breaking)
 - Test: swift test --enable-code-coverage

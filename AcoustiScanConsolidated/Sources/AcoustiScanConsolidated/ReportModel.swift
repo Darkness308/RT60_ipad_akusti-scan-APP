@@ -11,7 +11,7 @@ public struct ReportModel: Codable {
     public let validity: [String: String]
     public let recommendations: [String]
     public let audit: [String: String]
-
+    
     public init(
         metadata: [String: String],
         rt60_bands: [[String: Double?]],

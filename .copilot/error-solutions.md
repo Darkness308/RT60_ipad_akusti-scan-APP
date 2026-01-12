@@ -90,7 +90,7 @@ import Combine
 
 **Files typically missing:**
 - PDFReportSnapshotTests.swift
-- RT60CalculatorTests.swift
+- RT60CalculatorTests.swift  
 - ReportModelTests.swift
 
 ### 2. Module Dependency Issues
@@ -105,7 +105,7 @@ import Combine
     path: "Sources/Export",
     sources: [
         "ReportModel.swift",
-        "PDFReportRenderer.swift",
+        "PDFReportRenderer.swift", 
         "PDFExportView.swift"
     ]
 )
@@ -121,7 +121,7 @@ import Combine
 func setupAudioSession() {
     do {
         try AVAudioSession.sharedInstance().setCategory(
-            .record,
+            .record, 
             mode: .measurement,
             options: [.defaultToSpeaker]
         )
@@ -170,21 +170,21 @@ func validateRT60Measurement(_ measurement: RT60Measurement) -> ValidationResult
     guard measurement.correlation >= 95.0 else {
         return .invalid("Low correlation: \(measurement.correlation)%")
     }
-
+    
     // T20 should be reasonable for room acoustics (0.1s to 10s)
     guard measurement.t20 > 0.1 && measurement.t20 < 10.0 else {
         return .invalid("T20 out of range: \(measurement.t20)s")
     }
-
+    
     // Check for required frequency bands (125Hz - 4kHz minimum)
     let requiredBands = [125, 250, 500, 1000, 2000, 4000]
     let availableBands = measurement.frequencyBands.map { $0.frequency }
     let missingBands = requiredBands.filter { !availableBands.contains($0) }
-
+    
     guard missingBands.isEmpty else {
         return .invalid("Missing frequency bands: \(missingBands)")
     }
-
+    
     return .valid
 }
 ```
@@ -196,12 +196,12 @@ func validateRT60Measurement(_ measurement: RT60Measurement) -> ValidationResult
 ```swift
 private static func verifyChecksum(values: [Double], checksum: String?) -> Bool {
     guard let checksum = checksum else { return false }
-
+    
     // Deterministic hash based on sum of valid measurements
     let sum = values.reduce(0, +)
     let key = Int((sum * 1000.0).rounded())
     let calculatedChecksum = String(key, radix: 36).uppercased()
-
+    
     return calculatedChecksum == checksum.uppercased()
 }
 ```
@@ -260,7 +260,7 @@ func calculateLayout(pageSize: CGSize) -> Layout {
     let margin: CGFloat = 50
     let contentWidth = pageSize.width - (2 * margin)
     let contentHeight = pageSize.height - (2 * margin)
-
+    
     return Layout(
         contentRect: CGRect(x: margin, y: margin, width: contentWidth, height: contentHeight),
         lineHeight: 20
@@ -279,7 +279,7 @@ func calculateLayout(pageSize: CGSize) -> Layout {
 func testPDFGeneration() {
     let generatedPDF = PDFReportRenderer.generateReport(testData)
     let expectedSnapshot = loadExpectedSnapshot()
-
+    
     XCTAssertEqual(generatedPDF.pageCount, expectedSnapshot.pageCount)
     // Compare content hash instead of exact pixel matching
     XCTAssertEqual(generatedPDF.contentHash, expectedSnapshot.contentHash)

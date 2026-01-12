@@ -13,7 +13,7 @@ context:
   domain: "Acoustic measurements, RT60 reverberation time, audio processing"
   target_platform: "iPad, iOS 17+, LiDAR support"
   architecture: "SwiftUI, Combine, AVAudioEngine, RoomPlan"
-
+  
   key_components:
     - "RT60 acoustic measurements"
     - "XL2 device integration"
@@ -38,7 +38,7 @@ error_patterns:
         // Before: let isValid = (t20Val != nil)
         // After: let t20Val = Self.parseNumber(t20raw)
         //        let isValid = (t20Val != nil)
-
+    
     swift_force_unwrap_crash:
       pattern: "Fatal error: Unexpectedly found nil while unwrapping an Optional value"
       description: "Force unwrapping nil Optional"
@@ -50,7 +50,7 @@ error_patterns:
       example_fix: |
         // Before: let value = data!
         // After: guard let value = data else { return defaultValue }
-
+    
     missing_imports:
       pattern: "No such module '.*'"
       description: "Missing import statement"
@@ -65,7 +65,7 @@ error_patterns:
         - "import AVFoundation"
         - "import RoomPlan"
         - "import PDFKit"
-
+    
     package_swift_errors:
       pattern: "package contains errors"
       description: "Package.swift configuration issues"
@@ -84,7 +84,7 @@ error_patterns:
         2. Configure audio session category
         3. Handle interruptions gracefully
         4. Validate audio input availability
-
+    
     roomplan_failures:
       description: "RoomPlan scanning issues"
       auto_fix_strategy: |
@@ -101,7 +101,7 @@ error_patterns:
         2. Validate frequency band completeness
         3. Verify measurement duration
         4. Apply statistical outlier detection
-
+    
     checksum_validation:
       description: "Data integrity checksum failures"
       auto_fix_strategy: |
@@ -116,13 +116,13 @@ build_automation:
     - "swiftlint --strict"
     - "swiftformat --lint ."
     - "swift package resolve"
-
+  
   error_recovery_steps:
     1. "swift package clean"
     2. "rm -rf .build"
     3. "swift package resolve"
     4. "swift build"
-
+  
   retry_strategy:
     max_attempts: 3
     exponential_backoff: true
@@ -136,7 +136,7 @@ quality_standards:
     - "Use meaningful variable names (no single letters except i,j in loops)"
     - "Handle errors gracefully with proper logging"
     - "Avoid force unwrapping in production code"
-
+  
   rt60_specific:
     - "Always validate correlation percentages >= 95%"
     - "Handle missing frequency band data gracefully"
@@ -152,7 +152,7 @@ solution_templates:
         logger.error("Missing required value: \(#function)")
         return fallbackValue
     }
-
+  
   error_logging: |
     // Comprehensive error logging
     func handleError(_ error: Error, context: String) {
@@ -160,7 +160,7 @@ solution_templates:
         // Add crash reporting or analytics here
         notifyUser(error)
     }
-
+  
   audio_session_setup: |
     // Proper audio session configuration
     do {
@@ -169,7 +169,7 @@ solution_templates:
     } catch {
         handleAudioSessionError(error)
     }
-
+  
   rt60_validation: |
     // RT60 measurement validation
     func validateMeasurement(_ measurement: RT60Measurement) -> ValidationResult {
@@ -187,7 +187,7 @@ documentation:
   error_history: ".copilot/error-solutions.md"
   build_logs: ".copilot/build-history.json"
   common_fixes: ".copilot/common-fixes.md"
-
+  
   required_comments:
     - "Function purpose and acoustic theory background"
     - "Parameter ranges and units (Hz, seconds, dB)"
@@ -201,7 +201,7 @@ monitoring:
     - "Test coverage percentage"
     - "Error resolution time"
     - "Common error patterns"
-
+  
   alert_conditions:
     - "Build failure rate > 10%"
     - "Test coverage drops below 80%"
@@ -214,19 +214,19 @@ integrations:
     workflow_files:
       - ".github/workflows/build-test.yml"
       - ".github/workflows/swift-ci.yml"
-
+    
     failure_actions:
       - "Analyze error logs"
       - "Apply known fixes automatically"
       - "Create issue if new error pattern"
       - "Notify development team"
-
+  
   xcode_integration:
     scheme_settings:
       - "Enable Address Sanitizer for debug builds"
       - "Run static analyzer"
       - "Generate test coverage reports"
-
+    
     build_phases:
       - "SwiftLint validation"
       - "SwiftFormat check"

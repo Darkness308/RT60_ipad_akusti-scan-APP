@@ -6,19 +6,19 @@ import Combine
 /// Eine einfache SwiftUI-View zur Darstellung erkannter Flächen in ARKit.
 struct SurfaceDetectionView: View {
     @StateObject private var coordinator = MSHARCoordinator()
-
+    
     var body: some View {
         ZStack {
             ARViewContainer(coordinator: coordinator)
                 .edgesIgnoringSafeArea(.all)
-
+            
             VStack {
                 Text("Erkannte Ebenen: \(coordinator.detectedPlanes.count)")
                     .padding()
                     .background(Color.black.opacity(0.6))
                     .foregroundColor(.white)
                     .cornerRadius(8)
-
+                
                 Spacer()
             }
             .padding()

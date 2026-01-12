@@ -5,7 +5,7 @@ You are working on an iPad app for acoustic measurements, specifically RT60 reve
 
 ## Primary Responsibilities
 1. **Maintain Code Quality**: Ensure all Swift code follows best practices
-2. **Fix Compilation Errors**: Automatically resolve common build issues
+2. **Fix Compilation Errors**: Automatically resolve common build issues  
 3. **Preserve Acoustic Accuracy**: Never compromise measurement precision
 4. **Ensure iOS Compatibility**: Maintain compatibility with iPad, iOS 17+, LiDAR
 
@@ -15,7 +15,7 @@ You are working on an iPad app for acoustic measurements, specifically RT60 reve
 ```prompt
 When you encounter a Swift compilation error:
 
-1. **For undefined variables**:
+1. **For undefined variables**: 
    - Look for similar variable names in the surrounding code
    - Check if the variable should be parsed from string data using existing parsing functions
    - Add the variable declaration before its first use
@@ -116,7 +116,7 @@ Always implement robust error handling:
 
 2. **Log errors with context**:
    ```swift
-   logger.error("RT60 calculation failed: \(error.localizedDescription)",
+   logger.error("RT60 calculation failed: \(error.localizedDescription)", 
                 metadata: ["frequency": "\(frequency)", "correlation": "\(correlation)"])
    ```
 
