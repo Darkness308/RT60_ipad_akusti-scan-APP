@@ -232,27 +232,28 @@ public class MaterialManager: ObservableObject {
     // MARK: - Predefined Materials
 
     private static func loadPredefinedMaterials() -> [AcousticMaterial] {
+        // All materials now include 8000 Hz for ISO 3382-1 compliance
         return [
             AcousticMaterial(name: "Beton (glatt)", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.02, 4000: 0.03
+                125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.02, 4000: 0.03, 8000: 0.03
             ])),
             AcousticMaterial(name: "Gipskarton", absorption: AbsorptionData(values: [
-                125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09
+                125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09, 8000: 0.10
             ])),
             AcousticMaterial(name: "Holz (massiv)", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.11, 500: 0.10, 1000: 0.07, 2000: 0.06, 4000: 0.07
+                125: 0.15, 250: 0.11, 500: 0.10, 1000: 0.07, 2000: 0.06, 4000: 0.07, 8000: 0.07
             ])),
             AcousticMaterial(name: "Teppichboden", absorption: AbsorptionData(values: [
-                125: 0.08, 250: 0.24, 500: 0.57, 1000: 0.69, 2000: 0.71, 4000: 0.73
+                125: 0.08, 250: 0.24, 500: 0.57, 1000: 0.69, 2000: 0.71, 4000: 0.73, 8000: 0.73
             ])),
             AcousticMaterial(name: "Akustikplatten", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.40, 500: 0.80, 1000: 0.95, 2000: 0.90, 4000: 0.85
+                125: 0.15, 250: 0.40, 500: 0.80, 1000: 0.95, 2000: 0.90, 4000: 0.85, 8000: 0.80
             ])),
             AcousticMaterial(name: "Glasfenster", absorption: AbsorptionData(values: [
-                125: 0.35, 250: 0.25, 500: 0.18, 1000: 0.12, 2000: 0.07, 4000: 0.04
+                125: 0.35, 250: 0.25, 500: 0.18, 1000: 0.12, 2000: 0.07, 4000: 0.04, 8000: 0.03
             ])),
             AcousticMaterial(name: "Vorhang (schwer)", absorption: AbsorptionData(values: [
-                125: 0.14, 250: 0.35, 500: 0.55, 1000: 0.72, 2000: 0.70, 4000: 0.65
+                125: 0.14, 250: 0.35, 500: 0.55, 1000: 0.72, 2000: 0.70, 4000: 0.65, 8000: 0.60
             ]))
         ]
     }

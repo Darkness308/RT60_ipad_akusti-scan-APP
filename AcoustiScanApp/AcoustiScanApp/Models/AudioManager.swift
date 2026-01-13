@@ -594,7 +594,9 @@ public class AudioManager: ObservableObject {
     /// Calculate noise floor from quiet portion of signal
     private func calculateNoiseFloor(samples: [Float]) -> Double {
         // Use last 10% of samples as noise estimate
+        guard samples.count > 10 else { return -100.0 }  // Safety guard
         let noiseStart = Int(Double(samples.count) * 0.9)
+        guard noiseStart < samples.count else { return -100.0 }
         let noiseSamples = Array(samples[noiseStart...])
 
         var rms: Float = 0

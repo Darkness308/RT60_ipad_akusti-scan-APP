@@ -277,7 +277,7 @@ public class AbsorberCalculator {
                 type: .porousAbsorber,
                 thickness: 50,
                 absorptionCoefficients: [
-                    125: 0.20, 250: 0.65, 500: 0.90, 1000: 0.95, 2000: 0.95, 4000: 0.90
+                    125: 0.20, 250: 0.65, 500: 0.90, 1000: 0.95, 2000: 0.95, 4000: 0.90, 8000: 0.85
                 ],
                 nrcRating: 0.85,
                 fireRating: "A1",
@@ -289,7 +289,7 @@ public class AbsorberCalculator {
                 type: .porousAbsorber,
                 thickness: 100,
                 absorptionCoefficients: [
-                    125: 0.45, 250: 0.85, 500: 0.95, 1000: 1.00, 2000: 1.00, 4000: 0.95
+                    125: 0.45, 250: 0.85, 500: 0.95, 1000: 1.00, 2000: 1.00, 4000: 0.95, 8000: 0.90
                 ],
                 nrcRating: 0.95,
                 fireRating: "A1",
@@ -301,7 +301,7 @@ public class AbsorberCalculator {
                 type: .porousAbsorber,
                 thickness: 50,
                 absorptionCoefficients: [
-                    125: 0.15, 250: 0.55, 500: 0.85, 1000: 0.95, 2000: 0.95, 4000: 0.90
+                    125: 0.15, 250: 0.55, 500: 0.85, 1000: 0.95, 2000: 0.95, 4000: 0.90, 8000: 0.85
                 ],
                 nrcRating: 0.80,
                 fireRating: "B1",
@@ -315,7 +315,7 @@ public class AbsorberCalculator {
                 type: .membraneAbsorber,
                 thickness: 100,
                 absorptionCoefficients: [
-                    125: 0.85, 250: 0.70, 500: 0.35, 1000: 0.20, 2000: 0.15, 4000: 0.10
+                    125: 0.85, 250: 0.70, 500: 0.35, 1000: 0.20, 2000: 0.15, 4000: 0.10, 8000: 0.08
                 ],
                 nrcRating: 0.40,
                 fireRating: "B1",
@@ -327,7 +327,7 @@ public class AbsorberCalculator {
                 type: .membraneAbsorber,
                 thickness: 150,
                 absorptionCoefficients: [
-                    125: 0.95, 250: 0.80, 500: 0.45, 1000: 0.25, 2000: 0.15, 4000: 0.10
+                    125: 0.95, 250: 0.80, 500: 0.45, 1000: 0.25, 2000: 0.15, 4000: 0.10, 8000: 0.08
                 ],
                 nrcRating: 0.45,
                 fireRating: "B1",
@@ -341,7 +341,7 @@ public class AbsorberCalculator {
                 type: .resonatorAbsorber,
                 thickness: 200,
                 absorptionCoefficients: [
-                    125: 0.90, 250: 0.40, 500: 0.15, 1000: 0.10, 2000: 0.05, 4000: 0.05
+                    125: 0.90, 250: 0.40, 500: 0.15, 1000: 0.10, 2000: 0.05, 4000: 0.05, 8000: 0.03
                 ],
                 nrcRating: 0.30,
                 fireRating: "A2",
@@ -355,7 +355,7 @@ public class AbsorberCalculator {
                 type: .compositeAbsorber,
                 thickness: 25,
                 absorptionCoefficients: [
-                    125: 0.30, 250: 0.70, 500: 0.85, 1000: 0.75, 2000: 0.60, 4000: 0.55
+                    125: 0.30, 250: 0.70, 500: 0.85, 1000: 0.75, 2000: 0.60, 4000: 0.55, 8000: 0.50
                 ],
                 nrcRating: 0.70,
                 fireRating: "A2",
@@ -367,7 +367,7 @@ public class AbsorberCalculator {
                 type: .porousAbsorber,
                 thickness: 15,
                 absorptionCoefficients: [
-                    125: 0.25, 250: 0.50, 500: 0.80, 1000: 0.90, 2000: 0.85, 4000: 0.80
+                    125: 0.25, 250: 0.50, 500: 0.80, 1000: 0.90, 2000: 0.85, 4000: 0.80, 8000: 0.75
                 ],
                 nrcRating: 0.75,
                 fireRating: "A1",
@@ -381,7 +381,7 @@ public class AbsorberCalculator {
                 type: .diffuser,
                 thickness: 120,
                 absorptionCoefficients: [
-                    125: 0.05, 250: 0.10, 500: 0.15, 1000: 0.20, 2000: 0.25, 4000: 0.30
+                    125: 0.05, 250: 0.10, 500: 0.15, 1000: 0.20, 2000: 0.25, 4000: 0.30, 8000: 0.35
                 ],
                 nrcRating: 0.15,
                 fireRating: "B2",
@@ -395,7 +395,7 @@ public class AbsorberCalculator {
                 type: .compositeAbsorber,
                 thickness: 60,
                 absorptionCoefficients: [
-                    125: 0.35, 250: 0.75, 500: 0.95, 1000: 1.00, 2000: 0.95, 4000: 0.90
+                    125: 0.35, 250: 0.75, 500: 0.95, 1000: 1.00, 2000: 0.95, 4000: 0.90, 8000: 0.85
                 ],
                 nrcRating: 0.90,
                 fireRating: "B1",
@@ -407,7 +407,7 @@ public class AbsorberCalculator {
                 type: .compositeAbsorber,
                 thickness: 5,
                 absorptionCoefficients: [
-                    125: 0.14, 250: 0.35, 500: 0.55, 1000: 0.72, 2000: 0.70, 4000: 0.65
+                    125: 0.14, 250: 0.35, 500: 0.55, 1000: 0.72, 2000: 0.70, 4000: 0.65, 8000: 0.55
                 ],
                 nrcRating: 0.55,
                 fireRating: "B1",
@@ -477,157 +477,157 @@ public enum RoomUsageType: String, CaseIterable, Codable {
 
 public extension MaterialManager {
 
-    /// Extended predefined materials database with 50+ materials
+    /// Extended predefined materials database with 50+ materials (ISO 3382-1 compliant with 8000 Hz)
     static func loadExtendedMaterials() -> [AcousticMaterial] {
         return [
             // FLOORS
             AcousticMaterial(name: "Beton (roh)", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.02, 4000: 0.03
+                125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.02, 4000: 0.03, 8000: 0.03
             ])),
             AcousticMaterial(name: "Beton (poliert)", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.02, 2000: 0.02, 4000: 0.02
+                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.02, 2000: 0.02, 4000: 0.02, 8000: 0.02
             ])),
             AcousticMaterial(name: "Estrich", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.015, 1000: 0.02, 2000: 0.02, 4000: 0.02
+                125: 0.01, 250: 0.01, 500: 0.015, 1000: 0.02, 2000: 0.02, 4000: 0.02, 8000: 0.02
             ])),
             AcousticMaterial(name: "Linoleum auf Beton", absorption: AbsorptionData(values: [
-                125: 0.02, 250: 0.02, 500: 0.03, 1000: 0.03, 2000: 0.04, 4000: 0.04
+                125: 0.02, 250: 0.02, 500: 0.03, 1000: 0.03, 2000: 0.04, 4000: 0.04, 8000: 0.04
             ])),
             AcousticMaterial(name: "PVC-Boden", absorption: AbsorptionData(values: [
-                125: 0.02, 250: 0.02, 500: 0.03, 1000: 0.03, 2000: 0.03, 4000: 0.02
+                125: 0.02, 250: 0.02, 500: 0.03, 1000: 0.03, 2000: 0.03, 4000: 0.02, 8000: 0.02
             ])),
             AcousticMaterial(name: "Parkett auf Estrich", absorption: AbsorptionData(values: [
-                125: 0.04, 250: 0.04, 500: 0.06, 1000: 0.06, 2000: 0.06, 4000: 0.06
+                125: 0.04, 250: 0.04, 500: 0.06, 1000: 0.06, 2000: 0.06, 4000: 0.06, 8000: 0.06
             ])),
             AcousticMaterial(name: "Laminat", absorption: AbsorptionData(values: [
-                125: 0.04, 250: 0.04, 500: 0.05, 1000: 0.05, 2000: 0.05, 4000: 0.05
+                125: 0.04, 250: 0.04, 500: 0.05, 1000: 0.05, 2000: 0.05, 4000: 0.05, 8000: 0.05
             ])),
             AcousticMaterial(name: "Teppichboden dünn", absorption: AbsorptionData(values: [
-                125: 0.02, 250: 0.06, 500: 0.14, 1000: 0.37, 2000: 0.60, 4000: 0.65
+                125: 0.02, 250: 0.06, 500: 0.14, 1000: 0.37, 2000: 0.60, 4000: 0.65, 8000: 0.65
             ])),
             AcousticMaterial(name: "Teppichboden dick", absorption: AbsorptionData(values: [
-                125: 0.08, 250: 0.24, 500: 0.57, 1000: 0.69, 2000: 0.71, 4000: 0.73
+                125: 0.08, 250: 0.24, 500: 0.57, 1000: 0.69, 2000: 0.71, 4000: 0.73, 8000: 0.73
             ])),
             AcousticMaterial(name: "Teppichboden auf Unterlage", absorption: AbsorptionData(values: [
-                125: 0.10, 250: 0.30, 500: 0.65, 1000: 0.75, 2000: 0.80, 4000: 0.80
+                125: 0.10, 250: 0.30, 500: 0.65, 1000: 0.75, 2000: 0.80, 4000: 0.80, 8000: 0.78
             ])),
 
             // WALLS
             AcousticMaterial(name: "Ziegel (verputzt)", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.03, 4000: 0.04
+                125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.03, 4000: 0.04, 8000: 0.05
             ])),
             AcousticMaterial(name: "Ziegel (unverputzt)", absorption: AbsorptionData(values: [
-                125: 0.02, 250: 0.03, 500: 0.03, 1000: 0.04, 2000: 0.05, 4000: 0.07
+                125: 0.02, 250: 0.03, 500: 0.03, 1000: 0.04, 2000: 0.05, 4000: 0.07, 8000: 0.08
             ])),
             AcousticMaterial(name: "Gipskarton auf Unterkonstruktion", absorption: AbsorptionData(values: [
-                125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09
+                125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09, 8000: 0.10
             ])),
             AcousticMaterial(name: "Gipskarton auf Beton", absorption: AbsorptionData(values: [
-                125: 0.10, 250: 0.05, 500: 0.04, 1000: 0.04, 2000: 0.05, 4000: 0.05
+                125: 0.10, 250: 0.05, 500: 0.04, 1000: 0.04, 2000: 0.05, 4000: 0.05, 8000: 0.05
             ])),
             AcousticMaterial(name: "Sperrholz 4mm auf Rahmen", absorption: AbsorptionData(values: [
-                125: 0.42, 250: 0.21, 500: 0.10, 1000: 0.08, 2000: 0.06, 4000: 0.06
+                125: 0.42, 250: 0.21, 500: 0.10, 1000: 0.08, 2000: 0.06, 4000: 0.06, 8000: 0.06
             ])),
             AcousticMaterial(name: "OSB-Platte", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.11, 500: 0.10, 1000: 0.07, 2000: 0.06, 4000: 0.07
+                125: 0.15, 250: 0.11, 500: 0.10, 1000: 0.07, 2000: 0.06, 4000: 0.07, 8000: 0.07
             ])),
             AcousticMaterial(name: "Holzvertäfelung massiv", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.11, 500: 0.10, 1000: 0.07, 2000: 0.06, 4000: 0.07
+                125: 0.15, 250: 0.11, 500: 0.10, 1000: 0.07, 2000: 0.06, 4000: 0.07, 8000: 0.07
             ])),
             AcousticMaterial(name: "Akustikputz (5mm)", absorption: AbsorptionData(values: [
-                125: 0.10, 250: 0.20, 500: 0.50, 1000: 0.65, 2000: 0.70, 4000: 0.70
+                125: 0.10, 250: 0.20, 500: 0.50, 1000: 0.65, 2000: 0.70, 4000: 0.70, 8000: 0.65
             ])),
 
             // CEILINGS
             AcousticMaterial(name: "Beton-Decke (glatt)", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.02, 2000: 0.02, 4000: 0.02
+                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.02, 2000: 0.02, 4000: 0.02, 8000: 0.02
             ])),
             AcousticMaterial(name: "Gipskartondecke", absorption: AbsorptionData(values: [
-                125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09
+                125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09, 8000: 0.10
             ])),
             AcousticMaterial(name: "Akustikdecke (Mineralfaser)", absorption: AbsorptionData(values: [
-                125: 0.25, 250: 0.50, 500: 0.80, 1000: 0.90, 2000: 0.85, 4000: 0.80
+                125: 0.25, 250: 0.50, 500: 0.80, 1000: 0.90, 2000: 0.85, 4000: 0.80, 8000: 0.75
             ])),
             AcousticMaterial(name: "Holzwolle-Akustikdecke", absorption: AbsorptionData(values: [
-                125: 0.30, 250: 0.70, 500: 0.85, 1000: 0.75, 2000: 0.60, 4000: 0.55
+                125: 0.30, 250: 0.70, 500: 0.85, 1000: 0.75, 2000: 0.60, 4000: 0.55, 8000: 0.50
             ])),
             AcousticMaterial(name: "Metallkassetten gelocht", absorption: AbsorptionData(values: [
-                125: 0.35, 250: 0.65, 500: 0.85, 1000: 0.90, 2000: 0.85, 4000: 0.80
+                125: 0.35, 250: 0.65, 500: 0.85, 1000: 0.90, 2000: 0.85, 4000: 0.80, 8000: 0.75
             ])),
 
             // WINDOWS & GLASS
             AcousticMaterial(name: "Einfachverglasung (3mm)", absorption: AbsorptionData(values: [
-                125: 0.35, 250: 0.25, 500: 0.18, 1000: 0.12, 2000: 0.07, 4000: 0.04
+                125: 0.35, 250: 0.25, 500: 0.18, 1000: 0.12, 2000: 0.07, 4000: 0.04, 8000: 0.03
             ])),
             AcousticMaterial(name: "Isolierverglasung", absorption: AbsorptionData(values: [
-                125: 0.25, 250: 0.15, 500: 0.10, 1000: 0.07, 2000: 0.04, 4000: 0.02
+                125: 0.25, 250: 0.15, 500: 0.10, 1000: 0.07, 2000: 0.04, 4000: 0.02, 8000: 0.02
             ])),
             AcousticMaterial(name: "Dreifachverglasung", absorption: AbsorptionData(values: [
-                125: 0.20, 250: 0.12, 500: 0.08, 1000: 0.05, 2000: 0.03, 4000: 0.02
+                125: 0.20, 250: 0.12, 500: 0.08, 1000: 0.05, 2000: 0.03, 4000: 0.02, 8000: 0.02
             ])),
 
             // DOORS
             AcousticMaterial(name: "Holztür (massiv)", absorption: AbsorptionData(values: [
-                125: 0.14, 250: 0.10, 500: 0.06, 1000: 0.08, 2000: 0.10, 4000: 0.10
+                125: 0.14, 250: 0.10, 500: 0.06, 1000: 0.08, 2000: 0.10, 4000: 0.10, 8000: 0.10
             ])),
             AcousticMaterial(name: "Holztür (hohl)", absorption: AbsorptionData(values: [
-                125: 0.30, 250: 0.25, 500: 0.15, 1000: 0.10, 2000: 0.10, 4000: 0.10
+                125: 0.30, 250: 0.25, 500: 0.15, 1000: 0.10, 2000: 0.10, 4000: 0.10, 8000: 0.10
             ])),
             AcousticMaterial(name: "Glastür", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.10, 500: 0.07, 1000: 0.05, 2000: 0.04, 4000: 0.03
+                125: 0.15, 250: 0.10, 500: 0.07, 1000: 0.05, 2000: 0.04, 4000: 0.03, 8000: 0.02
             ])),
 
             // TEXTILES
             AcousticMaterial(name: "Vorhang leicht", absorption: AbsorptionData(values: [
-                125: 0.03, 250: 0.04, 500: 0.11, 1000: 0.17, 2000: 0.24, 4000: 0.35
+                125: 0.03, 250: 0.04, 500: 0.11, 1000: 0.17, 2000: 0.24, 4000: 0.35, 8000: 0.40
             ])),
             AcousticMaterial(name: "Vorhang mittel", absorption: AbsorptionData(values: [
-                125: 0.07, 250: 0.31, 500: 0.49, 1000: 0.75, 2000: 0.70, 4000: 0.60
+                125: 0.07, 250: 0.31, 500: 0.49, 1000: 0.75, 2000: 0.70, 4000: 0.60, 8000: 0.55
             ])),
             AcousticMaterial(name: "Vorhang schwer (Molton)", absorption: AbsorptionData(values: [
-                125: 0.14, 250: 0.35, 500: 0.55, 1000: 0.72, 2000: 0.70, 4000: 0.65
+                125: 0.14, 250: 0.35, 500: 0.55, 1000: 0.72, 2000: 0.70, 4000: 0.65, 8000: 0.60
             ])),
             AcousticMaterial(name: "Akustikvorhang", absorption: AbsorptionData(values: [
-                125: 0.25, 250: 0.45, 500: 0.65, 1000: 0.80, 2000: 0.75, 4000: 0.70
+                125: 0.25, 250: 0.45, 500: 0.65, 1000: 0.80, 2000: 0.75, 4000: 0.70, 8000: 0.65
             ])),
 
             // ACOUSTIC PANELS
             AcousticMaterial(name: "Akustikschaum 50mm", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.40, 500: 0.80, 1000: 0.95, 2000: 0.90, 4000: 0.85
+                125: 0.15, 250: 0.40, 500: 0.80, 1000: 0.95, 2000: 0.90, 4000: 0.85, 8000: 0.80
             ])),
             AcousticMaterial(name: "Akustikschaum 100mm", absorption: AbsorptionData(values: [
-                125: 0.35, 250: 0.65, 500: 0.95, 1000: 1.00, 2000: 0.95, 4000: 0.90
+                125: 0.35, 250: 0.65, 500: 0.95, 1000: 1.00, 2000: 0.95, 4000: 0.90, 8000: 0.85
             ])),
             AcousticMaterial(name: "Mineralwolle 50mm (sichtbar)", absorption: AbsorptionData(values: [
-                125: 0.20, 250: 0.65, 500: 0.90, 1000: 0.95, 2000: 0.95, 4000: 0.90
+                125: 0.20, 250: 0.65, 500: 0.90, 1000: 0.95, 2000: 0.95, 4000: 0.90, 8000: 0.85
             ])),
             AcousticMaterial(name: "Mineralwolle 100mm (sichtbar)", absorption: AbsorptionData(values: [
-                125: 0.45, 250: 0.85, 500: 0.95, 1000: 1.00, 2000: 1.00, 4000: 0.95
+                125: 0.45, 250: 0.85, 500: 0.95, 1000: 1.00, 2000: 1.00, 4000: 0.95, 8000: 0.90
             ])),
             AcousticMaterial(name: "Basotect 50mm", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.55, 500: 0.85, 1000: 0.95, 2000: 0.95, 4000: 0.90
+                125: 0.15, 250: 0.55, 500: 0.85, 1000: 0.95, 2000: 0.95, 4000: 0.90, 8000: 0.85
             ])),
 
             // FURNITURE & OBJECTS
             AcousticMaterial(name: "Polstermöbel", absorption: AbsorptionData(values: [
-                125: 0.10, 250: 0.20, 500: 0.40, 1000: 0.60, 2000: 0.70, 4000: 0.70
+                125: 0.10, 250: 0.20, 500: 0.40, 1000: 0.60, 2000: 0.70, 4000: 0.70, 8000: 0.70
             ])),
             AcousticMaterial(name: "Bürostuhl (pro Stück)", absorption: AbsorptionData(values: [
-                125: 0.05, 250: 0.10, 500: 0.20, 1000: 0.30, 2000: 0.35, 4000: 0.35
+                125: 0.05, 250: 0.10, 500: 0.20, 1000: 0.30, 2000: 0.35, 4000: 0.35, 8000: 0.35
             ])),
             AcousticMaterial(name: "Publikum (pro Person)", absorption: AbsorptionData(values: [
-                125: 0.25, 250: 0.35, 500: 0.42, 1000: 0.46, 2000: 0.50, 4000: 0.50
+                125: 0.25, 250: 0.35, 500: 0.42, 1000: 0.46, 2000: 0.50, 4000: 0.50, 8000: 0.50
             ])),
 
             // SPECIAL SURFACES
             AcousticMaterial(name: "Wasser (Schwimmbecken)", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.01, 2000: 0.02, 4000: 0.02
+                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.01, 2000: 0.02, 4000: 0.02, 8000: 0.02
             ])),
             AcousticMaterial(name: "Marmor/Granit", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.01, 2000: 0.02, 4000: 0.02
+                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.01, 2000: 0.02, 4000: 0.02, 8000: 0.02
             ])),
             AcousticMaterial(name: "Fliesen (Keramik)", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.01, 2000: 0.02, 4000: 0.02
+                125: 0.01, 250: 0.01, 500: 0.01, 1000: 0.01, 2000: 0.02, 4000: 0.02, 8000: 0.02
             ]))
         ]
     }
