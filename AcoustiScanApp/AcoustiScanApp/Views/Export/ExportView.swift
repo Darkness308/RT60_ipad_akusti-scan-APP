@@ -12,11 +12,15 @@ struct ExportView: View {
                 .accessibilityIdentifier("exportTitle")
 
             NavigationLink(destination: PDFExportPlaceholderView(store: store)) {
-                Label(LocalizationKeys.exportRT60AsPDF.localized(comment: "Export RT60 report as PDF"), systemImage: "doc.richtext")
-                    .font(.headline)
-                    .padding()
-                    .background(Color.blue.opacity(0.1))
-                    .cornerRadius(8)
+                Label(
+                    LocalizationKeys.exportRT60AsPDF
+                        .localized(comment: "Export RT60 report as PDF"),
+                    systemImage: "doc.richtext"
+                )
+                .font(.headline)
+                .padding()
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(8)
             }
             .accessibilityLabel("Export RT60 as PDF")
             .accessibilityHint("Opens PDF export options for RT60 report")
@@ -62,7 +66,10 @@ struct PDFExportPlaceholderView: View {
                     .accessibilityLabel("Room name")
                     .accessibilityValue(store.roomName)
                     .accessibilityIdentifier("roomNameText")
-                Text("\(LocalizationKeys.volume.localized(comment: "Volume label")): \(String(format: "%.1f m³", store.roomVolume))")
+                Text(
+                    "\(LocalizationKeys.volume.localized(comment: "Volume label")): "
+                    + "\(String(format: "%.1f m³", store.roomVolume))"
+                )
                     .accessibilityLabel("Room volume")
                     .accessibilityValue(String(format: "%.1f cubic meters", store.roomVolume))
                     .accessibilityIdentifier("roomVolumeText")

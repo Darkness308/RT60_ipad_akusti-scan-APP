@@ -12,9 +12,14 @@ struct RoomDimensionView: View {
 
     var body: some View {
         Form {
-            Section(header: Text(LocalizationKeys.roomDimensionsInMeters.localized(comment: "Header for room dimensions in meters"))
+            Section(
+                header: Text(
+                    LocalizationKeys.roomDimensionsInMeters
+                        .localized(comment: "Header for room dimensions in meters")
+                )
                 .accessibilityAddTraits(.isHeader)
-                .accessibilityIdentifier("dimensionsHeader")) {
+                .accessibilityIdentifier("dimensionsHeader")
+            ) {
                 HStack {
                     Text(LocalizationKeys.length.localized(comment: "Length label"))
                         .accessibilityHidden(true)
