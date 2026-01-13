@@ -38,7 +38,7 @@ jobs:
             echo "✅ AcoustiScan built successfully on attempt $attempt"
             break
           fi
-          echo "⚠️ AcoustiScan build failed on attempt $attempt"
+          echo "⚠ AcoustiScan build failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ AcoustiScan build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "acoustiscan_build_failed=true" >> $GITHUB_OUTPUT
@@ -64,7 +64,7 @@ jobs:
             echo "✅ AcoustiScan tests passed on attempt $attempt"
             break
           fi
-          echo "⚠️ AcoustiScan tests failed on attempt $attempt"
+          echo "⚠ AcoustiScan tests failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ AcoustiScan tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "acoustiscan_tests_failed=true" >> $GITHUB_OUTPUT
@@ -90,7 +90,7 @@ jobs:
             echo "✅ Export module built successfully on attempt $attempt"
             break
           fi
-          echo "⚠️ Export module build failed on attempt $attempt"
+          echo "⚠ Export module build failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ Export module build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "export_build_failed=true" >> $GITHUB_OUTPUT
@@ -117,7 +117,7 @@ jobs:
             echo "✅ Export module tests passed on attempt $attempt"
             break
           fi
-          echo "⚠️ Export module tests failed on attempt $attempt"
+          echo "⚠ Export module tests failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
             echo "❌ Export module tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "export_tests_failed=true" >> $GITHUB_OUTPUT

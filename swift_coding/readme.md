@@ -1,11 +1,11 @@
-# AcoustiScan – iPad Raumakustik‑App (MVP)
+# AcoustiScan - iPad Raumakustik-App (MVP)
 
 Dieses Repository enthält den Quellcode für **AcoustiScan**, einen
 experimentellen Prototyp zur orientierenden Messung der Raumakustik
-auf dem iPad.  Die App nutzt LiDAR‑Scans, Audiosignalanalyse und
+auf dem iPad.  Die App nutzt LiDAR-Scans, Audiosignalanalyse und
 Normenvergleiche, um die Nachhallzeit (RT60) zu bestimmen und mit
-den Zielwerten der DIN 18041 zu vergleichen.  Die Ergebnisse können
-anschließend in einem PDF‑Bericht exportiert werden.
+den Zielwerten der DIN 18041 zu vergleichen.  Die Ergebnisse können
+anschließend in einem PDF-Bericht exportiert werden.
 
 ## Archive-Status
 
@@ -27,16 +27,16 @@ anschließend in einem PDF‑Bericht exportiert werden.
 ---
 
 ## Scope
-Die App dient ausschließlich der **orientierenden Messung**. Sie ersetzt keine abnahmerelevante Messung nach DIN EN ISO 3382.
+Die App dient ausschließlich der **orientierenden Messung**. Sie ersetzt keine abnahmerelevante Messung nach DIN EN ISO 3382.
 
 ---
 
 ## Features (MVP)
-- LiDAR‑Raumscan via RoomPlan
-- RT60‑Ermittlung (T20/T30) per Impulsantwortanalyse
-- DIN‑18041‑Vergleich mit Ampellogik
+- LiDAR-Raumscan via RoomPlan
+- RT60-Ermittlung (T20/T30) per Impulsantwortanalyse
+- DIN-18041-Vergleich mit Ampellogik
 - Materialdatenbank (Absorptionskoeffizienten)
-- PDF‑Export, CSV/XLSX‑Import/Export, JSON‑Audit‑Trail
+- PDF-Export, CSV/XLSX-Import/Export, JSON-Audit-Trail
 
 ---
 

@@ -207,7 +207,7 @@ struct ConsolidatedReportData {
 - 📜 **DIN 18041-konform**: Alle Messungen nach aktueller Norm
 - 🔬 **Wissenschaftlich validiert**: 48-Parameter Framework
 - 📊 **Reproduzierbar**: Identische Ergebnisse bei Wiederholung
-- 🏛️ **Rechtssicher**: Gutachterliche Qualität für Behörden
+- 🏛 **Rechtssicher**: Gutachterliche Qualität für Behörden
 
 ### Report-Metadaten
 ```swift

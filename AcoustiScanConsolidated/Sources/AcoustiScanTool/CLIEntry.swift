@@ -108,7 +108,7 @@ struct AcoustiScanTool {
         } else if compliancePercentage >= 60 {
             print("👍 Good acoustic performance")
         } else {
-            print("⚠️ Room acoustic improvements recommended")
+            print("⚠ Room acoustic improvements recommended")
         }
     }
 
@@ -174,7 +174,7 @@ struct AcoustiScanTool {
             print("❌ Failed to generate PDF report")
         }
         #else
-        print("⚠️ PDF generation requires UIKit (iOS/macOS)")
+        print("⚠ PDF generation requires UIKit (iOS/macOS)")
         #endif
     }
 
@@ -187,7 +187,7 @@ struct AcoustiScanTool {
             print("\n📂 \(category) (\(parameters.count) parameters)")
 
             for parameter in parameters.prefix(3) { // Show first 3 of each category
-                print("  • \(parameter.name)")
+                print("  - \(parameter.name)")
                 print("    \(parameter.definition)")
                 print("    Scale: \(parameter.scaleLabel.joined(separator: " → "))")
             }
@@ -222,16 +222,16 @@ struct AcoustiScanTool {
         print("📁 Found Swift implementations in repository")
         print("🔧 Consolidation completed in AcoustiScanConsolidated package")
         print("✨ Enhanced with 48-parameter framework integration")
-        print("🛠️ Added automated build and error detection")
+        print("🛠 Added automated build and error detection")
         print("📊 Comprehensive PDF reporting implemented")
 
         print("\n📋 Consolidation Summary:")
-        print("  • RT60 calculation engine: ✅ Consolidated")
-        print("  • PDF export functionality: ✅ Enhanced")
-        print("  • DIN 18041 compliance: ✅ Integrated")
-        print("  • Build automation: ✅ Implemented")
-        print("  • Error detection: ✅ Automated")
-        print("  • 48-parameter framework: ✅ Integrated")
-        print("  • Professional reporting: ✅ Complete")
+        print("  - RT60 calculation engine: ✅ Consolidated")
+        print("  - PDF export functionality: ✅ Enhanced")
+        print("  - DIN 18041 compliance: ✅ Integrated")
+        print("  - Build automation: ✅ Implemented")
+        print("  - Error detection: ✅ Automated")
+        print("  - 48-parameter framework: ✅ Integrated")
+        print("  - Professional reporting: ✅ Complete")
     }
 }

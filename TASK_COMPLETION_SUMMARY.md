@@ -19,7 +19,7 @@
      - Seite 4: Material-Übersicht Tabelle
      - Seite 5: Nummerierte Maßnahmenempfehlungen
 
-2. **US-6: XLSX Import/Export für Materialdaten** ⚠️ Teilweise
+2. **US-6: XLSX Import/Export für Materialdaten** ⚠ Teilweise
    - Status vorher: XLSX offen (CSV erledigt)
    - **Implementiert**:
      - CSV Import/Export vollständig funktionsfähig

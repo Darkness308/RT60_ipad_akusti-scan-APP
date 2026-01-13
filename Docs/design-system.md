@@ -529,13 +529,13 @@ Use SF Symbols for consistency:
 | Icon | Name | Usage |
 |------|------|-------|
 | 📷 | `camera.fill` | Start scan |
-| 🎙️ | `mic.fill` | Start measurement |
+| 🎙 | `mic.fill` | Start measurement |
 | 📊 | `chart.bar.fill` | View results |
 | 📄 | `doc.fill` | View report |
-| ⚙️ | `gear` | Settings |
-| ℹ️ | `info.circle` | Help/info |
+| ⚙ | `gear` | Settings |
+| ℹ | `info.circle` | Help/info |
 | ✓ | `checkmark.circle.fill` | Success |
-| ⚠️ | `exclamationmark.triangle.fill` | Warning |
+| ⚠ | `exclamationmark.triangle.fill` | Warning |
 | ✕ | `xmark.circle.fill` | Error |
 
 **Icon Sizes**:
