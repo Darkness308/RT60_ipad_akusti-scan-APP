@@ -141,6 +141,6 @@ jobs:
         echo "❌ Swift build and test workflow failed"
         echo "Check the specific step outputs for detailed error information"
         [ "${{ steps.build_acoustiscan.outputs.acoustiscan_build_failed }}" = "true" ] && echo "- AcoustiScan build failed"
-        [ "${{ steps.test_acoustiscan.outputs.acoustiscan_tests_failed }}" = "true" ] && echo "- AcoustiScan tests failed" 
+        [ "${{ steps.test_acoustiscan.outputs.acoustiscan_tests_failed }}" = "true" ] && echo "- AcoustiScan tests failed"
         [ "${{ steps.build_export.outputs.export_build_failed }}" = "true" ] && echo "- Export module build failed"
         [ "${{ steps.test_export.outputs.export_tests_failed }}" = "true" ] && echo "- Export module tests failed"
