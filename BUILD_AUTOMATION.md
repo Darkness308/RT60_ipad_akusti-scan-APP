@@ -11,6 +11,8 @@ This document describes the automated build error detection, fixing, and retry m
 - **build-test.yml**: Comprehensive CI/CD with retry mechanisms
 - **swift.yml**: Streamlined Swift build and test with retries
 - **auto-retry.yml**: Automatic workflow re-triggering on failures
+- **self-healing.yml**: Failure analysis, log collection, AI-assisted fixes, and escalation
+- **autofix-agent.yml**: Applies fixes and triggers fresh builds after changes
 
 #### Retry Mechanisms
 - **Up to 3 automatic retries** per failed step
@@ -58,6 +60,22 @@ This document describes the automated build error detection, fixing, and retry m
 - **Detailed error reports** with actionable recommendations
 - **PR comments** for status updates and failure notifications
 - **Manual intervention guidance** when automation limits reached
+
+### 4. Self-Healing CI Process (Failure Analysis + Auto-Fix + Rebuild)
+
+When a build turns red, the `self-healing.yml` workflow triggers an error analysis job that:
+1. **Collects job logs** and extracts error lines from failed jobs.
+2. **Stores artifacts** (`Artifacts/self-healing/error-info.json` and `error-logs.txt`) for traceability.
+3. **Creates an auto-fix issue** and dispatches a `ci-failure-autofix` event for the AI agent.
+
+The `autofix-agent.yml` workflow:
+- **Applies fixes** (build/test/lint) when possible.
+- **Commits & pushes changes**, then **triggers a new CI run** (`build-test.yml`) after the fix.
+
+#### Escalation Path
+- **Attempts 1–5**: Automatic analysis + AI agent fix attempts.
+- **Max attempts reached**: `self-healing.yml` opens a **"Human Required"** issue with failure details, recommended local commands, and a direct log link.
+- **Resolution**: A developer resolves the issue and the next push re-triggers CI; the auto-fix issues are closed once CI succeeds.
 
 ## Usage
 
