@@ -1,5 +1,7 @@
 import Foundation
-
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 #if canImport(UIKit)
 import UIKit
 #elseif canImport(AppKit)
@@ -9,6 +11,7 @@ import AppKit
 /// Centralized styling configuration for PDF exports
 public struct PDFStyleConfiguration {
 
+    #if canImport(CoreGraphics)
     // MARK: - Page Layout
 
     #if canImport(UIKit) || canImport(AppKit)
@@ -53,6 +56,7 @@ public struct PDFStyleConfiguration {
     }
     #endif
 
+    #if canImport(CoreGraphics)
     // MARK: - Spacing
 
     public struct Spacing {
@@ -68,4 +72,5 @@ public struct PDFStyleConfiguration {
         /// Large spacing (20pt)
         public static let lg: CGFloat = 20
     }
+    #endif
 }
