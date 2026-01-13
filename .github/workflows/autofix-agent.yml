@@ -26,7 +26,7 @@ permissions:
 
 jobs:
   autofix:
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 30
 
     steps:
@@ -40,7 +40,7 @@ jobs:
     - name: Setup Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.1'
+        xcode-version: '15.4'
 
     - name: Extract error information
       id: extract_errors

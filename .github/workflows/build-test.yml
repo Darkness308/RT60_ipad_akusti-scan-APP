@@ -9,32 +9,32 @@ on:
 
 env:
   MAX_RETRY_ATTEMPTS: 3
-  XCODE_VERSION: '16.1'
+  XCODE_VERSION: '15.4'
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 20
-
+    
     steps:
     - uses: actions/checkout@v4
-
+    
     - name: Prepare Artifacts directory
       run: mkdir -p Artifacts
-
+    
     - uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: ${{ env.XCODE_VERSION }}
-
+    
     - name: Cache DerivedData
       uses: actions/cache@v4
       with:
         path: ~/Library/Developer/Xcode/DerivedData
         key: ${{ runner.os }}-dd-${{ hashFiles('**/*.swift', '**/*.xcodeproj', '**/Package.resolved') }}
-
+    
     - name: Install Tools
       run: brew install swiftlint swiftformat || true
-
+    
     - name: Lint with retry
       id: lint
       run: |
@@ -56,7 +56,7 @@ jobs:
           attempt=$((attempt + 1))
           sleep 2
         done
-
+    
     - name: Format Check with retry
       id: format
       run: |
@@ -81,12 +81,12 @@ jobs:
           attempt=$((attempt + 1))
           sleep 2
         done
-
+    
     - name: Clean build cache
       run: |
         cd AcoustiScanConsolidated
         swift package clean
-
+    
     - name: Resolve Dependencies with retry
       id: dependencies
       run: |
@@ -110,7 +110,7 @@ jobs:
           attempt=$((attempt + 1))
           sleep 5  # Longer wait for network issues
         done
-
+    
     - name: Build AcoustiScan Consolidated with automation
       id: build_acoustiscan
       run: |
@@ -130,7 +130,7 @@ jobs:
             echo "✅ Manual build succeeded"
           fi
         }
-
+    
     - name: Run Tests with retry
       id: test_acoustiscan
       run: |
@@ -158,7 +158,7 @@ jobs:
           attempt=$((attempt + 1))
           sleep 3
         done
-
+    
     - name: Build Export Module with retry
       id: build_export
       run: |
@@ -183,7 +183,7 @@ jobs:
           swift package clean  # Clean between attempts
           sleep 2
         done
-
+    
     - name: Test Export Module with retry
       id: test_export
       run: |
@@ -207,19 +207,19 @@ jobs:
           attempt=$((attempt + 1))
           sleep 2
         done
-
+    
     - name: Build Tools with error handling
       id: build_tools
       run: |
         set +e  # Don't exit on error
         echo "🔧 Building and testing tools..."
-
+        
         # Check Tools directory
         if [ -d "Tools/linters" ]; then
           echo "📋 Making linter executable..."
           chmod +x Tools/linters/report_key_coverage.swift || echo "⚠️ Could not make linter executable"
         fi
-
+        
         # Test if we can compile reporthtml tool
         if [ -f "Tools/reporthtml/main.swift" ]; then
           echo "📊 Building HTML report tool..."
@@ -229,7 +229,7 @@ jobs:
             echo "tools_build_failed=true" >> $GITHUB_OUTPUT
           }
         fi
-
+        
         # Test LogParser if present
         if [ -f "Tools/LogParser/RT60LogParser.swift" ]; then
           echo "📝 Testing LogParser..."
@@ -240,13 +240,13 @@ jobs:
           }
           cd ../..
         fi
-
+    
     - name: Generate reports and artifacts
       id: generate_artifacts
       continue-on-error: true
       run: |
         mkdir -p Artifacts
-
+        
         # Generate HTML report if tool is available
         if [ -f "./reporthtml" ] && [ -f "Tools/reporthtml/sample.report.model.json" ]; then
           echo "📊 Generating HTML report..."
@@ -254,7 +254,7 @@ jobs:
             echo "⚠️ Could not generate HTML report"
           }
         fi
-
+        
         # Run key coverage linter if available
         if [ -x "Tools/linters/report_key_coverage.swift" ] && [ -f "Tools/reporthtml/sample.report.model.json" ]; then
           echo "📋 Running key coverage linter..."
@@ -262,7 +262,7 @@ jobs:
             echo "⚠️ Key coverage linter failed"
           }
         fi
-
+        
         # Create build summary
         echo "📊 Creating build summary..."
         echo "# Build Summary" > Artifacts/build-summary.md
@@ -273,16 +273,16 @@ jobs:
         echo "- Tools Build: ${{ steps.build_tools.outcome }}" >> Artifacts/build-summary.md
         echo "- Lint Status: ${{ steps.lint.outcome }}" >> Artifacts/build-summary.md
         echo "- Format Status: ${{ steps.format.outcome }}" >> Artifacts/build-summary.md
-
+    
     - name: Report build status and create issue on failure
       if: failure()
       run: |
         echo "❌ Build process failed. Creating detailed error report..."
-
+        
         # Ensure Artifacts directory exists
         mkdir -p Artifacts || echo "::warning::Failed to create Artifacts directory"
         echo "Creating artifacts dir: $(pwd)/Artifacts" >&2
-
+        
         # Collect all error flags
         ERRORS=""
         [ "${{ steps.lint.outputs.lint_failed }}" = "true" ] && ERRORS="$ERRORS\n- Linting failed"
@@ -293,9 +293,9 @@ jobs:
         [ "${{ steps.build_export.outputs.export_build_failed }}" = "true" ] && ERRORS="$ERRORS\n- Export module build failed"
         [ "${{ steps.test_export.outputs.export_tests_failed }}" = "true" ] && ERRORS="$ERRORS\n- Export module tests failed"
         [ "${{ steps.build_tools.outputs.tools_build_failed }}" = "true" ] && ERRORS="$ERRORS\n- Tools build failed"
-
+        
         echo "🔍 Detected errors:$ERRORS"
-
+        
         # Save error details to artifacts (with error handling)
         echo "# Build Failure Report" > Artifacts/failure-report.md || true
         echo "## Workflow Run: ${{ github.run_id }}" >> Artifacts/failure-report.md || true
@@ -308,7 +308,7 @@ jobs:
         echo "2. Review the automated fix attempts that were made" >> Artifacts/failure-report.md || true
         echo "3. Consider running the build script locally: \`./AcoustiScanConsolidated/build.sh\`" >> Artifacts/failure-report.md || true
         echo "4. Manual intervention may be required for complex errors" >> Artifacts/failure-report.md || true
-
+    
     - name: Upload Build Artifacts (always run)
       uses: actions/upload-artifact@v4
       if: always()

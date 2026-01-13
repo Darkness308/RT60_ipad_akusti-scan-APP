@@ -38,13 +38,6 @@ dist/
 # Linux
 *~
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-
 # CLI tool artifacts
 /reporthtml
 Artifacts/

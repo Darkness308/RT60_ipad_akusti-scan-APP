@@ -9,26 +9,26 @@ on:
 
 env:
   MAX_RETRY_ATTEMPTS: 3
-  XCODE_VERSION: '16.1'
+  XCODE_VERSION: '15.4'
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
-
+    
     - uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: ${{ env.XCODE_VERSION }}
-
+    
     - name: Clean and build AcoustiScanConsolidated with retry
       id: build_acoustiscan
       run: |
         set +e  # Don't exit on error
         cd AcoustiScanConsolidated
         swift package clean
-
+        
         attempt=1
         while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
           echo "🔨 AcoustiScan build attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
@@ -54,7 +54,7 @@ jobs:
       run: |
         set +e  # Don't exit on error
         cd AcoustiScanConsolidated
-
+        
         attempt=1
         while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
           echo "🧪 AcoustiScan test attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
@@ -80,7 +80,7 @@ jobs:
       run: |
         set +e  # Don't exit on error
         cd Modules/Export
-
+        
         attempt=1
         while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
           echo "🔨 Export module build attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
@@ -107,7 +107,7 @@ jobs:
       run: |
         set +e  # Don't exit on error
         cd Modules/Export
-
+        
         attempt=1
         while [ $attempt -le ${{ env.MAX_RETRY_ATTEMPTS }} ]; do
           echo "🧪 Export module test attempt $attempt of ${{ env.MAX_RETRY_ATTEMPTS }}"
@@ -127,14 +127,14 @@ jobs:
           sleep 2
         done
         cd ../..
-
+    
     - name: Create success summary
       if: success()
       run: |
         echo "🎉 All builds and tests completed successfully!"
         echo "✅ AcoustiScanConsolidated: Built and tested"
         echo "✅ Export Module: Built and tested"
-
+        
     - name: Report failures
       if: failure()
       run: |
