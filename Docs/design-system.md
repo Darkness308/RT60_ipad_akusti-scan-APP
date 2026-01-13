@@ -182,18 +182,18 @@ struct Colors {
 ### Color Usage Guidelines
 
 **Do's**:
-✅ Use color + text/icon to convey meaning  
-✅ Ensure sufficient contrast for all text  
-✅ Test in both light and dark modes  
-✅ Use semantic color names  
-✅ Support system color preferences  
+✅ Use color + text/icon to convey meaning
+✅ Ensure sufficient contrast for all text
+✅ Test in both light and dark modes
+✅ Use semantic color names
+✅ Support system color preferences
 
 **Don'ts**:
-❌ Use color alone to convey information  
-❌ Use text gradients on colored backgrounds  
-❌ Mix warm and cool colors excessively  
-❌ Use pure black (#000000) on pure white (#FFFFFF)  
-❌ Override system colors unnecessarily  
+❌ Use color alone to convey information
+❌ Use text gradients on colored backgrounds
+❌ Mix warm and cool colors excessively
+❌ Use pure black (#000000) on pure white (#FFFFFF)
+❌ Override system colors unnecessarily
 
 ## Typography
 
@@ -234,18 +234,18 @@ Text("RT60 Measurement")
 ### Typography Guidelines
 
 **Do's**:
-✅ Use system fonts (SF Pro)  
-✅ Support Dynamic Type  
-✅ Maintain clear hierarchy  
-✅ Test with large text sizes  
-✅ Use appropriate line heights  
+✅ Use system fonts (SF Pro)
+✅ Support Dynamic Type
+✅ Maintain clear hierarchy
+✅ Test with large text sizes
+✅ Use appropriate line heights
 
 **Don'ts**:
-❌ Use custom fonts without accessibility testing  
-❌ Use font sizes smaller than 11 pt  
-❌ Mix too many font weights  
-❌ Disable Dynamic Type  
-❌ Use all caps for long text  
+❌ Use custom fonts without accessibility testing
+❌ Use font sizes smaller than 11 pt
+❌ Mix too many font weights
+❌ Disable Dynamic Type
+❌ Use all caps for long text
 
 ## Spacing System
 
@@ -343,7 +343,7 @@ Container for related content:
 VStack(alignment: .leading, spacing: 12) {
     Text("Room Information")
         .font(.headline)
-    
+
     // Content
 }
 .padding(16)
@@ -367,7 +367,7 @@ VStack(alignment: .leading, spacing: 8) {
     Text("Room Name")
         .font(.subheadline)
         .foregroundColor(.secondary)
-    
+
     TextField("Enter room name", text: $roomName)
         .textFieldStyle(.roundedBorder)
         .accessibilityLabel("Room name")
@@ -529,13 +529,13 @@ Use SF Symbols for consistency:
 | Icon | Name | Usage |
 |------|------|-------|
 | 📷 | `camera.fill` | Start scan |
-| 🎙️ | `mic.fill` | Start measurement |
+| 🎙 | `mic.fill` | Start measurement |
 | 📊 | `chart.bar.fill` | View results |
 | 📄 | `doc.fill` | View report |
-| ⚙️ | `gear` | Settings |
-| ℹ️ | `info.circle` | Help/info |
+| ⚙ | `gear` | Settings |
+| ℹ | `info.circle` | Help/info |
 | ✓ | `checkmark.circle.fill` | Success |
-| ⚠️ | `exclamationmark.triangle.fill` | Warning |
+| ⚠ | `exclamationmark.triangle.fill` | Warning |
 | ✕ | `xmark.circle.fill` | Error |
 
 **Icon Sizes**:
@@ -599,16 +599,16 @@ Test all screens in both modes:
 ### Guidelines
 
 **Do's**:
-✅ Use semantic system colors  
-✅ Test contrast in both modes  
-✅ Adjust shadows for dark mode  
-✅ Maintain visual hierarchy  
+✅ Use semantic system colors
+✅ Test contrast in both modes
+✅ Adjust shadows for dark mode
+✅ Maintain visual hierarchy
 
 **Don'ts**:
-❌ Hardcode colors  
-❌ Assume light mode only  
-❌ Forget to test icons  
-❌ Use pure black/white  
+❌ Hardcode colors
+❌ Assume light mode only
+❌ Forget to test icons
+❌ Use pure black/white
 
 ## Motion and Animation
 
@@ -655,66 +655,66 @@ ProgressView()
 #### Layout
 
 **Do**:
-✅ Use Auto Layout / SwiftUI layout system  
-✅ Support all iPad orientations  
-✅ Respect safe areas  
-✅ Test on different iPad sizes  
-✅ Use standard margins and spacing  
+✅ Use Auto Layout / SwiftUI layout system
+✅ Support all iPad orientations
+✅ Respect safe areas
+✅ Test on different iPad sizes
+✅ Use standard margins and spacing
 
 **Don't**:
-❌ Hardcode positions  
-❌ Assume specific screen size  
-❌ Overlap safe area content  
-❌ Use pixel values (use points)  
-❌ Create cramped layouts  
+❌ Hardcode positions
+❌ Assume specific screen size
+❌ Overlap safe area content
+❌ Use pixel values (use points)
+❌ Create cramped layouts
 
 #### Accessibility
 
 **Do**:
-✅ Test with VoiceOver  
-✅ Provide text alternatives  
-✅ Use sufficient contrast  
-✅ Support Dynamic Type  
-✅ Test with assistive technologies  
+✅ Test with VoiceOver
+✅ Provide text alternatives
+✅ Use sufficient contrast
+✅ Support Dynamic Type
+✅ Test with assistive technologies
 
 **Don't**:
-❌ Use color alone to convey info  
-❌ Create keyboard traps  
-❌ Forget focus indicators  
-❌ Use inaccessible controls  
-❌ Disable accessibility features  
+❌ Use color alone to convey info
+❌ Create keyboard traps
+❌ Forget focus indicators
+❌ Use inaccessible controls
+❌ Disable accessibility features
 
 #### Navigation
 
 **Do**:
-✅ Maintain clear hierarchy  
-✅ Provide back navigation  
-✅ Use standard navigation patterns  
-✅ Show current location  
-✅ Keep navigation consistent  
+✅ Maintain clear hierarchy
+✅ Provide back navigation
+✅ Use standard navigation patterns
+✅ Show current location
+✅ Keep navigation consistent
 
 **Don't**:
-❌ Use icon-only navigation without labels  
-❌ Create dead ends  
-❌ Hide navigation unpredictably  
-❌ Use unclear icons  
-❌ Change navigation patterns  
+❌ Use icon-only navigation without labels
+❌ Create dead ends
+❌ Hide navigation unpredictably
+❌ Use unclear icons
+❌ Change navigation patterns
 
 #### Forms
 
 **Do**:
-✅ Label all fields clearly  
-✅ Show validation errors  
-✅ Provide helpful hints  
-✅ Use appropriate keyboards  
-✅ Save progress automatically  
+✅ Label all fields clearly
+✅ Show validation errors
+✅ Provide helpful hints
+✅ Use appropriate keyboards
+✅ Save progress automatically
 
 **Don't**:
-❌ Use placeholder as label  
-❌ Hide validation rules  
-❌ Use cryptic error messages  
-❌ Require unnecessary fields  
-❌ Lose user data on errors  
+❌ Use placeholder as label
+❌ Hide validation rules
+❌ Use cryptic error messages
+❌ Require unnecessary fields
+❌ Lose user data on errors
 
 ## Technical Resources
 
@@ -756,23 +756,23 @@ struct MeasurementCard: View {
     let value: String
     let unit: String
     let status: ComplianceStatus
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-            
+
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(value)
                     .font(.title)
                     .fontWeight(.semibold)
-                
+
                 Text(unit)
                     .font(.body)
                     .foregroundColor(.secondary)
             }
-            
+
             StatusBadge(status: status)
         }
         .padding(16)
@@ -815,9 +815,9 @@ Before shipping any UI:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2025-11-23  
-**Maintainer**: Design Team  
+**Document Version**: 1.0
+**Last Updated**: 2025-11-23
+**Maintainer**: Design Team
 **Review Cycle**: Quarterly
 
 ---

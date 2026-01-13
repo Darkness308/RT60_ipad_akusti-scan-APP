@@ -3,9 +3,9 @@
 ---
 
 ## 1. Deckblatt
-**Raumakustik Report**  
-Projekt: Musterraum  
-Datum: 29.08.2025  
+**Raumakustik Report**
+Projekt: Musterraum
+Datum: 29.08.2025
 Erstellt mit *AcoustiScan* (MVP)
 
 ---
@@ -48,13 +48,13 @@ Erstellt mit *AcoustiScan* (MVP)
 ---
 
 ## 5. Empfohlene Maßnahmen
-- **Wände:** Zusätzliche Wandabsorber einbringen (α ≥ 0.8 bei 250–1000 Hz).
+- **Wände:** Zusätzliche Wandabsorber einbringen (α ≥ 0.8 bei 250-1000 Hz).
 - **Decke:** Breitband-Deckensegel über 50 % der Fläche ergänzen.
 - **Mobiliar:** Teppichböden oder Vorhänge einsetzen zur Reduktion hoher Frequenzen.
 
 ---
 
 ### Hinweis (Scope)
-Dieser Report ist eine **orientierende Messung** nach DIN 18041.  
+Dieser Report ist eine **orientierende Messung** nach DIN 18041.
 Er ersetzt **keine Abnahmeprüfung** nach DIN EN ISO 3382.
 

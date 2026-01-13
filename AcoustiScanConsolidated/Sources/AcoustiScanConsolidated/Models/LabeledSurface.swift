@@ -12,19 +12,19 @@ import Foundation
 /// - Note: For new development, prefer `AcousticSurface` which provides
 ///   more detailed acoustic material properties.
 public struct LabeledSurface: Identifiable, Codable, Equatable {
-    
+
     /// Unique identifier for the surface
     public let id: UUID
-    
+
     /// User-friendly surface name
     public var name: String
-    
+
     /// Surface area in square meters
     public var area: Double
-    
+
     /// Single absorption coefficient (simplified from frequency-dependent)
     public var absorptionCoefficient: Double
-    
+
     /// Initialize a new labeled surface
     /// - Parameters:
     ///   - name: Surface name
@@ -36,7 +36,7 @@ public struct LabeledSurface: Identifiable, Codable, Equatable {
         self.area = area
         self.absorptionCoefficient = absorptionCoefficient
     }
-    
+
     /// Initialize with specific ID (for testing)
     /// - Parameters:
     ///   - id: Unique identifier
@@ -49,12 +49,12 @@ public struct LabeledSurface: Identifiable, Codable, Equatable {
         self.area = area
         self.absorptionCoefficient = absorptionCoefficient
     }
-    
+
     /// Calculate absorption area (area × absorption coefficient)
     public var absorptionArea: Double {
         return area * absorptionCoefficient
     }
-    
+
     /// Convert to full AcousticSurface with material
     /// - Parameter materialName: Name for the created acoustic material
     /// - Returns: AcousticSurface with equivalent properties
@@ -70,7 +70,7 @@ public struct LabeledSurface: Identifiable, Codable, Equatable {
                 4000: absorptionCoefficient
             ]
         )
-        
+
         return AcousticSurface(
             name: name,
             area: area,

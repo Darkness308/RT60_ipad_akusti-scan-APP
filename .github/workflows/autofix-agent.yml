@@ -100,17 +100,17 @@ jobs:
 
         # Check if core tokens section exists at the beginning
         if ! grep -q "Draw core tokens first" "$PDF_RENDERER" 2>/dev/null; then
-          echo "⚠️ Core tokens section may be missing or misplaced"
+          echo "⚠ Core tokens section may be missing or misplaced"
         fi
 
         # Verify required frequencies are present
         if ! grep -q "requiredFrequencies = \[125, 1000, 4000\]" "$PDF_RENDERER" 2>/dev/null; then
-          echo "⚠️ Required frequencies may be missing"
+          echo "⚠ Required frequencies may be missing"
         fi
 
         # Verify DIN values are present
         if ! grep -q "0.48" "$PDF_RENDERER" 2>/dev/null; then
-          echo "⚠️ DIN value 0.48 may be missing"
+          echo "⚠ DIN value 0.48 may be missing"
         fi
 
         # Run tests again to verify
@@ -196,7 +196,7 @@ jobs:
           [skip ci]" || echo "Nothing to commit"
 
           git push origin HEAD 2>&1 || {
-            echo "⚠️ Push failed, trying with force"
+            echo "⚠ Push failed, trying with force"
             git push origin HEAD --force-with-lease 2>&1 || echo "Push failed"
           }
 
@@ -225,7 +225,7 @@ jobs:
             });
             console.log('✅ Build workflow triggered');
           } catch (error) {
-            console.log(`⚠️ Could not trigger workflow: ${error.message}`);
+            console.log(`⚠ Could not trigger workflow: ${error.message}`);
           }
 
     - name: Update issue with results
@@ -260,7 +260,7 @@ jobs:
           - **Attempt:** ${attempt}/5
           - **Changes Applied:** ${hasChanges ? 'Yes' : 'No'}
 
-          ${hasChanges ? '🔄 **Next:** CI workflow has been triggered. Waiting for results...' : '⚠️ **Note:** Manual intervention may be required.'}
+          ${hasChanges ? '🔄 **Next:** CI workflow has been triggered. Waiting for results...' : '⚠ **Note:** Manual intervention may be required.'}
           `;
 
           await github.rest.issues.createComment({

@@ -64,7 +64,7 @@ build_with_retry() {
             build_success=true
             print_status $GREEN "✅ Build successful!"
         else
-            print_status $YELLOW "⚠️ Build failed, analyzing errors..."
+            print_status $YELLOW "⚠ Build failed, analyzing errors..."
             
             # Attempt to fix common errors
             if fix_common_errors; then
@@ -82,7 +82,7 @@ build_with_retry() {
         print_status $YELLOW "📋 Build log saved to: $BUILD_LOG"
         # Copy build log to Artifacts directory for CI/CD upload
         if ! cp "$BUILD_LOG" "$ARTIFACTS_DIR/"; then
-            print_status $YELLOW "⚠️  Failed to copy build log to Artifacts directory"
+            print_status $YELLOW "⚠  Failed to copy build log to Artifacts directory"
         fi
         exit 1
     fi
@@ -299,7 +299,7 @@ run_tests() {
         print_status $YELLOW "📋 Test log saved to: test.log"
         # Copy test log to Artifacts directory for CI/CD upload
         if ! cp test.log "$ARTIFACTS_DIR/"; then
-            print_status $YELLOW "⚠️  Failed to copy test log to Artifacts directory"
+            print_status $YELLOW "⚠  Failed to copy test log to Artifacts directory"
         fi
         return 1
     fi
@@ -336,7 +336,7 @@ generate_docs() {
         swift package generate-documentation
         print_status $GREEN "✅ Documentation generated"
     else
-        print_status $YELLOW "⚠️ swift-docc not available, skipping documentation generation"
+        print_status $YELLOW "⚠ swift-docc not available, skipping documentation generation"
     fi
 }
 
@@ -354,7 +354,7 @@ run_quality_checks() {
     # Check for TODOs and FIXMEs
     local todos=$(grep -r "TODO\|FIXME" Sources | wc -l)
     if [ $todos -gt 0 ]; then
-        print_status $YELLOW "⚠️ Found $todos TODO/FIXME comments"
+        print_status $YELLOW "⚠ Found $todos TODO/FIXME comments"
     fi
     
     # Check for hardcoded strings (potential localization issues)

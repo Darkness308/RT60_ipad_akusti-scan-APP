@@ -19,9 +19,9 @@
      - Seite 4: Material-Übersicht Tabelle
      - Seite 5: Nummerierte Maßnahmenempfehlungen
 
-2. **US-6: XLSX Import/Export für Materialdaten** ⚠️ Teilweise
+2. **US-6: XLSX Import/Export für Materialdaten** ⚠ Teilweise
    - Status vorher: XLSX offen (CSV erledigt)
-   - **Implementiert**: 
+   - **Implementiert**:
      - CSV Import/Export vollständig funktionsfähig
      - Robuster CSV Parser mit Quote-Handling
      - XLSX als TODO markiert (externe Library benötigt)
@@ -280,9 +280,9 @@ Bei Fragen zur Implementierung siehe:
 
 **Status**: ✅ **ALLE AUFGABEN ERFOLGREICH ABGESCHLOSSEN**
 
-**Abgeschlossen am**: 2025-01-08  
-**Commits**: 4  
-**Dateien geändert**: 7 neu, 0 modifiziert  
-**Zeilen Code**: ~1881  
-**User Stories**: 3/3 (US-5, US-6 teilweise, US-7)  
+**Abgeschlossen am**: 2025-01-08
+**Commits**: 4
+**Dateien geändert**: 7 neu, 0 modifiziert
+**Zeilen Code**: ~1881
+**User Stories**: 3/3 (US-5, US-6 teilweise, US-7)
 **Code Quality**: ✅ Alle Review-Findings addressiert

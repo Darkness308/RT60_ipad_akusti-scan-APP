@@ -4,6 +4,8 @@ import CoreGraphics
 #endif
 #if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
 #endif
 
 /// Centralized styling configuration for PDF exports
@@ -12,6 +14,7 @@ public struct PDFStyleConfiguration {
     #if canImport(CoreGraphics)
     // MARK: - Page Layout
 
+    #if canImport(UIKit) || canImport(AppKit)
     public struct PageLayout {
         /// A4 page dimensions in points (72 points per inch)
         public static let a4Width: CGFloat = 595.2  // 210mm

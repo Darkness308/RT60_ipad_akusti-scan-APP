@@ -7,7 +7,7 @@ import PDFKit
 final class ReportContractTests: XCTestCase {
 
     func test_pdf_and_html_contain_same_core_tokens() {
-        // Arrange – identisches Model für beide Renderer
+        // Arrange - identisches Model für beide Renderer
         let model = ReportModel(
             metadata: ["device": "iPadPro", "app_version": "1.0.0", "date": "2025-07-21", "room": "Demo A"],
             rt60_bands: [
@@ -24,17 +24,17 @@ final class ReportContractTests: XCTestCase {
             audit: ["hash": "DEMOHASH", "source": "fixtures"]
         )
 
-        // Act – PDF
+        // Act - PDF
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData).lowercased()
 
-        // Act – HTML
+        // Act - HTML
         let htmlData = ReportHTMLRenderer().render(model)
         let htmlText = String(decoding: htmlData, as: UTF8.self)
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .lowercased()
 
-        // Assert – Kerntokens (Werte & Labels) müssen in beiden vorkommen
+        // Assert - Kerntokens (Werte & Labels) müssen in beiden vorkommen
         let tokens = [
             "rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0",
             "125", "0.70",
@@ -49,7 +49,7 @@ final class ReportContractTests: XCTestCase {
     }
 
     func test_missing_values_show_as_dash_in_both_outputs() {
-        // Arrange – Model mit fehlenden Werten
+        // Arrange - Model mit fehlenden Werten
         let model = ReportModel(
             metadata: ["device": "TestDevice"],
             rt60_bands: [
@@ -63,23 +63,23 @@ final class ReportContractTests: XCTestCase {
             recommendations: [],
             audit: [:]
         )
-        
+
         // Act
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData)
-        
+
         let htmlData = ReportHTMLRenderer().render(model)
         let htmlText = String(decoding: htmlData, as: UTF8.self)
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
-        
-        // Assert – Fehlende Werte sollten als "-" dargestellt werden
+
+        // Assert - Fehlende Werte sollten als "-" dargestellt werden
         // Prüfe auf "-" in der Nähe von Frequenzen mit fehlenden Werten
         XCTAssertTrue(pdfText.contains("-"), "PDF sollte '-' für fehlende Werte enthalten")
         XCTAssertTrue(htmlText.contains("-"), "HTML sollte '-' für fehlende Werte enthalten")
     }
 
     func test_all_frequency_labels_present_in_both_outputs() {
-        // Arrange – Model mit verschiedenen Frequenzen
+        // Arrange - Model mit verschiedenen Frequenzen
         let model = ReportModel(
             metadata: ["device": "TestDevice"],
             rt60_bands: [
@@ -95,17 +95,17 @@ final class ReportContractTests: XCTestCase {
             recommendations: [],
             audit: [:]
         )
-        
+
         // Act
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData).lowercased()
-        
+
         let htmlData = ReportHTMLRenderer().render(model)
         let htmlText = String(decoding: htmlData, as: UTF8.self)
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .lowercased()
-        
-        // Assert – Alle Frequenzen sollten in beiden Ausgaben vorkommen
+
+        // Assert - Alle Frequenzen sollten in beiden Ausgaben vorkommen
         let frequencies = ["125", "1000", "4000"]  // Representative frequencies as per DIN 18041
         for freq in frequencies {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt Frequenz: \(freq)")
@@ -114,7 +114,7 @@ final class ReportContractTests: XCTestCase {
     }
 
     func test_din_target_values_present_in_both_outputs() {
-        // Arrange – Model mit DIN-Zielwerten
+        // Arrange - Model mit DIN-Zielwerten
         let model = ReportModel(
             metadata: ["device": "TestDevice"],
             rt60_bands: [],
@@ -126,17 +126,17 @@ final class ReportContractTests: XCTestCase {
             recommendations: [],
             audit: [:]
         )
-        
+
         // Act
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData).lowercased()
-        
+
         let htmlData = ReportHTMLRenderer().render(model)
         let htmlText = String(decoding: htmlData, as: UTF8.self)
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .lowercased()
-        
-        // Assert – DIN-Zielwerte sollten in beiden Ausgaben vorkommen
+
+        // Assert - DIN-Zielwerte sollten in beiden Ausgaben vorkommen
         let targetValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in targetValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt DIN-Zielwert: \(value)")
@@ -145,7 +145,7 @@ final class ReportContractTests: XCTestCase {
     }
 
     func test_pdf_includes_required_frequencies_and_din_values() {
-        // Arrange – Model with minimal data - should still include required frequencies and DIN values
+        // Arrange - Model with minimal data - should still include required frequencies and DIN values
         let model = ReportModel(
             metadata: ["device": "iPadPro", "app_version": "1.0.0"],
             rt60_bands: [
@@ -158,30 +158,30 @@ final class ReportContractTests: XCTestCase {
             recommendations: [],
             audit: [:]
         )
-        
+
         // Act
         let pdfData = PDFReportRenderer().render(model)
         let pdfText = extractPDFText(pdfData).lowercased()
-        
-        // Assert – Required frequencies should always appear in PDF
+
+        // Assert - Required frequencies should always appear in PDF
         let requiredFrequencies = ["125", "1000", "4000"]  // Representative frequencies as per DIN 18041
         for freq in requiredFrequencies {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq)")
         }
-        
-        // Assert – Required DIN values should always appear in PDF  
+
+        // Assert - Required DIN values should always appear in PDF
         let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
         for value in requiredDINValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value)")
         }
-        
-        // Assert – Core tokens should always appear in PDF
+
+        // Assert - Core tokens should always appear in PDF
         let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
         for token in coreTokens {
             XCTAssertTrue(pdfText.contains(token), "PDF fehlt Core-Token: \(token)")
         }
-        
-        // Assert – Missing values should be represented as "-"
+
+        // Assert - Missing values should be represented as "-"
         XCTAssertTrue(pdfText.contains("-"), "PDF sollte '-' für fehlende Werte enthalten")
     }
 

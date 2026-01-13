@@ -35,8 +35,8 @@ jobs:
             status: 'completed'
           });
           
-          const failedRuns = runs.data.workflow_runs.filter(run => 
-            run.conclusion === 'failure' && 
+          const failedRuns = runs.data.workflow_runs.filter(run =>
+            run.conclusion === 'failure' &&
             run.head_sha === workflow_run.head_sha
           );
           
