@@ -11,9 +11,10 @@ Dieses Dokument erklärt, wie du als Auszubildende/r oder neue/r Entwickler/in z
 3. [Projektstruktur verstehen](#projektstruktur-verstehen)
 4. [Code-Konventionen](#code-konventionen)
 5. [Workflow: Änderungen einreichen](#workflow-änderungen-einreichen)
-6. [Tests schreiben und ausführen](#tests-schreiben-und-ausführen)
-7. [Häufige Aufgaben](#häufige-aufgaben)
-8. [Fehlerbehebung](#fehlerbehebung)
+6. [Merge-Gate für `main`](#merge-gate-für-main)
+7. [Tests schreiben und ausführen](#tests-schreiben-und-ausführen)
+8. [Häufige Aufgaben](#häufige-aufgaben)
+9. [Fehlerbehebung](#fehlerbehebung)
 
 ---
 
@@ -317,6 +318,40 @@ Dann auf GitHub:
 
 ---
 
+## Merge-Gate für `main`
+
+**Ziel:** Änderungen dürfen nur nachweisbar wertvoll, risiko-bewertet und sauber geprüft in `main` landen. Dieses Gate ist verbindlich.
+
+### Kriterienkatalog (verbindlich)
+
+**Business Value**
+- Der PR liefert messbaren Nutzen (z. B. Feature, Bugfix, Performance, Compliance).
+- Nutzen ist im PR-Text klar beschrieben und für Stakeholder verständlich.
+
+**Keine neue technische Schuld**
+- Keine neuen TODOs ohne Ticket/Issue-Referenz.
+- Keine absichtlichen Code-Smells (Duplikate, Dead Code, unverwendete Abhängigkeiten).
+- Architektur- oder API-Änderungen wurden dokumentiert (README/Docs) falls erforderlich.
+
+**Risikoabschätzung**
+- Risiken (z. B. Datenverlust, API-Bruch, UX-Regression) sind identifiziert.
+- Minderung/Abfang (Fallback, Feature-Flag, Tests, Monitoring) ist beschrieben.
+
+### Required Checks (müssen grün sein)
+- CI-Workflow **build-test.yml** erfolgreich.
+- CI-Workflow **swift.yml** erfolgreich.
+- Linting/Formatting (SwiftLint/SwiftFormat) ohne Fehler.
+- Relevante Unit/Integration/UI-Tests vorhanden und grün.
+
+### Required Reviews (müssen vor Merge erfüllt sein)
+- Mindestens **1 fachlicher Review** (Produkt/QA/Domain) für Business Value.
+- Mindestens **1 technischer Review** (Code Owner/Lead/Senior).
+- Bei Risiko **hoch**: zusätzlicher Review durch Tech Lead oder Maintainer.
+
+---
+
+---
+
 ## Tests schreiben und ausführen
 
 ### Unit Tests
@@ -521,6 +556,24 @@ swift test
 - [ ] PR-Beschreibung erklärt die Änderungen
 - [ ] Neue Features haben Tests
 - [ ] User-facing Strings sind lokalisiert
+
+---
+
+## Merge-Gate Checkliste (Go/No-Go)
+
+**Go nur, wenn alle Punkte erfüllt sind:**
+- [ ] **Business Value** ist klar beschrieben und nachvollziehbar.
+- [ ] **Keine neue technische Schuld** (keine neuen TODOs ohne Ticket, keine Code-Smells).
+- [ ] **Risikoabschätzung** ist dokumentiert inkl. Mitigation.
+- [ ] **Required Checks** sind grün (build-test.yml, swift.yml, Linting, relevante Tests).
+- [ ] **Required Reviews** sind erfüllt (fachlich + technisch, bei hohem Risiko zusätzlicher Lead).
+
+**No-Go, wenn einer der folgenden Punkte zutrifft:**
+- [ ] Business Value unklar oder nicht messbar.
+- [ ] Neue technische Schuld ohne Plan/Ticket.
+- [ ] Risiko nicht bewertet oder keine Mitigation.
+- [ ] Mindestens ein Required Check ist rot/fehlt.
+- [ ] Required Reviews fehlen.
 
 ---
 
