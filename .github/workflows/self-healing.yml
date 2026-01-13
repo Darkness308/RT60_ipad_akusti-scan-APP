@@ -9,6 +9,8 @@ on:
 env:
   MAX_HEAL_ATTEMPTS: 5
   HEAL_ATTEMPT_FILE: ".github/heal-attempts.json"
+  ERROR_INFO_PATH: "Artifacts/self-healing/error-info.json"
+  ERROR_LOG_PATH: "Artifacts/self-healing/error-logs.txt"
 
 permissions:
   contents: write
@@ -36,6 +38,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const fs = require('fs');
+          const path = require('path');
           const workflow_run = context.payload.workflow_run;
 
           console.log(`🔍 Analyzing failed workflow: ${workflow_run.name}`);
@@ -118,7 +121,10 @@ jobs:
             html_url: workflow_run.html_url
           };
 
-          fs.writeFileSync('/tmp/error_info.json', JSON.stringify(errorInfo, null, 2));
+          const analysisDir = path.join(process.env.GITHUB_WORKSPACE, 'Artifacts', 'self-healing');
+          fs.mkdirSync(analysisDir, { recursive: true });
+          fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, process.env.ERROR_INFO_PATH), JSON.stringify(errorInfo, null, 2));
+          fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, process.env.ERROR_LOG_PATH), errorLogs.map(l => l.errors).join('\n\n'));
           core.setOutput('error_info', JSON.stringify(errorInfo));
           core.setOutput('has_errors', failedSteps.length > 0);
 
@@ -158,7 +164,15 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const fs = require('fs');
-          const errorInfo = JSON.parse(fs.readFileSync('/tmp/error_info.json', 'utf8'));
+          const path = require('path');
+          const errorInfoPath = path.join(process.env.GITHUB_WORKSPACE, process.env.ERROR_INFO_PATH);
+          let errorInfo = {};
+          try {
+            errorInfo = JSON.parse(fs.readFileSync(errorInfoPath, 'utf8'));
+          } catch (error) {
+            core.setFailed(`Missing error info at ${errorInfoPath}: ${error.message}`);
+            return;
+          }
 
           console.log('🤖 Triggering AI Agent for automatic fix...');
 
@@ -271,6 +285,14 @@ jobs:
         git commit -m "chore: update heal attempts counter [skip ci]" || echo "No changes to commit"
         git push || echo "Could not push heal counter update"
 
+    - name: Upload failure analysis artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: self-healing-analysis-${{ github.event.workflow_run.id }}
+        path: Artifacts/self-healing/
+        retention-days: 14
+
     - name: Escalate to human intervention
       if: steps.check_attempts.outputs.max_reached == 'true'
       uses: actions/github-script@v7
@@ -278,9 +300,11 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const fs = require('fs');
+          const path = require('path');
           let errorInfo = {};
           try {
-            errorInfo = JSON.parse(fs.readFileSync('/tmp/error_info.json', 'utf8'));
+            const errorInfoPath = path.join(process.env.GITHUB_WORKSPACE, process.env.ERROR_INFO_PATH);
+            errorInfo = JSON.parse(fs.readFileSync(errorInfoPath, 'utf8'));
           } catch (e) {
             errorInfo = { workflow: 'Unknown', branch: 'Unknown', sha: 'Unknown' };
           }
