@@ -53,7 +53,7 @@ final class DIN18041ModuleTests: XCTestCase {
         // Speech frequencies (500-2000 Hz) should have slightly lower RT60
         let speechFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 2000 }
         let otherFreqTargets = targets.filter { $0.frequency < 500 || $0.frequency > 2000 }
-        
+
         // More explicit check to avoid nested allSatisfy issues on some platforms
         for speech in speechFreqTargets {
             for other in otherFreqTargets {
@@ -75,7 +75,7 @@ final class DIN18041ModuleTests: XCTestCase {
         // Speech frequencies (500-4000 Hz) should have optimized (lower) RT60
         let speechFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 4000 }
         let lowFreqTargets = targets.filter { $0.frequency < 500 }
-        
+
         // More explicit check to avoid nested allSatisfy issues on some platforms
         for speech in speechFreqTargets {
             for low in lowFreqTargets {
@@ -97,7 +97,7 @@ final class DIN18041ModuleTests: XCTestCase {
         // Low frequencies (≤250 Hz) should have higher RT60 for warmth
         let lowFreqTargets = targets.filter { $0.frequency <= 250 }
         let midFreqTargets = targets.filter { $0.frequency > 250 && $0.frequency < 4000 }
-        
+
         // More explicit check to avoid nested allSatisfy issues on some platforms
         for low in lowFreqTargets {
             for mid in midFreqTargets {
@@ -105,10 +105,10 @@ final class DIN18041ModuleTests: XCTestCase {
                     "Low frequency \(low.frequency) Hz (\(low.targetRT60)) should be > mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
             }
         }
-        
+
         // High frequencies (≥4000 Hz) should have lower RT60 for clarity
         let highFreqTargets = targets.filter { $0.frequency >= 4000 }
-        
+
         // More explicit check to avoid nested allSatisfy issues on some platforms
         for high in highFreqTargets {
             for mid in midFreqTargets {
@@ -134,16 +134,16 @@ final class DIN18041ModuleTests: XCTestCase {
             return
         }
         let midFreqTargets = targets.filter { $0.frequency > 125 && $0.frequency < 4000 }
-        
+
         // More explicit check to avoid nested allSatisfy issues on some platforms
         for mid in midFreqTargets {
             XCTAssertGreaterThan(lowFreqTarget.targetRT60, mid.targetRT60,
                 "Low frequency 125 Hz (\(lowFreqTarget.targetRT60)) should be > mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
         }
-        
+
         // High frequencies (≥4000 Hz) should have controlled brilliance
         let highFreqTargets = targets.filter { $0.frequency >= 4000 }
-        
+
         // More explicit check to avoid nested allSatisfy issues on some platforms
         for high in highFreqTargets {
             for mid in midFreqTargets {
@@ -166,7 +166,7 @@ final class DIN18041ModuleTests: XCTestCase {
         // Speech/PA frequencies (500-2000 Hz) should have better clarity
         let paFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 2000 }
         let otherFreqTargets = targets.filter { $0.frequency < 500 || $0.frequency > 2000 }
-        
+
         // More explicit check to avoid nested allSatisfy issues on some platforms
         for pa in paFreqTargets {
             for other in otherFreqTargets {
