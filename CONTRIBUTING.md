@@ -350,8 +350,6 @@ Dann auf GitHub:
 
 ---
 
----
-
 ## Tests schreiben und ausführen
 
 ### Unit Tests
