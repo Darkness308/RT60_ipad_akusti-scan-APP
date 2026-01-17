@@ -121,10 +121,12 @@ jobs:
             html_url: workflow_run.html_url
           };
 
-          const analysisDir = path.join(process.env.GITHUB_WORKSPACE, 'Artifacts', 'self-healing');
+          const errorInfoPath = path.join(process.env.GITHUB_WORKSPACE, process.env.ERROR_INFO_PATH);
+          const errorLogPath = path.join(process.env.GITHUB_WORKSPACE, process.env.ERROR_LOG_PATH);
+          const analysisDir = path.dirname(errorInfoPath);
           fs.mkdirSync(analysisDir, { recursive: true });
-          fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, process.env.ERROR_INFO_PATH), JSON.stringify(errorInfo, null, 2));
-          fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, process.env.ERROR_LOG_PATH), errorLogs.map(l => l.errors).join('\n\n'));
+          fs.writeFileSync(errorInfoPath, JSON.stringify(errorInfo, null, 2));
+          fs.writeFileSync(errorLogPath, errorLogs.map(l => l.errors).join('\n\n'));
           core.setOutput('error_info', JSON.stringify(errorInfo));
           core.setOutput('has_errors', failedSteps.length > 0);
 
