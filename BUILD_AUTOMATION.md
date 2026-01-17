@@ -63,7 +63,7 @@ This document describes the automated build error detection, fixing, and retry m
 
 ### 4. Self-Healing CI Process (Failure Analysis + Auto-Fix + Rebuild)
 
-When a build turns red, the `self-healing.yml` workflow triggers an error analysis job that:
+When a build fails all its automatic retries and turns red, the `self-healing.yml` workflow triggers an error analysis job that:
 1. **Collects job logs** and extracts error lines from failed jobs.
 2. **Stores artifacts** (`Artifacts/self-healing/error-info.json` and `error-logs.txt`) for traceability.
 3. **Creates an auto-fix issue** and dispatches a `ci-failure-autofix` event for the AI agent.
