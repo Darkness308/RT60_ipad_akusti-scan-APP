@@ -74,7 +74,7 @@ The `autofix-agent.yml` workflow:
 
 #### Escalation Path
 - **Attempts 1–5**: Automatic analysis + AI agent fix attempts.
-- **Max attempts reached**: `self-healing.yml` opens a **"Human Required"** issue with failure details, recommended local commands, and a direct log link.
+- **Max attempts reached**: `self-healing.yml` opens a **"Human Required"** issue with failure details, recommended local commands, and a direct log link to the failed GitHub Actions run (including its full logs); detailed logs are also available via the `Artifacts/self-healing/error-logs.txt` artifact for that workflow run.
 - **Resolution**: A developer resolves the issue and the next push re-triggers CI; the auto-fix issues are closed once CI succeeds.
 
 ## Usage
