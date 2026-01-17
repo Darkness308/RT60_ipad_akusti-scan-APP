@@ -11,8 +11,8 @@ This document describes the automated build error detection, fixing, and retry m
 - **build-test.yml**: Comprehensive CI/CD with retry mechanisms
 - **swift.yml**: Streamlined Swift build and test with retries
 - **auto-retry.yml**: Automatic workflow re-triggering on failures
-- **self-healing.yml**: Failure analysis, log collection, AI-assisted fixes, and escalation
-- **autofix-agent.yml**: Applies fixes and triggers fresh builds after changes
+- **self-healing.yml**: Failure analysis, log collection, triggers AI-assisted fixes, and handles escalation
+- **autofix-agent.yml**: Applies AI-generated fixes and triggers fresh builds after changes
 
 #### Retry Mechanisms
 - **Up to 3 automatic retries** per failed step
