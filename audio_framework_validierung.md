@@ -15,7 +15,7 @@ Der globale Markt für akustische Bewertung und Qualitätskontrolle hat ein Volu
 **Erste Kategorie: Klangfarbe**
 Diese Kategorie umfasst neun Parameter und ist für uns besonders wichtig. Hier finden wir bekannte Größen wie die Hell-Dunkel-Bewertung, also das Verhältnis von hohen zu tiefen Frequenzen. Dazu kommen die frequenzbezogenen Parameter für Höhen, Mitten und Tiefen sowie Schärfe und Rauigkeit.
 
-Die Schärfe beschreibt den Kraftaufwand, mit dem eine Klangquelle angeregt wird – denkt an hart angeschlagene versus weich angeschlagene Perkussionsinstrumente. Rauigkeit hingegen beschreibt heftige oder aggressive Modulationen, bei denen Einzelschwingungen kaum noch unterscheidbar sind.
+Die Schärfe beschreibt den Kraftaufwand, mit dem eine Klangquelle angeregt wird - denkt an hart angeschlagene versus weich angeschlagene Perkussionsinstrumente. Rauigkeit hingegen beschreibt heftige oder aggressive Modulationen, bei denen Einzelschwingungen kaum noch unterscheidbar sind.
 
 Besonders interessant sind auch Kammfiltereffekte, die oft als hohler Klang wahrgenommen werden, sowie metallische Klangfarben, die von schmalbandig resonierenden Anteilen geprägt sind.
 
@@ -29,13 +29,13 @@ Ein wichtiger Parameter ist die Vorn-Hinten-Lage, die beschreibt, ob eine Schall
 
 Besonders interessant sind die Ausdehnungsparameter: Tiefenausdehnung, Breitenausdehnung und Höhenausdehnung beschreiben, wie ausgedehnt eine Schallquelle in den verschiedenen räumlichen Dimensionen wahrgenommen wird.
 
-Der Externalisierungsgrad ist ein hochkomplexer Parameter, der beschreibt, wie deutlich eine Schallquelle außerhalb des Kopfes wahrgenommen wird – im Gegensatz zur Im-Kopf-Lokalisation, die wir oft bei schlechter Kopfhörerwiedergabe erleben.
+Der Externalisierungsgrad ist ein hochkomplexer Parameter, der beschreibt, wie deutlich eine Schallquelle außerhalb des Kopfes wahrgenommen wird - im Gegensatz zur Im-Kopf-Lokalisation, die wir oft bei schlechter Kopfhörerwiedergabe erleben.
 
 **Vierte Kategorie: Raum**
 Diese Kategorie umfasst drei Parameter, die direkt mit der Raumakustik zusammenhängen: Nachhallstärke, Nachhalldauer und Nachhallumhüllung. Diese Parameter sind durch die internationale Norm ISO 3382 bestens standardisiert und haben die stärkste wissenschaftliche Validierung aller Framework-Bereiche.
 
 **Fünfte Kategorie: Zeitverhalten**
-Hier finden wir sieben Parameter, die sich mit zeitlichen Aspekten beschäftigen. Vorechos und Nachechos kennen wir alle aus der Praxis – das sind Kopien von Schallquellen mit meist geringerer Lautstärke vor oder nach dem eigentlichen Signal.
+Hier finden wir sieben Parameter, die sich mit zeitlichen Aspekten beschäftigen. Vorechos und Nachechos kennen wir alle aus der Praxis - das sind Kopien von Schallquellen mit meist geringerer Lautstärke vor oder nach dem eigentlichen Signal.
 
 Zeitliches Zerfallen beschreibt Situationen, in denen Objekte, die normalerweise eine einheitliche zeitliche Gestalt haben sollten, zeitlich separiert erscheinen. Stellt euch vor, Griffgeräusche und Töne einer Gitarre kommen nicht zur gleichen Zeit an.
 
@@ -44,12 +44,12 @@ Knackigkeit beschreibt die Impulstreue von Systemen und den Verlauf von Einschwi
 **Sechste Kategorie: Dynamik**
 Diese drei Parameter sind für uns als Toningenieure täglich relevant: Lautheit, Dynamik und Kompressoreffekte. Lautheit ist die wahrgenommene Lautstärke einer Schallquelle. Dynamik beschreibt die Größe der Lautheitsunterschiede zwischen lauten und leisen Passagen.
 
-Kompressoreffekte umfassen alle Klangveränderungen jenseits des langfristigen Lautheitsverlaufs, die durch Dynamikkompression entstehen – vom kompakteren Klang summenkomprimierter Tracks bis hin zum gefürchteten Kompressorpumpen.
+Kompressoreffekte umfassen alle Klangveränderungen jenseits des langfristigen Lautheitsverlaufs, die durch Dynamikkompression entstehen - vom kompakteren Klang summenkomprimierter Tracks bis hin zum gefürchteten Kompressorpumpen.
 
 **Siebte Kategorie: Artefakte**
-Sieben Parameter beschäftigen sich mit unerwünschten Störungen: verschiedene Fremdgeräusche – tonal, impulshaft und rauschhaft – sowie Fremdquellen und Geisterquellen.
+Sieben Parameter beschäftigen sich mit unerwünschten Störungen: verschiedene Fremdgeräusche - tonal, impulshaft und rauschhaft - sowie Fremdquellen und Geisterquellen.
 
-Geisterquellen sind besonders interessant: Das sind räumlich getrennte, annähernd gleichzeitige Abbilder einer Schallquelle – eine Art örtliche Signalkopie, die an zusätzlichen Orten auftaucht.
+Geisterquellen sind besonders interessant: Das sind räumlich getrennte, annähernd gleichzeitige Abbilder einer Schallquelle - eine Art örtliche Signalkopie, die an zusätzlichen Orten auftaucht.
 
 Verzerrungen und Vibrationen runden diese Kategorie ab, wobei Vibrationen den Grenzbereich zwischen auditiver und taktiler Wahrnehmung beschreiben.
 
@@ -116,7 +116,7 @@ Für Sprachqualitätsbewertungen sind die Parameter 43 und 44 für Sprachverstä
 
 ## Implementierungsempfehlung
 
-Die Umsetzung sollte in drei Phasen erfolgen. In Phase eins geht es um die Validierung der Kernparameter – das sind 36 Parameter mit etablierten ISO- und ITU-R-Standards. Diese sollten durch Cross-Validation-Studien über verschiedene Audio-Content-Typen bestätigt werden.
+Die Umsetzung sollte in drei Phasen erfolgen. In Phase eins geht es um die Validierung der Kernparameter - das sind 36 Parameter mit etablierten ISO- und ITU-R-Standards. Diese sollten durch Cross-Validation-Studien über verschiedene Audio-Content-Typen bestätigt werden.
 
 Phase zwei befasst sich mit der Forschung zu den Lücken-Parametern. Hier müssen objektive Metriken für metallische Klangfarbe entwickelt, standardisierte Pre- und Post-Echo-Messprotokolle etabliert und Vibrations-Akustik-Korrelationsmodelle erstellt werden.
 

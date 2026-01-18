@@ -48,7 +48,7 @@ Erstellt mit *AcoustiScan* (MVP)
 ---
 
 ## 5. Empfohlene Maßnahmen
-- **Wände:** Zusätzliche Wandabsorber einbringen (α ≥ 0.8 bei 250–1000 Hz).
+- **Wände:** Zusätzliche Wandabsorber einbringen (α ≥ 0.8 bei 250-1000 Hz).
 - **Decke:** Breitband-Deckensegel über 50 % der Fläche ergänzen.
 - **Mobiliar:** Teppichböden oder Vorhänge einsetzen zur Reduktion hoher Frequenzen.
 

@@ -48,7 +48,7 @@ final class RT60LogParserTests: XCTestCase {
     }
 
     func test_cli_exits_nonzero_on_format_error() throws {
-        // Hier könnte ein fehlerhaftes Fixture genutzt werden (nicht vorhanden) – Placeholder:
+        // Hier könnte ein fehlerhaftes Fixture genutzt werden (nicht vorhanden) - Placeholder:
         let bad = """
         Setup:
         AppVersion=1.0.0

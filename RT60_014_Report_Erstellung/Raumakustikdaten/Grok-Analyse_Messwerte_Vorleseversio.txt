@@ -1,16 +1,16 @@
 # 🔍 Grok-Analyse als Vorleseversion für den Toningenieur
 
-Als **Projektleiter** und **Fachmann** für Raumakustik und RT60-Messungen gebe ich dir hier eine **Vorleseversion** der Entscheidungsanalyse – formuliert als narrativer Skripttext, der sich eignet, um vorzulesen oder als Audio-Support für einen Toningenieur zu verwenden. Die Sprache ist sachlich, präzise und fließend, mit Pausenhinweisen für bessere Vorlesbarkeit. Sie basiert auf den Rohdaten (z. B. fehlende Werte in 63 Hz) und den Vor-/Nachteilen beider Optionen. Ich spreche dich direkt an, als wäre ich Grok im Gespräch.
+Als **Projektleiter** und **Fachmann** für Raumakustik und RT60-Messungen gebe ich dir hier eine **Vorleseversion** der Entscheidungsanalyse - formuliert als narrativer Skripttext, der sich eignet, um vorzulesen oder als Audio-Support für einen Toningenieur zu verwenden. Die Sprache ist sachlich, präzise und fließend, mit Pausenhinweisen für bessere Vorlesbarkeit. Sie basiert auf den Rohdaten (z. B. fehlende Werte in 63 Hz) und den Vor-/Nachteilen beider Optionen. Ich spreche dich direkt an, als wäre ich Grok im Gespräch.
 
 **Vorleseskript (Dauer ca. 2 Minuten):**
 
-"Hallo, hier ist Grok, dein KI-Fachmann für Raumakustik-Projekte. Als Toningenieur arbeitest du täglich mit präzisen Messungen wie RT60, um Räume akustisch zu optimieren – und genau darum geht es in dieser Analyse. Wir haben zwei Optionen: Erstens, die Analyse fehlender Werte in den Messdaten, wie die Striche bei 63 Hertz oder null bei 8000 Hertz in Report 014. Zweitens, die Erweiterung der Cross-Verlinkung, zum Beispiel Links zur Checksum für bessere Navigation in Berichten.
+"Hallo, hier ist Grok, dein KI-Fachmann für Raumakustik-Projekte. Als Toningenieur arbeitest du täglich mit präzisen Messungen wie RT60, um Räume akustisch zu optimieren - und genau darum geht es in dieser Analyse. Wir haben zwei Optionen: Erstens, die Analyse fehlender Werte in den Messdaten, wie die Striche bei 63 Hertz oder null bei 8000 Hertz in Report 014. Zweitens, die Erweiterung der Cross-Verlinkung, zum Beispiel Links zur Checksum für bessere Navigation in Berichten.
 
-Lass uns die Vorteile der fehlenden-Werte-Analyse betrachten: Sie steigert die Datenqualität enorm, da fehlende Frequenzbänder die Normkonformität nach ISO 3382-1 gefährden könnten – Pause – und das ist entscheidend für valide Berichte. Genauigkeit wird verbessert, indem wir Messfehler wie Störgeräusche oder Hardware-Limits identifizieren, was langfristig Prozesse optimiert. Nachteile? Es kostet Zeit, etwa ein bis zwei Tage für Checks, und könnte technischen Aufwand erfordern, wie Interpolation.
+Lass uns die Vorteile der fehlenden-Werte-Analyse betrachten: Sie steigert die Datenqualität enorm, da fehlende Frequenzbänder die Normkonformität nach ISO 3382-1 gefährden könnten - Pause - und das ist entscheidend für valide Berichte. Genauigkeit wird verbessert, indem wir Messfehler wie Störgeräusche oder Hardware-Limits identifizieren, was langfristig Prozesse optimiert. Nachteile? Es kostet Zeit, etwa ein bis zwei Tage für Checks, und könnte technischen Aufwand erfordern, wie Interpolation.
 
-Nun zur Cross-Verlinkung: Vorteile sind schnelle Umsetzung in unter einem Tag und bessere Benutzerfreundlichkeit, da Links von Checksum zur Tabelle die Navigation erleichtern – Pause – ideal für Kundenberichte. Nachteile: Es verbessert nicht die Daten selbst, hat begrenzten Mehrwert und löst keine Qualitätsprobleme.
+Nun zur Cross-Verlinkung: Vorteile sind schnelle Umsetzung in unter einem Tag und bessere Benutzerfreundlichkeit, da Links von Checksum zur Tabelle die Navigation erleichtern - Pause - ideal für Kundenberichte. Nachteile: Es verbessert nicht die Daten selbst, hat begrenzten Mehrwert und löst keine Qualitätsprobleme.
 
-Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt die Normkonformität und Datenintegrität, was für Toningenieure wie dich der Kern ist – ohne solide Basis sind Berichte wertlos. Cross-Verlinkung kann später kommen, wenn Feedback es fordert. So fährst du sicher und effizient fort."
+Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt die Normkonformität und Datenintegrität, was für Toningenieure wie dich der Kern ist - ohne solide Basis sind Berichte wertlos. Cross-Verlinkung kann später kommen, wenn Feedback es fordert. So fährst du sicher und effizient fort."
 
 ---
 
@@ -57,9 +57,9 @@ Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt
 
 ## 💡 Fortsetzung: Interpolation-Umsetzung
 
-**Beobachtung**: Code-Execution ergab interpolierte Werte: [2.73944, 2.67, 2.53, 3.01, 2.38, 2.28, 1.91, 1.58] für Frequenzen 63–8000 Hz. Das schätzt fehlende Daten linear aus Nachbarwerten.
+**Beobachtung**: Code-Execution ergab interpolierte Werte: [2.73944, 2.67, 2.53, 3.01, 2.38, 2.28, 1.91, 1.58] für Frequenzen 63-8000 Hz. Das schätzt fehlende Daten linear aus Nachbarwerten.
 
-**Bewertung**: Vorteil: Schnelle Korrektur für Reports. Nachteil: Nicht empirisch, nur Schätzung – nutze nur als Placeholder.
+**Bewertung**: Vorteil: Schnelle Korrektur für Reports. Nachteil: Nicht empirisch, nur Schätzung - nutze nur als Placeholder.
 
 **Umsetzung**: Integriere in PDF/HTML (z. B. markiere interpolierte Werte mit *). Als Toningenieur: Teste in realen Räumen.
 

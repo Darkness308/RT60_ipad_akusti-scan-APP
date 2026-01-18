@@ -85,7 +85,7 @@ struct PDFExportView: View {
             for data in rt60Data {
                 let rt60String = data.rt60 != nil ? String(format: "%.2f", data.rt60!) : "-.--"
                 let uncertaintyString = data.uncertainty != nil ? String(format: "%.2f", data.uncertainty!) : "-.--"
-                let row = "\(data.frequency) | \(rt60String) | \(uncertaintyString) | \(String(format: "%.1f–%.1f", data.targetRange.lowerBound, data.targetRange.upperBound)) | \(data.status)"
+                let row = "\(data.frequency) | \(rt60String) | \(uncertaintyString) | \(String(format: "%.1f-%.1f", data.targetRange.lowerBound, data.targetRange.upperBound)) | \(data.status)"
                 let rowString = NSAttributedString(string: row, attributes: tableAttributes)
                 rowString.draw(at: CGPoint(x: 40, y: yOffset))
                 yOffset += 20
@@ -97,8 +97,8 @@ struct PDFExportView: View {
             recTitle.draw(at: CGPoint(x: 40, y: yOffset))
             yOffset += 20
             let recommendations = """
-            - 125–500 Hz: Glaswolle (α = 0.8–0.9), Deckenbaffeln
-            - 1000–4000 Hz: Akustikschaum, Wandabsorber
+            - 125-500 Hz: Glaswolle (α = 0.8-0.9), Deckenbaffeln
+            - 1000-4000 Hz: Akustikschaum, Wandabsorber
             - Maßnahmen: 10 m² zusätzliche Absorberfläche
             """
             let recString = NSAttributedString(string: recommendations, attributes: metaAttributes)

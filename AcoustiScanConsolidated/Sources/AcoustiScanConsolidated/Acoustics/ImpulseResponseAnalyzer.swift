@@ -9,7 +9,7 @@
 //  ISO 3382 standard: compute the energy decay curve via reverse
 //  cumulative integration of the squared impulse response, convert to
 //  decibels, and estimate the slope of the decay between defined
-//  limits (e.g. 5–25 dB for T20 or 5–35 dB for T30).  The resulting
+//  limits (e.g. 5-25 dB for T20 or 5-35 dB for T30).  The resulting
 //  T20/T30 values are extrapolated to RT60 by multiplying by 3 or 2
 //  respectively【473764854244230†L186-L204】.
 
@@ -125,7 +125,7 @@ public struct ImpulseResponseAnalyzer {
         return nil
     }
 
-    /// Estimate T20 using the 5–25 dB decay window.  Returns nil if the
+    /// Estimate T20 using the 5-25 dB decay window.  Returns nil if the
     /// required dynamic range is not achieved.
     /// - Parameters:
     ///   - dbCurve: Energy decay curve in decibels
@@ -151,7 +151,7 @@ public struct ImpulseResponseAnalyzer {
         return t20
     }
 
-    /// Estimate T30 using the 5–35 dB decay window.  Returns nil if the
+    /// Estimate T30 using the 5-35 dB decay window.  Returns nil if the
     /// required dynamic range is not achieved.
     /// - Parameters:
     ///   - dbCurve: Energy decay curve in decibels

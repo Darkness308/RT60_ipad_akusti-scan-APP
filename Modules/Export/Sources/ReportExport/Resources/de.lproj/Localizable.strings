@@ -42,11 +42,11 @@
 
 // MARK: - Scanning
 
-"scanning" = "Scanning…";
+"scanning" = "Scanning...";
 "scan_ready" = "Scan bereit";
 "stop_scan" = "Scan beenden";
 "start_scan" = "Scan starten";
-"lidar_scan" = "LiDAR‑Scan";
+"lidar_scan" = "LiDAR-Scan";
 "floor" = "Boden";
 "wall" = "Wand";
 
