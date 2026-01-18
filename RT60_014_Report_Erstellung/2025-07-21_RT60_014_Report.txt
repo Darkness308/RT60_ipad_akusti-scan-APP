@@ -1,4 +1,4 @@
-XL2 RT60 Reporting:        MyProject\2025-07-21_RT60_014_Report.txt
+XL2 RT60 Reporting:        MyProject/2025-07-21_RT60_014_Report.txt
 -------------------
 
 
