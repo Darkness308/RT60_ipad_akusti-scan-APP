@@ -123,8 +123,9 @@ All files now comply with repository standards defined in `.editorconfig`:
 
 The fix was minimal and surgical:
 - Added final newline character (`\n`) to end of 41 files
-- No other changes to file content
-- All changes comply with `.editorconfig` standard `insert_final_newline = true`
+- Removed trailing whitespace on otherwise blank lines in some files
+- No functional or semantic changes to file content
+- All changes comply with `.editorconfig` standards (for example, `insert_final_newline = true` and whitespace rules)
 
 ## Merge Readiness
 
