@@ -48,7 +48,7 @@ Fixed missing final newlines in the following files:
 - `Modules/Export/Tests/PDFReportSnapshotTests.swift`
 - `Modules/Export/Tests/ReportHTMLRendererTests.swift`
 
-#### Tool & Test Files (10)
+#### Tool & Test Files (7)
 - `Tools/LogParser/RT60LogParser.swift`
 - `Tools/LogParser/RT60LogParserTests.swift`
 - `Tools/LogParser/fixtures/2025-07-21_RT60_011_Report.txt`
