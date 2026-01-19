@@ -7,7 +7,7 @@ Das Repo bietet eine klare README mit Zielgruppe, Zweck, Funktionsumfang, Archit
 **Was fehlt?**
 - Ein Installations-/Quickstart-Abschnitt für absolute Einsteiger
 - Screenshots oder Demo-Videos (optional, aber hilfreich)
-- Ein „Liesmich"/README auf Projektebene (Root), falls jemand nicht direkt in /swift_coding/ schaut
+- Ein "Liesmich"/README auf Projektebene (Root), falls jemand nicht direkt in /swift_coding/ schaut
 
 ## 2. Struktur & Organisation
 
@@ -77,4 +77,4 @@ Das Repo ist modular aufgebaut:
 ---
 
 **Fazit:**
-Dein Repo ist klar überdurchschnittlich, in der oberen Hälfte des GitHub-Benchmarks und für die Zielgruppe sehr gut verständlich und nutzbar. Mit ein paar kleinen Ergänzungen (Quickstart, Screenshots, Root-README, optional Community-Features) ist es „top-tier"-ready.
+Dein Repo ist klar überdurchschnittlich, in der oberen Hälfte des GitHub-Benchmarks und für die Zielgruppe sehr gut verständlich und nutzbar. Mit ein paar kleinen Ergänzungen (Quickstart, Screenshots, Root-README, optional Community-Features) ist es "top-tier"-ready.

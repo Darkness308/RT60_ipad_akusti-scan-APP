@@ -77,7 +77,7 @@ Enthält praxisnahe Anleitung für Nutzer:
 - **0.3.0 Sprint 2:** RoomPlan-Skeleton (`RoomScanView`), CSV-Import/Export (`MaterialCSVImporter`), Erweiterungen `MaterialManager`
 
 ### backlog.md
-User Stories (US-1 bis US-5) mit Sprintzuordnung und EKS-Priorität. Nach Sprint 2 sind US-1 und US-2 „in Arbeit" markiert, US-3/4 abgeschlossen.
+User Stories (US-1 bis US-5) mit Sprintzuordnung und EKS-Priorität. Nach Sprint 2 sind US-1 und US-2 "in Arbeit" markiert, US-3/4 abgeschlossen.
 
 ### risks.md
 Liste erkannter Risiken mit Bewertung und Gegenmaßnahmen: Mikrofon-Kalibrierung, Störgeräusche, Messdauer, Speicher/Performance, EU-AI-Act Compliance.

@@ -19,5 +19,5 @@
 * **RoomPlan-Integration (Skeleton):** Neues Modul `RoomScanView` mit Coordinator für LiDAR-Scan via RoomPlan.
 * **Materialdaten:** `MaterialCSVImporter` implementiert für CSV-Import/Export.
 * **MaterialManager:** Erweiterung um Import- und Exportfunktionen.
-* **Docs:** Backlog und Changelog aktualisiert; User Stories US-1 und US-2 als „in Arbeit" markiert.
+* **Docs:** Backlog und Changelog aktualisiert; User Stories US-1 und US-2 als "in Arbeit" markiert.
 
