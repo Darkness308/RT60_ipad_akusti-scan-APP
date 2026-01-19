@@ -57,7 +57,7 @@ Fixed missing final newlines in the following files:
 - `Tools/linters/report_key_coverage.swift`
 - `Tools/rt60log2json/main.swift`
 
-#### Data Files (7)
+#### Data Files (8)
 - `RT60_014_Report_Erstellung/Raumakustikdaten/Grok-Analyse_Messwerte_Vorleseversio.txt`
 - `RT60_014_Report_Erstellung/Raumakustikdaten/PDFExportView.txt`
 - `Schemas/audit.schema.json`
