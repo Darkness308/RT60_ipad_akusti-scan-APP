@@ -308,4 +308,78 @@ final class AcousticsTests: XCTestCase {
         let rt60Slow = try ImpulseResponseAnalyzer.rt60(ir: slowDecay, sampleRate: 44100.0)
         XCTAssertNil(rt60Slow) // Should return nil for insufficient decay
     }
+
+    // MARK: - Octave Band Filter Tests (125 Hz – 8 kHz)
+
+    func testOctaveBandFilterRetainsLength() {
+        let sampleRate = 48000.0
+        let ir = (0..<4800).map { i in Float(i == 0 ? 1.0 : 0.0) } // Unit impulse
+
+        for frequency in [125, 250, 500, 1000, 2000, 4000, 8000] {
+            let filtered = ImpulseResponseAnalyzer.octaveBandFilter(
+                ir: ir,
+                centerFrequency: Double(frequency),
+                sampleRate: sampleRate
+            )
+            XCTAssertEqual(filtered.count, ir.count,
+                "Filtered output length mismatch at \(frequency) Hz")
+        }
+    }
+
+    func testOctaveBandFilterInvalidFrequencyReturnsOriginal() {
+        let sampleRate = 48000.0
+        let ir: [Float] = [1.0, 0.5, 0.25, 0.125]
+
+        // Frequency above Nyquist should return original signal
+        let aboveNyquist = ImpulseResponseAnalyzer.octaveBandFilter(
+            ir: ir,
+            centerFrequency: 25000.0,
+            sampleRate: sampleRate
+        )
+        XCTAssertEqual(aboveNyquist, ir)
+
+        // Zero frequency should return original signal
+        let zeroFreq = ImpulseResponseAnalyzer.octaveBandFilter(
+            ir: ir,
+            centerFrequency: 0.0,
+            sampleRate: sampleRate
+        )
+        XCTAssertEqual(zeroFreq, ir)
+    }
+
+    func testRT60PerOctaveBandReturnsAllFrequencies() throws {
+        // Create an impulse response that decays over 2 seconds at 48 kHz
+        let sampleRate = 48000.0
+        let targetRT60 = 0.8
+        let length = Int(sampleRate * 2)
+        let impulse = (0..<length).map { i in
+            let t = Double(i) / sampleRate
+            return Float(Foundation.exp(-6.91 * t / targetRT60))
+        }
+
+        let results = try ImpulseResponseAnalyzer.rt60PerOctaveBand(ir: impulse, sampleRate: sampleRate)
+
+        // All 7 standard frequency bands should have a result
+        let expectedFrequencies = [125, 250, 500, 1000, 2000, 4000, 8000]
+        for freq in expectedFrequencies {
+            XCTAssertNotNil(results[freq], "Expected RT60 result for \(freq) Hz band")
+            if let rt60Value = results[freq] {
+                XCTAssertGreaterThan(rt60Value, 0.0, "RT60 at \(freq) Hz should be positive")
+                XCTAssertLessThan(rt60Value, 10.0, "RT60 at \(freq) Hz should be < 10 s")
+            }
+        }
+    }
+
+    func testRT60PerOctaveBandEmptyInputThrows() {
+        XCTAssertThrowsError(
+            try ImpulseResponseAnalyzer.rt60PerOctaveBand(ir: [], sampleRate: 48000.0)
+        )
+    }
+
+    func testRT60PerOctaveBandInvalidSampleRateThrows() {
+        let ir: [Float] = [1.0, 0.5, 0.25]
+        XCTAssertThrowsError(
+            try ImpulseResponseAnalyzer.rt60PerOctaveBand(ir: ir, sampleRate: 0.0)
+        )
+    }
 }

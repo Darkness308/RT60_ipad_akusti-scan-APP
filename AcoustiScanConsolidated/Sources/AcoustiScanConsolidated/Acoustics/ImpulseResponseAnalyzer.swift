@@ -246,4 +246,127 @@ public struct ImpulseResponseAnalyzer {
         logDebug("Correlation calculated: \(correlation) for decay segment")
         return correlation
     }
+
+    // MARK: - Octave Band Filtering (125 Hz – 8 kHz)
+
+    /// Apply a second-order IIR bandpass filter (biquad) to an impulse response.
+    ///
+    /// Uses Audio EQ Cookbook coefficients for a constant-Q bandpass filter with
+    /// Q = √2 (1-octave bandwidth).  Supports all standard octave bands from
+    /// 125 Hz up to 8 kHz.  A sample rate of 44.1 kHz or 48 kHz (as delivered by
+    /// AVAudioSession on iOS, including USB microphones) is required to produce a
+    /// well-behaved 8 kHz octave band; 16 kHz is the theoretical Nyquist minimum but
+    /// leaves no headroom and is not recommended in practice.
+    ///
+    /// - Parameters:
+    ///   - ir: Impulse response samples (full bandwidth)
+    ///   - centerFrequency: Octave band centre frequency in Hz (e.g. 125, 250, …, 8000)
+    ///   - sampleRate: Audio sample rate in Hz
+    /// - Returns: Band-pass filtered impulse response, or the original signal if the
+    ///   parameters are invalid (centre frequency ≥ Nyquist or non-positive sample rate).
+    public static func octaveBandFilter(
+        ir: [Float],
+        centerFrequency: Double,
+        sampleRate: Double
+    ) -> [Float] {
+        let nyquist = sampleRate / 2.0
+        guard sampleRate > 0, centerFrequency > 0, centerFrequency < nyquist else {
+            logWarning("Cannot filter at \(centerFrequency) Hz with sample rate \(sampleRate) Hz")
+            return ir
+        }
+
+        // Biquad bandpass coefficients (Audio EQ Cookbook, Robert Bristow-Johnson)
+        // Q = √2 gives a -3 dB bandwidth of exactly one octave
+        let q = 2.0.squareRoot() // √2 ≈ 1.41421
+        let w0 = 2.0 * Double.pi * centerFrequency / sampleRate
+        let sinW0 = Foundation.sin(w0)
+        let cosW0 = Foundation.cos(w0)
+        let alpha = sinW0 / (2.0 * q)
+
+        let a0 = 1.0 + alpha
+        let b0 = Float((sinW0 / 2.0) / a0)
+        let b1 = Float(0.0)
+        let b2 = Float((-sinW0 / 2.0) / a0)
+        let a1 = Float((-2.0 * cosW0) / a0)
+        let a2 = Float((1.0 - alpha) / a0)
+
+        logDebug("Applying octave band filter at \(centerFrequency) Hz (Q=\(q), w0=\(w0))")
+        return applyBiquad(ir: ir, b0: b0, b1: b1, b2: b2, a1: a1, a2: a2)
+    }
+
+    /// Calculate RT60 for each standard octave band frequency (125 Hz – 8 kHz).
+    ///
+    /// Each band is isolated with `octaveBandFilter(ir:centerFrequency:sampleRate:)` and
+    /// then analysed with the standard `rt60(ir:sampleRate:)` method.  Frequencies for
+    /// which RT60 cannot be determined (e.g. insufficient SNR or dynamic range) are
+    /// omitted from the returned dictionary.
+    ///
+    /// Requires a sample rate of 44.1 kHz or 48 kHz (as delivered by AVAudioSession
+    /// on iOS for both built-in and USB microphones) to produce a well-behaved 8 kHz
+    /// octave band filter.  A 16 kHz sample rate is the theoretical Nyquist minimum
+    /// but leaves no headroom for the filter transition band and is not recommended.
+    ///
+    /// - Parameters:
+    ///   - ir: Full-bandwidth impulse response samples captured by any supported
+    ///     microphone (built-in, USB, or other external source)
+    ///   - sampleRate: Audio sample rate in Hz
+    /// - Returns: Dictionary mapping each octave band centre frequency (Hz) to its
+    ///   RT60 value in seconds
+    /// - Throws: `AnalysisError` if `ir` is empty or `sampleRate` is invalid
+    public static func rt60PerOctaveBand(
+        ir: [Float],
+        sampleRate: Double
+    ) throws -> [Int: Double] {
+        guard sampleRate > 0 else {
+            logError("Invalid sample rate for octave-band RT60 analysis: \(sampleRate)")
+            throw AnalysisError.invalidSampleRate(sampleRate)
+        }
+        guard !ir.isEmpty else {
+            logError("Empty impulse response provided for octave-band analysis")
+            throw AnalysisError.emptyInput
+        }
+
+        let frequencies = [125, 250, 500, 1000, 2000, 4000, 8000]
+        var results: [Int: Double] = [:]
+
+        for frequency in frequencies {
+            let filtered = octaveBandFilter(ir: ir, centerFrequency: Double(frequency), sampleRate: sampleRate)
+            if let rt60Value = try rt60(ir: filtered, sampleRate: sampleRate) {
+                results[frequency] = rt60Value
+                logInfo("RT60 at \(frequency) Hz: \(rt60Value) s")
+            } else {
+                logWarning("RT60 could not be determined at \(frequency) Hz")
+            }
+        }
+
+        return results
+    }
+
+    // MARK: - Private Helpers
+
+    /// Apply a direct-form I biquad IIR filter.
+    /// - Parameters:
+    ///   - ir: Input signal
+    ///   - b0, b1, b2: Feed-forward coefficients
+    ///   - a1, a2: Feed-back coefficients (a0 is assumed to be 1 after normalisation)
+    /// - Returns: Filtered signal
+    private static func applyBiquad(
+        ir: [Float],
+        b0: Float, b1: Float, b2: Float,
+        a1: Float, a2: Float
+    ) -> [Float] {
+        var output = [Float](repeating: 0, count: ir.count)
+        var x1: Float = 0, x2: Float = 0
+        var y1: Float = 0, y2: Float = 0
+
+        for i in 0..<ir.count {
+            let x0 = ir[i]
+            let y0 = b0 * x0 + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+            output[i] = y0
+            x2 = x1; x1 = x0
+            y2 = y1; y1 = y0
+        }
+
+        return output
+    }
 }

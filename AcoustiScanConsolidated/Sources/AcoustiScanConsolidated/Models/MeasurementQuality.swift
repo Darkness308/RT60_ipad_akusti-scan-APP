@@ -161,6 +161,42 @@ public enum QualityClass: String, Codable, CaseIterable {
     }
 }
 
+// MARK: - Microphone Source
+
+/// Microphone source type for impulse response measurements
+public enum MicrophoneSource: String, Codable, CaseIterable {
+    /// iPad built-in microphone (uncalibrated)
+    case builtIn = "Built-in"
+
+    /// External USB microphone connected via USB-C or Lightning adapter
+    case usb = "USB"
+
+    /// External Bluetooth microphone
+    case bluetooth = "Bluetooth"
+
+    /// Other external microphone (e.g. analogue via 3.5 mm adapter)
+    case external = "External"
+
+    /// Human-readable description
+    public var description: String {
+        switch self {
+        case .builtIn:
+            return "iPad Built-in Microphone"
+        case .usb:
+            return "USB Microphone"
+        case .bluetooth:
+            return "Bluetooth Microphone"
+        case .external:
+            return "External Microphone"
+        }
+    }
+
+    /// Whether the source supports external calibration
+    public var supportsCalibration: Bool {
+        return self != .builtIn
+    }
+}
+
 // MARK: - Calibration Record
 
 /// Microphone calibration record for traceability
@@ -183,6 +219,9 @@ public struct CalibrationRecord: Codable, Equatable {
 
     /// Microphone model/serial number
     public let microphoneIdentifier: String
+
+    /// Microphone source type
+    public let source: MicrophoneSource
 
     /// Sensitivity in mV/Pa at 1 kHz
     public let sensitivity: Double
@@ -210,6 +249,7 @@ public struct CalibrationRecord: Codable, Equatable {
         certificateNumber: String? = nil,
         calibratedBy: String,
         microphoneIdentifier: String,
+        source: MicrophoneSource = .external,
         sensitivity: Double,
         frequencyCorrections: [Int: Double] = [:]
     ) {
@@ -219,6 +259,7 @@ public struct CalibrationRecord: Codable, Equatable {
         self.certificateNumber = certificateNumber
         self.calibratedBy = calibratedBy
         self.microphoneIdentifier = microphoneIdentifier
+        self.source = source
         self.sensitivity = sensitivity
         self.frequencyCorrections = frequencyCorrections
     }
@@ -231,8 +272,32 @@ public struct CalibrationRecord: Codable, Equatable {
             certificateNumber: nil,
             calibratedBy: "Factory Default",
             microphoneIdentifier: "iPad Built-in Microphone",
+            source: .builtIn,
             sensitivity: 1.0,
             frequencyCorrections: [:]
+        )
+    }
+
+    /// Create a record for an external USB microphone
+    /// - Parameters:
+    ///   - identifier: Microphone model or serial number
+    ///   - sensitivity: Microphone sensitivity in mV/Pa at 1 kHz
+    ///   - frequencyCorrections: Optional frequency response correction factors
+    /// - Returns: Calibration record for the USB microphone (valid for 1 year)
+    public static func usbMicrophone(
+        identifier: String,
+        sensitivity: Double = 10.0,
+        frequencyCorrections: [Int: Double] = [:]
+    ) -> CalibrationRecord {
+        return CalibrationRecord(
+            calibrationDate: Date(),
+            validityPeriod: 365 * 24 * 60 * 60, // 1 year
+            certificateNumber: nil,
+            calibratedBy: "USB Microphone (External)",
+            microphoneIdentifier: identifier,
+            source: .usb,
+            sensitivity: sensitivity,
+            frequencyCorrections: frequencyCorrections
         )
     }
 }
