@@ -437,12 +437,10 @@ public final class PDFReportRenderer {
             return Data()
         }
 
-        let font = CTFontCreateWithName("Helvetica" as CFString, 11.0, nil)
         let attrs: [NSAttributedString.Key: Any] = [
             .font: NSFont(name: "Helvetica", size: 11) ?? NSFont.systemFont(ofSize: 11),
             .foregroundColor: NSColor.black
         ]
-        _ = font // suppress unused warning; NSFont is used for NSAttributedString
 
         ctx.beginPDFPage(nil)
         var y = pageHeight - topMargin
@@ -545,7 +543,7 @@ public final class PDFReportRenderer {
 
         let recsContent = model.recommendations
             .enumerated()
-            .map { "\($0.offset + 1). \($0.element)" }
+            .map { index, rec in "\(index + 1). \(rec)" }
             .joined(separator: "\n")
 
         var deviceInfo = ""
