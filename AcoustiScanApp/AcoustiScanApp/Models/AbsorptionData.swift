@@ -31,8 +31,8 @@ public struct AbsorptionData: Codable, Equatable {
         return values[frequency] ?? 0.0
     }
 
-    /// Standard octave band frequencies used in acoustic measurements
-    public static let standardFrequencies = [125, 250, 500, 1000, 2000, 4000]
+    /// Standard octave band frequencies used in acoustic measurements (125 Hz – 8 kHz)
+    public static let standardFrequencies = [125, 250, 500, 1000, 2000, 4000, 8000]
 
     /// Check if all standard frequencies have data
     public var isComplete: Bool {

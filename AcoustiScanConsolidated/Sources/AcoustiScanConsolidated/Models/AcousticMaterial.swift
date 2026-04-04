@@ -17,7 +17,7 @@ public struct AcousticMaterial: Identifiable, Codable, Equatable {
     public var name: String
 
     /// Absorption coefficients by frequency band (Hz -> coefficient 0.0-1.0)
-    /// Typical bands: 125, 250, 500, 1000, 2000, 4000 Hz
+    /// Typical bands: 125, 250, 500, 1000, 2000, 4000, 8000 Hz
     public var absorptionCoefficients: [Int: Double]
 
     /// Initialize a new acoustic material
@@ -58,7 +58,7 @@ public struct AcousticMaterial: Identifiable, Codable, Equatable {
 
     /// Check if material has complete absorption data for standard frequencies
     public var hasCompleteData: Bool {
-        let standardFrequencies = [125, 250, 500, 1000, 2000, 4000]
+        let standardFrequencies = [125, 250, 500, 1000, 2000, 4000, 8000]
         return standardFrequencies.allSatisfy { absorptionCoefficients[$0] != nil }
     }
 }

@@ -214,6 +214,65 @@ final class BuildAutomationTests: XCTestCase {
     }
 }
 
+// MARK: - Microphone Source & USB Support Tests
+
+final class MicrophoneSourceTests: XCTestCase {
+
+    func testMicrophoneSourceAllCases() {
+        XCTAssertEqual(MicrophoneSource.allCases.count, 4)
+        XCTAssertTrue(MicrophoneSource.allCases.contains(.builtIn))
+        XCTAssertTrue(MicrophoneSource.allCases.contains(.usb))
+        XCTAssertTrue(MicrophoneSource.allCases.contains(.bluetooth))
+        XCTAssertTrue(MicrophoneSource.allCases.contains(.external))
+    }
+
+    func testBuiltInMicrophoneDoesNotSupportCalibration() {
+        XCTAssertFalse(MicrophoneSource.builtIn.supportsCalibration)
+    }
+
+    func testUSBMicrophoneSupportsCalibration() {
+        XCTAssertTrue(MicrophoneSource.usb.supportsCalibration)
+    }
+
+    func testUSBCalibrationRecordFactory() {
+        let record = CalibrationRecord.usbMicrophone(
+            identifier: "Rode NT-USB Mini",
+            sensitivity: 12.5,
+            frequencyCorrections: [1000: 0.0, 4000: -0.5, 8000: -1.0]
+        )
+
+        XCTAssertEqual(record.source, .usb)
+        XCTAssertEqual(record.microphoneIdentifier, "Rode NT-USB Mini")
+        XCTAssertEqual(record.sensitivity, 12.5, accuracy: 0.001)
+        XCTAssertEqual(record.frequencyCorrections[8000], -1.0)
+        XCTAssertTrue(record.isValid) // Should be valid (1-year validity)
+    }
+
+    func testBuiltInMicrophoneRecordIsExpired() {
+        let record = CalibrationRecord.builtInMicrophone
+        XCTAssertEqual(record.source, .builtIn)
+        XCTAssertFalse(record.isValid) // Built-in is marked as uncalibrated (0 validity)
+    }
+
+    func testAcousticMaterialHasCompleteDataRequires8kHz() {
+        // Material with only 6 bands (missing 8 kHz) should NOT be complete
+        let incomplete = AcousticMaterial(
+            name: "Old Material",
+            absorptionCoefficients: [125: 0.1, 250: 0.1, 500: 0.2, 1000: 0.2, 2000: 0.2, 4000: 0.2]
+        )
+        XCTAssertFalse(incomplete.hasCompleteData)
+
+        // Material with all 7 bands including 8 kHz SHOULD be complete
+        let complete = AcousticMaterial(
+            name: "New Material",
+            absorptionCoefficients: [
+                125: 0.1, 250: 0.1, 500: 0.2, 1000: 0.2, 2000: 0.2, 4000: 0.2, 8000: 0.2
+            ]
+        )
+        XCTAssertTrue(complete.hasCompleteData)
+    }
+}
+
 // MARK: - PDF Export Tests
 
 final class PDFExportTests: XCTestCase {
