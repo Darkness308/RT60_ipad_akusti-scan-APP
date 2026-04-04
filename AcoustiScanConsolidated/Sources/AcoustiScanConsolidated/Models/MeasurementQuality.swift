@@ -166,16 +166,16 @@ public enum QualityClass: String, Codable, CaseIterable {
 /// Microphone source type for impulse response measurements
 public enum MicrophoneSource: String, Codable, CaseIterable {
     /// iPad built-in microphone (uncalibrated)
-    case builtIn = "Built-in"
+    case builtIn = "builtIn"
 
     /// External USB microphone connected via USB-C or Lightning adapter
-    case usb = "USB"
+    case usb = "usb"
 
     /// External Bluetooth microphone
-    case bluetooth = "Bluetooth"
+    case bluetooth = "bluetooth"
 
     /// Other external microphone (e.g. analogue via 3.5 mm adapter)
-    case external = "External"
+    case external = "external"
 
     /// Human-readable description
     public var description: String {
@@ -194,6 +194,34 @@ public enum MicrophoneSource: String, Codable, CaseIterable {
     /// Whether the source supports external calibration
     public var supportsCalibration: Bool {
         return self != .builtIn
+    }
+
+    // Custom Codable implementation to support stable coding keys
+    // while remaining backward compatible with previously stored values.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+
+        switch value {
+        case "builtIn", "Built-in":
+            self = .builtIn
+        case "usb", "USB":
+            self = .usb
+        case "bluetooth", "Bluetooth":
+            self = .bluetooth
+        case "external", "External":
+            self = .external
+        default:
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid MicrophoneSource value: \(value)"
+            )
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
     }
 }
 
