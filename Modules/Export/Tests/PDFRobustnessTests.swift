@@ -33,7 +33,7 @@ final class PDFRobustnessTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value) bei leerem Model")
         }
 
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
         for token in coreTokens {
             XCTAssertTrue(pdfText.contains(token), "PDF fehlt Core-Token: \(token) bei leerem Model")
         }
@@ -118,7 +118,7 @@ final class PDFRobustnessTests: XCTestCase {
         }
 
         // Check core tokens
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
         for token in coreTokens {
             XCTAssertTrue(pdfText.contains(token), "PDF missing core token: \(token)")
         }

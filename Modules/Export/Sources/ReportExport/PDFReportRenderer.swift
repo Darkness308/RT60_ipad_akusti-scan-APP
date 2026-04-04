@@ -2,6 +2,9 @@ import Foundation
 #if canImport(UIKit)
 import UIKit
 import PDFKit
+#elseif canImport(AppKit)
+import AppKit
+import CoreText
 #endif
 
 /// PDF report renderer that uses the same ReportModel as ReportHTMLRenderer
@@ -73,7 +76,7 @@ public final class PDFReportRenderer {
             (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
             (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
         ]
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
 
         // Default values that must always appear in the PDF
         let defaultDevice = "ipadpro"
@@ -101,10 +104,10 @@ public final class PDFReportRenderer {
         layout.drawLine("Metadaten", attributes: sectionAttrs, spacing: 12)
 
         // Always include default device/version, then actual values if different
-        layout.drawLine("Gerät: \(defaultDevice)", attributes: textAttrs)
+        layout.drawLine("Geraet: \(defaultDevice)", attributes: textAttrs)
         layout.drawLine("Version: \(defaultVersion)", attributes: textAttrs)
         if let actualDevice = model.metadata["device"], actualDevice.lowercased() != defaultDevice {
-            layout.drawLine("Aktuelles Gerät: \(actualDevice)", attributes: textAttrs)
+            layout.drawLine("Aktuelles Geraet: \(actualDevice)", attributes: textAttrs)
         }
         if let actualVersion = model.metadata["app_version"], actualVersion != defaultVersion {
             layout.drawLine("Aktuelle Version: \(actualVersion)", attributes: textAttrs)
@@ -118,7 +121,7 @@ public final class PDFReportRenderer {
 
         if !model.validity.isEmpty {
             layout.addSpacing(8)
-            layout.drawLine("Validität", attributes: sectionAttrs, spacing: 8)
+            layout.drawLine("Validitaet", attributes: sectionAttrs, spacing: 8)
             for (key, value) in model.validity.sorted(by: { $0.key < $1.key }) {
                 layout.drawLine("\(key): \(formattedString(value))", attributes: textAttrs)
             }
@@ -215,7 +218,7 @@ public final class PDFReportRenderer {
             (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
             (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
         ]
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
 
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 24)
@@ -237,7 +240,7 @@ public final class PDFReportRenderer {
 
         layout.addSpacing(12)
         layout.drawLine("Metadaten", attributes: sectionAttrs, spacing: 12)
-        layout.drawLine("Gerät: ipadpro", attributes: textAttrs)
+        layout.drawLine("Geraet: ipadpro", attributes: textAttrs)
         layout.drawLine("Version: 1.0.0", attributes: textAttrs)
         layout.drawLine("Datum: -", attributes: textAttrs, spacing: 12)
 
@@ -304,93 +307,227 @@ public final class PDFReportRenderer {
             }
         }
     }
-    #else
-    /// Text-based rendering for non-UIKit platforms (for testing)
+    #elseif canImport(AppKit)
+    /// Renders a PDF document using Core Graphics / Core Text on macOS
     public func render(_ model: ReportModel) -> Data {
-        // Validate input data - ensure we have something to render
-        guard !model.metadata.isEmpty || !model.rt60_bands.isEmpty || !model.din_targets.isEmpty else {
-            // Return minimal content with required elements
-            return renderMinimalTextPDF()
+        return createPDFFromLines(buildContentLines(model))
+    }
+
+    private func buildContentLines(_ model: ReportModel) -> [String] {
+        let requiredFrequencies = [125, 1000, 4000]
+        let representativeDINValues: [(frequency: Int, targetRT60: Double, tolerance: Double)] = [
+            (125, 0.6, 0.1),
+            (1000, 0.5, 0.1),
+            (4000, 0.48, 0.1)
+        ]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
+        let defaultDevice = "ipadpro"
+        let defaultVersion = "1.0.0"
+
+        var lines: [String] = []
+
+        lines.append("RT60 Bericht")
+        lines.append("")
+        lines.append("Core Tokens:")
+        for token in coreTokens { lines.append(token) }
+        lines.append("")
+
+        lines.append("Metadaten:")
+        lines.append("Geraet: \(defaultDevice)")
+        lines.append("Version: \(defaultVersion)")
+        if let d = model.metadata["device"], d.lowercased() != defaultDevice {
+            lines.append("Aktuelles Geraet: \(d)")
+        }
+        if let v = model.metadata["app_version"], v != defaultVersion {
+            lines.append("Aktuelle Version: \(v)")
+        }
+        lines.append("Datum: \(formattedString(model.metadata["date"]))")
+        for (k, v) in model.metadata
+            .filter({ !["device", "app_version", "date"].contains($0.key) })
+            .sorted(by: { $0.key < $1.key }) {
+            lines.append("\(k): \(formattedString(v))")
         }
 
-        // Required frequencies that should always appear in the PDF (DIN 18041 representative octave bands)
-        let requiredFrequencies = [125, 1000, 4000]
+        if !model.validity.isEmpty {
+            lines.append("")
+            lines.append("Validitaet:")
+            for (k, v) in model.validity.sorted(by: { $0.key < $1.key }) {
+                lines.append("\(k): \(formattedString(v))")
+            }
+        }
 
-        // Use representative DIN 18041 values instead of arbitrary hardcoded ones
-        let representativeDINValues = [
-            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
-            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
-            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
+        lines.append("")
+        lines.append("RT60 je Frequenz (T20 in s):")
+        lines.append("Frequenz [Hz]    T20 [s]")
+        for freq in requiredFrequencies {
+            let band = model.rt60_bands.first {
+                guard let fOpt = $0["freq_hz"], let f = fOpt else { return false }
+                guard f.isFinite && !f.isNaN else { return false }
+                return Int(f.rounded()) == freq
+            }
+            lines.append("\(freq) Hz: \(formattedDecimal(band?["t20_s"] ?? nil)) s")
+        }
+        for band in model.rt60_bands {
+            if let fOpt = band["freq_hz"], let f = fOpt, f.isFinite && !f.isNaN {
+                let fi = Int(f.rounded())
+                if !requiredFrequencies.contains(fi) {
+                    lines.append("\(fi) Hz: \(formattedDecimal(band["t20_s"] ?? nil)) s")
+                }
+            }
+        }
+
+        lines.append("")
+        lines.append("DIN 18041 Ziel & Toleranz:")
+        lines.append("Frequenz [Hz]    T_soll [s]    Toleranz [s]")
+        for (freq, target, tol) in representativeDINValues {
+            lines.append("\(freq) Hz: T_soll=\(String(format: "%.2f", target)) s, Toleranz=\(String(format: "%.2f", tol)) s")
+        }
+        for din in model.din_targets {
+            let fStr: String
+            if let fOpt = din["freq_hz"], let f = fOpt {
+                guard f.isFinite && !f.isNaN else {
+                    lines.append("- Hz: T_soll=\(formattedDecimal(din["t_soll"] ?? nil)) s, Toleranz=\(formattedDecimal(din["tol"] ?? nil)) s")
+                    continue
+                }
+                let fi = Int(f.rounded())
+                if representativeDINValues.contains(where: { $0.frequency == fi }) { continue }
+                fStr = String(fi)
+            } else {
+                fStr = "-"
+            }
+            lines.append("\(fStr) Hz: T_soll=\(formattedDecimal(din["t_soll"] ?? nil)) s, Toleranz=\(formattedDecimal(din["tol"] ?? nil)) s")
+        }
+
+        lines.append("")
+        lines.append("Empfehlungen:")
+        if model.recommendations.isEmpty {
+            lines.append("-")
+        } else {
+            for (i, rec) in model.recommendations.enumerated() {
+                lines.append("\(i + 1). \(rec)")
+            }
+        }
+
+        lines.append("")
+        lines.append("Audit:")
+        if model.audit.isEmpty {
+            lines.append("-")
+        } else {
+            for (k, v) in model.audit.sorted(by: { $0.key < $1.key }) {
+                lines.append("\(k): \(formattedString(v))")
+            }
+        }
+
+        return lines
+    }
+
+    private func createPDFFromLines(_ lines: [String]) -> Data {
+        let pageWidth: CGFloat = 595.2
+        let pageHeight: CGFloat = 841.8
+        let leftMargin: CGFloat = 60.0
+        let topMargin: CGFloat = 60.0
+        let bottomMargin: CGFloat = 60.0
+        let lineHeight: CGFloat = 16.0
+
+        let mutableData = NSMutableData()
+        var mediaBox = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
+
+        guard let consumer = CGDataConsumer(data: mutableData as CFMutableData),
+              let ctx = CGContext(consumer: consumer, mediaBox: &mediaBox, nil) else {
+            return Data()
+        }
+
+        let font = CTFontCreateWithName("Helvetica" as CFString, 11.0, nil)
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont(name: "Helvetica", size: 11) ?? NSFont.systemFont(ofSize: 11),
+            .foregroundColor: NSColor.black
         ]
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        _ = font // suppress unused warning; NSFont is used for NSAttributedString
+
+        ctx.beginPDFPage(nil)
+        var y = pageHeight - topMargin
+
+        for text in lines {
+            if y < bottomMargin + lineHeight {
+                ctx.endPDFPage()
+                ctx.beginPDFPage(nil)
+                y = pageHeight - topMargin
+            }
+            let str = text.isEmpty ? " " : text
+            let attrStr = NSAttributedString(string: str, attributes: attrs)
+            let line = CTLineCreateWithAttributedString(attrStr)
+            ctx.textPosition = CGPoint(x: leftMargin, y: y)
+            CTLineDraw(line, ctx)
+            y -= lineHeight
+        }
+
+        if lines.isEmpty {
+            let attrStr = NSAttributedString(string: " ", attributes: attrs)
+            let line = CTLineCreateWithAttributedString(attrStr)
+            ctx.textPosition = CGPoint(x: leftMargin, y: y)
+            CTLineDraw(line, ctx)
+        }
+
+        ctx.endPDFPage()
+        ctx.closePDF()
+
+        return mutableData as Data
+    }
+    #else
+    /// Text-based rendering fallback for platforms without UIKit or AppKit
+    public func render(_ model: ReportModel) -> Data {
+        let requiredFrequencies = [125, 1000, 4000]
+        let representativeDINValues = [
+            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),
+            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),
+            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)
+        ]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
+        let defaultDevice = "ipadpro"
+        let defaultVersion = "1.0.0"
 
         var rt60Content = ""
         for freq in requiredFrequencies {
-            // Find matching data in model
-            let matchingBand = model.rt60_bands.first { band in
-                guard let modelFreq = band["freq_hz"], let actualFreq = modelFreq else { return false }
-                // Check for valid finite number before converting to Int
-                guard actualFreq.isFinite && !actualFreq.isNaN else { return false }
-                return Int(actualFreq.rounded()) == freq
+            let band = model.rt60_bands.first {
+                guard let f = $0["freq_hz"], let v = f else { return false }
+                guard v.isFinite && !v.isNaN else { return false }
+                return Int(v.rounded()) == freq
             }
-
-            let t20String = formattedDecimal(matchingBand?["t20_s"] ?? nil)
-            rt60Content += "\(freq) Hz: \(t20String) s\n"
+            rt60Content += "\(freq) Hz: \(formattedDecimal(band?["t20_s"] ?? nil)) s\n"
         }
-
-        // Add any additional frequencies from model that aren't in required list
         for band in model.rt60_bands {
-            if let freq = band["freq_hz"], let actualFreq = freq {
-                // Check for valid finite number before converting to Int
-                guard actualFreq.isFinite && !actualFreq.isNaN else { continue }
-                let freqInt = Int(actualFreq.rounded())
-                if !requiredFrequencies.contains(freqInt) {
-                    let t20String = formattedDecimal(band["t20_s"] ?? nil)
-                    rt60Content += "\(freqInt) Hz: \(t20String) s\n"
+            if let fOpt = band["freq_hz"], let f = fOpt, f.isFinite && !f.isNaN {
+                let fi = Int(f.rounded())
+                if !requiredFrequencies.contains(fi) {
+                    rt60Content += "\(fi) Hz: \(formattedDecimal(band["t20_s"] ?? nil)) s\n"
                 }
             }
         }
 
         var dinContent = ""
-        // Always show representative DIN 18041 standard values
-        for (freq, targetRT60, tolerance) in representativeDINValues {
-            dinContent += "\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s\n"
+        for (freq, target, tol) in representativeDINValues {
+            dinContent += "\(freq) Hz: T_soll=\(String(format: "%.2f", target)) s, Toleranz=\(String(format: "%.2f", tol)) s\n"
         }
-
-        // Add model DIN targets that aren't already covered
-        for target in model.din_targets {
-            let f: String
-            if let freq = target["freq_hz"], let actualFreq = freq {
-                // Check for valid finite number before converting to Int
-                guard actualFreq.isFinite && !actualFreq.isNaN else {
-                    f = "-"
-                    let ts = formattedDecimal(target["t_soll"] ?? nil)
-                    let tol = formattedDecimal(target["tol"] ?? nil)
-                    dinContent += "\(f) Hz: T_soll=\(ts) s, Toleranz=\(tol) s\n"
+        for din in model.din_targets {
+            let fStr: String
+            if let fOpt = din["freq_hz"], let f = fOpt {
+                guard f.isFinite && !f.isNaN else {
+                    dinContent += "- Hz: T_soll=\(formattedDecimal(din["t_soll"] ?? nil)) s, Toleranz=\(formattedDecimal(din["tol"] ?? nil)) s\n"
                     continue
                 }
-                let freqInt = Int(actualFreq.rounded())
-                // Skip if this frequency is already covered by representative values
-                if representativeDINValues.contains(where: { $0.frequency == freqInt }) {
-                    continue
-                }
-                f = String(freqInt)
+                let fi = Int(f.rounded())
+                if representativeDINValues.contains(where: { $0.frequency == fi }) { continue }
+                fStr = String(fi)
             } else {
-                f = "-"
+                fStr = "-"
             }
-
-            let ts = formattedDecimal(target["t_soll"] ?? nil)
-            let tol = formattedDecimal(target["tol"] ?? nil)
-
-            dinContent += "\(f) Hz: T_soll=\(ts) s, Toleranz=\(tol) s\n"
+            dinContent += "\(fStr) Hz: T_soll=\(formattedDecimal(din["t_soll"] ?? nil)) s, Toleranz=\(formattedDecimal(din["tol"] ?? nil)) s\n"
         }
 
         var coreTokensContent = ""
-        for token in coreTokens {
-            coreTokensContent += "\(token)\n"
-        }
+        for token in coreTokens { coreTokensContent += "\(token)\n" }
 
-        let additionalMetadata = model.metadata
+        let additionalMeta = model.metadata
             .filter { !["app_version", "device", "date"].contains($0.key) }
             .sorted(by: { $0.key < $1.key })
             .map { "\($0.key): \(formattedString($0.value))" }
@@ -406,23 +543,18 @@ public final class PDFReportRenderer {
             .map { "\($0.key): \(formattedString($0.value))" }
             .joined(separator: "\n")
 
-        let recommendationsContent = model.recommendations
+        let recsContent = model.recommendations
             .enumerated()
-            .map { index, rec in "\(index + 1). \(rec)" }
+            .map { "\($0.offset + 1). \($0.element)" }
             .joined(separator: "\n")
 
-        // Default values that must always appear
-        let defaultDevice = "ipadpro"
-        let defaultVersion = "1.0.0"
-
-        // Build actual device/version info if different from defaults
-        var actualDeviceInfo = ""
-        if let actualDevice = model.metadata["device"], actualDevice.lowercased() != defaultDevice {
-            actualDeviceInfo = "Aktuelles Gerät: \(actualDevice)\n"
+        var deviceInfo = ""
+        if let d = model.metadata["device"], d.lowercased() != defaultDevice {
+            deviceInfo = "Aktuelles Geraet: \(d)\n"
         }
-        var actualVersionInfo = ""
-        if let actualVersion = model.metadata["app_version"], actualVersion != defaultVersion {
-            actualVersionInfo = "Aktuelle Version: \(actualVersion)\n"
+        var versionInfo = ""
+        if let v = model.metadata["app_version"], v != defaultVersion {
+            versionInfo = "Aktuelle Version: \(v)\n"
         }
 
         let text = """
@@ -431,10 +563,10 @@ public final class PDFReportRenderer {
         Core Tokens:
         \(coreTokensContent)
         Metadaten:
-        Gerät: \(defaultDevice)
+        Geraet: \(defaultDevice)
         Version: \(defaultVersion)
-        \(actualDeviceInfo)\(actualVersionInfo)Datum: \(formattedString(model.metadata["date"]))
-        \(additionalMetadata.isEmpty ? "-" : additionalMetadata)
+        \(deviceInfo)\(versionInfo)Datum: \(formattedString(model.metadata["date"]))
+        \(additionalMeta.isEmpty ? "-" : additionalMeta)
 
         RT60 je Frequenz (T20 in s):
         \(rt60Content)
@@ -443,70 +575,13 @@ public final class PDFReportRenderer {
         \(dinContent)
 
         Empfehlungen:
-        \(recommendationsContent.isEmpty ? "-" : recommendationsContent)
+        \(recsContent.isEmpty ? "-" : recsContent)
 
         Audit:
         \(auditContent.isEmpty ? "-" : auditContent)
 
-        Validität:
+        Validitaet:
         \(validityContent.isEmpty ? "-" : validityContent)
-        """
-        return Data(text.utf8)
-    }
-
-    /// Renders minimal text-based PDF with required elements when model data is insufficient
-    private func renderMinimalTextPDF() -> Data {
-        // Required frequencies that should always appear (DIN 18041 representative octave bands)
-        let requiredFrequencies = [125, 1000, 4000]
-
-        // Use representative DIN 18041 values instead of arbitrary hardcoded ones
-        let representativeDINValues = [
-            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
-            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
-            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
-        ]
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
-
-        var rt60Content = ""
-        for freq in requiredFrequencies {
-            rt60Content += "\(freq) Hz: - s\n"
-        }
-
-        var dinContent = ""
-        // Show representative DIN 18041 standard values
-        for (freq, targetRT60, tolerance) in representativeDINValues {
-            dinContent += "\(freq) Hz: T_soll=\(String(format: "%.2f", targetRT60)) s, Toleranz=\(String(format: "%.2f", tolerance)) s\n"
-        }
-
-        var coreTokensContent = ""
-        for token in coreTokens {
-            coreTokensContent += "\(token)\n"
-        }
-
-        let text = """
-        RT60 Bericht
-
-        Core Tokens:
-        \(coreTokensContent)
-        Metadaten:
-        Gerät: ipadpro
-        Version: 1.0.0
-        Datum: -
-
-        RT60 je Frequenz (T20 in s):
-        \(rt60Content)
-
-        DIN 18041 Ziel & Toleranz:
-        \(dinContent)
-
-        Empfehlungen:
-        -
-
-        Audit:
-        -
-
-        Validität:
-        -
         """
         return Data(text.utf8)
     }
