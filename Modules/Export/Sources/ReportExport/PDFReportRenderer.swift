@@ -4,7 +4,6 @@ import UIKit
 import PDFKit
 #elseif canImport(AppKit)
 import AppKit
-import CoreText
 #endif
 
 /// PDF report renderer that uses the same ReportModel as ReportHTMLRenderer
@@ -422,54 +421,134 @@ public final class PDFReportRenderer {
     }
 
     private func createPDFFromLines(_ lines: [String]) -> Data {
-        let pageWidth: CGFloat = 595.2
-        let pageHeight: CGFloat = 841.8
-        let leftMargin: CGFloat = 60.0
-        let topMargin: CGFloat = 60.0
-        let bottomMargin: CGFloat = 60.0
-        let lineHeight: CGFloat = 16.0
+        let pageWidth = 595
+        let pageHeight = 842
+        let leftMargin = 60
+        let topMargin = 60
+        let bottomMargin = 60
+        let lineSpacing = 16
+        let fontSize = 11
+        let linesPerPage = (pageHeight - topMargin - bottomMargin) / lineSpacing
 
-        let mutableData = NSMutableData()
-        var mediaBox = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
-
-        guard let consumer = CGDataConsumer(data: mutableData as CFMutableData),
-              let ctx = CGContext(consumer: consumer, mediaBox: &mediaBox, nil) else {
-            return Data()
-        }
-
-        let attrs: [NSAttributedString.Key: Any] = [
-            .font: NSFont(name: "Helvetica", size: 11) ?? NSFont.systemFont(ofSize: 11),
-            .foregroundColor: NSColor.black
-        ]
-
-        ctx.beginPDFPage(nil)
-        var y = pageHeight - topMargin
-
-        for text in lines {
-            if y < bottomMargin + lineHeight {
-                ctx.endPDFPage()
-                ctx.beginPDFPage(nil)
-                y = pageHeight - topMargin
+        // Paginate lines into pages. `current` is only empty after the loop when
+        // `lines` itself is empty, in which case we emit a single blank page.
+        var pages: [[String]] = []
+        var current: [String] = []
+        for line in lines {
+            if current.count >= linesPerPage {
+                pages.append(current)
+                current = []
             }
-            let str = text.isEmpty ? " " : text
-            let attrStr = NSAttributedString(string: str, attributes: attrs)
-            let line = CTLineCreateWithAttributedString(attrStr)
-            ctx.textPosition = CGPoint(x: leftMargin, y: y)
-            CTLineDraw(line, ctx)
-            y -= lineHeight
+            current.append(line)
+        }
+        if current.isEmpty {
+            pages.append([" "])   // ensure at least one page for empty input
+        } else {
+            pages.append(current)
         }
 
-        if lines.isEmpty {
-            let attrStr = NSAttributedString(string: " ", attributes: attrs)
-            let line = CTLineCreateWithAttributedString(attrStr)
-            ctx.textPosition = CGPoint(x: leftMargin, y: y)
-            CTLineDraw(line, ctx)
+        // Build PDF content streams using standard PDF text operators
+        var streamBodies: [Data] = []
+        for page in pages {
+            var s = "BT\n/F1 \(fontSize) Tf\n\(leftMargin) \(pageHeight - topMargin) Td\n"
+            for (idx, line) in page.enumerated() {
+                if idx > 0 { s += "0 -\(lineSpacing) Td\n" }
+                s += "(\(pdfLiteralEscape(line.isEmpty ? " " : line))) Tj\n"
+            }
+            s += "ET\n"
+            streamBodies.append(Data(s.utf8))
         }
 
-        ctx.endPDFPage()
-        ctx.closePDF()
+        // Object layout:
+        //  0 → free head (xref)
+        //  1 → Catalog
+        //  2 → Pages
+        //  3..(2+n) → Page objects  (n = pages.count)
+        //  (3+n)..(2+2n) → Content streams
+        //  (3+2n) → Font
+        let n = pages.count
+        let fontObjId = 3 + 2 * n
+        var pdf = Data()
+        // offsets[i] holds the byte offset of PDF object i (1-based).
+        // offsets[0] is unused; object 0 is the xref free-list head and has no offset.
+        var offsets = [Int](repeating: 0, count: fontObjId + 1)
 
-        return mutableData as Data
+        func w(_ s: String) { pdf.append(contentsOf: s.utf8) }
+
+        w("%PDF-1.4\n")
+
+        // Object 1: Catalog
+        offsets[1] = pdf.count
+        w("1 0 obj\n<</Type/Catalog/Pages 2 0 R>>\nendobj\n")
+
+        // Object 2: Pages
+        offsets[2] = pdf.count
+        let kids = (0..<n).map { "\(3 + $0) 0 R" }.joined(separator: " ")
+        w("2 0 obj\n<</Type/Pages/Kids[\(kids)]/Count \(n)>>\nendobj\n")
+
+        // Page objects 3..(2+n)
+        for i in 0..<n {
+            offsets[3 + i] = pdf.count
+            let cid = 3 + n + i
+            w("\(3 + i) 0 obj\n")
+            w("<</Type/Page/Parent 2 0 R/MediaBox[0 0 \(pageWidth) \(pageHeight)]")
+            w("/Contents \(cid) 0 R/Resources<</Font<</F1 \(fontObjId) 0 R>>>>>>\n")
+            w("endobj\n")
+        }
+
+        // Content streams (3+n)..(2+2n)
+        for i in 0..<n {
+            let cid = 3 + n + i
+            offsets[cid] = pdf.count
+            let body = streamBodies[i]
+            w("\(cid) 0 obj\n<</Length \(body.count)>>\nstream\n")
+            pdf.append(body)
+            w("\nendstream\nendobj\n")
+        }
+
+        // Font object (3+2n)
+        offsets[fontObjId] = pdf.count
+        w("\(fontObjId) 0 obj\n")
+        w("<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>\n")
+        w("endobj\n")
+
+        // Cross-reference table (20 bytes per entry as required by PDF spec)
+        let xrefPos = pdf.count
+        w("xref\n0 \(fontObjId + 1)\n")
+        w("0000000000 65535 f \n")
+        for i in 1...fontObjId {
+            w(String(format: "%010d 00000 n \n", offsets[i]))
+        }
+
+        // Trailer
+        w("trailer\n<</Size \(fontObjId + 1)/Root 1 0 R>>\n")
+        w("startxref\n\(xrefPos)\n%%EOF\n")
+
+        return pdf
+    }
+
+    /// Escapes a string for use in a PDF literal string (inside parentheses).
+    /// Handles ASCII printable chars and Latin-1 Supplement via WinAnsiEncoding octal escapes.
+    /// Swift's Character always carries at least one Unicode scalar, so the `?? 0` fallback
+    /// is a safety guard only; `v == 0` falls through to the silent-skip branch below.
+    private func pdfLiteralEscape(_ s: String) -> String {
+        var result = ""
+        for c in s {
+            let v = c.unicodeScalars.first?.value ?? 0
+            switch c {
+            case "(":  result += "\\("
+            case ")":  result += "\\)"
+            case "\\": result += "\\\\"
+            default:
+                if v >= 0x20 && v < 0x80 {
+                    result.append(c)
+                } else if v >= 0xA0 && v <= 0xFF {
+                    result += String(format: "\\%03o", v)
+                }
+                // Skip control characters and code points outside Latin-1
+            }
+        }
+        return result
     }
     #else
     /// Text-based rendering fallback for platforms without UIKit or AppKit
