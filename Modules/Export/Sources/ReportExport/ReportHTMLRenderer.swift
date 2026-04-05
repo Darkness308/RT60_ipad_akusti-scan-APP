@@ -93,7 +93,7 @@ public final class ReportHTMLRenderer {
         let coreTokensSection = """
         <h2>Core Tokens</h2>
         <div class="card mb16">
-          \(["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"].map {
+          \(["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"].map {
             "<div>\($0)</div>"
           }.joined(separator:"\n"))
         </div>
@@ -103,9 +103,9 @@ public final class ReportHTMLRenderer {
         <h1>RT60 Bericht <span class="badge">HTML</span></h1>
         \(coreTokensSection)
         <div class="meta mb16">
-          <div><strong>Gerät:</strong> \(defaultDevice)</div>
+          <div><strong>Geraet:</strong> \(defaultDevice)</div>
           <div><strong>Version:</strong> \(defaultVersion)</div>
-          \(m.metadata["device"].map { d in d.lowercased() != defaultDevice ? "<div><strong>Aktuelles Gerät:</strong> \(escape(d))</div>" : "" } ?? "")
+          \(m.metadata["device"].map { d in d.lowercased() != defaultDevice ? "<div><strong>Aktuelles Geraet:</strong> \(escape(d))</div>" : "" } ?? "")
           \(m.metadata["app_version"].map { v in v != defaultVersion ? "<div><strong>Aktuelle Version:</strong> \(escape(v))</div>" : "" } ?? "")
           <div><strong>Datum:</strong> \(escape(m.metadata["date"]))</div>
         </div>
