@@ -121,6 +121,24 @@ final class DIN18041ModuleTests: XCTestCase {
         // Volume-adjusted targets (2000m³) are significantly above base 2.0s due to volume scaling
         XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 2.3 && $0.targetRT60 < 3.2 }) // Sports halls can have highest RT60
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.3 })
+        
+        let targetsByFrequency = Dictionary(uniqueKeysWithValues: targets.map { ($0.frequency, $0.targetRT60) })
+        guard
+            let rt60At250 = targetsByFrequency[250],
+            let rt60At1000 = targetsByFrequency[1000],
+            let rt60At8000 = targetsByFrequency[8000]
+        else {
+            XCTFail("Expected 250 Hz, 1000 Hz, and 8000 Hz targets for sports hall")
+            return
+        }
+        
+        // Ensure the speech-band adjustment remains applied: speech frequencies should be lower
+        XCTAssertLessThan(rt60At1000, rt60At250)
+        XCTAssertLessThan(rt60At1000, rt60At8000)
+        
+        // Approximate checks to catch removal or inversion of the adjustment
+        XCTAssertEqual(rt60At1000, 2.52, accuracy: 0.01)
+        XCTAssertEqual(rt60At250, 2.8, accuracy: 0.01)
     }
     
     func testFrequencyCoverage() {
