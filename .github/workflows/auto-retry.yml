@@ -45,7 +45,7 @@ jobs:
           console.log(`Max auto retries: ${process.env.MAX_AUTO_RETRIES}`);
 
           if (retryCount < parseInt(process.env.MAX_AUTO_RETRIES)) {
-            console.log(`🔄 Triggering auto-retry ${retryCount + 1}/${process.env.MAX_AUTO_RETRIES} for workflow ${workflow_run.name}`);
+            console.log(`[RETRY] Triggering auto-retry ${retryCount + 1}/${process.env.MAX_AUTO_RETRIES} for workflow ${workflow_run.name}`);
 
             // Re-run the failed workflow
             try {
@@ -55,7 +55,7 @@ jobs:
                 run_id: workflow_run.id
               });
 
-              console.log(`✅ Successfully triggered retry for workflow run ${workflow_run.id}`);
+              console.log(`[DONE] Successfully triggered retry for workflow run ${workflow_run.id}`);
 
               // Create a comment on PR if this is a PR (with null checks)
               if (workflow_run.pull_requests && Array.isArray(workflow_run.pull_requests) && workflow_run.pull_requests.length > 0) {
@@ -65,18 +65,18 @@ jobs:
                     owner: repo.owner,
                     repo: repo.repo,
                     issue_number: pr_number,
-                    body: `🔄 Auto-retry ${retryCount + 1}/${process.env.MAX_AUTO_RETRIES} triggered for failed workflow "${workflow_run.name}"`
+                    body: `[RETRY] Auto-retry ${retryCount + 1}/${process.env.MAX_AUTO_RETRIES} triggered for failed workflow "${workflow_run.name}"`
                   });
                 }
               }
             } catch (error) {
-              console.error(`❌ Failed to trigger retry: ${error.message}`);
+              console.error(`[FAILED] Failed to trigger retry: ${error.message}`);
             }
           } else {
-            console.log(`❌ Maximum retry attempts (${process.env.MAX_AUTO_RETRIES}) reached for workflow ${workflow_run.name}`);
+            console.log(`[FAILED] Maximum retry attempts (${process.env.MAX_AUTO_RETRIES}) reached for workflow ${workflow_run.name}`);
 
             // Create issue for manual intervention needed
-            const issueTitle = `🚨 Workflow "${workflow_run.name}" failed after ${retryCount} attempts`;
+            const issueTitle = `[ALERT] Workflow "${workflow_run.name}" failed after ${retryCount} attempts`;
             const issueBody = `
             ## Workflow Failure Report
 
@@ -122,7 +122,7 @@ jobs:
                 labels: ['bug', 'ci-failure', 'needs-attention']
               });
 
-              console.log(`📝 Created issue #${issue.data.number} for manual intervention`);
+              console.log(`[NOTE] Created issue #${issue.data.number} for manual intervention`);
 
               // Also comment on PR if this is a PR (with null checks)
               if (workflow_run.pull_requests && Array.isArray(workflow_run.pull_requests) && workflow_run.pull_requests.length > 0) {
@@ -132,11 +132,11 @@ jobs:
                     owner: repo.owner,
                     repo: repo.repo,
                     issue_number: pr_number,
-                    body: `❌ Workflow "${workflow_run.name}" failed after ${retryCount} attempts. Created issue #${issue.data.number} for tracking. Manual intervention required.`
+                    body: `[FAILED] Workflow "${workflow_run.name}" failed after ${retryCount} attempts. Created issue #${issue.data.number} for tracking. Manual intervention required.`
                   });
                 }
               }
             } catch (error) {
-              console.error(`❌ Failed to create issue: ${error.message}`);
+              console.error(`[FAILED] Failed to create issue: ${error.message}`);
             }
           }

@@ -143,4 +143,3 @@ Der Vertrauensgrad liegt bei 85 Prozent für Framework-Validität basierend auf 
 Für uns Toningenieure bedeutet dies, dass wir endlich ein systematisches, wissenschaftlich fundiertes Werkzeug zur Verfügung haben, um Audioqualität objektiv und reproduzierbar zu bewerten. Die breite Industrieakzeptanz und die kontinuierliche Weiterentwicklung durch Forschung und Community machen dieses Framework zu einem wertvollen Instrument für die professionelle Audioproduktion.
 
 Die nächsten Jahre werden zeigen, wie sich die Lücken-Parameter durch gezielte Forschung schließen lassen und wie Künstliche Intelligenz die automatisierte Bewertung weiter verbessern wird. Für uns als Praktiker ist es wichtig, die Entwicklungen zu verfolgen und das Framework schrittweise in unsere Arbeitsabläufe zu integrieren.
-

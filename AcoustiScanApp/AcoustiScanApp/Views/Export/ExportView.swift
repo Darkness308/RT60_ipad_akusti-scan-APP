@@ -62,7 +62,7 @@ struct PDFExportPlaceholderView: View {
                     .accessibilityLabel("Room name")
                     .accessibilityValue(store.roomName)
                     .accessibilityIdentifier("roomNameText")
-                Text("\(LocalizationKeys.volume.localized(comment: "Volume label")): \(String(format: "%.1f m³", store.roomVolume))")
+                Text("\(LocalizationKeys.volume.localized(comment: "Volume label")): \(String(format: "%.1f m3", store.roomVolume))")
                     .accessibilityLabel("Room volume")
                     .accessibilityValue(String(format: "%.1f cubic meters", store.roomVolume))
                     .accessibilityIdentifier("roomVolumeText")

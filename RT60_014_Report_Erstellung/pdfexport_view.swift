@@ -7,9 +7,9 @@
 //  Produktionsreifer PDF-Export: erzeugt mehrseitige Reports mit
 //  Deckblatt, Metadaten, RT60-Kurven, DIN-Ampellogik und Maßnahmenblock.
 //
-//  ✅ ENHANCED: Now integrates with 48-parameter framework
-//  ✅ ENHANCED: Professional gutachterliche reports
-//  ✅ ENHANCED: Automated build integration
+//  [DONE] ENHANCED: Now integrates with 48-parameter framework
+//  [DONE] ENHANCED: Professional gutachterliche reports
+//  [DONE] ENHANCED: Automated build integration
 
 import SwiftUI
 import PDFKit
@@ -37,9 +37,9 @@ struct PDFExportView: View {
 
     private func generateReport() {
         // ENHANCED: Use consolidated PDF exporter for professional reports
-        print("🚀 Using AcoustiScan Consolidated Tool for PDF generation")
-        print("📊 Integrating 48-parameter framework results")
-        print("✅ Professional gutachterliche report format applied")
+        print("[LAUNCH] Using AcoustiScan Consolidated Tool for PDF generation")
+        print("[STATS] Integrating 48-parameter framework results")
+        print("[DONE] Professional gutachterliche report format applied")
 
         let pdfMetaData = [
             kCGPDFContextCreator: "AcoustiScan Consolidated Tool",
@@ -102,10 +102,10 @@ struct PDFExportView: View {
         // Executive Summary Box
         let summaryText = """
         Executive Summary:
-        * RT60-Messung nach DIN 18041
-        * 48-Parameter Akustik-Framework
-        * Professionelle Bewertung
-        * Maßnahmenempfehlungen
+        - RT60-Messung nach DIN 18041
+        - 48-Parameter Akustik-Framework
+        - Professionelle Bewertung
+        - Maßnahmenempfehlungen
         """
 
         let summaryAttrs: [NSAttributedString.Key: Any] = [
@@ -132,7 +132,7 @@ struct PDFExportView: View {
         let metaText = """
         Messung durchgeführt am: \(reportData.date)
         Raumtyp: \(reportData.roomType.displayName)
-        Volumen: \(Int(reportData.volume)) m³
+        Volumen: \(Int(reportData.volume)) m3
         """
         let attrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 14)
@@ -173,13 +173,13 @@ struct PDFExportView: View {
         Erweiterte akustische Bewertung basierend auf dem validierten
         48-Parameter-Framework:
 
-        * Klangfarbe: Hell-Dunkel-Balance, Schärfe
-        * Tonalität: Tonhaltigkeit, Dopplereffekt
-        * Geometrie: Räumliche Wahrnehmung
-        * Raum: Nachhallcharakteristik
-        * Zeitverhalten: Echos, Knackigkeit
-        * Dynamik: Lautheit, Kompression
-        * Artefakte: Störgeräusche
+        - Klangfarbe: Hell-Dunkel-Balance, Schärfe
+        - Tonalität: Tonhaltigkeit, Dopplereffekt
+        - Geometrie: Räumliche Wahrnehmung
+        - Raum: Nachhallcharakteristik
+        - Zeitverhalten: Echos, Knackigkeit
+        - Dynamik: Lautheit, Kompression
+        - Artefakte: Störgeräusche
 
         Wissenschaftlich validiert: 75% starke Evidenz
         """

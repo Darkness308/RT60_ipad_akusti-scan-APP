@@ -147,7 +147,7 @@ class ErrorLoggerTests: XCTestCase {
 
     func testErrorLogger_LogMessage_WithUnicodeCharacters_DoesNotCrash() {
         // Given - Message with unicode characters
-        let message = "Test with unicode: 你好 🎵 Ñoño café"
+        let message = "Test with unicode: 你好 [MUSIC] Ñoño café"
         let context = "ErrorLoggerTests.testErrorLogger_LogMessage_WithUnicodeCharacters_DoesNotCrash"
 
         // When/Then - Logging message with unicode should not crash

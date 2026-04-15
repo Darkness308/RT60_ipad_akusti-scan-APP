@@ -24,7 +24,7 @@ public struct ReportData: Codable, Equatable {
     /// DIN 18041 compliance evaluation results
     public let dinResults: [RT60Deviation]
 
-    /// 48-parameter acoustic framework results (parameter name → value)
+    /// 48-parameter acoustic framework results (parameter name -> value)
     public let acousticFrameworkResults: [String: Double]
 
     /// Room surfaces with acoustic properties

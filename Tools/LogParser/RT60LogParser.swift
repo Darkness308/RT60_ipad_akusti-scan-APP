@@ -139,7 +139,7 @@ public final class RT60LogParser {
 
     private static func verifyChecksum(values: [Double], checksum: String?) -> Bool {
         guard let checksum = checksum else { return false }
-        // Simple deterministischer Hash: Summe * 1000 gerundet → Base36
+        // Simple deterministischer Hash: Summe * 1000 gerundet -> Base36
         let sum = values.reduce(0,+)
         let key = Int((sum * 1000.0).rounded())
         let base36 = String(key, radix: 36).uppercased()

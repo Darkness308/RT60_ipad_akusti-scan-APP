@@ -45,12 +45,12 @@ jobs:
           swiftlint --strict
           lint_result=$?
           if [ $lint_result -eq 0 ]; then
-            echo "✅ Linting successful on attempt $attempt"
+            echo "[DONE] Linting successful on attempt $attempt"
             break
           fi
-          echo "⚠️ Linting failed on attempt $attempt"
+          echo "[WARNING]️ Linting failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ Linting failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] Linting failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "lint_failed=true" >> $GITHUB_OUTPUT
           fi
           attempt=$((attempt + 1))
@@ -67,15 +67,15 @@ jobs:
           swiftformat --lint .
           format_result=$?
           if [ $format_result -eq 0 ]; then
-            echo "✅ Format check successful on attempt $attempt"
+            echo "[DONE] Format check successful on attempt $attempt"
             break
           fi
-          echo "⚠️ Format check failed on attempt $attempt"
+          echo "[WARNING]️ Format check failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ Format check failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] Format check failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "format_failed=true" >> $GITHUB_OUTPUT
             # Auto-fix format issues and report
-            echo "🔧 Attempting to auto-fix format issues..."
+            echo "[FIX] Attempting to auto-fix format issues..."
             swiftformat . || true
           fi
           attempt=$((attempt + 1))
@@ -98,12 +98,12 @@ jobs:
           swift package resolve
           deps_result=$?
           if [ $deps_result -eq 0 ]; then
-            echo "✅ Dependencies resolved successfully on attempt $attempt"
+            echo "[DONE] Dependencies resolved successfully on attempt $attempt"
             break
           fi
-          echo "⚠️ Dependencies resolution failed on attempt $attempt"
+          echo "[WARNING]️ Dependencies resolution failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ Dependencies resolution failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] Dependencies resolution failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "deps_failed=true" >> $GITHUB_OUTPUT
             exit 1
           fi
@@ -118,16 +118,16 @@ jobs:
         # Use the enhanced build script with automation
         chmod +x build.sh
         ./build.sh build || {
-          echo "❌ Automated build script failed, trying manual approach..."
+          echo "[FAILED] Automated build script failed, trying manual approach..."
           swift build 2>&1 | tee build.log
           if [ ${PIPESTATUS[0]} -ne 0 ]; then
-            echo "❌ Manual build also failed"
-            echo "🔍 Build errors:"
+            echo "[FAILED] Manual build also failed"
+            echo "[CHECK] Build errors:"
             cat build.log
             echo "build_failed=true" >> $GITHUB_OUTPUT
             exit 1
           else
-            echo "✅ Manual build succeeded"
+            echo "[DONE] Manual build succeeded"
           fi
         }
 
@@ -142,15 +142,15 @@ jobs:
           swift test
           test_result=$?
           if [ $test_result -eq 0 ]; then
-            echo "✅ Tests passed on attempt $attempt"
+            echo "[DONE] Tests passed on attempt $attempt"
             break
           fi
-          echo "⚠️ Tests failed on attempt $attempt"
+          echo "[WARNING]️ Tests failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ Tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] Tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "tests_failed=true" >> $GITHUB_OUTPUT
             # Clean build and retry once more
-            echo "🔧 Cleaning build and retrying tests one final time..."
+            echo "[FIX] Cleaning build and retrying tests one final time..."
             swift package clean
             swift build
             swift test || exit 1
@@ -170,12 +170,12 @@ jobs:
           swift build
           build_result=$?
           if [ $build_result -eq 0 ]; then
-            echo "✅ Export module built successfully on attempt $attempt"
+            echo "[DONE] Export module built successfully on attempt $attempt"
             break
           fi
-          echo "⚠️ Export module build failed on attempt $attempt"
+          echo "[WARNING]️ Export module build failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ Export module build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] Export module build failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "export_build_failed=true" >> $GITHUB_OUTPUT
             # Don't exit here - continue with other steps
           fi
@@ -195,12 +195,12 @@ jobs:
           swift test
           test_result=$?
           if [ $test_result -eq 0 ]; then
-            echo "✅ Export module tests passed on attempt $attempt"
+            echo "[DONE] Export module tests passed on attempt $attempt"
             break
           fi
-          echo "⚠️ Export module tests failed on attempt $attempt"
+          echo "[WARNING]️ Export module tests failed on attempt $attempt"
           if [ $attempt -eq ${{ env.MAX_RETRY_ATTEMPTS }} ]; then
-            echo "❌ Export module tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
+            echo "[FAILED] Export module tests failed after ${{ env.MAX_RETRY_ATTEMPTS }} attempts"
             echo "export_tests_failed=true" >> $GITHUB_OUTPUT
             # Don't exit here - continue with other steps
           fi
@@ -212,30 +212,30 @@ jobs:
       id: build_tools
       run: |
         set +e  # Don't exit on error
-        echo "🔧 Building and testing tools..."
+        echo "[FIX] Building and testing tools..."
 
         # Check Tools directory
         if [ -d "Tools/linters" ]; then
-          echo "📋 Making linter executable..."
-          chmod +x Tools/linters/report_key_coverage.swift || echo "⚠️ Could not make linter executable"
+          echo "[LIST] Making linter executable..."
+          chmod +x Tools/linters/report_key_coverage.swift || echo "[WARNING]️ Could not make linter executable"
         fi
 
         # Test if we can compile reporthtml tool
         if [ -f "Tools/reporthtml/main.swift" ]; then
-          echo "📊 Building HTML report tool..."
+          echo "[STATS] Building HTML report tool..."
           mkdir -p Artifacts
           swiftc -o reporthtml Tools/reporthtml/main.swift || {
-            echo "⚠️ Could not build HTML report tool"
+            echo "[WARNING]️ Could not build HTML report tool"
             echo "tools_build_failed=true" >> $GITHUB_OUTPUT
           }
         fi
 
         # Test LogParser if present
         if [ -f "Tools/LogParser/RT60LogParser.swift" ]; then
-          echo "📝 Testing LogParser..."
+          echo "[NOTE] Testing LogParser..."
           cd Tools/LogParser
           swift -emit-executable RT60LogParser.swift -o rt60parser || {
-            echo "⚠️ Could not build LogParser"
+            echo "[WARNING]️ Could not build LogParser"
             echo "logparser_build_failed=true" >> $GITHUB_OUTPUT
           }
           cd ../..
@@ -249,22 +249,22 @@ jobs:
 
         # Generate HTML report if tool is available
         if [ -f "./reporthtml" ] && [ -f "Tools/reporthtml/sample.report.model.json" ]; then
-          echo "📊 Generating HTML report..."
+          echo "[STATS] Generating HTML report..."
           ./reporthtml Tools/reporthtml/sample.report.model.json -o Artifacts/report.html || {
-            echo "⚠️ Could not generate HTML report"
+            echo "[WARNING]️ Could not generate HTML report"
           }
         fi
 
         # Run key coverage linter if available
         if [ -x "Tools/linters/report_key_coverage.swift" ] && [ -f "Tools/reporthtml/sample.report.model.json" ]; then
-          echo "📋 Running key coverage linter..."
+          echo "[LIST] Running key coverage linter..."
           Tools/linters/report_key_coverage.swift Tools/reporthtml/sample.report.model.json || {
-            echo "⚠️ Key coverage linter failed"
+            echo "[WARNING]️ Key coverage linter failed"
           }
         fi
 
         # Create build summary
-        echo "📊 Creating build summary..."
+        echo "[STATS] Creating build summary..."
         echo "# Build Summary" > Artifacts/build-summary.md
         echo "- AcoustiScan Build: ${{ steps.build_acoustiscan.outcome }}" >> Artifacts/build-summary.md
         echo "- AcoustiScan Tests: ${{ steps.test_acoustiscan.outcome }}" >> Artifacts/build-summary.md
@@ -277,7 +277,7 @@ jobs:
     - name: Report build status and create issue on failure
       if: failure()
       run: |
-        echo "❌ Build process failed. Creating detailed error report..."
+        echo "[FAILED] Build process failed. Creating detailed error report..."
 
         # Ensure Artifacts directory exists
         mkdir -p Artifacts || echo "::warning::Failed to create Artifacts directory"
@@ -294,7 +294,7 @@ jobs:
         [ "${{ steps.test_export.outputs.export_tests_failed }}" = "true" ] && ERRORS="$ERRORS\n- Export module tests failed"
         [ "${{ steps.build_tools.outputs.tools_build_failed }}" = "true" ] && ERRORS="$ERRORS\n- Tools build failed"
 
-        echo "🔍 Detected errors:$ERRORS"
+        echo "[CHECK] Detected errors:$ERRORS"
 
         # Save error details to artifacts (with error handling)
         echo "# Build Failure Report" > Artifacts/failure-report.md || true

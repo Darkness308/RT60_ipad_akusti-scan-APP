@@ -60,7 +60,6 @@ public final class PDFReportRenderer {
         }
     }
 
-
     private func drawContent(context: UIGraphicsPDFRendererContext, pageRect: CGRect, model: ReportModel) {
         var layout = PDFTextLayout(context: context, pageRect: pageRect)
 

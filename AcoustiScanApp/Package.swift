@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "AcoustiScanApp",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17)
     ],
@@ -21,7 +22,7 @@ let package = Package(
             name: "AcoustiScanApp",
             dependencies: [
                 .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated"),
-                .product(name: "ReportExport", package: "ReportExport")
+                .product(name: "ReportExport", package: "Export")
             ],
             path: "AcoustiScanApp",
             swiftSettings: [

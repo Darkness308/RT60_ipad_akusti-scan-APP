@@ -63,24 +63,24 @@ repo/
 ## Docs
 
 ### README.md
-Beschreibt Ziel, Umfang und Aufbau der App **AcoustiScan** (iPad-App zur orientierenden Raumakustikmessung). Enthält Überblick zu Modulen, genutzten Frameworks (RoomPlan, ARKit, SwiftUI, AVFoundation, PDFKit) sowie Scope-Hinweis (keine Abnahmemessung).
+Beschreibt Ziel, Umfang und Aufbau der App **AcoustiScan** (iPad‑App zur orientierenden Raumakustikmessung). Enthält Überblick zu Modulen, genutzten Frameworks (RoomPlan, ARKit, SwiftUI, AVFoundation, PDFKit) sowie Scope-Hinweis (keine Abnahmemessung).
 
 ### Messleitfaden.md
 Enthält praxisnahe Anleitung für Nutzer:
 - Vorbereitungen (Mikrofon, Raum frei räumen, Störquellen reduzieren)
-- Ablauf: Scannen → Material zuordnen → Messung (T20/T30) → DIN-Vergleich → PDF-Export
+- Ablauf: Scannen → Material zuordnen → Messung (T20/T30) → DIN‑Vergleich → PDF‑Export
 - Kalibrierhinweise und Transparenz gemäß EU AI Act.
 
 ### CHANGELOG.md
-- **0.1.0 Sprint 0:** Repo-Skeleton, AppEntry, TabRootView, Docs erstellt
-- **0.2.0 Sprint 1:** RT60-Pipeline (Schroeder-Methode), DIN18041-Formeln, dynamische Klassifikation, neuer RoomType `musicRoom`
-- **0.3.0 Sprint 2:** RoomPlan-Skeleton (`RoomScanView`), CSV-Import/Export (`MaterialCSVImporter`), Erweiterungen `MaterialManager`
+- **0.1.0 Sprint 0:** Repo‑Skeleton, AppEntry, TabRootView, Docs erstellt
+- **0.2.0 Sprint 1:** RT60‑Pipeline (Schroeder‑Methode), DIN18041‑Formeln, dynamische Klassifikation, neuer RoomType `musicRoom`
+- **0.3.0 Sprint 2:** RoomPlan‑Skeleton (`RoomScanView`), CSV‑Import/Export (`MaterialCSVImporter`), Erweiterungen `MaterialManager`
 
 ### backlog.md
-User Stories (US-1 bis US-5) mit Sprintzuordnung und EKS-Priorität. Nach Sprint 2 sind US-1 und US-2 "in Arbeit" markiert, US-3/4 abgeschlossen.
+User Stories (US‑1 bis US‑5) mit Sprintzuordnung und EKS‑Priorität. Nach Sprint 2 sind US‑1 und US‑2 "in Arbeit" markiert, US‑3/4 abgeschlossen.
 
 ### risks.md
-Liste erkannter Risiken mit Bewertung und Gegenmaßnahmen: Mikrofon-Kalibrierung, Störgeräusche, Messdauer, Speicher/Performance, EU-AI-Act Compliance.
+Liste erkannter Risiken mit Bewertung und Gegenmaßnahmen: Mikrofon‑Kalibrierung, Störgeräusche, Messdauer, Speicher/Performance, EU‑AI‑Act Compliance.
 
 ---
 
@@ -99,10 +99,10 @@ struct AppEntry: App {
 ```
 
 ### TabRootView.swift
-SwiftUI-TabView mit 5 Bereichen: **Scan | Material | RT60 | DIN | Report**.
+SwiftUI‑TabView mit 5 Bereichen: **Scan | Material | RT60 | DIN | Report**.
 
 ### ImpulseResponseAnalyzer.swift
-Implementiert Schroeder-Integration, berechnet Energiezerfallskurve, T20/T30 und leitet RT60 ab.
+Implementiert Schroeder‑Integration, berechnet Energiezerfallskurve, T20/T30 und leitet RT60 ab.
 
 ### DIN18041Database.swift
 Berechnet Tsoll nach Normformeln abhängig vom `RoomType` und Raumvolumen; Toleranz = max(0.2s; 10% Tsoll).
@@ -111,23 +111,22 @@ Berechnet Tsoll nach Normformeln abhängig vom `RoomType` und Raumvolumen; Toler
 Stellt `classifyRT60` bereit, um gemessene Werte in `withinRange`, `tooHigh`, `tooLow` einzuordnen.
 
 ### RoomScanView.swift
-Skeleton für RoomPlan-Integration. Nutzt `RoomCaptureSession` (nur auf Device), speichert Flächeninformationen im `SurfaceStore`.
+Skeleton für RoomPlan‑Integration. Nutzt `RoomCaptureSession` (nur auf Device), speichert Flächeninformationen im `SurfaceStore`.
 
 ### MaterialCSVImporter.swift
-Hilfsklasse für Import/Export von CSV-Materiallisten (`name;125;250;...`).
+Hilfsklasse für Import/Export von CSV‑Materiallisten (`name;125;250;...`).
 
 ### MaterialManager.swift
-Erweitert um CSV-Import/Export-Funktionen (Datei + String).
+Erweitert um CSV‑Import/Export‑Funktionen (Datei + String).
 
 ---
 
 ## Nächste Schritte (Sprint 3)
-- PDF-Export ausbauen (Charts, Ampel, Maßnahmenblock)
-- UX-Flows: Mess-Wizard, Fehlerführung, Accessibility
-- Golden-File-Tests für PDF
-- Erweiterung der Report-Metadaten
+- PDF‑Export ausbauen (Charts, Ampel, Maßnahmenblock)
+- UX‑Flows: Mess‑Wizard, Fehlerführung, Accessibility
+- Golden‑File‑Tests für PDF
+- Erweiterung der Report‑Metadaten
 
 ---
 
-📦 **Finale Artefakte Sprint 0-2** sind jetzt vollständig in Klartext (Markdown) und Swift-Code strukturiert und einsatzbereit.
-
+[PACKAGE] **Finale Artefakte Sprint 0-2** sind jetzt vollständig in Klartext (Markdown) und Swift‑Code strukturiert und einsatzbereit.
