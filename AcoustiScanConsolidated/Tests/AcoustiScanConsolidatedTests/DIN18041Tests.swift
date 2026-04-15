@@ -36,7 +36,8 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .officeSpace, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 0.5 }) // Office spaces should have uniform low RT60
+        // Volume-adjusted targets are near 0.5s; speech frequencies (500-2000 Hz) use a 0.95 factor
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.4 && $0.targetRT60 < 0.6 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.1 })
     }
     
@@ -45,7 +46,8 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .conference, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 0.7 })
+        // Volume-adjusted targets (300m³) are near 0.7s; speech frequencies (500-4000 Hz) use a 0.9 factor
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.6 && $0.targetRT60 < 0.9 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.15 })
     }
     
@@ -54,7 +56,8 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .lecture, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 0.8 })
+        // Volume-adjusted targets (500m³) are near 0.8s; frequency-dependent adjustments apply
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.75 && $0.targetRT60 < 1.15 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.15 })
     }
     
@@ -63,7 +66,8 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .music, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 1.5 }) // Music rooms need longer reverberation
+        // Volume-adjusted targets (400m³) are near 1.5s; frequency-dependent adjustments apply
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 >= 1.5 && $0.targetRT60 < 2.5 }) // Music rooms need longer reverberation
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.2 })
     }
     
@@ -72,7 +76,8 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .sports, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 == 2.0 }) // Sports halls can have highest RT60
+        // Volume-adjusted targets (2000m³) are significantly above base 2.0s due to volume scaling
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 2.3 && $0.targetRT60 < 3.2 }) // Sports halls can have highest RT60
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.3 })
     }
     
