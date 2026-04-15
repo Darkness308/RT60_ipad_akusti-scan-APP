@@ -175,10 +175,10 @@ def main():
     else:
         print("✅ No problematic characters found!")
         print("\nAll files have:")
-        print("  • Proper UTF-8 encoding")
-        print("  • LF line endings")
-        print("  • No hidden Unicode characters")
-        print("  • No control characters")
+        print("  * Proper UTF-8 encoding")
+        print("  * LF line endings")
+        print("  * No hidden Unicode characters")
+        print("  * No control characters")
         return 0
 
 

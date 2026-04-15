@@ -80,10 +80,10 @@ Validating characters in: /home/user/RT60_ipad_akusti-scan-APP
 ✅ No problematic characters found!
 
 All files have:
-  • Proper UTF-8 encoding
-  • LF line endings
-  • No hidden Unicode characters
-  • No control characters
+  * Proper UTF-8 encoding
+  * LF line endings
+  * No hidden Unicode characters
+  * No control characters
 ```
 
 ### Other Tools
