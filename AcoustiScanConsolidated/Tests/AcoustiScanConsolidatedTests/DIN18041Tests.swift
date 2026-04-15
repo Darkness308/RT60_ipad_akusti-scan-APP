@@ -73,6 +73,15 @@ final class DIN18041ModuleTests: XCTestCase {
         // Volume-adjusted targets (500m³) are near 0.8s; frequency-dependent adjustments apply
         XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.75 && $0.targetRT60 < 1.15 })
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.15 })
+        
+        // Verify the expected DIN 18041 frequency shaping:
+        // low frequencies (<=250 Hz) should be higher than mid-band,
+        // while high frequencies (>=4000 Hz) should be lower than mid-band.
+        let midBandTarget = targets[3].targetRT60 // 1000 Hz in the 7-band sequence
+        XCTAssertGreaterThan(targets[0].targetRT60, midBandTarget) // 125 Hz > 1000 Hz
+        XCTAssertGreaterThan(targets[1].targetRT60, midBandTarget) // 250 Hz > 1000 Hz
+        XCTAssertLessThan(targets[5].targetRT60, midBandTarget)    // 4000 Hz < 1000 Hz
+        XCTAssertLessThan(targets[6].targetRT60, midBandTarget)    // 8000 Hz < 1000 Hz
     }
     
     func testMusicRoomTargets() {
