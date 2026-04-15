@@ -37,7 +37,21 @@ final class DIN18041ModuleTests: XCTestCase {
         
         XCTAssertEqual(targets.count, 7)
         // Volume-adjusted targets are near 0.5s; speech frequencies (500-2000 Hz) use a 0.95 factor
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.4 && $0.targetRT60 < 0.6 })
+        let nonSpeechLow = targets.first { $0.frequency == 125 }!
+        let speech500 = targets.first { $0.frequency == 500 }!
+        let speech1000 = targets.first { $0.frequency == 1000 }!
+        let speech2000 = targets.first { $0.frequency == 2000 }!
+        let nonSpeechHigh = targets.first { $0.frequency == 4000 }!
+        
+        XCTAssertEqual(nonSpeechLow.targetRT60, 0.5, accuracy: 0.001)
+        XCTAssertEqual(nonSpeechHigh.targetRT60, 0.5, accuracy: 0.001)
+        XCTAssertEqual(speech500.targetRT60, 0.5 * 0.95, accuracy: 0.001)
+        XCTAssertEqual(speech1000.targetRT60, 0.5 * 0.95, accuracy: 0.001)
+        XCTAssertEqual(speech2000.targetRT60, 0.5 * 0.95, accuracy: 0.001)
+        
+        XCTAssertTrue(speech500.targetRT60 < nonSpeechLow.targetRT60)
+        XCTAssertTrue(speech1000.targetRT60 < nonSpeechLow.targetRT60)
+        XCTAssertTrue(speech2000.targetRT60 < nonSpeechHigh.targetRT60)
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.1 })
     }
     
