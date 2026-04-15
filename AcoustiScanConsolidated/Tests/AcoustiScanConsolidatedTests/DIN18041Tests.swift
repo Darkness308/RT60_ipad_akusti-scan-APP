@@ -89,9 +89,28 @@ final class DIN18041ModuleTests: XCTestCase {
         let targets = DIN18041Database.targets(for: .music, volume: volume)
         
         XCTAssertEqual(targets.count, 7)
-        // Volume-adjusted targets (400m³) are near 1.5s; frequency-dependent adjustments apply
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 >= 1.5 && $0.targetRT60 < 2.5 }) // Music rooms need longer reverberation
         XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.2 })
+        
+        let targetsByFrequency = Dictionary(uniqueKeysWithValues: targets.map { ($0.frequency, $0) })
+        
+        guard
+            let rt125 = targetsByFrequency[125]?.targetRT60,
+            let rt1000 = targetsByFrequency[1000]?.targetRT60,
+            let rt4000 = targetsByFrequency[4000]?.targetRT60
+        else {
+            XCTFail("Music room targets missing representative frequencies")
+            return
+        }
+        
+        // Volume-adjusted targets (400m³) are around 1.95s at 1000 Hz with
+        // low-frequency boost and high-frequency reduction applied.
+        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 >= 1.5 && $0.targetRT60 < 2.5 }) // Music rooms need longer reverberation
+        XCTAssertGreaterThan(rt125, rt1000, "125 Hz should be boosted relative to 1000 Hz")
+        XCTAssertLessThan(rt4000, rt1000, "4000 Hz should be reduced relative to 1000 Hz")
+        
+        XCTAssertEqual(rt1000, 1.95, accuracy: 0.1)
+        XCTAssertEqual(rt125, 2.15, accuracy: 0.1)
+        XCTAssertEqual(rt4000, 1.75, accuracy: 0.1)
     }
     
     func testSportsHallTargets() {
