@@ -42,7 +42,7 @@
 
 // MARK: - Scanning
 
-"scanning" = "Scanning…";
+"scanning" = "Scanning...";
 "scan_ready" = "Scan bereit";
 "stop_scan" = "Scan beenden";
 "start_scan" = "Scan starten";

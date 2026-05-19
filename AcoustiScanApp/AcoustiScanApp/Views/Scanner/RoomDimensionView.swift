@@ -66,7 +66,7 @@ struct RoomDimensionView: View {
             Section(header: Text(LocalizationKeys.volume.localized(comment: "Volume header"))
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("volumeHeader")) {
-                Text(String(format: "%.2f m³", volume))
+                Text(String(format: "%.2f m3", volume))
                     .accessibilityLabel("Room volume")
                     .accessibilityValue(String(format: "%.2f cubic meters", volume))
                     .accessibilityIdentifier("volumeText")

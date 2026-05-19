@@ -1,13 +1,13 @@
 # feat(ci): Self-Healing CI System + PDF Test Fixes
 
-## 📋 Summary
+## [LIST] Summary
 
 | Komponente | Status | Beschreibung |
 |------------|--------|--------------|
-| PDF Test Fix | ✅ | Core-Tokens und Pflicht-Elemente erscheinen immer |
-| Self-Healing CI | ✅ | Automatische Fehlererkennung mit AI-Agent-Support |
+| PDF Test Fix | [DONE] | Core-Tokens und Pflicht-Elemente erscheinen immer |
+| Self-Healing CI | [DONE] | Automatische Fehlererkennung mit AI-Agent-Support |
 
-## 🔧 Änderungen
+## [FIX] Änderungen
 
 ### PDF/HTML Renderer (`6a94a6d`)
 - **Core-Tokens am Anfang** des PDFs (garantiert auf Seite 1)
@@ -32,21 +32,21 @@ CI Fehler → self-healing.yml → autofix-agent.yml → Fix → CI Neustart
 **Konfiguration:**
 - `self-healing-config.json` - Error-Patterns, Fix-Strategien, Eskalation
 
-## 📊 EKS-Analyse (Engpass-Konzentrierte Strategie)
+## [STATS] EKS-Analyse (Engpass-Konzentrierte Strategie)
 
 | Engpass | Lösung | Impact |
 |---------|--------|--------|
-| CI bricht ab wegen PDF-Tests | Core-Tokens immer ausgeben | 🔴 80% der Fehler |
+| CI bricht ab wegen PDF-Tests | Core-Tokens immer ausgeben | [ERROR] 80% der Fehler |
 | Manuelle Intervention nötig | 5 Auto-Fix-Versuche | 🟡 15% der Fehler |
 | Keine Dokumentation | README + Config | 🟢 5% |
 
-## 📈 Pareto (80/20)
+## [IMPROVE] Pareto (80/20)
 
 **20% Aufwand → 80% Ergebnis:**
 - 2 Commits lösen die Hauptprobleme
 - PDF-Test-Fehler = 80% aller CI-Failures
 
-## ✅ Test Plan
+## [DONE] Test Plan
 
 - [ ] CI Build passes
 - [ ] PDF tests pass (`PDFRobustnessTests`, `ReportContractTests`)

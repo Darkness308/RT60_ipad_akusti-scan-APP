@@ -386,7 +386,7 @@ internal class ARCoordinator: NSObject {
         }
 
         // Last resort: Default estimation for partial surface detection
-        return 2.0 // 2 m² as reasonable default
+        return 2.0 // 2 m^2 as reasonable default
     }
 
     /// Determine surface name based on plane alignment
