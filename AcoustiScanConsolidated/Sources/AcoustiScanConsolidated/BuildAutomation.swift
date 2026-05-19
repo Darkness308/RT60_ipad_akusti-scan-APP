@@ -224,11 +224,11 @@ public class BuildAutomation {
 
         switch result {
         case .success:
-            return "[DONE] Build successful"
+            return "✅ Build successful"
         case .failure(_, let errors):
-            return "[FAILED] Build failed with \(errors.count) error(s)"
+            return "❌ Build failed with \(errors.count) error(s)"
         case .fixedAndRetrying:
-            return "[RETRY] Build retrying after fixes"
+            return "🔄 Build retrying after fixes"
         }
     }
 }
@@ -238,40 +238,40 @@ public class ContinuousIntegration {
 
     /// Run complete CI pipeline
     public static func runCIPipeline(projectPath: String) -> Bool {
-        print("[LAUNCH] Starting CI Pipeline...")
+        print("🚀 Starting CI Pipeline...")
 
         // Step 1: Build
-        print("[PACKAGE] Building project...")
+        print("📦 Building project...")
         let buildResult = BuildAutomation.runAutomatedBuild(projectPath: projectPath)
 
         switch buildResult {
         case .success:
-            print("[DONE] Build successful")
+            print("✅ Build successful")
         case .failure(let output, let errors):
-            print("[FAILED] Build failed:")
+            print("❌ Build failed:")
             print(output)
             for error in errors {
                 print("  - \(error.file):\(error.line): \(error.message)")
             }
             return false
         case .fixedAndRetrying:
-            print("[RETRY] Build retrying after automatic fixes")
+            print("🔄 Build retrying after automatic fixes")
         }
 
         // Step 2: Run tests
         print("🧪 Running tests...")
         let testResult = runTests(projectPath: projectPath)
         if !testResult {
-            print("[FAILED] Tests failed")
+            print("❌ Tests failed")
             return false
         }
-        print("[DONE] Tests passed")
+        print("✅ Tests passed")
 
         // Step 3: Code quality checks
-        print("[CHECK] Running code quality checks...")
+        print("🔍 Running code quality checks...")
         let qualityResult = runQualityChecks(projectPath: projectPath)
         if !qualityResult {
-            print("[WARNING]️ Code quality issues detected")
+            print("⚠ Code quality issues detected")
             // Don't fail CI for quality issues, just warn
         }
 

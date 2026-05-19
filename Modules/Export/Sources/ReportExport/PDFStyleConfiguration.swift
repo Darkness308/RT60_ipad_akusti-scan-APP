@@ -1,13 +1,20 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 #if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
 #endif
 
 /// Centralized styling configuration for PDF exports
 public struct PDFStyleConfiguration {
 
+    #if canImport(CoreGraphics)
     // MARK: - Page Layout
 
+    #if canImport(UIKit) || canImport(AppKit)
     public struct PageLayout {
         /// A4 page dimensions in points (72 points per inch)
         public static let a4Width: CGFloat = 595.2  // 210mm
@@ -17,13 +24,14 @@ public struct PDFStyleConfiguration {
         public static let margin: CGFloat = 72
 
         public static var pageRect: CGRect {
-            return CGRect(x: 0, y: 0, width: a4Width, height: a4Height)
+            CGRect(x: 0, y: 0, width: Self.a4Width, height: Self.a4Height)
         }
 
         public static var contentWidth: CGFloat {
-            a4Width - (2 * margin)
+            Self.a4Width - (2 * Self.margin)
         }
     }
+    #endif
 
     // MARK: - Typography
 
@@ -48,6 +56,7 @@ public struct PDFStyleConfiguration {
     }
     #endif
 
+    #if canImport(CoreGraphics)
     // MARK: - Spacing
 
     public struct Spacing {
@@ -63,4 +72,6 @@ public struct PDFStyleConfiguration {
         /// Large spacing (20pt)
         public static let lg: CGFloat = 20
     }
+    #endif
+    #endif
 }

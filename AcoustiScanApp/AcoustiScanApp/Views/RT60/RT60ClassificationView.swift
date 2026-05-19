@@ -24,8 +24,12 @@ struct RT60ClassificationView: View {
                 .padding(.vertical, 2)
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("Frequency \(result.frequency) Hertz")
-                .accessibilityValue(String(format: "%.2f seconds, status: %@", result.measuredRT60, result.status.rawValue))
-                .accessibilityHint(result.status == .withinTolerance ? "Within tolerance" : "Outside tolerance")
+                .accessibilityValue(
+                    String(format: "%.2f seconds, status: %@", result.measuredRT60, result.status.rawValue)
+                )
+                .accessibilityHint(
+                    result.status == .withinTolerance ? "Within tolerance" : "Outside tolerance"
+                )
                 .accessibilityIdentifier("classificationRow\(result.frequency)")
             }
         }

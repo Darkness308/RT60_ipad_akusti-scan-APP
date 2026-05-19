@@ -45,7 +45,7 @@ jobs:
     - name: Extract error information
       id: extract_errors
       run: |
-        echo "[CHECK] Analyzing error information..."
+        echo "🔍 Analyzing error information..."
 
         ERROR_SUMMARY="${{ github.event.client_payload.error_summary || 'No error summary provided' }}"
         echo "Error summary: $ERROR_SUMMARY"
@@ -67,7 +67,7 @@ jobs:
       id: diagnostics
       continue-on-error: true
       run: |
-        echo "[TEST] Running diagnostic tests..."
+        echo "🔬 Running diagnostic tests..."
 
         # Test AcoustiScanConsolidated
         cd AcoustiScanConsolidated
@@ -90,7 +90,7 @@ jobs:
     - name: Apply PDF test fixes
       if: steps.extract_errors.outputs.error_type == 'pdf-test' || steps.diagnostics.outputs.test_export_failed == 'true'
       run: |
-        echo "[FIX] Applying PDF test fixes..."
+        echo "🔧 Applying PDF test fixes..."
 
         # Fix 1: Ensure all required tokens are present in PDF output
         # The tests expect specific tokens that must always appear
@@ -100,17 +100,17 @@ jobs:
 
         # Check if core tokens section exists at the beginning
         if ! grep -q "Draw core tokens first" "$PDF_RENDERER" 2>/dev/null; then
-          echo "[WARNING]️ Core tokens section may be missing or misplaced"
+          echo "⚠ Core tokens section may be missing or misplaced"
         fi
 
         # Verify required frequencies are present
         if ! grep -q "requiredFrequencies = \[125, 1000, 4000\]" "$PDF_RENDERER" 2>/dev/null; then
-          echo "[WARNING]️ Required frequencies may be missing"
+          echo "⚠ Required frequencies may be missing"
         fi
 
         # Verify DIN values are present
         if ! grep -q "0.48" "$PDF_RENDERER" 2>/dev/null; then
-          echo "[WARNING]️ DIN value 0.48 may be missing"
+          echo "⚠ DIN value 0.48 may be missing"
         fi
 
         # Run tests again to verify
@@ -120,17 +120,17 @@ jobs:
 
         # Check if tests pass now
         if grep -q "Test Suite.*passed" /tmp/test_after_fix.log; then
-          echo "[DONE] Tests passing after fix verification"
+          echo "✅ Tests passing after fix verification"
           echo "fix_applied=true" >> $GITHUB_OUTPUT
         else
-          echo "[FAILED] Tests still failing, may need additional fixes"
+          echo "❌ Tests still failing, may need additional fixes"
           echo "fix_applied=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Apply build fixes
       if: steps.extract_errors.outputs.error_type == 'build' || steps.diagnostics.outputs.build_failed == 'true'
       run: |
-        echo "[FIX] Applying build fixes..."
+        echo "🔧 Applying build fixes..."
 
         # Clean build artifacts
         rm -rf .build
@@ -150,14 +150,14 @@ jobs:
         cd ../..
 
         if grep -q "Build complete" /tmp/build_retry.log && grep -q "Build complete" /tmp/build_export_retry.log; then
-          echo "[DONE] Build successful after clean rebuild"
+          echo "✅ Build successful after clean rebuild"
           echo "fix_applied=true" >> $GITHUB_OUTPUT
         fi
 
     - name: Apply lint fixes
       if: steps.extract_errors.outputs.error_type == 'lint'
       run: |
-        echo "[FIX] Applying lint fixes..."
+        echo "🔧 Applying lint fixes..."
 
         # Install tools if needed
         brew install swiftlint swiftformat || true
@@ -173,7 +173,7 @@ jobs:
     - name: Commit and push fixes
       id: commit_fix
       run: |
-        echo "[NOTE] Checking for changes to commit..."
+        echo "📝 Checking for changes to commit..."
 
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -196,12 +196,12 @@ jobs:
           [skip ci]" || echo "Nothing to commit"
 
           git push origin HEAD 2>&1 || {
-            echo "[WARNING]️ Push failed, trying with force"
+            echo "⚠ Push failed, trying with force"
             git push origin HEAD --force-with-lease 2>&1 || echo "Push failed"
           }
 
           echo "has_changes=true" >> $GITHUB_OUTPUT
-          echo "[DONE] Changes committed and pushed"
+          echo "✅ Changes committed and pushed"
         fi
 
     - name: Trigger CI re-run
@@ -210,7 +210,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          console.log('[RETRY] Triggering CI re-run after applying fixes...');
+          console.log('🔄 Triggering CI re-run after applying fixes...');
 
           // Wait a bit for the push to be processed
           await new Promise(resolve => setTimeout(resolve, 5000));
@@ -223,9 +223,9 @@ jobs:
               workflow_id: 'build-test.yml',
               ref: '${{ github.event.client_payload.branch || github.event.inputs.branch || 'main' }}'
             });
-            console.log('[DONE] Build workflow triggered');
+            console.log('✅ Build workflow triggered');
           } catch (error) {
-            console.log(`[WARNING]️ Could not trigger workflow: ${error.message}`);
+            console.log(`⚠ Could not trigger workflow: ${error.message}`);
           }
 
     - name: Update issue with results
@@ -245,7 +245,7 @@ jobs:
           const errorType = '${{ steps.extract_errors.outputs.error_type }}';
           const attempt = '${{ steps.extract_errors.outputs.attempt }}';
 
-          let statusEmoji = hasChanges ? '[FIX]' : '[UNKNOWN]';
+          let statusEmoji = hasChanges ? '🔧' : '❓';
           let statusText = hasChanges
             ? `Applied fixes for **${errorType}** issues`
             : `No automatic fixes could be applied for **${errorType}** issues`;
@@ -260,7 +260,7 @@ jobs:
           - **Attempt:** ${attempt}/5
           - **Changes Applied:** ${hasChanges ? 'Yes' : 'No'}
 
-          ${hasChanges ? '[RETRY] **Next:** CI workflow has been triggered. Waiting for results...' : '[WARNING]️ **Note:** Manual intervention may be required.'}
+          ${hasChanges ? '🔄 **Next:** CI workflow has been triggered. Waiting for results...' : '⚠ **Note:** Manual intervention may be required.'}
           `;
 
           await github.rest.issues.createComment({
@@ -270,4 +270,4 @@ jobs:
             body: comment
           });
 
-          console.log(`[NOTE] Updated issue #${issueNumber} with results`);
+          console.log(`📝 Updated issue #${issueNumber} with results`);

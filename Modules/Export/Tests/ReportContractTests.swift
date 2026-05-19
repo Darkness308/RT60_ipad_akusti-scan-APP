@@ -36,7 +36,7 @@ final class ReportContractTests: XCTestCase {
 
         // Assert - Kerntokens (Werte & Labels) müssen in beiden vorkommen
         let tokens = [
-            "rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0",
+            "rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0",
             "125", "0.70",
             "250", "0.60",
             "din 18041", "toleranz", "0.20",
@@ -176,7 +176,7 @@ final class ReportContractTests: XCTestCase {
         }
 
         // Assert - Core tokens should always appear in PDF
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
         for token in coreTokens {
             XCTAssertTrue(pdfText.contains(token), "PDF fehlt Core-Token: \(token)")
         }

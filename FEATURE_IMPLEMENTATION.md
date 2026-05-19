@@ -4,9 +4,9 @@
 
 Dieses Update implementiert die offenen Tasks aus dem Product Backlog und erweitert die AcoustiScan App um wichtige Kernfunktionalitäten.
 
-## [DONE] Implementierte User Stories
+## ✅ Implementierte User Stories
 
-### US-5: PDF-Report mit Kurven, Ampel und Maßnahmenblock [DONE]
+### US-5: PDF-Report mit Kurven, Ampel und Maßnahmenblock ✅
 
 **Status:** Komplett implementiert
 
@@ -28,9 +28,9 @@ Dieses Update implementiert die offenen Tasks aus dem Product Backlog und erweit
 **Seite 3: DIN 18041 Klassifizierung**
 - Gesamtstatus-Box (Grün/Gelb/Rot)
 - Visuelles Ampel-System mit großen Kreisen:
-  - [DONE] Grün: Konform (innerhalb Toleranz)
-  - [WARNING] Gelb: Warnung (bis 1.5x Toleranz)
-  - [FAILED] Rot: Kritisch (über 1.5x Toleranz)
+  - ✓ Grün: Konform (innerhalb Toleranz)
+  - ⚠ Gelb: Warnung (bis 1.5x Toleranz)
+  - ✗ Rot: Kritisch (über 1.5x Toleranz)
 - Anzahl pro Kategorie prominent dargestellt
 
 **Seite 4: Materialübersicht**
@@ -91,7 +91,7 @@ try? pdfData.write(to: fileURL)
 
 ---
 
-### US-6: Material Import/Export (teilweise) [DONE]
+### US-6: Material Import/Export (teilweise) ✅
 
 **Status:** CSV vollständig, XLSX als Placeholder
 
@@ -146,7 +146,7 @@ for material in manager.allMaterials {
 
 ---
 
-### US-7: JSON-Audit-Trail [DONE]
+### US-7: JSON-Audit-Trail ✅
 
 **Status:** Komplett implementiert
 
@@ -238,7 +238,7 @@ let todaysEntries = auditTrail.getEntries(from: today, to: tomorrow)
 
 ---
 
-## [CONSTRUCT]️ Zusätzliche Infrastruktur
+## 🏗 Zusätzliche Infrastruktur
 
 ### AbsorptionData - Frequenzabhängige Koeffizienten
 
@@ -310,7 +310,7 @@ print("Material-Zuweisung: \(Int(progress * 100))%")
 
 ---
 
-## [STATS] Technische Details
+## 📊 Technische Details
 
 ### Persistenz
 
@@ -360,7 +360,7 @@ Alle Manager sind `ObservableObject` und verwenden `@Published` Properties für 
 
 ---
 
-## [LAUNCH] Integration
+## 🚀 Integration
 
 ### In SwiftUI Views
 
@@ -396,7 +396,7 @@ struct ContentView: View {
 
 ---
 
-## [NOTE] Nächste Schritte
+## 📝 Nächste Schritte
 
 ### Kurzfristig
 - [ ] Xcode Projekt aktualisieren (neue Dateien hinzufügen)
@@ -417,7 +417,7 @@ struct ContentView: View {
 
 ---
 
-## [LINK] Referenzen
+## 🔗 Referenzen
 
 - [DIN 18041](https://www.din.de/de/mitwirken/normenausschuesse/nabau/veroeffentlichungen/wdc-beuth:din21:147370646) - Hörsamkeit in Räumen
 - [ISO 3382-1](https://www.iso.org/standard/40979.html) - Measurement of room acoustic parameters

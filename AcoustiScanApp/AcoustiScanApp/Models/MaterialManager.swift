@@ -50,7 +50,7 @@ public class MaterialManager: ObservableObject {
     /// - Returns: CSV string
     public func exportToCSV(materials: [AcousticMaterial]? = nil) -> String {
         let materialsToExport = materials ?? customMaterials
-        var csv = "Name,125Hz,250Hz,500Hz,1kHz,2kHz,4kHz\n"
+        var csv = "Name,125Hz,250Hz,500Hz,1kHz,2kHz,4kHz,8kHz\n"
 
         for material in materialsToExport {
             let name = material.name.replacingOccurrences(of: ",", with: ";")
@@ -84,7 +84,9 @@ public class MaterialManager: ObservableObject {
             var values: [Int: Float] = [:]
 
             for (index, freq) in AbsorptionData.standardFrequencies.enumerated() {
-                if let value = Float(components[index + 1].trimmingCharacters(in: .whitespaces)) {
+                let cellIndex = index + 1
+                guard cellIndex < components.count else { continue }
+                if let value = Float(components[cellIndex].trimmingCharacters(in: .whitespaces)) {
                     values[freq] = value
                 }
             }
@@ -234,25 +236,25 @@ public class MaterialManager: ObservableObject {
     private static func loadPredefinedMaterials() -> [AcousticMaterial] {
         return [
             AcousticMaterial(name: "Beton (glatt)", absorption: AbsorptionData(values: [
-                125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.02, 4000: 0.03
+                125: 0.01, 250: 0.01, 500: 0.02, 1000: 0.02, 2000: 0.02, 4000: 0.03, 8000: 0.03
             ])),
             AcousticMaterial(name: "Gipskarton", absorption: AbsorptionData(values: [
-                125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09
+                125: 0.29, 250: 0.10, 500: 0.05, 1000: 0.04, 2000: 0.07, 4000: 0.09, 8000: 0.11
             ])),
             AcousticMaterial(name: "Holz (massiv)", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.11, 500: 0.10, 1000: 0.07, 2000: 0.06, 4000: 0.07
+                125: 0.15, 250: 0.11, 500: 0.10, 1000: 0.07, 2000: 0.06, 4000: 0.07, 8000: 0.07
             ])),
             AcousticMaterial(name: "Teppichboden", absorption: AbsorptionData(values: [
-                125: 0.08, 250: 0.24, 500: 0.57, 1000: 0.69, 2000: 0.71, 4000: 0.73
+                125: 0.08, 250: 0.24, 500: 0.57, 1000: 0.69, 2000: 0.71, 4000: 0.73, 8000: 0.74
             ])),
             AcousticMaterial(name: "Akustikplatten", absorption: AbsorptionData(values: [
-                125: 0.15, 250: 0.40, 500: 0.80, 1000: 0.95, 2000: 0.90, 4000: 0.85
+                125: 0.15, 250: 0.40, 500: 0.80, 1000: 0.95, 2000: 0.90, 4000: 0.85, 8000: 0.80
             ])),
             AcousticMaterial(name: "Glasfenster", absorption: AbsorptionData(values: [
-                125: 0.35, 250: 0.25, 500: 0.18, 1000: 0.12, 2000: 0.07, 4000: 0.04
+                125: 0.35, 250: 0.25, 500: 0.18, 1000: 0.12, 2000: 0.07, 4000: 0.04, 8000: 0.04
             ])),
             AcousticMaterial(name: "Vorhang (schwer)", absorption: AbsorptionData(values: [
-                125: 0.14, 250: 0.35, 500: 0.55, 1000: 0.72, 2000: 0.70, 4000: 0.65
+                125: 0.14, 250: 0.35, 500: 0.55, 1000: 0.72, 2000: 0.70, 4000: 0.65, 8000: 0.65
             ]))
         ]
     }

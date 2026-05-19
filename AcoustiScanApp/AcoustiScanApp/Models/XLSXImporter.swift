@@ -68,8 +68,8 @@ public class XLSXImporter {
         for row in rows.dropFirst() {
             guard !row.isEmpty else { continue }
 
-            // Ensure we have at least name + 6 frequency values
-            guard row.count >= 7 else {
+            // Ensure we have at least name + one frequency value
+            guard row.count >= 2 else {
                 continue
             }
 
@@ -78,9 +78,11 @@ public class XLSXImporter {
 
             var values: [Int: Float] = [:]
 
-            // Parse absorption coefficients for each frequency
+            // Parse absorption coefficients for each frequency (bounds-checked for forward/backward compatibility)
             for (index, frequency) in AbsorptionData.standardFrequencies.enumerated() {
-                let valueString = row[index + 1].trimmingCharacters(in: .whitespaces)
+                let cellIndex = index + 1
+                guard cellIndex < row.count else { continue }
+                let valueString = row[cellIndex].trimmingCharacters(in: .whitespaces)
                 if let value = Float(valueString) {
                     values[frequency] = value
                 }

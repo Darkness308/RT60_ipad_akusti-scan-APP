@@ -163,7 +163,7 @@ public class ConsolidatedPDFExporter {
 
         let summaryText = """
         Raum: \(data.roomType.displayName)
-        Volumen: \(String(format: "%.1f", data.volume)) m3
+        Volumen: \(String(format: "%.1f", data.volume)) m³
         Messdatum: \(data.date)
 
         DIN 18041 Konformität: \(String(format: "%.1f", compliancePercentage))%
@@ -200,7 +200,7 @@ public class ConsolidatedPDFExporter {
         Grunddaten:
         - Messung durchgeführt am: \(data.date)
         - Raumtyp: \(data.roomType.displayName)
-        - Raumvolumen: \(String(format: "%.2f", data.volume)) m3
+        - Raumvolumen: \(String(format: "%.2f", data.volume)) m³
         - Anzahl Oberflächenelemente: \(data.surfaces.count)
 
         Oberflächenkonfiguration:

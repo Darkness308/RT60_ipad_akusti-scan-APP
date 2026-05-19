@@ -46,7 +46,8 @@ public class XLSXExporter {
             "500 Hz",
             "1000 Hz",
             "2000 Hz",
-            "4000 Hz"
+            "4000 Hz",
+            "8000 Hz"
         ])
 
         // Add data rows

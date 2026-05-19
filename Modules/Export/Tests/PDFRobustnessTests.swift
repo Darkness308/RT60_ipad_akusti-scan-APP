@@ -33,7 +33,7 @@ final class PDFRobustnessTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value) bei leerem Model")
         }
 
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
         for token in coreTokens {
             XCTAssertTrue(pdfText.contains(token), "PDF fehlt Core-Token: \(token) bei leerem Model")
         }
@@ -118,7 +118,7 @@ final class PDFRobustnessTests: XCTestCase {
         }
 
         // Check core tokens
-        let coreTokens = ["rt60 bericht", "metadaten", "gerät", "ipadpro", "version", "1.0.0"]
+        let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
         for token in coreTokens {
             XCTAssertTrue(pdfText.contains(token), "PDF missing core token: \(token)")
         }
@@ -157,7 +157,7 @@ final class PDFRobustnessTests: XCTestCase {
         }
 
         if !missingProblemDINs.isEmpty {
-            print("⚠️ Problem statement DIN values missing: \(missingProblemDINs)")
+            print("⚠ Problem statement DIN values missing: \(missingProblemDINs)")
             print("💡 Current implementation now uses proper DIN 18041 values: 0.6, 0.5, 0.48")
             print("📝 Problem statement examples: 0.6, 0.5, 0.1")
             // Values now align with DIN 18041 standard

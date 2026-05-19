@@ -15,7 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../AcoustiScanConsolidated"),
-        .package(path: "../Modules/Export")
+        .package(name: "ReportExport", path: "../Modules/Export")
     ],
     targets: [
         .target(

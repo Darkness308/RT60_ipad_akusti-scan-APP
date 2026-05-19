@@ -6,12 +6,12 @@ AcoustiScan ist eine professionelle iOS-App für akustische Raumanalyse mit LiDA
 
 ### Features
 
-- [TARGET] **LiDAR-Raumscan**: Automatische 3D-Raumerfassung mit RoomPlan API
-- [SOUND] **RT60-Messung**: Frequenzabhängige Nachhallzeitmessung (125 Hz - 4 kHz)
-- [STATS] **DIN 18041 Klassifizierung**: Automatische Bewertung nach deutscher Norm
-- [DOC] **PDF-Export**: 6-seitiger Gutachten-Report mit Frequenzgrafiken
-- [STYLE] **Material-Datenbank**: 500+ akustische Materialien mit Absorptionskoeffizienten
-- [CONSTRUCT]️ **Absorber-Planer**: Automatische Berechnung erforderlicher Absorptionsflächen
+- 🎯 **LiDAR-Raumscan**: Automatische 3D-Raumerfassung mit RoomPlan API
+- 🔊 **RT60-Messung**: Frequenzabhängige Nachhallzeitmessung (125 Hz - 4 kHz)
+- 📊 **DIN 18041 Klassifizierung**: Automatische Bewertung nach deutscher Norm
+- 📄 **PDF-Export**: 6-seitiger Gutachten-Report mit Frequenzgrafiken
+- 🎨 **Material-Datenbank**: 500+ akustische Materialien mit Absorptionskoeffizienten
+- 🏗 **Absorber-Planer**: Automatische Berechnung erforderlicher Absorptionsflächen
 
 ---
 
@@ -76,7 +76,7 @@ Die App benötigt folgende iOS-Berechtigungen (in Info.plist konfiguriert):
 
 ---
 
-## [TOOLS]️ Entwicklung
+## 🛠 Entwicklung
 
 ### Backend (Swift Package)
 
@@ -136,7 +136,7 @@ RT60_ipad_akusti-scan-APP/
 
 ---
 
-## [STATS] Features im Detail
+## 📊 Features im Detail
 
 ### 1. LiDAR-Scanner (RoomPlan)
 
@@ -179,7 +179,7 @@ RT60_ipad_akusti-scan-APP/
 
 ---
 
-## [LAUNCH] Deployment
+## 🚀 Deployment
 
 ### TestFlight (Beta)
 
@@ -202,7 +202,7 @@ Erforderliche Assets:
 
 ---
 
-## [READ] Dokumentation
+## 📖 Dokumentation
 
 ### RT60-Berechnung
 
@@ -211,21 +211,21 @@ Nach Sabine-Formel:
 RT60 = 0.161 × V / A
 ```
 
-- **V**: Raumvolumen in m3
+- **V**: Raumvolumen in m³
 - **A**: Äquivalente Absorptionsfläche in m² (frequenzabhängig)
 
 ### DIN 18041 Grenzwerte
 
 | Raumtyp | Volumen | Soll-RT60 | Toleranz |
 |---------|---------|-----------|----------|
-| A1      | < 250 m3 | 0.6 s    | ±20%     |
-| A2      | < 5000 m3 | 0.8 s   | ±15%     |
+| A1      | < 250 m³ | 0.6 s    | ±20%     |
+| A2      | < 5000 m³ | 0.8 s   | ±15%     |
 | B       | Sprache  | 1.0 s    | ±25%     |
 | C       | Musik    | 1.5 s    | ±30%     |
 
 ---
 
-## [FIX] Troubleshooting
+## 🔧 Troubleshooting
 
 ### Build-Fehler
 
@@ -394,7 +394,7 @@ Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu lei
 
 ---
 
-## [SCROLL] Lizenz
+## 📜 Lizenz
 
 Proprietary - Alle Rechte vorbehalten
 
@@ -407,29 +407,29 @@ Proprietary - Alle Rechte vorbehalten
 
 ---
 
-## [NOTE] Changelog
+## 📝 Changelog
 
 ### Version 1.0 (2025-11-02)
 
-[DONE] **App Structure**
+✅ **App Structure**
 - Created complete Xcode project for iPadOS 17.0+
 - Integrated 13 SwiftUI views from source archives
 - Linked AcoustiScanConsolidated Swift Package
 
-[DONE] **Features**
+✅ **Features**
 - Tab 1: LiDAR Scanner (RoomPlan + ARKit)
 - Tab 2: RT60 Measurement (frequency analysis)
 - Tab 3: DIN 18041 Classification (evaluation)
 - Tab 4: PDF Export (6-page reports)
 - Tab 5: Material Database (500+ materials)
 
-[DONE] **Backend Integration**
+✅ **Backend Integration**
 - RT60 Calculation Engine (consolidated)
 - DIN 18041 Evaluator (production-ready)
 - PDF Report Generator (6-page template)
 - Material Database (500+ entries)
 
-[TARGET] **Production Status**: Ready for QA Testing
+🎯 **Production Status**: Ready for QA Testing
 
 ---
 

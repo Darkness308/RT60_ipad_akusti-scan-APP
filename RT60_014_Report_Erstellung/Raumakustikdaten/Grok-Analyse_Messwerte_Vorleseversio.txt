@@ -1,4 +1,4 @@
-# [CHECK] Grok-Analyse als Vorleseversion für den Toningenieur
+# 🔍 Grok-Analyse als Vorleseversion für den Toningenieur
 
 Als **Projektleiter** und **Fachmann** für Raumakustik und RT60-Messungen gebe ich dir hier eine **Vorleseversion** der Entscheidungsanalyse - formuliert als narrativer Skripttext, der sich eignet, um vorzulesen oder als Audio-Support für einen Toningenieur zu verwenden. Die Sprache ist sachlich, präzise und fließend, mit Pausenhinweisen für bessere Vorlesbarkeit. Sie basiert auf den Rohdaten (z. B. fehlende Werte in 63 Hz) und den Vor-/Nachteilen beider Optionen. Ich spreche dich direkt an, als wäre ich Grok im Gespräch.
 
@@ -14,7 +14,7 @@ Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt
 
 ---
 
-## [IDEA] Empfehlung: Fortfahren mit Analyse fehlender Werte
+## 💡 Empfehlung: Fortfahren mit Analyse fehlender Werte
 
 **Beobachtung**: Als Toningenieur brauchst du verlässliche Daten für akustische Optimierungen. Die fehlenden Werte (z. B. 63 Hz in allen Reports, 0.00s bei 8000 Hz in `RT60_014`) könnten auf Hardware-Limits, Störgeräusche oder Testkontexte hindeuten. Um evidenzbasierte Klärung zu erhalten, rufe ich Tools auf (z. B. Web-Suche nach Gründen bei NTi Audio XL2).
 
@@ -22,7 +22,7 @@ Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt
 
 **Fortsetzung**: Ich suche nach Gründen für fehlende Werte in RT60-Messungen mit XL2, um die Analyse zu fundieren.
 
-# [CHECK] Grok-Analyse: Fortsetzung der Fehlenden-Werte-Analyse
+# 🔍 Grok-Analyse: Fortsetzung der Fehlenden-Werte-Analyse
 
 **Beobachtung**: Basierend auf den Tool-Ergebnissen (Web-Suche und Browse zu NTi Audio XL2) gibt es keine direkten Erklärungen für "Dashes" (`-.--`) in RT60-Reports. Die Manuals und Webinare fokussieren auf allgemeine Messfehler, wie unzureichendes Signal-to-Noise-Ratio (SNR), Störgeräusche oder ungenügende Decay-Zeiten. Fehlende Werte (z. B. 63 Hz in allen Reports) könnten auf Hardware-Limits (z. B. Mikrofonempfindlichkeit) oder Messbedingungen hindeuten. Für 8000 Hz (0.00s in `RT60_014`) deuten Ergebnisse auf mögliche "too short decay" oder Korrelationsprobleme hin.
 
@@ -37,7 +37,7 @@ Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt
 
 **Empfehlung**: Interpolation für fehlende Werte (z. B. ML-basiert) oder Wiederholungsmessung mit besserem SNR. Als Toningenieur: Priorisiere SNR-Optimierung (z. B. leisere Räume). Umsetzung: Verwende Code-Execution für einfache Interpolation (z. B. Mittelwerte aus verfügbaren Bändern).
 
-# [CHECK] Grok-Analyse: Abschließende Bewertung fehlender Werte
+# 🔍 Grok-Analyse: Abschließende Bewertung fehlender Werte
 
 **Beobachtung**: Die Tool-Ergebnisse (Web-Suche und Manual-Browse) bestätigen, dass "Dashes" (`-.--` oder `----`) in XL2-RT60-Reports typischerweise vor Messungen erscheinen und durch valide Daten ersetzt werden. Fehlende Werte (z. B. 63 Hz) entstehen oft durch unzureichendes SNR (>35 dB erforderlich), zu kurze Decay-Zeiten (<0.3s bei <100 Hz) oder Overload. Für 8000 Hz (0.00s in `RT60_014`) deuten Manuals auf "too short decay" oder Korrelationsprobleme (unter 80%) hin. Hardware-Limits (z. B. Mikrofon-Linearity 19-137 dB) und Störquellen (Vibrationen, Rauschen) sind häufige Ursachen.
 
@@ -55,7 +55,7 @@ Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt
 
 ---
 
-## [IDEA] Fortsetzung: Interpolation-Umsetzung
+## 💡 Fortsetzung: Interpolation-Umsetzung
 
 **Beobachtung**: Code-Execution ergab interpolierte Werte: [2.73944, 2.67, 2.53, 3.01, 2.38, 2.28, 1.91, 1.58] für Frequenzen 63-8000 Hz. Das schätzt fehlende Daten linear aus Nachbarwerten.
 
@@ -69,9 +69,9 @@ Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt
 
 | Modul | Inhalt | Status |
 |-------|--------|--------|
-| **[CHECK] Analyse** | Fehlende Werte: SNR/Decay als Hauptursachen. | Abgeschlossen |
-| **[IDEA] Empfehlung** | Wiederholung + Interpolation. | Umsetzbar |
-| **[STATS] JSON** | Interpolierte Werte (aus Code). | Bereit |
+| **🔍 Analyse** | Fehlende Werte: SNR/Decay als Hauptursachen. | Abgeschlossen |
+| **💡 Empfehlung** | Wiederholung + Interpolation. | Umsetzbar |
+| **📊 JSON** | Interpolierte Werte (aus Code). | Bereit |
 
 **Mehr Details zu...?**
 - Option A: SNR-Optimierungsplan.
@@ -79,7 +79,7 @@ Meine Empfehlung als Grok: Priorisiere die Analyse fehlender Werte. Sie schützt
 
 ---
 
-## [DOCS] Fachbegriffe
+## 📚 Fachbegriffe
 
 | Begriff | Erklärung |
 |---------|-----------|

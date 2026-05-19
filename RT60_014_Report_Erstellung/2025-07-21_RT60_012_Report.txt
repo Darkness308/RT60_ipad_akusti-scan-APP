@@ -1,5 +1,6 @@
-XL2 RT60 Reporting:        MyProject\2025-07-21_RT60_012_Report.txt
+XL2 RT60 Reporting:        MyProject/2025-07-21_RT60_012_Report.txt
 -------------------
+
 
 # Hardware Configuration
     Device Info:        XL2, SNo. A2A-08559-E0, FW4.94
@@ -11,6 +12,7 @@ XL2 RT60 Reporting:        MyProject\2025-07-21_RT60_012_Report.txt
     Profile:            Full mode
     Resolution:         1/1 Octave
     Range:              40 - 140 dB
+
 
 # Time
     Start:              2025-07-21, 15:05:36
@@ -28,6 +30,7 @@ XL2 RT60 Reporting:        MyProject\2025-07-21_RT60_012_Report.txt
     2000        2.37         1.84
     4000        2.08         1.39
     8000        -.--         -.--
+
 
 # RT60 Cycle Results
 
