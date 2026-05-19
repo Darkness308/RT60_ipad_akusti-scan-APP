@@ -22,7 +22,7 @@ let package = Package(
             name: "AcoustiScanApp",
             dependencies: [
                 .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated"),
-                .product(name: "ReportExport", package: "Export")
+                .product(name: "ReportExport", package: "ReportExport")
             ],
             path: "AcoustiScanApp",
             swiftSettings: [
