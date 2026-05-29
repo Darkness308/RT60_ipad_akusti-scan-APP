@@ -217,7 +217,7 @@ RT60 = 0.161 × V / A
 ### DIN 18041 Sollwerte (Gruppe A)
 
 Die Soll-Nachhallzeit `T_soll` wird nach DIN 18041:2016-03, Gleichungen (1)–(6),
-volumenabhängig (V in m³) je Nutzungsart berechnet:
+volumenabhängig (V in m³) je Nutzungsart berechnet (mit `lg` als dekadischem Logarithmus, `log10`):
 
 | Nutzungsart | `T_soll` [s] | Gültigkeitsbereich |
 |-------------|--------------|--------------------|
