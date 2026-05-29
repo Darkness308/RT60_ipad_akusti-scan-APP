@@ -96,7 +96,8 @@ public class ReportHTMLRenderer {
             """
         case .multiFile(let resourcesPath):
             // Expected input is a relative resources path for deployed static assets.
-            let escapedPath = escapeHTML(resourcesPath)
+            let safePath = sanitizeResourcesPath(resourcesPath)
+            let escapedPath = escapeHTML(safePath)
             return "<link rel=\"stylesheet\" href=\"\(escapedPath)/report.css\">"
         }
     }
@@ -236,14 +237,18 @@ public class ReportHTMLRenderer {
         EscapedHTML(escapeHTML(text))
     }
 
+    private func sanitizeResourcesPath(_ path: String) -> String {
+        let allowed = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/_-.")
+        let scalars = path.unicodeScalars
+        guard !scalars.isEmpty, scalars.allSatisfy({ allowed.contains($0) }) else {
+            return "assets"
+        }
+        return path
+    }
+
     /// Escape HTML entities to prevent XSS and ensure proper rendering
     private func escapeHTML(_ text: String) -> String {
-        let neutralized = text
-            .replacingOccurrences(of: "onerror=", with: "onerror&#61;", options: .caseInsensitive)
-            .replacingOccurrences(of: "onload=", with: "onload&#61;", options: .caseInsensitive)
-            .replacingOccurrences(of: "javascript:", with: "javascript&#58;", options: .caseInsensitive)
-
-        return neutralized
+        return text
             .replacingOccurrences(of: "&", with: "&amp;")
             .replacingOccurrences(of: "<", with: "&lt;")
             .replacingOccurrences(of: ">", with: "&gt;")

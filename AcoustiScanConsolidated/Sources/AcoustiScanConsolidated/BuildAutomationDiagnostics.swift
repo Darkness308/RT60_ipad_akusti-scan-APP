@@ -13,6 +13,9 @@ internal enum BuildAutomationDiagnostics {
         internal let deprecationKeywords: [String]
         internal let minimumKeywordMatches: Int
 
+        /// Creates error classification keyword configuration.
+        /// - Parameter minimumKeywordMatches: Minimum keyword matches required to classify.
+        ///   Values below 1 are clamped to 1.
         internal init(
             missingImportKeywords: [String] = ["import", "module"],
             undeclaredIdentifierKeywords: [String] = ["unresolved identifier", "undeclared", "cannot find"],
