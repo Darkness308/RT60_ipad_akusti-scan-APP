@@ -13,6 +13,10 @@ name: CI (honest)
 # Step 3 is the verification gap the legacy CI never covered: no workflow ever
 # ran `xcodebuild` against AcoustiScanApp.xcodeproj, so the app could (and did)
 # fail to compile without CI noticing.
+#
+# On failure each job writes the tail of the captured output to the run's job
+# summary ($GITHUB_STEP_SUMMARY), so the actual error is visible on the run page
+# without having to expand the (JS-loaded) raw logs.
 
 on:
   push:
@@ -25,25 +29,44 @@ jobs:
   packages:
     name: Swift packages (build + test)
     runs-on: macos-14
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4'
+          xcode-version: latest-stable
+
+      - name: Toolchain versions
+        run: |
+          xcodebuild -version || true
+          swift --version || true
 
       - name: Build & test AcoustiScanConsolidated
         run: |
+          set -o pipefail
           cd AcoustiScanConsolidated
-          swift build
-          swift test
+          { swift build && swift test ; } 2>&1 | tee "$RUNNER_TEMP/consolidated.log"
 
       - name: Build & test ReportExport module
         run: |
+          set -o pipefail
           cd Modules/Export
-          swift build
-          swift test
+          { swift build && swift test ; } 2>&1 | tee "$RUNNER_TEMP/export.log"
+
+      - name: Summarize failure
+        if: failure()
+        run: |
+          {
+            echo '## Swift packages — failure detail'
+            for f in consolidated export; do
+              log="$RUNNER_TEMP/$f.log"
+              echo "### $f (tail)"
+              echo '```'
+              tail -n 150 "$log" 2>/dev/null || echo "(no output captured — step likely failed before running)"
+              echo '```'
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
 
   ios-app:
     name: iOS app (xcodebuild)
@@ -54,14 +77,16 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4'
+          xcode-version: latest-stable
 
-      - name: List available schemes (diagnostics)
+      - name: Toolchain + available simulators
         run: |
-          xcodebuild -list -project AcoustiScanApp/AcoustiScanApp.xcodeproj
+          xcodebuild -version || true
+          xcodebuild -list -project AcoustiScanApp/AcoustiScanApp.xcodeproj 2>&1 | tee "$RUNNER_TEMP/list.log" || true
 
       - name: Build iOS app for simulator
         run: |
+          set -o pipefail
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
@@ -69,4 +94,21 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             clean build \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Summarize failure
+        if: failure()
+        run: |
+          {
+            echo '## iOS app — failure detail'
+            echo '### xcodebuild -list'
+            echo '```'
+            tail -n 60 "$RUNNER_TEMP/list.log" 2>/dev/null || echo "(scheme listing failed)"
+            echo '```'
+            echo '### xcodebuild build (filtered errors)'
+            echo '```'
+            grep -E "error:|warning:|note:|fatal|Command|Cannot|cannot find|No such|Undefined" "$RUNNER_TEMP/xcodebuild.log" 2>/dev/null | tail -n 120 \
+              || tail -n 120 "$RUNNER_TEMP/xcodebuild.log" 2>/dev/null \
+              || echo "(no output captured)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
