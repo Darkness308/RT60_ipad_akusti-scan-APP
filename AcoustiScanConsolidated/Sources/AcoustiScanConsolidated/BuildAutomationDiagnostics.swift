@@ -5,6 +5,33 @@
 import Foundation
 
 internal enum BuildAutomationDiagnostics {
+    internal struct ErrorClassificationConfig {
+        internal let missingImportKeywords: [String]
+        internal let undeclaredIdentifierKeywords: [String]
+        internal let typeErrorKeywords: [String]
+        internal let syntaxErrorKeywords: [String]
+        internal let deprecationKeywords: [String]
+        internal let minimumKeywordMatches: Int
+
+        internal init(
+            missingImportKeywords: [String] = ["import", "module"],
+            undeclaredIdentifierKeywords: [String] = ["unresolved identifier", "undeclared", "cannot find"],
+            typeErrorKeywords: [String] = ["type"],
+            syntaxErrorKeywords: [String] = ["expected", "syntax"],
+            deprecationKeywords: [String] = ["deprecated"],
+            minimumKeywordMatches: Int = 1
+        ) {
+            self.missingImportKeywords = missingImportKeywords
+            self.undeclaredIdentifierKeywords = undeclaredIdentifierKeywords
+            self.typeErrorKeywords = typeErrorKeywords
+            self.syntaxErrorKeywords = syntaxErrorKeywords
+            self.deprecationKeywords = deprecationKeywords
+            self.minimumKeywordMatches = max(1, minimumKeywordMatches)
+        }
+    }
+
+    private static let defaultClassificationConfig = ErrorClassificationConfig()
+
     internal static func parseErrors(from output: String) -> [BuildAutomation.BuildError] {
         return output
             .components(separatedBy: .newlines)
@@ -46,21 +73,34 @@ internal enum BuildAutomationDiagnostics {
         )
     }
 
-    internal static func classifyError(message: String) -> BuildAutomation.BuildError.ErrorType {
-        if message.contains("import") || message.contains("module") {
+    internal static func classifyError(
+        message: String,
+        config: ErrorClassificationConfig = defaultClassificationConfig
+    ) -> BuildAutomation.BuildError.ErrorType {
+        let normalized = message.lowercased()
+        if keywordMatchCount(in: normalized, keywords: config.missingImportKeywords) >= config.minimumKeywordMatches {
             return .missingImport
-        } else if message.contains("unresolved identifier")
-            || message.contains("undeclared")
-            || message.contains("cannot find") {
+        } else if keywordMatchCount(in: normalized, keywords: config.undeclaredIdentifierKeywords)
+            >= config.minimumKeywordMatches {
             return .undeclaredIdentifier
-        } else if message.contains("type") {
+        } else if keywordMatchCount(in: normalized, keywords: config.typeErrorKeywords) >= config.minimumKeywordMatches {
             return .typeError
-        } else if message.contains("expected") || message.contains("syntax") {
+        } else if keywordMatchCount(in: normalized, keywords: config.syntaxErrorKeywords)
+            >= config.minimumKeywordMatches {
             return .syntaxError
-        } else if message.contains("deprecated") {
+        } else if keywordMatchCount(in: normalized, keywords: config.deprecationKeywords)
+            >= config.minimumKeywordMatches {
             return .deprecation
         } else {
             return .other
+        }
+    }
+
+    private static func keywordMatchCount(in message: String, keywords: [String]) -> Int {
+        return keywords.reduce(into: 0) { count, keyword in
+            if message.contains(keyword.lowercased()) {
+                count += 1
+            }
         }
     }
 

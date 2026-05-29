@@ -11,6 +11,7 @@ public struct ReportModel: Codable {
     public let validity: [String: String]
     public let recommendations: [String]
     public let audit: [String: String]
+    public let sourceOrigin: String
 
     public init(
         metadata: [String: String],
@@ -18,7 +19,8 @@ public struct ReportModel: Codable {
         din_targets: [[String: Double]],
         validity: [String: String],
         recommendations: [String],
-        audit: [String: String]
+        audit: [String: String],
+        sourceOrigin: String = "unknown"
     ) {
         self.metadata = metadata
         self.rt60_bands = rt60_bands
@@ -26,6 +28,39 @@ public struct ReportModel: Codable {
         self.validity = validity
         self.recommendations = recommendations
         self.audit = audit
+        self.sourceOrigin = sourceOrigin
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case metadata
+        case rt60_bands
+        case din_targets
+        case validity
+        case recommendations
+        case audit
+        case sourceOrigin
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.metadata = try container.decode([String: String].self, forKey: .metadata)
+        self.rt60_bands = try container.decode([[String: Double?]].self, forKey: .rt60_bands)
+        self.din_targets = try container.decode([[String: Double]].self, forKey: .din_targets)
+        self.validity = try container.decode([String: String].self, forKey: .validity)
+        self.recommendations = try container.decode([String].self, forKey: .recommendations)
+        self.audit = try container.decode([String: String].self, forKey: .audit)
+        self.sourceOrigin = try container.decodeIfPresent(String.self, forKey: .sourceOrigin) ?? "unknown"
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(metadata, forKey: .metadata)
+        try container.encode(rt60_bands, forKey: .rt60_bands)
+        try container.encode(din_targets, forKey: .din_targets)
+        try container.encode(validity, forKey: .validity)
+        try container.encode(recommendations, forKey: .recommendations)
+        try container.encode(audit, forKey: .audit)
+        try container.encode(sourceOrigin, forKey: .sourceOrigin)
     }
 }
 
@@ -82,7 +117,8 @@ extension ReportModel {
             din_targets: din_targets,
             validity: validity,
             recommendations: reportData.recommendations,
-            audit: audit
+            audit: audit,
+            sourceOrigin: "report-data:\(reportData.date)"
         )
     }
 }
