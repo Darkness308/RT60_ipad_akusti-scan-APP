@@ -3,7 +3,12 @@
 
 import Foundation
 
-/// Automated build system that detects and fixes common Swift compilation errors
+/// Automated build system that detects and fixes common Swift compilation errors.
+///
+/// The `BuildResult`/`BuildError` data types are available on every platform (they
+/// are referenced by `BuildAutomationDiagnostics`, which is compiled for iOS too).
+/// The build-driving methods rely on `Process`, which only exists on macOS, so they
+/// are guarded with `#if os(macOS)` and excluded from the iOS app build.
 public class BuildAutomation {
 
     public enum BuildResult {
@@ -37,6 +42,7 @@ public class BuildAutomation {
         }
     }
 
+    #if os(macOS)
     /// Run automated build with error detection and fixing
     public static func runAutomatedBuild(projectPath: String, maxRetries: Int = 3) -> BuildResult {
         var retryCount = 0
@@ -231,8 +237,10 @@ public class BuildAutomation {
             return "🔄 Build retrying after fixes"
         }
     }
+    #endif
 }
 
+#if os(macOS)
 /// Continuous integration helpers
 public class ContinuousIntegration {
 
@@ -300,3 +308,5 @@ public class ContinuousIntegration {
         return true
     }
 }
+
+#endif
