@@ -427,11 +427,15 @@ private class ZIPReader {
         var decompressed = Data(count: expectedSize)
         let decompressedCount = decompressed.withUnsafeMutableBytes { destBuffer -> Int in
             return data.withUnsafeBytes { sourceBuffer -> Int in
-                var stream = compression_stream()
-                stream.dst_ptr = destBuffer.baseAddress!.assumingMemoryBound(to: UInt8.self)
-                stream.dst_size = expectedSize
-                stream.src_ptr = sourceBuffer.baseAddress!.assumingMemoryBound(to: UInt8.self)
-                stream.src_size = data.count
+                // compression_stream imports with only a memberwise initializer here,
+                // so initialize every field up front (compression_stream_init fills in state).
+                var stream = compression_stream(
+                    dst_ptr: destBuffer.baseAddress!.assumingMemoryBound(to: UInt8.self),
+                    dst_size: expectedSize,
+                    src_ptr: sourceBuffer.baseAddress!.assumingMemoryBound(to: UInt8.self),
+                    src_size: data.count,
+                    state: nil
+                )
 
                 let initResult = compression_stream_init(
                     &stream,
