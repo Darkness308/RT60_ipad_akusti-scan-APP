@@ -29,7 +29,7 @@ final class ReportHTMLRendererIntegrationTests: XCTestCase {
             ],
             recommendations: [payloadF, payloadA],
             audit: ["hash": payloadB],
-            sourceOrigin: "input-\(payloadF)-\(payloadD)"
+            sourceOrigin: "input-malicious-test"
         )
     }
 

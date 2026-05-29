@@ -26,6 +26,8 @@ internal enum BuildAutomationDiagnostics {
             self.typeErrorKeywords = typeErrorKeywords
             self.syntaxErrorKeywords = syntaxErrorKeywords
             self.deprecationKeywords = deprecationKeywords
+            // Keyword thresholds below 1 are invalid and treated as 1 so that
+            // classification always requires at least one keyword hit.
             self.minimumKeywordMatches = max(1, minimumKeywordMatches)
         }
     }
