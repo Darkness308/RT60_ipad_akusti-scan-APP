@@ -1,0 +1,72 @@
+name: CI (honest)
+
+# Purpose: a single, non-masking pipeline that reflects the TRUE state of the
+# repository. Unlike the legacy workflows, this one does NOT swallow failures
+# with `|| true`, retries, or auto-fix steps. If something does not build or a
+# test fails, this job fails. That is the point.
+#
+# It verifies three things independently:
+#   1. The platform-independent Swift packages build and their tests pass.
+#   2. The Export module builds and its tests pass.
+#   3. The actual iOS application compiles via xcodebuild (iOS Simulator SDK).
+#
+# Step 3 is the verification gap the legacy CI never covered: no workflow ever
+# ran `xcodebuild` against AcoustiScanApp.xcodeproj, so the app could (and did)
+# fail to compile without CI noticing.
+
+on:
+  push:
+    branches: [ main, develop, "claude/**" ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  packages:
+    name: Swift packages (build + test)
+    runs-on: macos-14
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
+      - name: Build & test AcoustiScanConsolidated
+        run: |
+          cd AcoustiScanConsolidated
+          swift build
+          swift test
+
+      - name: Build & test ReportExport module
+        run: |
+          cd Modules/Export
+          swift build
+          swift test
+
+  ios-app:
+    name: iOS app (xcodebuild)
+    runs-on: macos-14
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
+      - name: List available schemes (diagnostics)
+        run: |
+          xcodebuild -list -project AcoustiScanApp/AcoustiScanApp.xcodeproj
+
+      - name: Build iOS app for simulator
+        run: |
+          xcodebuild \
+            -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
+            -scheme AcoustiScanApp \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            clean build \
+            CODE_SIGNING_ALLOWED=NO
