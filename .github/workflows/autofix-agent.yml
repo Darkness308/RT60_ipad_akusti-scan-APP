@@ -1,8 +1,11 @@
 name: AI Autofix Agent
 
+# NOTE: Automatic repository_dispatch trigger DISABLED so this AI autofix agent
+# no longer fires unattended on CI failures. Still runnable manually via
+# workflow_dispatch. Restore the repository_dispatch block to re-enable.
 on:
-  repository_dispatch:
-    types: [ci-failure-autofix]
+  # repository_dispatch:
+  #   types: [ci-failure-autofix]
   workflow_dispatch:
     inputs:
       branch:
