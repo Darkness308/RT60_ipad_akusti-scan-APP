@@ -221,11 +221,11 @@ volumenabhängig (V in m³) je Nutzungsart berechnet:
 
 | Nutzungsart | `T_soll` [s] | Gültigkeitsbereich |
 |-------------|--------------|--------------------|
-| A1 „Musik" | `0,45·lg(V) + 0,07` | 30 ≤ V < 1000 m³ |
-| A2 „Sprache/Vortrag" | `0,37·lg(V) − 0,14` | 50 ≤ V < 5000 m³ |
-| A3 „Unterricht/Kommunikation" | `0,32·lg(V) − 0,17` | 30 ≤ V < 5000 m³ |
-| A4 „Unterricht/Kommunikation inklusiv" | `0,26·lg(V) − 0,14` | 30 ≤ V < 500 m³ |
-| A5 „Sport" | `0,75·lg(V) − 1,00` (bzw. 2,0 ab 10000 m³) | 200 ≤ V < 10000 m³ |
+| A1 „Musik" | `0,45·lg(V) + 0,07` | 30 ≤ V ≤ 1000 m³ |
+| A2 „Sprache/Vortrag" | `0,37·lg(V) − 0,14` | 50 ≤ V ≤ 5000 m³ |
+| A3 „Unterricht/Kommunikation" | `0,32·lg(V) − 0,17` | 30 ≤ V ≤ 5000 m³ |
+| A4 „Unterricht/Kommunikation inklusiv" | `0,26·lg(V) − 0,14` | 30 ≤ V ≤ 500 m³ |
+| A5 „Sport" | `0,75·lg(V) − 1,00` (bzw. 2,0 ab 10000 m³) | 200 ≤ V ≤ 10000 m³ |
 
 Der Nachweis erfolgt frequenzabhängig in den Oktaven 125 Hz – 4000 Hz gegen den
 Toleranzbereich nach Bild 2 (T/T_soll: 0,80–1,20 im mittleren Band, 0,65–1,45
