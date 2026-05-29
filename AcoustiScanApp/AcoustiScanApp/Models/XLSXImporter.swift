@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Compression
 
 /// Error types for XLSX import operations
 public enum XLSXImportError: Error, LocalizedError {

@@ -390,7 +390,7 @@ internal class ARCoordinator: NSObject {
     }
 
     /// Determine surface name based on plane alignment
-    private func determineSurfaceName(alignment: ARRaycastResult.TargetAlignment) -> String {
+    private func determineSurfaceName(alignment: ARRaycastQuery.TargetAlignment) -> String {
         switch alignment {
         case .horizontal:
             return NSLocalizedString(LocalizationKeys.floor, comment: "Floor surface")
