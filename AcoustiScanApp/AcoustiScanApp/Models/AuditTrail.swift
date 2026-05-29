@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// Audit trail entry for tracking measurements and changes
 public struct AuditEntry: Codable, Identifiable {
@@ -45,7 +48,6 @@ public struct AuditEntry: Codable, Identifiable {
         /// Get current device info
         public static func current(appVersion: String = "1.0.0") -> DeviceInfo {
             #if canImport(UIKit)
-            import UIKit
             let model = UIDevice.current.model
             let osVersion = UIDevice.current.systemVersion
             #else
