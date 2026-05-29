@@ -51,7 +51,7 @@ final class ModelCoverageTests: XCTestCase {
 
         let calculated = MeasurementQuality.calculated
         XCTAssertTrue(calculated.isISOCompliant)
-        XCTAssertEqual(calculated.qualityClass, .acceptable)
+        XCTAssertEqual(calculated.qualityClass, .good)
         XCTAssertEqual(calculated.expandedUncertainty, 0)
         XCTAssertEqual(calculated.positionCount, 0)
         XCTAssertEqual(calculated.evaluationRange, .calculated)
@@ -183,7 +183,7 @@ final class ModelCoverageTests: XCTestCase {
         XCTAssertEqual(emptySession.overallQualityClass, .poor)
     }
 
-    func testReportDataComputedProperties() {
+    func testReportDataComputedProperties() throws {
         let surfaceA = AcousticSurface(name: "Wall", area: 10, material: makeMaterial())
         let surfaceB = AcousticSurface(name: "Ceiling", area: 5, material: makeMaterial())
         let compliant = RT60Deviation(frequency: 500, measuredRT60: 0.60, targetRT60: 0.60, status: .withinTolerance)
@@ -208,7 +208,7 @@ final class ModelCoverageTests: XCTestCase {
         XCTAssertFalse(reportData.overallCompliance)
         XCTAssertEqual(reportData.frequencyBandCount, 5)
         XCTAssertEqual(reportData.totalSurfaceArea, 15, accuracy: 0.0001)
-        XCTAssertEqual(reportData.averageSpeechRT60, 0.60, accuracy: 0.0001)
+        XCTAssertEqual(try XCTUnwrap(reportData.averageSpeechRT60), 0.60, accuracy: 0.0001)
 
         let missingSpeechBands = ReportData(
             date: "2026-05-29",
@@ -261,9 +261,9 @@ final class ModelCoverageTests: XCTestCase {
                 .tolerance
         )
         XCTAssertEqual(model.din_targets.count, 1)
-        XCTAssertEqual(model.din_targets[0]["freq_hz"], 500, accuracy: 0.0001)
-        XCTAssertEqual(model.din_targets[0]["t_soll"], 0.60, accuracy: 0.0001)
-        XCTAssertEqual(model.din_targets[0]["tol"], expectedTolerance, accuracy: 0.0001)
+        XCTAssertEqual(try XCTUnwrap(model.din_targets[0]["freq_hz"]), 500, accuracy: 0.0001)
+        XCTAssertEqual(try XCTUnwrap(model.din_targets[0]["t_soll"]), 0.60, accuracy: 0.0001)
+        XCTAssertEqual(try XCTUnwrap(model.din_targets[0]["tol"]), expectedTolerance, accuracy: 0.0001)
     }
 
     func testDIN18041TargetAndEvaluationStatusComputedProperties() {
@@ -292,7 +292,7 @@ final class ModelCoverageTests: XCTestCase {
         }
     }
 
-    func testRoomTypesAcousticSurfacesAndMaterialHelpers() {
+    func testRoomTypesAcousticSurfacesAndMaterialHelpers() throws {
         let expectedRoomMetadata: [(RoomType, String, String, ClosedRange<Double>)] = [
             (.classroom, "Klassenzimmer", "Speech", 120...300),
             (.officeSpace, "Büroraum", "Speech", 30...150),
@@ -320,10 +320,10 @@ final class ModelCoverageTests: XCTestCase {
         XCTAssertEqual(surface.absorptionArea(at: 1000), 3.6, accuracy: 0.0001)
         XCTAssertEqual(surface.averageAbsorption, 0.30, accuracy: 0.0001)
         XCTAssertEqual(surface.totalAbsorptionAreas.keys.sorted(), [125, 250, 500, 1000, 2000, 4000])
-        XCTAssertEqual(surface.totalAbsorptionAreas[4000], 6.0, accuracy: 0.0001)
+        XCTAssertEqual(try XCTUnwrap(surface.totalAbsorptionAreas[4000]), 6.0, accuracy: 0.0001)
     }
 
-    func testLabeledSurfaceConversionPreservesGeometryAndAbsorption() {
+    func testLabeledSurfaceConversionPreservesGeometryAndAbsorption() throws {
         let id = UUID(uuidString: "00000000-0000-0000-0000-000000000123")!
         let labeledSurface = LabeledSurface(id: id, name: "North Wall", area: 8, absorptionCoefficient: 0.35)
 
@@ -336,7 +336,7 @@ final class ModelCoverageTests: XCTestCase {
 
         for frequency in [125, 250, 500, 1000, 2000, 4000] {
             XCTAssertEqual(
-                converted.material.absorptionCoefficients[frequency],
+                try XCTUnwrap(converted.material.absorptionCoefficients[frequency]),
                 0.35,
                 accuracy: 0.0001,
                 "Converted coefficient mismatch at \(frequency) Hz"
