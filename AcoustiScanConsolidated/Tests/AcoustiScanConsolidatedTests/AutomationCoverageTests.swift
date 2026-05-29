@@ -107,19 +107,19 @@ final class AutomationCoverageTests: XCTestCase {
         try perform(scriptURL.path)
     }
 
-    func testPDFTextExtractorExtractsTextFromSimpleBTETSections() {
+    func testPDFTextExtractorExtractsTextFromSimpleBTETSections() throws {
         let pseudoPDF = "%PDF-1.4\nBT (Hello) Tj ET\nBT (World) Tj ET\n"
-        let extracted = PDFTextExtractor.extractText(from: Data(pseudoPDF.utf8))
+        let extracted = try PDFTextExtractor.extractText(from: Data(pseudoPDF.utf8))
 
         XCTAssertTrue(extracted.contains("Hello"))
         XCTAssertTrue(extracted.contains("World"))
     }
 
-    func testPDFTextExtractorReturnsEmptyForNoBTETSections() {
+    func testPDFTextExtractorThrowsNoTextContentForNoBTETSections() {
         let pseudoPDF = "%PDF-1.4\n/Type /Catalog\n"
-        let extracted = PDFTextExtractor.extractText(from: Data(pseudoPDF.utf8))
-
-        XCTAssertEqual(extracted, "")
+        XCTAssertThrowsError(try PDFTextExtractor.extractText(from: Data(pseudoPDF.utf8))) { error in
+            XCTAssertEqual(error as? PDFTextExtractorError, .noTextContent)
+        }
     }
 
     func testBuildAutomationReturnsFailureForMissingPackagePath() {
