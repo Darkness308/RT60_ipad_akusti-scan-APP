@@ -20,6 +20,25 @@
 		AA0000000000000000000011 /* RoomDimensionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000011 /* RoomDimensionView.swift */; };
 		AA0000000000000000000012 /* RoomScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000012 /* RoomScanView.swift */; };
 		AA0000000000000000000013 /* MaterialEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000013 /* MaterialEditorView.swift */; };
+		MM0000000000000000000001 /* AbsorptionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000001 /* AbsorptionData.swift */; };
+		MM0000000000000000000002 /* AcousticMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000002 /* AcousticMaterial.swift */; };
+		MM0000000000000000000003 /* AuditTrail.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000003 /* AuditTrail.swift */; };
+		MM0000000000000000000004 /* EnhancedPDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000004 /* EnhancedPDFExporter.swift */; };
+		MM0000000000000000000005 /* ErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000005 /* ErrorLogger.swift */; };
+		MM0000000000000000000006 /* MaterialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000006 /* MaterialManager.swift */; };
+		MM0000000000000000000007 /* PDFChartRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000007 /* PDFChartRenderer.swift */; };
+		MM0000000000000000000008 /* PDFDrawingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000008 /* PDFDrawingHelpers.swift */; };
+		MM0000000000000000000009 /* PDFPageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000009 /* PDFPageRenderer.swift */; };
+		MM0000000000000000000010 /* PDFStyleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000010 /* PDFStyleConfiguration.swift */; };
+		MM0000000000000000000011 /* PDFTableRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000011 /* PDFTableRenderer.swift */; };
+		MM0000000000000000000012 /* SurfaceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000012 /* SurfaceStore.swift */; };
+		MM0000000000000000000013 /* XLSXExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000013 /* XLSXExporter.swift */; };
+		MM0000000000000000000014 /* XLSXImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000014 /* XLSXImporter.swift */; };
+		MM0000000000000000000015 /* LocalizationKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000015 /* LocalizationKeys.swift */; };
+		KF0000000000000000000001 /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000001 /* ARKit.framework */; };
+		KF0000000000000000000002 /* RealityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000002 /* RealityKit.framework */; };
+		KF0000000000000000000003 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000003 /* Charts.framework */; };
+		AS0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AR0000000000000000000001 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +58,25 @@
 		BB0000000000000000000013 /* MaterialEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialEditorView.swift; sourceTree = "<group>"; };
 		DD0000000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* AcoustiScan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AcoustiScan.entitlements; sourceTree = "<group>"; };
+		MR0000000000000000000001 /* AbsorptionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsorptionData.swift; sourceTree = "<group>"; };
+		MR0000000000000000000002 /* AcousticMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticMaterial.swift; sourceTree = "<group>"; };
+		MR0000000000000000000003 /* AuditTrail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditTrail.swift; sourceTree = "<group>"; };
+		MR0000000000000000000004 /* EnhancedPDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedPDFExporter.swift; sourceTree = "<group>"; };
+		MR0000000000000000000005 /* ErrorLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogger.swift; sourceTree = "<group>"; };
+		MR0000000000000000000006 /* MaterialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialManager.swift; sourceTree = "<group>"; };
+		MR0000000000000000000007 /* PDFChartRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFChartRenderer.swift; sourceTree = "<group>"; };
+		MR0000000000000000000008 /* PDFDrawingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDrawingHelpers.swift; sourceTree = "<group>"; };
+		MR0000000000000000000009 /* PDFPageRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPageRenderer.swift; sourceTree = "<group>"; };
+		MR0000000000000000000010 /* PDFStyleConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFStyleConfiguration.swift; sourceTree = "<group>"; };
+		MR0000000000000000000011 /* PDFTableRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFTableRenderer.swift; sourceTree = "<group>"; };
+		MR0000000000000000000012 /* SurfaceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfaceStore.swift; sourceTree = "<group>"; };
+		MR0000000000000000000013 /* XLSXExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXExporter.swift; sourceTree = "<group>"; };
+		MR0000000000000000000014 /* XLSXImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXImporter.swift; sourceTree = "<group>"; };
+		MR0000000000000000000015 /* LocalizationKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationKeys.swift; sourceTree = "<group>"; };
+		KR0000000000000000000001 /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
+		KR0000000000000000000002 /* RealityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealityKit.framework; path = System/Library/Frameworks/RealityKit.framework; sourceTree = SDKROOT; };
+		KR0000000000000000000003 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
+		AR0000000000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ../Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +84,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				KF0000000000000000000001 /* ARKit.framework in Frameworks */,
+				KF0000000000000000000002 /* RealityKit.framework in Frameworks */,
+				KF0000000000000000000003 /* Charts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +98,7 @@
 			children = (
 				FF0000000000000000000002 /* AcoustiScanApp */,
 				FF0000000000000000000003 /* Products */,
+				FF0000000000000000000012 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,6 +107,7 @@
 			children = (
 				FF0000000000000000000004 /* App */,
 				FF0000000000000000000005 /* Views */,
+				FF0000000000000000000011 /* Models */,
 				FF0000000000000000000006 /* Resources */,
 				DD0000000000000000000002 /* AcoustiScan.entitlements */,
 			);
@@ -103,6 +146,8 @@
 			isa = PBXGroup;
 			children = (
 				DD0000000000000000000001 /* Info.plist */,
+				MR0000000000000000000015 /* LocalizationKeys.swift */,
+				AR0000000000000000000001 /* Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -144,6 +189,37 @@
 				BB0000000000000000000013 /* MaterialEditorView.swift */,
 			);
 			path = Material;
+			sourceTree = "<group>";
+		};
+		FF0000000000000000000011 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				MR0000000000000000000001 /* AbsorptionData.swift */,
+				MR0000000000000000000002 /* AcousticMaterial.swift */,
+				MR0000000000000000000003 /* AuditTrail.swift */,
+				MR0000000000000000000004 /* EnhancedPDFExporter.swift */,
+				MR0000000000000000000005 /* ErrorLogger.swift */,
+				MR0000000000000000000006 /* MaterialManager.swift */,
+				MR0000000000000000000007 /* PDFChartRenderer.swift */,
+				MR0000000000000000000008 /* PDFDrawingHelpers.swift */,
+				MR0000000000000000000009 /* PDFPageRenderer.swift */,
+				MR0000000000000000000010 /* PDFStyleConfiguration.swift */,
+				MR0000000000000000000011 /* PDFTableRenderer.swift */,
+				MR0000000000000000000012 /* SurfaceStore.swift */,
+				MR0000000000000000000013 /* XLSXExporter.swift */,
+				MR0000000000000000000014 /* XLSXImporter.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FF0000000000000000000012 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				KR0000000000000000000001 /* ARKit.framework */,
+				KR0000000000000000000002 /* RealityKit.framework */,
+				KR0000000000000000000003 /* Charts.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -204,6 +280,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AS0000000000000000000001 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +304,21 @@
 				AA0000000000000000000011 /* RoomDimensionView.swift in Sources */,
 				AA0000000000000000000012 /* RoomScanView.swift in Sources */,
 				AA0000000000000000000013 /* MaterialEditorView.swift in Sources */,
+				MM0000000000000000000001 /* AbsorptionData.swift in Sources */,
+				MM0000000000000000000002 /* AcousticMaterial.swift in Sources */,
+				MM0000000000000000000003 /* AuditTrail.swift in Sources */,
+				MM0000000000000000000004 /* EnhancedPDFExporter.swift in Sources */,
+				MM0000000000000000000005 /* ErrorLogger.swift in Sources */,
+				MM0000000000000000000006 /* MaterialManager.swift in Sources */,
+				MM0000000000000000000007 /* PDFChartRenderer.swift in Sources */,
+				MM0000000000000000000008 /* PDFDrawingHelpers.swift in Sources */,
+				MM0000000000000000000009 /* PDFPageRenderer.swift in Sources */,
+				MM0000000000000000000010 /* PDFStyleConfiguration.swift in Sources */,
+				MM0000000000000000000011 /* PDFTableRenderer.swift in Sources */,
+				MM0000000000000000000012 /* SurfaceStore.swift in Sources */,
+				MM0000000000000000000013 /* XLSXExporter.swift in Sources */,
+				MM0000000000000000000014 /* XLSXImporter.swift in Sources */,
+				MM0000000000000000000015 /* LocalizationKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,9 +450,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ""; /* TODO: Set your Apple Developer Team ID here (e.g., "ABC123XYZ4") */
+				DEVELOPMENT_TEAM = ""; /* Set your Apple Developer Team ID in Xcode → Signing & Capabilities */
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AcoustiScanApp/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -389,9 +481,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ""; /* TODO: Set your Apple Developer Team ID here (e.g., "ABC123XYZ4") */
+				DEVELOPMENT_TEAM = ""; /* Set your Apple Developer Team ID in Xcode → Signing & Capabilities */
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AcoustiScanApp/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
