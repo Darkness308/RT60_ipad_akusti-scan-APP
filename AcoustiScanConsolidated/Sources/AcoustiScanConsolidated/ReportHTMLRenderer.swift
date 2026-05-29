@@ -238,14 +238,16 @@ public class ReportHTMLRenderer {
 
     /// Escape HTML entities to prevent XSS and ensure proper rendering
     private func escapeHTML(_ text: String) -> String {
-        return text
+        let neutralized = text
+            .replacingOccurrences(of: "onerror=", with: "onerror&#61;", options: .caseInsensitive)
+            .replacingOccurrences(of: "onload=", with: "onload&#61;", options: .caseInsensitive)
+            .replacingOccurrences(of: "javascript:", with: "javascript&#58;", options: .caseInsensitive)
+
+        return neutralized
             .replacingOccurrences(of: "&", with: "&amp;")
             .replacingOccurrences(of: "<", with: "&lt;")
             .replacingOccurrences(of: ">", with: "&gt;")
             .replacingOccurrences(of: "\"", with: "&quot;")
             .replacingOccurrences(of: "'", with: "&#39;")
-            .replacingOccurrences(of: "onerror=", with: "onerror&#61;", options: .caseInsensitive)
-            .replacingOccurrences(of: "onload=", with: "onload&#61;", options: .caseInsensitive)
-            .replacingOccurrences(of: "javascript:", with: "javascript&#58;", options: .caseInsensitive)
     }
 }

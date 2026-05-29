@@ -28,8 +28,8 @@ internal enum BuildAutomationDiagnostics {
             self.deprecationKeywords = deprecationKeywords
             // Keyword thresholds below 1 are invalid and treated as 1 because
             // error classification should never succeed without at least one
-            // explicit keyword match; a zero-threshold would classify every
-            // message as the first category and create widespread false positives.
+            // explicit keyword match; a zero-threshold would make all messages
+            // match every category in sequence and return whichever is checked first.
             self.minimumKeywordMatches = max(1, minimumKeywordMatches)
         }
     }
