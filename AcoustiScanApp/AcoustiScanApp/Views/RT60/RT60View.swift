@@ -3,13 +3,12 @@ import SwiftUI
 struct RT60View: View {
     @ObservedObject var store: SurfaceStore
 
+    /// RT60 for a given frequency, delegating to the SurfaceStore Sabine
+    /// implementation which correctly accounts for per-surface area and the
+    /// material absorption coefficient at that frequency. Returns 0 when the
+    /// room volume or total absorption is not yet known.
     func calculateRT60(frequency: Int) -> Double {
-        var a_f: Double = 0.0
-        for surface in store.surfaces {
-            a_f += surface.absorptionCoefficient
-        }
-        let v = store.estimatedVolume
-        return a_f > 0 ? 0.161 * v / a_f : 0.0
+        return store.calculateRT60(at: frequency) ?? 0.0
     }
 
     var body: some View {
@@ -17,7 +16,7 @@ struct RT60View: View {
             Section(header: Text("RT60 je Frequenz")
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("rt60Header")) {
-                ForEach([125, 250, 500, 1000, 2000, 4000, 8000], id: \.self) { freq in
+                ForEach(AbsorptionData.standardFrequencies, id: \.self) { freq in
                     let value = calculateRT60(frequency: freq)
                     HStack {
                         Text("\(freq) Hz")
