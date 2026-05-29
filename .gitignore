@@ -3,8 +3,12 @@
 Package.resolved
 
 # Xcode
-*.xcodeproj
-*.xcworkspace
+# NOTE: the .xcodeproj / .xcworkspace bundles ARE part of the deliverable and
+# must be committed (project structure + shared schemes). Only user-specific
+# state is ignored. Previously these were ignored wholesale, which is why no
+# shared scheme was ever checked in and CI could not build the app.
+xcuserdata/
+*.xcuserstate
 *.xcodebuild.log
 
 # Swift
