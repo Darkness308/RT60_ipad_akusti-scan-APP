@@ -10,7 +10,7 @@ AcoustiScan ist eine professionelle iOS-App für akustische Raumanalyse mit LiDA
 - 🔊 **RT60-Messung**: Frequenzabhängige Nachhallzeitmessung (125 Hz - 4 kHz)
 - 📊 **DIN 18041 Klassifizierung**: Automatische Bewertung nach deutscher Norm
 - 📄 **PDF-Export**: 6-seitiger Gutachten-Report mit Frequenzgrafiken
-- 🎨 **Material-Datenbank**: 500+ akustische Materialien mit Absorptionskoeffizienten
+- 🎨 **Material-Datenbank**: vordefinierte akustische Materialien mit Absorptionskoeffizienten, erweiterbar via CSV/XLSX-Import
 - 🏗 **Absorber-Planer**: Automatische Berechnung erforderlicher Absorptionsflächen
 
 ---
@@ -172,9 +172,9 @@ RT60_ipad_akusti-scan-APP/
 
 ### 5. Material-Datenbank
 
-- 500+ vordefinierte Materialien
-- Absorptionskoeffizienten für alle Oktavbänder
-- Kategorisierung (Absorber, Diffusoren, Reflektoren)
+- Vordefinierte Materialien (Grundstock; aktuell eine kleine Auswahl, siehe `MaterialManager.loadPredefinedMaterials()`)
+- Absorptionskoeffizienten für alle Oktavbänder (125 Hz – 8 kHz)
+- Erweiterbar über CSV-/XLSX-Import (`MaterialManager`)
 - Suchfunktion + Filter
 
 ---
@@ -214,14 +214,22 @@ RT60 = 0.161 × V / A
 - **V**: Raumvolumen in m³
 - **A**: Äquivalente Absorptionsfläche in m² (frequenzabhängig)
 
-### DIN 18041 Grenzwerte
+### DIN 18041 Sollwerte (Gruppe A)
 
-| Raumtyp | Volumen | Soll-RT60 | Toleranz |
-|---------|---------|-----------|----------|
-| A1      | < 250 m³ | 0.6 s    | ±20%     |
-| A2      | < 5000 m³ | 0.8 s   | ±15%     |
-| B       | Sprache  | 1.0 s    | ±25%     |
-| C       | Musik    | 1.5 s    | ±30%     |
+Die Soll-Nachhallzeit `T_soll` wird nach DIN 18041:2016-03, Gleichungen (1)–(6),
+volumenabhängig (V in m³) je Nutzungsart berechnet:
+
+| Nutzungsart | `T_soll` [s] | Gültigkeitsbereich |
+|-------------|--------------|--------------------|
+| A1 „Musik" | `0,45·lg(V) + 0,07` | 30 ≤ V < 1000 m³ |
+| A2 „Sprache/Vortrag" | `0,37·lg(V) − 0,14` | 50 ≤ V < 5000 m³ |
+| A3 „Unterricht/Kommunikation" | `0,32·lg(V) − 0,17` | 30 ≤ V < 5000 m³ |
+| A4 „Unterricht/Kommunikation inklusiv" | `0,26·lg(V) − 0,14` | 30 ≤ V < 500 m³ |
+| A5 „Sport" | `0,75·lg(V) − 1,00` (bzw. 2,0 ab 10000 m³) | 200 ≤ V < 10000 m³ |
+
+Der Nachweis erfolgt frequenzabhängig in den Oktaven 125 Hz – 4000 Hz gegen den
+Toleranzbereich nach Bild 2 (T/T_soll: 0,80–1,20 im mittleren Band, 0,65–1,45
+an den Rändern; A5: T_soll ± 20 % zwischen 250–2000 Hz).
 
 ---
 
@@ -427,11 +435,29 @@ Proprietary - Alle Rechte vorbehalten
 - RT60 Calculation Engine (consolidated)
 - DIN 18041 Evaluator (production-ready)
 - PDF Report Generator (6-page template)
-- Material Database (500+ entries)
+- Material Database (predefined seed set + CSV/XLSX import)
 
-🎯 **Production Status**: Ready for QA Testing
+## ⚠️ Aktueller Stand (Stand der Übergabe)
+
+> Diese Sektion korrigiert frühere „production-ready"-Aussagen und beschreibt den
+> tatsächlichen, überprüfbaren Zustand des Codes.
+
+- **Berechnungskern (`AcoustiScanConsolidated`, `Modules/Export`)**: solide, getestet,
+  baut plattformunabhängig via `swift build`/`swift test`. **Übernahmefähig.**
+- **iOS-App (`AcoustiScanApp`)**: **noch nicht produktionsreif.** Der App-Einstieg
+  (`ContentView`) ist aktuell ein Platzhalter; die unten beschriebene 5-Tab-Navigation
+  ist noch nicht verdrahtet. Einzelne Views werden gerade integriert/repariert.
+- **CI**: Bis vor Kurzem hat kein Workflow die App per `xcodebuild` gebaut und das
+  App-Test-Target ist nicht im Xcode-Projekt verdrahtet. Der neue Workflow
+  `ci-honest.yml` baut App + Packages ohne Fehler-Maskierung und bildet den
+  wahren Zustand ab.
+- **DIN 18041**: Sollwerte werden auf die normkonformen Gleichungen (1)–(6) nach
+  DIN 18041:2016-03 umgestellt (siehe Sollwert-Tabelle oben).
+
+Die folgenden Feature-Beschreibungen sind als **Zielbild** zu lesen, nicht als
+fertiger Auslieferungsstand.
 
 ---
 
 **Relates-to**: Commits 046245c (Merge cleanup), e15c8c8 (Consolidation)
-**Completes**: Backend + UI integration (production-ready)
+**Status**: Berechnungskern produktionsnah; App-Integration in Arbeit (siehe „Aktueller Stand").
