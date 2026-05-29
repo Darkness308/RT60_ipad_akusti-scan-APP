@@ -6,6 +6,21 @@ import Foundation
 /// Automated build system that detects and fixes common Swift compilation errors
 public class BuildAutomation {
 
+    internal static var swiftExecutablePath: String = {
+        if let configuredPath = ProcessInfo.processInfo.environment["SWIFT_EXECUTABLE"], !configuredPath.isEmpty {
+            return configuredPath
+        }
+
+        let candidates = ["/usr/bin/swift", "/usr/share/swift/usr/bin/swift"]
+        let fileManager = FileManager.default
+
+        for candidate in candidates where fileManager.isExecutableFile(atPath: candidate) {
+            return candidate
+        }
+
+        return "swift"
+    }()
+
     public enum BuildResult {
         case success(String)
         case failure(String, [BuildError])
@@ -70,7 +85,7 @@ public class BuildAutomation {
     /// Execute swift build and parse output
     private static func runBuild(projectPath: String) -> BuildResult {
         let task = Process()
-        task.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
+        task.executableURL = URL(fileURLWithPath: swiftExecutablePath)
         task.arguments = ["build", "--package-path", projectPath]
 
         let pipe = Pipe()
@@ -281,7 +296,7 @@ public class ContinuousIntegration {
 
     private static func runTests(projectPath: String) -> Bool {
         let task = Process()
-        task.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
+        task.executableURL = URL(fileURLWithPath: BuildAutomation.swiftExecutablePath)
         task.arguments = ["test", "--package-path", projectPath]
 
         do {

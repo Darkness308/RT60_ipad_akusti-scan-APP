@@ -49,7 +49,9 @@ internal enum BuildAutomationDiagnostics {
     internal static func classifyError(message: String) -> BuildAutomation.BuildError.ErrorType {
         if message.contains("import") || message.contains("module") {
             return .missingImport
-        } else if message.contains("unresolved identifier") || message.contains("undeclared") {
+        } else if message.contains("unresolved identifier")
+            || message.contains("undeclared")
+            || message.contains("cannot find") {
             return .undeclaredIdentifier
         } else if message.contains("type") {
             return .typeError
