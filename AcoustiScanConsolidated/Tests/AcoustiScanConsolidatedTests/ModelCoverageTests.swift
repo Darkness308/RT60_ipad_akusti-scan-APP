@@ -321,6 +321,7 @@ final class ModelCoverageTests: XCTestCase {
         XCTAssertEqual(surface.averageAbsorption, 0.30, accuracy: 0.0001)
         XCTAssertEqual(surface.totalAbsorptionAreas.keys.sorted(), [125, 250, 500, 1000, 2000, 4000])
         XCTAssertEqual(try XCTUnwrap(surface.totalAbsorptionAreas[4000]), 6.0, accuracy: 0.0001)
+        XCTAssertNil(surface.totalAbsorptionAreas[8000])
     }
 
     func testLabeledSurfaceConversionPreservesGeometryAndAbsorption() throws {
@@ -342,6 +343,7 @@ final class ModelCoverageTests: XCTestCase {
                 "Converted coefficient mismatch at \(frequency) Hz"
             )
         }
+        XCTAssertNil(converted.material.absorptionCoefficients[8000])
     }
 
     func testAbsorberModelsAndRequirementCalculations() {
