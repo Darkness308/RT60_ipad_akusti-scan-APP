@@ -21,7 +21,7 @@ final class PDFTextExtractorIntegrationTests: XCTestCase {
     }
 
     func test_truncatedPDFHeader_throwsCorruptOrInvalid() {
-        // Starts with %PDF but is too short and has no real structure
+        // Truncated and invalid header bytes that cannot represent a PDF
         let truncated = Data("%PD".utf8)
         XCTAssertThrowsError(try PDFTextExtractor.extractText(from: truncated)) { error in
             XCTAssertEqual(error as? PDFTextExtractorError, .corruptOrInvalidPDF)

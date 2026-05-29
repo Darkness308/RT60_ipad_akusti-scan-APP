@@ -95,6 +95,7 @@ public class ReportHTMLRenderer {
             </style>
             """
         case .multiFile(let resourcesPath):
+            // Expected input is a relative resources path for deployed static assets.
             let escapedPath = escapeHTML(resourcesPath)
             return "<link rel=\"stylesheet\" href=\"\(escapedPath)/report.css\">"
         }

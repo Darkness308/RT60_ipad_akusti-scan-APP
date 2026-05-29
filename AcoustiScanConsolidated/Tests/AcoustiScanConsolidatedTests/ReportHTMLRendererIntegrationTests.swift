@@ -43,6 +43,23 @@ final class ReportHTMLRendererIntegrationTests: XCTestCase {
         XCTAssertTrue(html.contains("&lt;script&gt;"))
     }
 
+    func testRendererPreservesLegitimateContent() {
+        let model = ReportModel(
+            metadata: ["device": "iPad Pro", "room": "Music Room"],
+            rt60_bands: [["freq_hz": 500.0, "t20_s": 0.58]],
+            din_targets: [["freq_hz": 500.0, "t_soll": 0.60, "tol": 0.20]],
+            validity: ["method": "ISO3382-1"],
+            recommendations: ["Add wall absorber"],
+            audit: ["source": "integration-test"],
+            sourceOrigin: "baseline-report.json"
+        )
+
+        let html = String(decoding: ReportHTMLRenderer().render(model), as: UTF8.self)
+        XCTAssertTrue(html.contains("iPad Pro"))
+        XCTAssertTrue(html.contains("Music Room"))
+        XCTAssertTrue(html.contains("Add wall absorber"))
+    }
+
     func testRendererInjectsProvenanceIntoHeadAndSections() {
         let html = String(decoding: ReportHTMLRenderer().render(makeMaliciousModel()), as: UTF8.self)
 
