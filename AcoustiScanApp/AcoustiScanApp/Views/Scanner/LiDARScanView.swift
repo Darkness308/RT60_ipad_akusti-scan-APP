@@ -111,31 +111,30 @@ internal class ARCoordinator: NSObject {
     internal func updateMeshAnchor(_ anchor: ARMeshAnchor) {
         let geometry = anchor.geometry
 
-        // Extract vertices
+        // Extract vertices via raw-buffer pointer math (ARGeometrySource is not subscriptable)
         var vertices: [SIMD3<Float>] = []
-        let vertexBuffer = geometry.vertices
-        let vertexCount = vertexBuffer.count
+        let vertexSource = geometry.vertices
+        vertices.reserveCapacity(vertexSource.count)
 
-        for i in 0..<vertexCount {
-            let vertex = vertexBuffer[i]
+        for i in 0..<vertexSource.count {
+            let vertexPointer = vertexSource.buffer.contents()
+                .advanced(by: vertexSource.offset + vertexSource.stride * i)
+                .assumingMemoryBound(to: (Float, Float, Float).self)
+            let vertex = vertexPointer.pointee
             vertices.append(SIMD3<Float>(vertex.0, vertex.1, vertex.2))
         }
 
-        // Extract face indices
+        // Extract face indices. ARMeshGeometry uses 32-bit indices (bytesPerIndex == 4).
         var faces: [UInt32] = []
         let faceBuffer = geometry.faces
-        let faceCount = faceBuffer.count
+        let bytesPerIndex = faceBuffer.bytesPerIndex
+        let indicesPerFace = faceBuffer.indexCountPerPrimitive
+        let faceContents = faceBuffer.buffer.contents()
 
-        for i in 0..<faceCount {
-            // Each face has 3 indices (triangle)
-            let bytesPerIndex = faceBuffer.bytesPerIndex
-            let offset = i * faceBuffer.indexCountPerPrimitive * bytesPerIndex
-
-            for j in 0..<faceBuffer.indexCountPerPrimitive {
-                let indexOffset = offset + j * bytesPerIndex
-                var index: UInt32 = 0
-                (faceBuffer.buffer.contents() + indexOffset)
-                    .copyBytes(to: &index, count: bytesPerIndex)
+        for i in 0..<faceBuffer.count {
+            for j in 0..<indicesPerFace {
+                let indexOffset = (i * indicesPerFace + j) * bytesPerIndex
+                let index = faceContents.load(fromByteOffset: indexOffset, as: UInt32.self)
                 faces.append(index)
             }
         }
@@ -174,10 +173,11 @@ internal class ARCoordinator: NSObject {
         var classificationCounts: [ARMeshClassification: Int] = [:]
 
         for i in 0..<buffer.count {
-            let offset = i * buffer.componentsPerVector * buffer.bytesPerComponent
-            var value: UInt8 = 0
-            (buffer.buffer.contents() + buffer.offset + offset)
-                .copyBytes(to: &value, count: 1)
+            // Classification is one UInt8 per face; stride accounts for component size/padding.
+            let value = buffer.buffer.contents()
+                .advanced(by: buffer.offset + buffer.stride * i)
+                .assumingMemoryBound(to: UInt8.self)
+                .pointee
 
             if let classification = ARMeshClassification(rawValue: Int(value)) {
                 classificationCounts[classification, default: 0] += 1
@@ -390,7 +390,7 @@ internal class ARCoordinator: NSObject {
     }
 
     /// Determine surface name based on plane alignment
-    private func determineSurfaceName(alignment: ARRaycastResult.TargetAlignment) -> String {
+    private func determineSurfaceName(alignment: ARRaycastQuery.TargetAlignment) -> String {
         switch alignment {
         case .horizontal:
             return NSLocalizedString(LocalizationKeys.floor, comment: "Floor surface")

@@ -39,6 +39,7 @@
 		KF0000000000000000000002 /* RealityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000002 /* RealityKit.framework */; };
 		KF0000000000000000000003 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000003 /* Charts.framework */; };
 		AS0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AR0000000000000000000001 /* Assets.xcassets */; };
+		PF0000000000000000000001 /* AcoustiScanConsolidated in Frameworks */ = {isa = PBXBuildFile; productRef = PK0000000000000000000002 /* AcoustiScanConsolidated */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				PF0000000000000000000001 /* AcoustiScanConsolidated in Frameworks */,
 				KF0000000000000000000001 /* ARKit.framework in Frameworks */,
 				KF0000000000000000000002 /* RealityKit.framework in Frameworks */,
 				KF0000000000000000000003 /* Charts.framework in Frameworks */,
@@ -237,6 +239,9 @@
 			);
 			dependencies = (
 			);
+			packageProductDependencies = (
+				PK0000000000000000000002 /* AcoustiScanConsolidated */,
+			);
 			name = AcoustiScanApp;
 			productName = AcoustiScanApp;
 			productReference = CC0000000000000000000001 /* AcoustiScanApp.app */;
@@ -264,6 +269,9 @@
 			knownRegions = (
 				en,
 				Base,
+			);
+			packageReferences = (
+				PK0000000000000000000001 /* XCLocalSwiftPackageReference "../AcoustiScanConsolidated" */,
 			);
 			mainGroup = FF0000000000000000000001;
 			productRefGroup = FF0000000000000000000003 /* Products */;
@@ -528,6 +536,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		PK0000000000000000000001 /* XCLocalSwiftPackageReference "../AcoustiScanConsolidated" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../AcoustiScanConsolidated;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		PK0000000000000000000002 /* AcoustiScanConsolidated */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AcoustiScanConsolidated;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = II0000000000000000000001 /* Project object */;
 }

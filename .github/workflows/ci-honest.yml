@@ -1,0 +1,128 @@
+name: CI (honest)
+
+# Purpose: a single, non-masking pipeline that reflects the TRUE state of the
+# repository. Unlike the legacy workflows, this one does NOT swallow failures
+# with `|| true`, retries, or auto-fix steps. If something does not build or a
+# test fails, this job fails. That is the point.
+#
+# It verifies three things independently:
+#   1. The platform-independent Swift packages build and their tests pass.
+#   2. The Export module builds and its tests pass.
+#   3. The actual iOS application compiles via xcodebuild (iOS Simulator SDK).
+#
+# On failure each job captures its output and (for push events) posts the tail
+# as a PR comment, so the real error is visible without expanding JS-loaded logs.
+
+on:
+  push:
+    branches: [ main, develop, "claude/**" ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  packages:
+    name: Swift packages (build + test)
+    runs-on: macos-14
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
+      - name: Toolchain versions
+        run: |
+          xcodebuild -version 2>&1 | tee "$RUNNER_TEMP/consolidated.log"
+          swift --version 2>&1 | tee -a "$RUNNER_TEMP/consolidated.log"
+
+      - name: Build & test AcoustiScanConsolidated
+        run: |
+          set -o pipefail
+          cd AcoustiScanConsolidated
+          { swift build && swift test ; } 2>&1 | tee -a "$RUNNER_TEMP/consolidated.log"
+
+      - name: Build & test ReportExport module
+        run: |
+          set -o pipefail
+          cd Modules/Export
+          { swift build && swift test ; } 2>&1 | tee "$RUNNER_TEMP/export.log"
+
+      - name: Report failure to PR
+        if: failure() && github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const tmp = process.env.RUNNER_TEMP;
+            const tail = (file) => {
+              try { return fs.readFileSync(`${tmp}/${file}`, 'utf8').split('\n').slice(-150).join('\n'); }
+              catch (e) { return '(no output captured — step failed before producing output)'; }
+            };
+            let body = '### ❌ CI (honest) — Swift packages job failed\n';
+            body += `Commit \`${context.sha.slice(0,7)}\`\n\n`;
+            body += `<details><summary>AcoustiScanConsolidated (tail)</summary>\n\n\`\`\`\n${tail('consolidated.log')}\n\`\`\`\n</details>\n\n`;
+            body += `<details><summary>ReportExport (tail)</summary>\n\n\`\`\`\n${tail('export.log')}\n\`\`\`\n</details>\n`;
+            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
+            for (const pr of prs.data) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+            }
+
+  ios-app:
+    name: iOS app (xcodebuild)
+    runs-on: macos-14
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
+      - name: Toolchain + scheme listing
+        run: |
+          xcodebuild -version 2>&1 | tee "$RUNNER_TEMP/list.log" || true
+          xcodebuild -list -project AcoustiScanApp/AcoustiScanApp.xcodeproj 2>&1 | tee -a "$RUNNER_TEMP/list.log" || true
+
+      - name: Build iOS app for simulator
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
+            -scheme AcoustiScanApp \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            clean build \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Report failure to PR
+        if: failure() && github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const tmp = process.env.RUNNER_TEMP;
+            const read = (file, n) => {
+              try { return fs.readFileSync(`${tmp}/${file}`, 'utf8').split('\n').slice(-n).join('\n'); }
+              catch (e) { return '(no output captured)'; }
+            };
+            const xb = read('xcodebuild.log', 400);
+            const errs = xb.split('\n').filter(l => /error:|fatal|Cannot|cannot find|No such|Undefined|Command .* failed/.test(l)).slice(-120).join('\n') || '(no matching error lines; see full tail)';
+            let body = '### ❌ CI (honest) — iOS app job failed\n';
+            body += `Commit \`${context.sha.slice(0,7)}\`\n\n`;
+            body += `<details><summary>xcodebuild -list / version</summary>\n\n\`\`\`\n${read('list.log', 60)}\n\`\`\`\n</details>\n\n`;
+            body += `<details><summary>xcodebuild errors (filtered)</summary>\n\n\`\`\`\n${errs}\n\`\`\`\n</details>\n`;
+            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
+            for (const pr of prs.data) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+            }

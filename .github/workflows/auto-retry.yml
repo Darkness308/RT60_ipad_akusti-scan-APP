@@ -1,10 +1,14 @@
 name: Auto-Retry Failed Workflows
 
+# NOTE: Auto-trigger DISABLED. This retry automation re-ran failing workflows
+# and contributed to green-washing genuinely broken builds, fighting the honest
+# CI (ci-honest.yml). Left for reference; restore the workflow_run trigger below.
 on:
-  workflow_run:
-    workflows: ["Build and Test", "Swift Build and Test"]
-    types:
-      - completed
+  workflow_dispatch:
+  # workflow_run:
+  #   workflows: ["Build and Test", "Swift Build and Test"]
+  #   types:
+  #     - completed
 
 env:
   MAX_AUTO_RETRIES: 3

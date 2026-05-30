@@ -73,14 +73,25 @@ public final class RoomScanCoordinator: NSObject, ObservableObject, RoomCaptureS
             return
         }
 
-        // Process the final room data
-        DispatchQueue.main.async { [weak self] in
-            self?.processRoomData(data, store: store)
+        // CapturedRoomData is raw scan data; build the structured CapturedRoom
+        // (which exposes walls/floors/etc.) via RoomBuilder before processing.
+        // The Task itself captures no `self`; the main-thread hop weak-captures it,
+        // mirroring the didUpdate handler above.
+        Task {
+            do {
+                let builder = RoomBuilder(options: [.beautifyObjects])
+                let room = try await builder.capturedRoom(from: data)
+                DispatchQueue.main.async { [weak self] in
+                    self?.processRoomData(room, store: store)
+                }
+            } catch {
+                ErrorLogger.log(error, context: "RoomScanCoordinator.buildCapturedRoom", level: .error)
+            }
         }
     }
 
     /// Process captured room data and add surfaces to store
-    private func processRoomData(_ data: CapturedRoomData, store: SurfaceStore) {
+    private func processRoomData(_ data: CapturedRoom, store: SurfaceStore) {
         // Clear existing surfaces for fresh scan
         store.clearAll()
 
@@ -125,7 +136,7 @@ public final class RoomScanCoordinator: NSObject, ObservableObject, RoomCaptureS
     }
 
     /// Calculate room volume from captured data
-    private func calculateRoomVolume(from data: CapturedRoomData, store: SurfaceStore) {
+    private func calculateRoomVolume(from data: CapturedRoom, store: SurfaceStore) {
         // Estimate volume from floor area and wall heights
         var maxWallHeight: Float = 2.5 // Default ceiling height
 

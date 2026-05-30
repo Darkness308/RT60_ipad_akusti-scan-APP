@@ -1,11 +1,14 @@
 name: Build and Test
 
+# NOTE: Auto-trigger DISABLED. This legacy workflow uses retry loops/masking and
+# auto-creates failure issues, contradicting the honest CI (ci-honest.yml), now the
+# single source of truth. Kept for manual runs; restore push/pull_request to re-enable.
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
-  workflow_dispatch:  # Allow manual triggering
+  workflow_dispatch:  # Manual triggering only
+  # push:
+  #   branches: [ main, develop ]
+  # pull_request:
+  #   branches: [ main, develop ]
 
 env:
   MAX_RETRY_ATTEMPTS: 3
