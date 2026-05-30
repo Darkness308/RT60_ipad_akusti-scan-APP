@@ -114,9 +114,10 @@ xcodebuild build \
 
 ## 8. Sanierungs-Historie (gemergte PRs)
 
-`#248` ehrliche CI + App-Fix · `#259` Concurrency-Fix · `#263` ContentView→TabView ·
+Gemergt: `#248` ehrliche CI + App-Fix · `#259` Concurrency-Fix · `#263` ContentView→TabView ·
 `#264` DIN normtreu · `#265` Cleanup/Tech-Debt-Doku · `#266` README-Faktenfehler ·
-`#268` kaputter App-Test gefixt. **Offen:** `#267` (CONTRIBUTING-Korrekturen).
+`#267` CONTRIBUTING-Korrekturen · `#268` kaputter App-Test gefixt.
+`#269` = dieses HANDOFF-Dokument.
 
 ---
 
