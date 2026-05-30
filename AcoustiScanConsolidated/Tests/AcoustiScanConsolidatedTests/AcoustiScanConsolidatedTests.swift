@@ -439,4 +439,49 @@ final class ReportContractTests: XCTestCase {
         XCTAssertTrue(model.validity["din_volume_valid"]?.contains("außerhalb") ?? false)
         XCTAssertNotNil(model.validity["din_hinweis"])
     }
+
+    // MARK: - H1: bands measured but not evaluated by DIN
+
+    private func makeReportData(
+        roomType: RoomType,
+        volume: Double,
+        measuredFrequencies: [Int]
+    ) -> ReportData {
+        ReportData(
+            date: "2025-07-21",
+            roomType: roomType,
+            volume: volume,
+            rt60Measurements: measuredFrequencies.map { RT60Measurement(frequency: $0, rt60: 0.5) },
+            dinResults: [],
+            acousticFrameworkResults: [:],
+            surfaces: [],
+            recommendations: []
+        )
+    }
+
+    func testReportMarks8000HzAsNotEvaluated() {
+        // A3 evaluates 125–4000 Hz; an 8000 Hz measurement must be reported as
+        // measured-but-not-evaluated rather than silently dropped.
+        let data = makeReportData(
+            roomType: .a3Education,
+            volume: 150,
+            measuredFrequencies: [125, 250, 500, 1000, 2000, 4000, 8000]
+        )
+        let model = ReportModel.from(data)
+        let note = model.validity["din_nicht_bewertet"]
+        XCTAssertNotNil(note)
+        XCTAssertTrue(note?.contains("8000") ?? false)
+        XCTAssertFalse(model.validity["din_bewertete_baender"]?.contains("8000") ?? true)
+    }
+
+    func testReportHasNoUnevaluatedNoteWhenAllBandsCovered() {
+        // Only evaluated bands present → no "nicht bewertet" note.
+        let data = makeReportData(
+            roomType: .a3Education,
+            volume: 150,
+            measuredFrequencies: [125, 250, 500, 1000, 2000, 4000]
+        )
+        let model = ReportModel.from(data)
+        XCTAssertNil(model.validity["din_nicht_bewertet"])
+    }
 }
