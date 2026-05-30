@@ -70,7 +70,7 @@ final class RT60CalculatorTests: XCTestCase {
 
         let deviations = RT60Calculator.evaluateDINCompliance(
             measurements: measurements,
-            roomType: .classroom,
+            roomType: .a3Education,
             volume: 150.0
         )
 
@@ -83,15 +83,16 @@ final class RT60CalculatorTests: XCTestCase {
 
 final class DIN18041Tests: XCTestCase {
 
-    func testClassroomTargetsProvideSevenBands() {
-        let targets = DIN18041Database.targets(for: .classroom, volume: 200.0)
+    func testA3EducationTargetsCoverSixOctaveBands() {
+        let targets = DIN18041Database.targets(for: .a3Education, volume: 200.0)
 
-        XCTAssertEqual(targets.count, 7)
+        // A1–A4 are verified across 125–4000 Hz (six octave bands).
+        XCTAssertEqual(targets.count, 6)
         XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0 })
-        XCTAssertTrue(targets.allSatisfy { $0.tolerance > 0 })
+        XCTAssertTrue(targets.allSatisfy { $0.upperBound > $0.lowerBound })
 
-        let midFreqTargets = targets.filter { $0.frequency == 500 || $0.frequency == 1000 }
-        XCTAssertTrue(midFreqTargets.allSatisfy { $0.targetRT60 <= 0.8 })
+        // T_soll(A3, 200 m³) = 0.32·lg(200) − 0.17 ≈ 0.566 s, equal across bands.
+        XCTAssertEqual(targets.first?.targetRT60 ?? 0, 0.566, accuracy: 0.01)
     }
 
     func testDINComplianceEvaluationProducesDeviations() {
@@ -103,7 +104,7 @@ final class DIN18041Tests: XCTestCase {
 
         let deviations = RT60Calculator.evaluateDINCompliance(
             measurements: measurements,
-            roomType: .classroom,
+            roomType: .a3Education,
             volume: 150.0
         )
 
@@ -280,7 +281,7 @@ final class PDFExportTests: XCTestCase {
     func testReportDataStructure() {
         let reportData = ConsolidatedPDFExporter.ReportData(
             date: "2025-01-01",
-            roomType: .classroom,
+            roomType: .a3Education,
             volume: 150.0,
             rt60Measurements: [
                 RT60Measurement(frequency: 1000, rt60: 0.6)
@@ -297,7 +298,7 @@ final class PDFExportTests: XCTestCase {
         )
 
         XCTAssertEqual(reportData.date, "2025-01-01")
-        XCTAssertEqual(reportData.roomType, .classroom)
+        XCTAssertEqual(reportData.roomType, .a3Education)
         XCTAssertEqual(reportData.volume, 150.0)
         XCTAssertEqual(reportData.rt60Measurements.count, 1)
         XCTAssertEqual(reportData.dinResults.count, 1)

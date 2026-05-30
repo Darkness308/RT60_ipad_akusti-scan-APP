@@ -1,340 +1,180 @@
 // DIN18041Tests.swift
-// Comprehensive test suite for DIN 18041 module
+// Test suite for the DIN 18041:2016-03 compliance module (Gruppe A).
 
 import XCTest
 import Foundation
 @testable import AcoustiScanConsolidated
 
-/// Comprehensive test suite for DIN 18041 compliance evaluation
+/// Tests for the normative DIN 18041:2016-03 target and tolerance logic.
 final class DIN18041ModuleTests: XCTestCase {
 
-    // MARK: - DIN18041Database Tests
+    // MARK: - Target reverberation time T_soll = a·lg(V) + b
 
-    func testClassroomTargets() {
+    func testTargetReverberationTimeFormulasPerGroup() {
+        // A1 Musik: 0.45·lg(V) + 0.07
+        XCTAssertEqual(RoomType.a1Music.targetReverberationTime(volume: 500), 1.285, accuracy: 0.005)
+        // A2 Sprache/Vortrag: 0.37·lg(V) − 0.14
+        XCTAssertEqual(RoomType.a2Speech.targetReverberationTime(volume: 1000), 0.97, accuracy: 0.005)
+        // A3 Unterricht/Kommunikation: 0.32·lg(V) − 0.17
+        XCTAssertEqual(RoomType.a3Education.targetReverberationTime(volume: 200), 0.566, accuracy: 0.005)
+        // A4 Unterricht inklusiv: 0.26·lg(V) − 0.14
+        XCTAssertEqual(RoomType.a4EducationInclusive.targetReverberationTime(volume: 100), 0.38, accuracy: 0.005)
+        // A5 Sport: 0.75·lg(V) − 1.00
+        XCTAssertEqual(RoomType.a5Sports.targetReverberationTime(volume: 2000), 1.476, accuracy: 0.005)
+    }
+
+    func testA5IsCappedAtTwoSecondsFromTenThousandCubicMetres() {
+        // The equation already yields 2.0 s at 10 000 m³ and is capped beyond.
+        XCTAssertEqual(RoomType.a5Sports.targetReverberationTime(volume: 10_000), 2.0, accuracy: 0.005)
+        XCTAssertEqual(RoomType.a5Sports.targetReverberationTime(volume: 20_000), 2.0, accuracy: 0.005)
+    }
+
+    func testValidVolumeRanges() {
+        XCTAssertEqual(RoomType.a1Music.validVolumeRange, 30...1000)
+        XCTAssertEqual(RoomType.a2Speech.validVolumeRange, 50...5000)
+        XCTAssertEqual(RoomType.a3Education.validVolumeRange, 30...5000)
+        XCTAssertEqual(RoomType.a4EducationInclusive.validVolumeRange, 30...500)
+        XCTAssertEqual(RoomType.a5Sports.validVolumeRange, 200...10000)
+        XCTAssertFalse(RoomType.a4EducationInclusive.isVolumeWithinValidRange(600))
+        XCTAssertTrue(RoomType.a4EducationInclusive.isVolumeWithinValidRange(300))
+    }
+
+    // MARK: - Evaluated octave bands
+
+    func testA1ToA4AreEvaluatedAcross125To4000Hz() {
+        for group in [RoomType.a1Music, .a2Speech, .a3Education, .a4EducationInclusive] {
+            let targets = DIN18041Database.targets(for: group, volume: 200.0)
+            XCTAssertEqual(targets.map { $0.frequency }.sorted(), [125, 250, 500, 1000, 2000, 4000])
+        }
+    }
+
+    func testA5IsOnlyEvaluatedAcross250To2000Hz() {
+        let targets = DIN18041Database.targets(for: .a5Sports, volume: 2000.0)
+        XCTAssertEqual(targets.map { $0.frequency }.sorted(), [250, 500, 1000, 2000])
+    }
+
+    // MARK: - Bild 2 tolerance band
+
+    func testToleranceBandMidVersusEdgesForA1ToA4() {
         let volume = 200.0
-        let targets = DIN18041Database.targets(for: .classroom, volume: volume)
+        let tSoll = RoomType.a3Education.targetReverberationTime(volume: volume)
+        let targets = DIN18041Database.targets(for: .a3Education, volume: volume)
 
-        XCTAssertEqual(targets.count, 7) // 7 frequency bands
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0 })
-        XCTAssertTrue(targets.allSatisfy { $0.tolerance > 0 })
-
-        // Check that 500-1000 Hz has reasonable values for classroom
-        let midFreqTargets = targets.filter { $0.frequency == 500 || $0.frequency == 1000 }
-        XCTAssertTrue(midFreqTargets.allSatisfy { $0.targetRT60 <= 0.8 }) // Should be relatively low for speech
-
-        // Verify frequency-dependent adjustments
-        guard let lowFreq = targets.first(where: { $0.frequency == 125 }) else {
-            XCTFail("Expected to find 125 Hz target")
-            return
-        }
-        guard let midFreq = targets.first(where: { $0.frequency == 1000 }) else {
-            XCTFail("Expected to find 1000 Hz target")
-            return
-        }
-        guard let highFreq = targets.first(where: { $0.frequency == 4000 }) else {
-            XCTFail("Expected to find 4000 Hz target")
-            return
+        guard let mid = targets.first(where: { $0.frequency == 500 }),
+              let edge = targets.first(where: { $0.frequency == 125 }) else {
+            return XCTFail("Expected 500 Hz and 125 Hz targets")
         }
 
-        XCTAssertTrue(lowFreq.targetRT60 > midFreq.targetRT60) // Low frequencies should have higher RT60
-        XCTAssertTrue(highFreq.targetRT60 < midFreq.targetRT60) // High frequencies should have lower RT60
+        // Mid band: 0.80–1.20 · T_soll
+        XCTAssertEqual(mid.lowerBound, tSoll * 0.80, accuracy: 0.001)
+        XCTAssertEqual(mid.upperBound, tSoll * 1.20, accuracy: 0.001)
+        // Edge band (125 Hz): 0.65–1.45 · T_soll
+        XCTAssertEqual(edge.lowerBound, tSoll * 0.65, accuracy: 0.001)
+        XCTAssertEqual(edge.upperBound, tSoll * 1.45, accuracy: 0.001)
     }
 
-    func testOfficeSpaceTargets() {
-        let volume = 120.0
-        let targets = DIN18041Database.targets(for: .officeSpace, volume: volume)
-
-        XCTAssertEqual(targets.count, 7)
-        // Office spaces should have low RT60 values around 0.5s (volume-adjusted)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0 })
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 < 0.7 }) // Should be relatively low
-        XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.1 })
-
-        // Speech frequencies (500-2000 Hz) should have slightly lower RT60
-        let speechFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 2000 }
-        let otherFreqTargets = targets.filter { $0.frequency < 500 || $0.frequency > 2000 }
-
-        // More explicit check to avoid nested allSatisfy issues on some platforms
-        for speech in speechFreqTargets {
-            for other in otherFreqTargets {
-                XCTAssertLessThanOrEqual(speech.targetRT60, other.targetRT60,
-                    "Speech frequency \(speech.frequency) Hz (\(speech.targetRT60)) should be <= other frequency \(other.frequency) Hz (\(other.targetRT60))")
-            }
-        }
-    }
-
-    func testConferenceRoomTargets() {
-        let volume = 300.0
-        let targets = DIN18041Database.targets(for: .conference, volume: volume)
-
-        XCTAssertEqual(targets.count, 7)
-        // Conference rooms have volume-adjusted RT60 around 0.7-0.8 range
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.65 && $0.targetRT60 < 0.85 })
-        XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.15 })
-
-        // Speech frequencies (500-4000 Hz) should have optimized (lower) RT60
-        let speechFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 4000 }
-        let lowFreqTargets = targets.filter { $0.frequency < 500 }
-
-        // More explicit check to avoid nested allSatisfy issues on some platforms
-        for speech in speechFreqTargets {
-            for low in lowFreqTargets {
-                XCTAssertLessThan(speech.targetRT60, low.targetRT60,
-                    "Speech frequency \(speech.frequency) Hz (\(speech.targetRT60)) should be < low frequency \(low.frequency) Hz (\(low.targetRT60))")
-            }
-        }
-    }
-
-    func testLectureHallTargets() {
-        let volume = 500.0
-        let targets = DIN18041Database.targets(for: .lecture, volume: volume)
-
-        XCTAssertEqual(targets.count, 7)
-        // Lecture halls have volume-adjusted RT60 with higher volume scaling
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 0.7 && $0.targetRT60 < 1.2 })
-        XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.15 })
-
-        // Low frequencies (≤250 Hz) should have higher RT60 for warmth
-        let lowFreqTargets = targets.filter { $0.frequency <= 250 }
-        let midFreqTargets = targets.filter { $0.frequency > 250 && $0.frequency < 4000 }
-
-        // More explicit check to avoid nested allSatisfy issues on some platforms
-        for low in lowFreqTargets {
-            for mid in midFreqTargets {
-                XCTAssertGreaterThan(low.targetRT60, mid.targetRT60,
-                    "Low frequency \(low.frequency) Hz (\(low.targetRT60)) should be > mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
-            }
-        }
-
-        // High frequencies (≥4000 Hz) should have lower RT60 for clarity
-        let highFreqTargets = targets.filter { $0.frequency >= 4000 }
-
-        // More explicit check to avoid nested allSatisfy issues on some platforms
-        for high in highFreqTargets {
-            for mid in midFreqTargets {
-                XCTAssertLessThan(high.targetRT60, mid.targetRT60,
-                    "High frequency \(high.frequency) Hz (\(high.targetRT60)) should be < mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
-            }
-        }
-    }
-
-    func testMusicRoomTargets() {
-        let volume = 400.0
-        let targets = DIN18041Database.targets(for: .music, volume: volume)
-
-        XCTAssertEqual(targets.count, 7)
-        // Music rooms need longer reverberation around 1.5s (volume-adjusted with frequency variation)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 1.0 })
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 < 2.5 }) // Should be higher for music
-        XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.2 })
-
-        // Low frequencies (125 Hz) should have fuller bass response
-        guard let lowFreqTarget = targets.first(where: { $0.frequency == 125 }) else {
-            XCTFail("Expected to find 125 Hz target")
-            return
-        }
-        let midFreqTargets = targets.filter { $0.frequency > 125 && $0.frequency < 4000 }
-
-        // More explicit check to avoid nested allSatisfy issues on some platforms
-        for mid in midFreqTargets {
-            XCTAssertGreaterThan(lowFreqTarget.targetRT60, mid.targetRT60,
-                "Low frequency 125 Hz (\(lowFreqTarget.targetRT60)) should be > mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
-        }
-
-        // High frequencies (≥4000 Hz) should have controlled brilliance
-        let highFreqTargets = targets.filter { $0.frequency >= 4000 }
-
-        // More explicit check to avoid nested allSatisfy issues on some platforms
-        for high in highFreqTargets {
-            for mid in midFreqTargets {
-                XCTAssertLessThan(high.targetRT60, mid.targetRT60,
-                    "High frequency \(high.frequency) Hz (\(high.targetRT60)) should be < mid frequency \(mid.frequency) Hz (\(mid.targetRT60))")
-            }
-        }
-    }
-
-    func testSportsHallTargets() {
+    func testToleranceBandForA5IsPlusMinusTwentyPercent() {
         let volume = 2000.0
-        let targets = DIN18041Database.targets(for: .sports, volume: volume)
+        let tSoll = RoomType.a5Sports.targetReverberationTime(volume: volume)
+        let targets = DIN18041Database.targets(for: .a5Sports, volume: volume)
 
-        XCTAssertEqual(targets.count, 7)
-        // Sports halls can have highest RT60 around 2.0s (volume-adjusted with frequency variation)
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 > 1.5 })
-        XCTAssertTrue(targets.allSatisfy { $0.targetRT60 < 3.0 }) // Should be highest
-        XCTAssertTrue(targets.allSatisfy { $0.tolerance == 0.3 })
-
-        // Speech/PA frequencies (500-2000 Hz) should have better clarity
-        let paFreqTargets = targets.filter { $0.frequency >= 500 && $0.frequency <= 2000 }
-        let otherFreqTargets = targets.filter { $0.frequency < 500 || $0.frequency > 2000 }
-
-        // More explicit check to avoid nested allSatisfy issues on some platforms
-        for pa in paFreqTargets {
-            for other in otherFreqTargets {
-                XCTAssertLessThanOrEqual(pa.targetRT60, other.targetRT60,
-                    "PA frequency \(pa.frequency) Hz (\(pa.targetRT60)) should be <= other frequency \(other.frequency) Hz (\(other.targetRT60))")
-            }
+        for target in targets {
+            XCTAssertEqual(target.lowerBound, tSoll * 0.80, accuracy: 0.001)
+            XCTAssertEqual(target.upperBound, tSoll * 1.20, accuracy: 0.001)
         }
     }
 
-    func testFrequencyCoverage() {
-        let expectedFrequencies = [125, 250, 500, 1000, 2000, 4000, 8000]
+    // MARK: - Compliance evaluation
 
-        for roomType in RoomType.allCases {
-            let targets = DIN18041Database.targets(for: roomType, volume: 300.0)
-            let frequencies = targets.map { $0.frequency }.sorted()
-            XCTAssertEqual(frequencies, expectedFrequencies, "Room type \(roomType) missing frequencies")
-        }
-    }
-
-    // MARK: - RT60Evaluator Tests
-
-    func testCompliantEvaluation() {
-        let measurements = [
-            RT60Measurement(frequency: 500, rt60: 0.60),
-            RT60Measurement(frequency: 1000, rt60: 0.55),
-            RT60Measurement(frequency: 2000, rt60: 0.52)
-        ]
+    func testMeasurementsAtTargetAreWithinTolerance() {
+        let targets = DIN18041Database.targets(for: .a3Education, volume: 150.0)
+        let measurements = targets.map { RT60Measurement(frequency: $0.frequency, rt60: $0.targetRT60) }
 
         let deviations = RT60Evaluator.evaluateDINCompliance(
             measurements: measurements,
-            roomType: .classroom,
+            roomType: .a3Education,
             volume: 150.0
         )
 
-        XCTAssertEqual(deviations.count, 3)
+        XCTAssertEqual(deviations.count, targets.count)
         XCTAssertTrue(deviations.allSatisfy { $0.status == .withinTolerance })
-        XCTAssertTrue(deviations.allSatisfy { abs($0.deviation) <= 0.1 })
+        XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: deviations), .withinTolerance)
     }
 
-    func testTooHighEvaluation() {
-        let measurements = [
-            RT60Measurement(frequency: 500, rt60: 0.80), // Target ~0.6, tolerance 0.1
-            RT60Measurement(frequency: 1000, rt60: 0.75),
-            RT60Measurement(frequency: 2000, rt60: 0.70)
-        ]
-
-        let deviations = RT60Evaluator.evaluateDINCompliance(
-            measurements: measurements,
-            roomType: .classroom,
+    func testTooHighAndTooLowAtMidBand() {
+        // A3 at 150 m³: T_soll ≈ 0.526 s; mid band 500 Hz tolerance ≈ [0.421, 0.632].
+        let tooHigh = RT60Evaluator.evaluateDINCompliance(
+            measurements: [RT60Measurement(frequency: 500, rt60: 0.80)],
+            roomType: .a3Education,
             volume: 150.0
         )
+        XCTAssertEqual(tooHigh.first?.status, .tooHigh)
 
-        XCTAssertEqual(deviations.count, 3)
-        XCTAssertTrue(deviations.allSatisfy { $0.status == .tooHigh })
-        XCTAssertTrue(deviations.allSatisfy { $0.deviation > 0.1 })
-    }
-
-    func testTooLowEvaluation() {
-        let measurements = [
-            RT60Measurement(frequency: 500, rt60: 0.40), // Target ~0.6, tolerance 0.1
-            RT60Measurement(frequency: 1000, rt60: 0.35),
-            RT60Measurement(frequency: 2000, rt60: 0.30)
-        ]
-
-        let deviations = RT60Evaluator.evaluateDINCompliance(
-            measurements: measurements,
-            roomType: .classroom,
+        let tooLow = RT60Evaluator.evaluateDINCompliance(
+            measurements: [RT60Measurement(frequency: 500, rt60: 0.30)],
+            roomType: .a3Education,
             volume: 150.0
         )
-
-        XCTAssertEqual(deviations.count, 3)
-        XCTAssertTrue(deviations.allSatisfy { $0.status == .tooLow })
-        XCTAssertTrue(deviations.allSatisfy { $0.deviation < -0.1 })
+        XCTAssertEqual(tooLow.first?.status, .tooLow)
     }
 
-    func testRT60Classification() {
-        let target = 0.6
-        let tolerance = 0.1
-
-        // Within tolerance
-        XCTAssertEqual(RT60Evaluator.classifyRT60(measured: 0.60, target: target, tolerance: tolerance), .withinTolerance)
-        XCTAssertEqual(RT60Evaluator.classifyRT60(measured: 0.65, target: target, tolerance: tolerance), .withinTolerance)
-        XCTAssertEqual(RT60Evaluator.classifyRT60(measured: 0.55, target: target, tolerance: tolerance), .withinTolerance)
-
-        // Too high
-        XCTAssertEqual(RT60Evaluator.classifyRT60(measured: 0.75, target: target, tolerance: tolerance), .tooHigh)
-
-        // Too low
-        XCTAssertEqual(RT60Evaluator.classifyRT60(measured: 0.45, target: target, tolerance: tolerance), .tooLow)
-    }
-
-    func testOverallCompliance() {
-        // All compliant
-        let allCompliant = [
-            RT60Deviation(frequency: 500, measuredRT60: 0.60, targetRT60: 0.60, status: .withinTolerance),
-            RT60Deviation(frequency: 1000, measuredRT60: 0.55, targetRT60: 0.60, status: .withinTolerance)
+    func testEdgeBandToleratesMoreThanMidBand() {
+        // The same low RT60 that is "too low" at 500 Hz can still be within the
+        // wider 125 Hz edge band, demonstrating the frequency-dependent tolerance.
+        let measurements = [
+            RT60Measurement(frequency: 125, rt60: 0.40),
+            RT60Measurement(frequency: 500, rt60: 0.40)
         ]
-        XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: allCompliant), .withinTolerance)
-
-        // Partially compliant (less than half non-compliant)
-        let partiallyCompliant = [
-            RT60Deviation(frequency: 500, measuredRT60: 0.60, targetRT60: 0.60, status: .withinTolerance),
-            RT60Deviation(frequency: 1000, measuredRT60: 0.80, targetRT60: 0.60, status: .tooHigh),
-            RT60Deviation(frequency: 2000, measuredRT60: 0.55, targetRT60: 0.48, status: .withinTolerance)
-        ]
-        XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: partiallyCompliant), .partiallyCompliant)
-
-        // Non-compliant (more than half non-compliant)
-        let nonCompliant = [
-            RT60Deviation(frequency: 500, measuredRT60: 0.80, targetRT60: 0.60, status: .tooHigh),
-            RT60Deviation(frequency: 1000, measuredRT60: 0.85, targetRT60: 0.60, status: .tooHigh),
-            RT60Deviation(frequency: 2000, measuredRT60: 0.55, targetRT60: 0.48, status: .withinTolerance)
-        ]
-        XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: nonCompliant), .tooHigh)
-    }
-
-    // MARK: - Integration Tests
-
-    func testCompleteWorkflow() {
-        let volumes = [150.0, 300.0, 500.0]
-        let roomTypes: [RoomType] = [.classroom, .officeSpace, .conference, .lecture, .music, .sports]
-
-        for roomType in roomTypes {
-            for volume in volumes {
-                let targets = DIN18041Database.targets(for: roomType, volume: volume)
-
-                // Create test measurements that should be within tolerance
-                let measurements = targets.map { target in
-                    RT60Measurement(frequency: target.frequency, rt60: target.targetRT60)
-                }
-
-                let deviations = RT60Evaluator.evaluateDINCompliance(
-                    measurements: measurements,
-                    roomType: roomType,
-                    volume: volume
-                )
-
-                XCTAssertEqual(deviations.count, targets.count)
-                XCTAssertTrue(deviations.allSatisfy { $0.status == .withinTolerance })
-                XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: deviations), .withinTolerance)
-            }
-        }
+        let deviations = RT60Evaluator.evaluateDINCompliance(
+            measurements: measurements,
+            roomType: .a3Education,
+            volume: 150.0
+        )
+        let edge = deviations.first { $0.frequency == 125 }
+        let mid = deviations.first { $0.frequency == 500 }
+        XCTAssertEqual(edge?.status, .withinTolerance)
+        XCTAssertEqual(mid?.status, .tooLow)
     }
 
     func testEmptyMeasurements() {
         let deviations = RT60Evaluator.evaluateDINCompliance(
             measurements: [],
-            roomType: .classroom,
+            roomType: .a3Education,
             volume: 150.0
         )
-
         XCTAssertTrue(deviations.isEmpty)
         XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: []), .withinTolerance)
     }
 
-    func testMismatchedFrequencies() {
+    func testMismatchedFrequenciesAreIgnored() {
         let measurements = [
-            RT60Measurement(frequency: 100, rt60: 0.60), // Non-standard frequency
-            RT60Measurement(frequency: 500, rt60: 0.60),  // Standard frequency
+            RT60Measurement(frequency: 100, rt60: 0.60), // not an evaluated octave
+            RT60Measurement(frequency: 500, rt60: 0.60)
         ]
-
         let deviations = RT60Evaluator.evaluateDINCompliance(
             measurements: measurements,
-            roomType: .classroom,
+            roomType: .a3Education,
             volume: 150.0
         )
-
-        XCTAssertEqual(deviations.count, 1) // Only the 500 Hz measurement should be evaluated
+        XCTAssertEqual(deviations.count, 1)
         XCTAssertEqual(deviations.first?.frequency, 500)
+    }
+
+    func testCompleteWorkflowForEveryGroup() {
+        for group in RoomType.allCases {
+            let range = group.validVolumeRange
+            let volume = (range.lowerBound + range.upperBound) / 2.0
+            let targets = DIN18041Database.targets(for: group, volume: volume)
+            let measurements = targets.map { RT60Measurement(frequency: $0.frequency, rt60: $0.targetRT60) }
+
+            let deviations = RT60Evaluator.evaluateDINCompliance(
+                measurements: measurements,
+                roomType: group,
+                volume: volume
+            )
+
+            XCTAssertEqual(deviations.count, targets.count, "\(group) band count")
+            XCTAssertTrue(deviations.allSatisfy { $0.status == .withinTolerance }, "\(group) all within tolerance")
+        }
     }
 }
