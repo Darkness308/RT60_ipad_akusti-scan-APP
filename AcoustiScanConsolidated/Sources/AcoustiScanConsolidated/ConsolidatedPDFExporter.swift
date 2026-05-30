@@ -93,7 +93,7 @@ public class ConsolidatedPDFExporter {
             kCGPDFContextCreator: "AcoustiScan Consolidated Tool",
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
             kCGPDFContextTitle: "Gutachterlicher Raumakustik Report",
-            kCGPDFContextSubject: "RT60 Messung und DIN 18041 Bewertung"
+            kCGPDFContextSubject: "RT60 Berechnung (Sabine) und DIN 18041 Bewertung"
         ]
 
         let format = UIGraphicsPDFRendererFormat()
@@ -142,7 +142,7 @@ public class ConsolidatedPDFExporter {
         yPosition += 60
 
         // Subtitle
-        let subtitle = "RT60-Messung und DIN 18041-Bewertung"
+        let subtitle = "RT60-Berechnung (Sabine) und DIN 18041-Bewertung"
         let subtitleAttrs = PDFStyling.titleAttributes(size: 18, color: .darkGray)
         PDFStyling.draw(subtitle, at: CGPoint(x: margin, y: yPosition), attributes: subtitleAttrs)
         yPosition += 80
@@ -198,7 +198,7 @@ public class ConsolidatedPDFExporter {
 
         let metadataText = """
         Grunddaten:
-        - Messung durchgeführt am: \(data.date)
+        - Bericht erstellt am: \(data.date)
         - Raumtyp: \(data.roomType.displayName)
         - Raumvolumen: \(String(format: "%.2f", data.volume)) m³
         - Anzahl Oberflächenelemente: \(data.surfaces.count)
@@ -336,10 +336,11 @@ public class ConsolidatedPDFExporter {
         // Quality assurance statement
         yPosition += 40
         let qaStatement = """
-        Gutachterliche Bestätigung:
-        Diese Messung wurde nach DIN 18041 durchgeführt und entspricht den wissenschaftlichen Standards
-        für raumakustische Bewertungen. Die Empfehlungen basieren auf validierten akustischen Prinzipien
-        und dem 48-Parameter-Framework für umfassende Audiobewertung.
+        Hinweis zur Methodik:
+        Die RT60-Werte in diesem Bericht wurden nach der Sabine-Formel aus Raumvolumen und
+        Materialabsorption berechnet (Prognose), nicht akustisch gemessen. Die Bewertung
+        erfolgt nach DIN 18041:2016-03. Für eine messtechnische Abnahme ist eine
+        Impulsantwort-/Nachhallmessung nach ISO 3382 mit kalibriertem Mikrofon erforderlich.
         """
 
         let qaAttrs = PDFStyling.bodyAttributes(size: 12, color: .darkGray)
