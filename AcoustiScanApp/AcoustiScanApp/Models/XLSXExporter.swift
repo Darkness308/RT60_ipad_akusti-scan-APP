@@ -102,14 +102,14 @@ private class XLSXBuilder {
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
             <Default Extension="rels" \
-ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+        ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
             <Default Extension="xml" ContentType="application/xml"/>
             <Override PartName="/xl/workbook.xml" \
-ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+        ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
             <Override PartName="/xl/worksheets/sheet1.xml" \
-ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+        ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
             <Override PartName="/xl/styles.xml" \
-ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+        ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
         </Types>
         """
     }
@@ -119,8 +119,8 @@ ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
             <Relationship Id="rId1" \
-Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" \
-Target="xl/workbook.xml"/>
+        Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" \
+        Target="xl/workbook.xml"/>
         </Relationships>
         """
     }
@@ -129,7 +129,7 @@ Target="xl/workbook.xml"/>
         return """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" \
-xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
             <sheets>
                 <sheet name="Materials" sheetId="1" r:id="rId1"/>
             </sheets>
@@ -215,11 +215,11 @@ xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
             <Relationship Id="rId1" \
-Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" \
-Target="worksheets/sheet1.xml"/>
+        Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" \
+        Target="worksheets/sheet1.xml"/>
             <Relationship Id="rId2" \
-Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" \
-Target="styles.xml"/>
+        Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" \
+        Target="styles.xml"/>
         </Relationships>
         """
     }
@@ -492,7 +492,9 @@ private class ZIPArchive {
 extension Data {
     mutating func append<T: FixedWidthInteger>(littleEndian value: T) {
         var littleEndianValue = value.littleEndian
-        withUnsafeBytes(of: &littleEndianValue) { bytes in
+        // Qualify with `Swift.` so this resolves to the global withUnsafeBytes(of:_:)
+        // rather than Data's instance method (we are inside `extension Data`).
+        Swift.withUnsafeBytes(of: &littleEndianValue) { bytes in
             self.append(contentsOf: bytes)
         }
     }

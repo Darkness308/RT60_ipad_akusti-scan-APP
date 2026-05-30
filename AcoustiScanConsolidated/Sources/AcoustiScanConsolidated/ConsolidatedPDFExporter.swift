@@ -14,9 +14,9 @@ public class ConsolidatedPDFExporter {
 
     #if canImport(UIKit)
     private enum PDFStyling {
-        private static let margin: CGFloat = 72
+        fileprivate static let margin: CGFloat = 72
 
-        private static func titleAttributes(
+        fileprivate static func titleAttributes(
             size: CGFloat,
             weight: UIFont.Weight = .regular,
             color: UIColor = .black
@@ -27,7 +27,7 @@ public class ConsolidatedPDFExporter {
             ]
         }
 
-        private static func bodyAttributes(
+        fileprivate static func bodyAttributes(
             size: CGFloat = 14,
             color: UIColor = .black
         ) -> [NSAttributedString.Key: Any] {
@@ -37,24 +37,24 @@ public class ConsolidatedPDFExporter {
             ]
         }
 
-        private static func footerAttributes() -> [NSAttributedString.Key: Any] {
+        fileprivate static func footerAttributes() -> [NSAttributedString.Key: Any] {
             [
                 .font: UIFont.systemFont(ofSize: 12),
                 .foregroundColor: UIColor.gray
             ]
         }
 
-        private static func draw(_ text: String, at point: CGPoint, attributes: [NSAttributedString.Key: Any]) {
+        fileprivate static func draw(_ text: String, at point: CGPoint, attributes: [NSAttributedString.Key: Any]) {
             text.draw(at: point, withAttributes: attributes)
         }
 
-        private static func draw(_ text: String, in rect: CGRect, attributes: [NSAttributedString.Key: Any]) {
+        fileprivate static func draw(_ text: String, in rect: CGRect, attributes: [NSAttributedString.Key: Any]) {
             text.draw(in: rect, withAttributes: attributes)
         }
     }
 
     private enum PDFListRenderer {
-        private static func drawBulletedList(
+        fileprivate static func drawBulletedList(
             _ items: [String],
             startY: CGFloat,
             margin: CGFloat,
