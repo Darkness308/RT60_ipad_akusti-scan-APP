@@ -409,4 +409,34 @@ final class ReportContractTests: XCTestCase {
             }
         }
     }
+
+    // MARK: - H2: volume validity flag
+
+    private func makeReportData(roomType: RoomType, volume: Double) -> ReportData {
+        ReportData(
+            date: "2025-07-21",
+            roomType: roomType,
+            volume: volume,
+            rt60Measurements: [RT60Measurement(frequency: 1000, rt60: 0.5)],
+            dinResults: [RT60Deviation(frequency: 1000, measuredRT60: 0.5, targetRT60: 0.5, status: .withinTolerance)],
+            acousticFrameworkResults: [:],
+            surfaces: [],
+            recommendations: []
+        )
+    }
+
+    func testReportFlagsVolumeWithinValidRange() {
+        // A3 valid 30–5000 m³; 150 m³ is inside.
+        let model = ReportModel.from(makeReportData(roomType: .a3Education, volume: 150))
+        XCTAssertEqual(model.validity["din_volume_valid"], "ja")
+        XCTAssertNil(model.validity["din_hinweis"])
+    }
+
+    func testReportFlagsVolumeOutsideValidRange() {
+        // A4 valid 30–500 m³; 2000 m³ is outside → must be flagged, not silently extrapolated.
+        let model = ReportModel.from(makeReportData(roomType: .a4EducationInclusive, volume: 2000))
+        XCTAssertNotEqual(model.validity["din_volume_valid"], "ja")
+        XCTAssertTrue(model.validity["din_volume_valid"]?.contains("außerhalb") ?? false)
+        XCTAssertNotNil(model.validity["din_hinweis"])
+    }
 }

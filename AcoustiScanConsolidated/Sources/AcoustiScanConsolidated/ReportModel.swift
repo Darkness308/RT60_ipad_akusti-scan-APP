@@ -68,10 +68,26 @@ extension ReportModel {
             ]
         }
 
-        let validity = [
+        // DIN 18041 validity: surface whether the room volume lies within the
+        // usage group's valid range. The target equation T_soll = a·lg(V)+b is only
+        // defined inside this range; outside it the value is an extrapolation and
+        // must be flagged rather than presented as a normative target.
+        let range = reportData.roomType.validVolumeRange
+        let withinRange = reportData.roomType.isVolumeWithinValidRange(reportData.volume)
+        let rangeText = "\(Int(range.lowerBound))–\(Int(range.upperBound)) m³"
+
+        var validity = [
             "method": "ISO3382-1",
-            "bands": "octave"
+            "bands": "octave",
+            "din_volume_range": rangeText,
+            "din_volume_valid": withinRange
+                ? "ja"
+                : "NEIN – Volumen \(Int(reportData.volume)) m³ außerhalb gültigem Bereich (\(rangeText)); T_soll extrapoliert"
         ]
+        if !withinRange {
+            validity["din_hinweis"] =
+                "Sollwerte sind außerhalb des für Gruppe \(reportData.roomType.groupLabel) gültigen Volumenbereichs nicht norm­konform."
+        }
 
         let audit = [
             "hash": "DEMO\(abs(reportData.date.hashValue))",
