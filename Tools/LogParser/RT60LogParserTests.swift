@@ -47,8 +47,9 @@ final class RT60LogParserTests: XCTestCase {
         XCTAssertFalse(model.summary.checksum_ok) // Fixture-Checksum bewusst "falsch"
     }
 
-    func test_cli_exits_nonzero_on_format_error() throws {
-        // Hier könnte ein fehlerhaftes Fixture genutzt werden (nicht vorhanden) - Placeholder:
+    func test_malformed_band_line_does_not_yield_valid_band() throws {
+        // Previously a placeholder (XCTAssertTrue(true)). A malformed T20 line
+        // ("125Hz abc" — no numeric value) must not parse into a valid 125 Hz band.
         let bad = """
         Setup:
         AppVersion=1.0.0
@@ -56,7 +57,12 @@ final class RT60LogParserTests: XCTestCase {
         T20:
         125Hz abc
         """
-        _ = bad // Integriere später in CLI E2E-Tests
-        XCTAssertTrue(true)
+        let model = try RT60LogParser().parse(text: bad, sourceFile: "bad")
+        if let b125 = model.bands.first(where: { $0.freq_hz == 125 }) {
+            XCTAssertFalse(b125.valid, "Malformed '125Hz abc' must not be a valid band")
+            XCTAssertNil(b125.t20_s, "Malformed line must not yield a numeric T20")
+        }
+        // (If the parser drops the malformed line entirely, that is also acceptable;
+        // the contract is simply that it must never become a valid numeric band.)
     }
 }
