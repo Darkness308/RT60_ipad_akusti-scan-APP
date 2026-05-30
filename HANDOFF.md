@@ -211,7 +211,7 @@ im GitHub-UI setzen (nicht im Code, nicht von einer Sandbox):
    - ☑ Require branches up to date before merging
    Ohne dies kann (auch der externe Dev) **rot mergen** oder direkt auf `main` pushen.
 2. **Actions-Berechtigungen für Forks** (Settings → Actions → General): Workflow-Permissions auf
-   *read-only* + „Require approval for all outside collaborators" (Security-Review-Gate, vgl. LICENSE/Onboarding).
+   *read-only* + „Require approval for all outside collaborators" (Security-Review-Gate, vgl. LICENSE und ONBOARDING_EXTERNAL.md).
 3. **CODEOWNERS** ist jetzt real (`@Darkness308` statt nicht-existenter `@your-org/*`-Teams);
    greift aber erst mit „Require review from Code Owners" aus Punkt 1. Sobald echte Teams
    existieren, dort eintragen.
