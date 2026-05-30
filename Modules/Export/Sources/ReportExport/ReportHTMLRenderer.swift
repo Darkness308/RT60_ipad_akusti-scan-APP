@@ -172,6 +172,11 @@ public final class ReportHTMLRenderer {
             }
         }
 
+        // Mirror the PDF paths: show an explicit dash row when there are no targets.
+        if dinRows.isEmpty {
+            dinRows.append("<tr><td>-</td><td>-</td><td>-</td></tr>")
+        }
+
         let din = """
         <h2>DIN 18041 Ziel & Toleranz</h2>
         <table>
