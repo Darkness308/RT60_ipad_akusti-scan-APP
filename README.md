@@ -444,18 +444,34 @@ Proprietary - Alle Rechte vorbehalten
 
 - **Berechnungskern (`AcoustiScanConsolidated`, `Modules/Export`)**: solide, getestet,
   baut plattformunabhängig via `swift build`/`swift test`. **Übernahmefähig.**
-- **iOS-App (`AcoustiScanApp`)**: **noch nicht produktionsreif.** Der App-Einstieg
-  (`ContentView`) ist aktuell ein Platzhalter; die unten beschriebene 5-Tab-Navigation
-  ist noch nicht verdrahtet. Einzelne Views werden gerade integriert/repariert.
-- **CI**: Bis vor Kurzem hat kein Workflow die App per `xcodebuild` gebaut und das
-  App-Test-Target ist nicht im Xcode-Projekt verdrahtet. Der neue Workflow
-  `ci-honest.yml` baut App + Packages ohne Fehler-Maskierung und bildet den
-  wahren Zustand ab.
-- **DIN 18041**: Sollwerte werden auf die normkonformen Gleichungen (1)–(6) nach
-  DIN 18041:2016-03 umgestellt (siehe Sollwert-Tabelle oben).
+- **iOS-App (`AcoustiScanApp`)**: kompiliert **verifiziert** (CI via `xcodebuild` für
+  den iOS-Simulator); der App-Einstieg (`ContentView`) ist als 5-Tab-Navigation
+  (RT60 / Scan / Maße / Material / Export) verdrahtet. Laufzeit-Funktionen auf echtem
+  Gerät (LiDAR/RoomPlan) lassen sich in CI nicht abschließend verifizieren.
+- **CI**: `ci-honest.yml` baut App + Packages ohne Fehler-Maskierung (Xcode 15.4,
+  bewusst gepinnt) und postet bei Fehlern den echten Build-/Test-Tail an den PR. Die
+  früheren maskierenden Workflows (Retry/Self-Healing/Autofix, `swift.yml`,
+  `build-test.yml`) sind stillgelegt.
+- **DIN 18041**: Die normkonformen Sollwertgleichungen (1)–(6) nach DIN 18041:2016-03
+  und das frequenzabhängige Bild-2-Toleranzband (A1–A5) sind implementiert und
+  getestet (siehe Sollwert-Tabelle oben).
 
-Die folgenden Feature-Beschreibungen sind als **Zielbild** zu lesen, nicht als
-fertiger Auslieferungsstand.
+### Bekannte technische Schulden (bewusst zurückgestellt)
+
+- **Doppelte Datenmodelle**: Die App führt eigene Modelle (`AcousticMaterial`,
+  `SurfaceStore`, PDF/XLSX-Exporter) **parallel** zu denen im Package
+  `AcoustiScanConsolidated`. Beide Seiten sind in sich konsistent und grün; eine
+  Konsolidierung (App → Package-Modelle) ist ein größerer, regressionsanfälliger
+  Refactor und wurde bewusst zurückgestellt.
+- **Dual-Build-System der App**: Die CI baut die App über
+  `AcoustiScanApp/AcoustiScanApp.xcodeproj` (xcodebuild). Daneben existiert ein
+  paralleles SPM-Manifest `AcoustiScanApp/Package.swift`, das **nicht** von der CI
+  genutzt wird — bei Build-Einstellungen/Abhängigkeiten ist das **`.xcodeproj`
+  maßgeblich**.
+
+Die folgenden Feature-Beschreibungen sind als **Zielbild** zu lesen: Auf
+Kompilier-/Testebene verifiziert, die volle Geräte-Laufzeit ist noch nicht
+abschließend abgenommen.
 
 ---
 

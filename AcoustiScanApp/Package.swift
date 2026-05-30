@@ -14,15 +14,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(path: "../AcoustiScanConsolidated"),
-        .package(name: "ReportExport", path: "../Modules/Export")
+        .package(path: "../AcoustiScanConsolidated")
     ],
     targets: [
         .target(
             name: "AcoustiScanApp",
             dependencies: [
-                .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated"),
-                .product(name: "ReportExport", package: "ReportExport")
+                .product(name: "AcoustiScanConsolidated", package: "AcoustiScanConsolidated")
             ],
             path: "AcoustiScanApp",
             swiftSettings: [
