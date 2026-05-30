@@ -60,11 +60,11 @@ AcoustiScanApp (SwiftUI UI Layer)
 
 ### Tab-Navigation
 
-1. **Scanner-Tab**: LiDAR-basierte Raumerfassung mit ARKit
-2. **RT60-Tab**: Nachhallzeitmessung mit Frequenzgrafiken
-3. **Results-Tab**: DIN 18041 Klassifizierung und Bewertung
-4. **Export-Tab**: PDF-Report-Generierung und Share Sheet
-5. **Materials-Tab**: Material-Datenbank mit Suchfunktion
+1. **RT60-Tab**: Nachhallzeitmessung mit Frequenzgrafiken
+2. **Scan-Tab**: LiDAR-basierte Raumerfassung (RoomPlan/ARKit)
+3. **Maße-Tab**: Manuelle Raum-/Flächeneingabe
+4. **Material-Tab**: Material-Datenbank mit Suchfunktion
+5. **Export-Tab**: PDF-Report-Generierung und Share Sheet
 
 ### Berechtigungen
 
@@ -111,7 +111,7 @@ RT60_ipad_akusti-scan-APP/
 │   │   ├── App/                    # App Entry Point
 │   │   │   ├── AcoustiScanApp.swift
 │   │   │   └── ContentView.swift
-│   │   ├── Views/                  # UI Layer (13 Views)
+│   │   ├── Views/                  # UI Layer (11 Views)
 │   │   │   ├── RT60/               # RT60View, ChartView, ClassificationView
 │   │   │   ├── Scanner/            # LiDAR, RoomScan, ARCoordinator
 │   │   │   ├── Material/           # MaterialEditorView
@@ -154,9 +154,9 @@ RT60_ipad_akusti-scan-APP/
 
 ### 3. DIN 18041 Evaluator
 
-- Raumtyp-Klassifizierung (A1, A2, A3, B, C, D, E)
-- Soll-/Ist-Vergleich der Nachhallzeit
-- Abweichungsanalyse nach Norm
+- Nutzungsart-Klassifizierung nach Gruppe A (A1–A5)
+- Soll-/Ist-Vergleich der Nachhallzeit (volumenabhängiges `T_soll`)
+- Frequenzabhängige Abweichungsanalyse gegen das Bild-2-Toleranzband
 - Farbcodierte Bewertung (Grün/Gelb/Rot)
 
 ### 4. PDF-Report
@@ -314,15 +314,15 @@ Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu lei
 │  │  │ RT60         │  │ DIN 18041    │  │ Material     │     │ │
 │  │  │ Calculator   │  │ Evaluator    │  │ Database     │     │ │
 │  │  │              │  │              │  │              │     │ │
-│  │  │ Sabine-      │  │ Raumtyp-     │  │ 500+         │     │ │
-│  │  │ Formel       │  │ Klassierung  │  │ Materialien  │     │ │
+│  │  │ Sabine-      │  │ Gruppe A     │  │ Grundstock   │     │ │
+│  │  │ Formel       │  │ A1–A5        │  │ + CSV-Import │     │ │
 │  │  └──────────────┘  └──────────────┘  └──────────────┘     │ │
 │  │                                                            │ │
 │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │ │
 │  │  │ Measurement  │  │ Acoustic     │  │ PDF Report   │     │ │
 │  │  │ Quality      │  │ Framework    │  │ Generator    │     │ │
 │  │  │              │  │              │  │              │     │ │
-│  │  │ ISO 3382-1   │  │ 48 Parameter │  │ 6-Seiten     │     │ │
+│  │  │ ISO 3382-1   │  │ Parameter    │  │ Mehrseitig   │     │ │
 │  │  │ Konformität  │  │ Klangfarbe+  │  │ Gutachten    │     │ │
 │  │  └──────────────┘  └──────────────┘  └──────────────┘     │ │
 │  └────────────────────────────────────────────────────────────┘ │
@@ -397,7 +397,7 @@ Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu lei
 | 1 | `RT60Calculator.swift` | Kernalgorithmus |
 | 2 | `ContentView.swift` | App-Einstiegspunkt |
 | 3 | `RoomScanView.swift` | LiDAR-Integration |
-| 4 | `Surface.swift` | Datenmodell |
+| 4 | `AcousticSurface.swift` | Datenmodell |
 | 5 | `MeasurementQuality.swift` | ISO-Konformität |
 
 ---
@@ -421,7 +421,7 @@ Proprietary - Alle Rechte vorbehalten
 
 ✅ **App Structure**
 - Created complete Xcode project for iPadOS 17.0+
-- Integrated 13 SwiftUI views from source archives
+- Integrated 11 SwiftUI views from source archives
 - Linked AcoustiScanConsolidated Swift Package
 
 ✅ **Features**
@@ -429,7 +429,7 @@ Proprietary - Alle Rechte vorbehalten
 - Tab 2: RT60 Measurement (frequency analysis)
 - Tab 3: DIN 18041 Classification (evaluation)
 - Tab 4: PDF Export (6-page reports)
-- Tab 5: Material Database (500+ materials)
+- Tab 5: Material Database (predefined seed set + CSV/XLSX import)
 
 ✅ **Backend Integration**
 - RT60 Calculation Engine (consolidated)
@@ -476,4 +476,5 @@ abschließend abgenommen.
 ---
 
 **Relates-to**: Commits 046245c (Merge cleanup), e15c8c8 (Consolidation)
-**Status**: Berechnungskern produktionsnah; App-Integration in Arbeit (siehe „Aktueller Stand").
+**Status**: Berechnungskern produktionsnah; App kompiliert verifiziert (5-Tab-Navigation),
+Geräte-Laufzeit noch nicht abschließend abgenommen (siehe „Aktueller Stand").
