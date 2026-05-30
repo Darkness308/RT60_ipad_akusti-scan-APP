@@ -306,12 +306,22 @@ final class PDFExportTests: XCTestCase {
         XCTAssertEqual(reportData.recommendations.count, 1)
     }
 
-    func testPDFGenerationAvailabilityDoesNotCrash() {
-        #if canImport(UIKit)
-        XCTAssertTrue(true)
-        #else
-        XCTAssertTrue(true)
-        #endif
+    func testPDFGenerationProducesNonEmptyData() {
+        // Previously both #if branches asserted XCTAssertTrue(true) (a no-op).
+        // Render an actual report and assert it produces non-empty output.
+        let reportData = ConsolidatedPDFExporter.ReportData(
+            date: "2025-01-01",
+            roomType: .a3Education,
+            volume: 150.0,
+            rt60Measurements: [RT60Measurement(frequency: 1000, rt60: 0.6)],
+            dinResults: [RT60Deviation(frequency: 1000, measuredRT60: 0.6, targetRT60: 0.55, status: .withinTolerance)],
+            acousticFrameworkResults: [:],
+            surfaces: [],
+            recommendations: ["Test"]
+        )
+        let model = ReportModel.from(reportData)
+        let data = ReportHTMLRenderer().render(model)
+        XCTAssertFalse(data.isEmpty, "HTML report rendering should produce non-empty data")
     }
 }
 

@@ -35,10 +35,22 @@ final class PDFReportSnapshotTests: XCTestCase {
 
         XCTAssertEqual(doc.pageCount, 1)
 
+        // A literal byte-hash snapshot would be flaky (PDFs embed creation
+        // dates/IDs, so the bytes differ between runs). Instead assert real,
+        // content-based invariants that fail if rendering breaks, plus that the
+        // hash is well-formed (64 hex chars) so the hashing path is exercised.
         let h = Self.hash(data)
-        // Erwartungswert beim ersten Lauf ermitteln & festschreiben:
-        // XCTFail("Hash=\(h)")  // einmalig ausgeben, dann Wert unten eintragen
-        XCTAssertEqual(h, h) // Platzhalter: trage den erwarteten Hash ein
+        XCTAssertEqual(h.count, 64, "SHA256 hex digest must be 64 chars")
+        XCTAssertTrue(h.allSatisfy { $0.isHexDigit }, "hash must be hex")
+
+        let text = (0..<doc.pageCount)
+            .compactMap { doc.page(at: $0)?.string }
+            .joined(separator: "\n")
+            .lowercased()
+        XCTAssertTrue(text.contains("rt60 bericht"), "PDF should contain the report title")
+        XCTAssertTrue(text.contains("din 18041"), "PDF should contain the DIN section")
+        XCTAssertTrue(text.contains("0.60"), "PDF should render the model's T_soll value")
+        XCTAssertTrue(text.contains("wandabsorber ergänzen"), "PDF should render recommendations")
         #else
         // On platforms without PDFKit, just verify the PDF renderer produces data
         let model = ReportModel(
