@@ -1,7 +1,7 @@
 # CODEOWNERS — wer Änderungen freigeben muss.
 #
 # Wirkt nur, wenn auf `main` Branch-Protection mit "Require review from Code Owners"
-# aktiv ist (GitHub → Settings → Branches). Siehe HANDOFF §10 / Governance.
+# aktiv ist (GitHub → Settings → Branches). Siehe HANDOFF §11 / Governance.
 #
 # Die zuvor hier eingetragenen Teams (@your-org/...) existierten NICHT und haben
 # daher nichts erzwungen. Bis echte Teams angelegt sind, ist der Repo-Owner
