@@ -462,8 +462,11 @@ class AcoustiScanUITests: XCTestCase {
         // Verify ContentView accessibility identifiers
         let contentViewIdentifiers = [
             "contentView",
-            "globeIcon",
-            "welcomeText"
+            "tabRT60",
+            "tabScan",
+            "tabDimensions",
+            "tabMaterials",
+            "tabExport"
         ]
 
         for identifier in contentViewIdentifiers {
