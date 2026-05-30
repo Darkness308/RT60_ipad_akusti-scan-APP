@@ -198,6 +198,27 @@ einfließen.
 ersetzt. Verbleibende **immer-skippende** Tests (`TimeoutConfigurationTests` via Datei-Existenz)
 sollten gelöscht oder mit echten Fixtures versehen werden.
 
+## 11. Governance / Systemdurchsetzung (vor dem Fork einzurichten)
+
+Die ehrliche CI **läuft** automatisch (push/PR), aber „laufen" ≠ „erzwungen". Drei Dinge
+entscheiden, ob roter/ungeprüfter Code blockiert wird — zwei davon kann **nur der Repo-Owner**
+im GitHub-UI setzen (nicht im Code, nicht von einer Sandbox):
+
+1. **Branch-Protection auf `main`** (Settings → Branches → Add rule):
+   - ☑ Require a pull request before merging
+   - ☑ Require status checks to pass → **`Swift packages (build + test)`** und **`iOS app (xcodebuild)`** als *required* markieren
+   - ☑ Require review from Code Owners
+   - ☑ Require branches up to date before merging
+   Ohne dies kann (auch der externe Dev) **rot mergen** oder direkt auf `main` pushen.
+2. **Actions-Berechtigungen für Forks** (Settings → Actions → General): Workflow-Permissions auf
+   *read-only* + „Require approval for all outside collaborators" (Security-Review-Gate, vgl. LICENSE und ONBOARDING_EXTERNAL.md).
+3. **CODEOWNERS** ist jetzt real (`@Darkness308` statt nicht-existenter `@your-org/*`-Teams);
+   greift aber erst mit „Require review from Code Owners" aus Punkt 1. Sobald echte Teams
+   existieren, dort eintragen.
+
+> Status dieser drei Punkte ist **von der Sandbox aus nicht prüfbar** (kein Branch-Protection-API-Zugriff).
+> Bitte im UI verifizieren — das ist die eigentliche Durchsetzung hinter der „ehrlichen CI".
+
 ---
 
 *Letzte Aktualisierung dieses Dokuments: 2026-05-30. Bei Abweichungen zwischen diesem Dokument und dem Code

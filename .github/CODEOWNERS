@@ -1,5 +1,24 @@
-# Kernmodule
-/Tools/LogParser/           @your-org/dsp-team
-/Modules/Export/            @your-org/ios-team
-/Schemas/                   @your-org/qa-team
-/Docs/                      @your-org/docs-team
+# CODEOWNERS — wer Änderungen freigeben muss.
+#
+# Wirkt nur, wenn auf `main` Branch-Protection mit "Require review from Code Owners"
+# aktiv ist (GitHub → Settings → Branches). Siehe HANDOFF §11 / Governance.
+#
+# Die zuvor hier eingetragenen Teams (@your-org/...) existierten NICHT und haben
+# daher nichts erzwungen. Bis echte Teams angelegt sind, ist der Repo-Owner
+# Fallback-Reviewer für alles.
+
+# Default: alles braucht Owner-Freigabe
+*                           @Darkness308
+
+# Akustik-Kern (normtreue DIN/RT60-Logik — mit besonderer Sorgfalt prüfen)
+/AcoustiScanConsolidated/   @Darkness308
+
+# Report-/Export-Rendering
+/Modules/Export/            @Darkness308
+
+# iOS-App
+/AcoustiScanApp/            @Darkness308
+
+# Verträge & CI (Schemas, Workflows) — Änderungen hier sind besonders sensibel
+/Schemas/                   @Darkness308
+/.github/                   @Darkness308
