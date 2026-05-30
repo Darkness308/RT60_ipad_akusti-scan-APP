@@ -204,11 +204,14 @@ final class PDFRobustnessTests: XCTestCase {
         XCTAssertFalse(pdfData3.isEmpty, "PDF should handle all null values")
         let pdfText3 = extractPDFText(pdfData3).lowercased()
 
-        // Should still contain required elements
+        // Should still contain the required RT60 display frequencies
         XCTAssertTrue(pdfText3.contains("125"), "PDF should contain required frequency 125")
         XCTAssertTrue(pdfText3.contains("1000"), "PDF should contain required frequency 1000")
         XCTAssertTrue(pdfText3.contains("4000"), "PDF should contain required frequency 4000")
-        XCTAssertTrue(pdfText3.contains("0.6"), "PDF should contain required DIN value 0.6")
+        // With only null DIN targets, the section must show a dash placeholder,
+        // not a fabricated standard value.
+        XCTAssertTrue(pdfText3.contains("t_soll=-"), "Null DIN targets should render as '-'")
+        XCTAssertFalse(pdfText3.contains("0.6"), "PDF must not contain a fabricated DIN value")
     }
 
     // MARK: - Helpers
