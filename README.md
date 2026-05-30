@@ -263,29 +263,19 @@ swift build
 
 ---
 
-## 🎓 Für Auszubildende / Einsteiger
+## 🧭 Code verstehen
 
-Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu leisten.
+Einstieg für neue Mitwirkende:
 
-### Erste Schritte
-
-1. **Repository klonen und bauen**:
+1. **Bauen & testen** (siehe [HANDOFF.md](HANDOFF.md) §3 für alle Befehle):
    ```bash
    git clone https://github.com/Darkness308/RT60_ipad_akusti-scan-APP.git
    cd RT60_ipad_akusti-scan-APP
-
-   # Backend testen
-   cd AcoustiScanConsolidated
-   swift build && swift test
-   cd ..
-
-   # Xcode öffnen
+   (cd AcoustiScanConsolidated && swift build && swift test)
    open AcoustiScanApp/AcoustiScanApp.xcodeproj
    ```
-
-2. **Lies CONTRIBUTING.md** - Dort findest du alle Entwicklungsrichtlinien.
-
-3. **Verstehe die Architektur** (siehe Diagramm unten).
+2. **Richtlinien**: [CONTRIBUTING.md](CONTRIBUTING.md). **Mitarbeit von extern**: [ONBOARDING_EXTERNAL.md](ONBOARDING_EXTERNAL.md).
+3. **Architektur** (Diagramm unten), zentrale Konzepte und die wichtigsten Dateien.
 
 ### Architektur-Übersicht
 
@@ -345,53 +335,6 @@ Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu lei
 | **ARKit** | Augmented Reality Framework | `LiDARScanView.swift` |
 | **SwiftUI** | Deklaratives UI-Framework | `Views/*.swift` |
 | **MVVM** | Model-View-ViewModel Architekturmuster | Gesamtprojekt |
-
-### Lernpfad
-
-**Woche 1-2: Grundlagen**
-- [ ] Swift-Syntax lernen ([Swift Tour](https://docs.swift.org/swift-book/GuidedTour/GuidedTour.html))
-- [ ] SwiftUI-Basics ([Apple Tutorial](https://developer.apple.com/tutorials/swiftui))
-- [ ] Git-Grundlagen (clone, commit, push, pull request)
-
-**Woche 3-4: Projekt verstehen**
-- [ ] README.md und CONTRIBUTING.md lesen
-- [ ] Projektstruktur erkunden
-- [ ] Erste kleine Änderung machen (z.B. Typo fixen)
-
-**Woche 5-6: Akustik-Grundlagen**
-- [ ] Was ist RT60? (YouTube: "Reverberation Time Explained")
-- [ ] DIN 18041 verstehen (Zusammenfassung lesen)
-- [ ] `RT60Calculator.swift` durchlesen
-
-**Woche 7-8: Eigene Features**
-- [ ] Issue auswählen und bearbeiten
-- [ ] Pull Request erstellen
-- [ ] Code Review durchlaufen
-
-### Häufige Aufgaben für Anfänger
-
-1. **Lokalisierung hinzufügen**
-   - Neue Strings in `LocalizationKeys.swift` eintragen
-   - Übersetzungen in `Localizable.strings` (de/en)
-
-2. **UI-Test schreiben**
-   - Beispiel in `AcoustiScanAppTests/` ansehen
-   - `XCTAssert` für Assertions verwenden
-
-3. **Material zur Datenbank hinzufügen**
-   - `MaterialDatabase.swift` bearbeiten
-   - Absorptionskoeffizienten recherchieren
-
-4. **Bug fixen**
-   - Issue-Liste durchsuchen
-   - `[good first issue]` Label suchen
-
-### Hilfe bekommen
-
-- **Im Code**: Kommentare lesen, `// MARK:` Abschnitte beachten
-- **Dokumentation**: Apple Developer Documentation
-- **Fragen**: Issue im Repository erstellen
-- **Pair Programming**: Mentor um Session bitten
 
 ### Wichtige Dateien zum Studieren
 
