@@ -41,6 +41,14 @@ public class SurfaceStore: ObservableObject {
     /// Room dimensions (optional)
     @Published public var roomDimensions: (width: Double, height: Double, depth: Double)?
 
+    /// Persistence key for the serialized store.
+    private static let storeKey = "surfaceStore"
+
+    /// Guards against clobbering good data: stays false if a saved blob exists
+    /// but could not be decoded, so `saveSurfaces()` refuses to overwrite it
+    /// with the in-memory default. Set true on a clean load or empty start.
+    private var canPersist = false
+
     /// Initialize empty store
     public init() {
         loadSurfaces()
@@ -144,9 +152,22 @@ public class SurfaceStore: ObservableObject {
             roomDimensions: roomDimensions
         )
 
+        // Refuse to overwrite a saved blob we could not decode: persisting the
+        // in-memory default here would permanently destroy still-valid data.
+        guard canPersist else {
+            ErrorLogger.log(
+                NSError(domain: "SurfaceStore", code: 1, userInfo: [
+                    NSLocalizedDescriptionKey: "Skipped save: previous data could not be loaded; not overwriting it."
+                ]),
+                context: "SurfaceStore.saveSurfaces",
+                level: .error
+            )
+            return
+        }
+
         do {
             let encoded = try JSONEncoder().encode(data)
-            UserDefaults.standard.set(encoded, forKey: "surfaceStore")
+            UserDefaults.standard.set(encoded, forKey: Self.storeKey)
         } catch {
             ErrorLogger.log(
                 error,
@@ -157,7 +178,9 @@ public class SurfaceStore: ObservableObject {
     }
 
     private func loadSurfaces() {
-        guard let data = UserDefaults.standard.data(forKey: "surfaceStore") else {
+        guard let data = UserDefaults.standard.data(forKey: Self.storeKey) else {
+            // No saved data yet → a fresh, empty store is safe to persist.
+            canPersist = true
             return
         }
 
@@ -167,10 +190,15 @@ public class SurfaceStore: ObservableObject {
             roomVolume = decoded.roomVolume
             roomName = decoded.roomName
             roomDimensions = decoded.roomDimensions
+            canPersist = true
         } catch {
+            // Decode failed (e.g. Codable schema drift). Keep canPersist = false so we
+            // never overwrite the unreadable-but-present blob, and back it up so a
+            // future migration can recover it instead of losing it silently.
+            UserDefaults.standard.set(data, forKey: Self.storeKey + ".corrupt")
             ErrorLogger.log(
                 error,
-                context: "SurfaceStore.loadSurfaces",
+                context: "SurfaceStore.loadSurfaces (backed up to \(Self.storeKey).corrupt; saves disabled to protect data)",
                 level: .error
             )
         }
