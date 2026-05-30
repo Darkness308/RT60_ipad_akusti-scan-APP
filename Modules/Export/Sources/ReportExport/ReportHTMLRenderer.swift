@@ -154,6 +154,9 @@ public final class ReportHTMLRenderer {
 
         // Build the DIN targets section from the model's actual computed targets.
         var dinRows: [String] = []
+        if m.din_targets.isEmpty {
+            dinRows.append("<tr><td>-</td><td>-</td><td>-</td></tr>")
+        }
 
         for row in m.din_targets {
             if let freq = row["freq_hz"], let actualFreq = freq, actualFreq.isFinite && !actualFreq.isNaN {
