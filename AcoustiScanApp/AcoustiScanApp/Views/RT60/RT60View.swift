@@ -31,6 +31,9 @@ struct RT60View: View {
                     .accessibilityHint("Reverberation time for this frequency")
                     .accessibilityIdentifier("rt60Row\(freq)")
                 }
+            } footer: {
+                Text("Berechnet nach Sabine aus Raumvolumen und Materialabsorption – keine akustische Messung.")
+                    .accessibilityIdentifier("rt60MethodNote")
             }
         }
         .navigationTitle("Nachhallzeiten")
