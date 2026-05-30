@@ -89,6 +89,23 @@ extension ReportModel {
                 "Sollwerte sind außerhalb des für Gruppe \(reportData.roomType.groupLabel) gültigen Volumenbereichs nicht norm­konform."
         }
 
+        // DIN 18041 only verifies specific octave bands per usage group
+        // (125–4000 Hz for A1–A4, 250–2000 Hz for A5). Measured bands outside that
+        // set (e.g. 8000 Hz) appear in the RT60 table but are NOT part of the
+        // compliance evaluation — make that explicit instead of dropping them silently.
+        let evaluated = Set(reportData.roomType.evaluationFrequencies)
+        let unevaluated = reportData.rt60Measurements
+            .map { $0.frequency }
+            .filter { !evaluated.contains($0) }
+            .sorted()
+        validity["din_bewertete_baender"] = reportData.roomType.evaluationFrequencies
+            .map { "\($0)" }.joined(separator: ", ") + " Hz"
+        if !unevaluated.isEmpty {
+            validity["din_nicht_bewertet"] =
+                unevaluated.map { "\($0)" }.joined(separator: ", ")
+                + " Hz – gemessen, aber nicht bewertet n. DIN 18041 (Gruppe \(reportData.roomType.groupLabel))"
+        }
+
         let audit = [
             "hash": "DEMO\(abs(reportData.date.hashValue))",
             "source": "consolidated"
