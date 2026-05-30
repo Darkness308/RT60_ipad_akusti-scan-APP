@@ -28,10 +28,10 @@ final class PDFRobustnessTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq) bei leerem Model")
         }
 
-        let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
-        for value in requiredDINValues {
-            XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value) bei leerem Model")
-        }
+        // An empty model has no DIN targets, so the section must show the header
+        // and a dash placeholder rather than fabricated standard values.
+        XCTAssertTrue(pdfText.contains("din 18041"), "PDF fehlt DIN-18041-Abschnitt bei leerem Model")
+        XCTAssertTrue(pdfText.contains("t_soll=-"), "PDF sollte '-' statt erfundener DIN-Werte zeigen")
 
         let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
         for token in coreTokens {
@@ -111,11 +111,10 @@ final class PDFRobustnessTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(freq), "PDF missing required frequency: \(freq)")
         }
 
-        // Check required DIN values - these should ALWAYS be present
-        let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
-        for value in requiredDINValues {
-            XCTAssertTrue(pdfText.contains(value), "PDF missing required DIN value: \(value)")
-        }
+        // The DIN section must reflect the model's ACTUAL target (500 Hz, T_soll 0.70),
+        // not fabricated standard values.
+        XCTAssertTrue(pdfText.contains("500 hz: t_soll=0.70"), "PDF should render the model's real DIN target")
+        XCTAssertFalse(pdfText.contains("0.48"), "PDF must not contain the old fabricated DIN value 0.48")
 
         // Check core tokens
         let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]
@@ -138,36 +137,17 @@ final class PDFRobustnessTests: XCTestCase {
         let pdfData = PDFReportRenderer().render(emptyModel)
         let pdfText = extractPDFText(pdfData).lowercased()
 
-        print("=== DEBUGGING EMPTY MODEL PDF OUTPUT ===")
-        print(pdfText)
-        print("=== END DEBUG OUTPUT ===")
-
-        // Problem statement mentions these specific values should appear:
-        // Frequencies: 125, 1000, 4000 Hz ✓
-        // DIN values: 0.6, 0.5, 0.1 - now properly implemented as 0.6, 0.5, 0.48 from DIN 18041 standard
-        // Core tokens: metadata, device, version, etc. ✓
-
-        // Check if problem statement's DIN values are present (this may fail)
-        let problemStatementDINValues = ["0.6", "0.5", "0.1"]
-        var missingProblemDINs: [String] = []
-        for value in problemStatementDINValues {
-            if !pdfText.contains(value) {
-                missingProblemDINs.append(value)
-            }
+        // An empty model must NOT fabricate DIN target values. Earlier the renderer
+        // hardcoded representative values (0.6 / 0.5 / 0.48) that overwrote the room's
+        // real T_soll; this test now guards against that regression.
+        for fabricated in ["0.48", "t_soll=0.6", "t_soll=0.5"] {
+            XCTAssertFalse(pdfText.contains(fabricated),
+                           "PDF must not contain fabricated DIN value '\(fabricated)' for an empty model")
         }
 
-        if !missingProblemDINs.isEmpty {
-            print("⚠ Problem statement DIN values missing: \(missingProblemDINs)")
-            print("💡 Current implementation now uses proper DIN 18041 values: 0.6, 0.5, 0.48")
-            print("📝 Problem statement examples: 0.6, 0.5, 0.1")
-            // Values now align with DIN 18041 standard
-        }
-
-        // Test what's actually implemented (should pass)
-        let actualDINValues = ["0.6", "0.5", "0.48"]  // Updated to match new implementation
-        for value in actualDINValues {
-            XCTAssertTrue(pdfText.contains(value), "PDF missing implemented DIN value: \(value)")
-        }
+        // Instead, the DIN section shows its header and a dash placeholder.
+        XCTAssertTrue(pdfText.contains("din 18041"), "PDF should still contain the DIN 18041 section header")
+        XCTAssertTrue(pdfText.contains("t_soll=-"), "Empty model should show '-' for DIN targets")
     }
 
     func test_pdf_edge_cases_that_might_cause_failures() {

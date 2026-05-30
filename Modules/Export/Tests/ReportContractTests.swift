@@ -136,12 +136,14 @@ final class ReportContractTests: XCTestCase {
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .lowercased()
 
-        // Assert - DIN-Zielwerte sollten in beiden Ausgaben vorkommen
-        let targetValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
+        // Assert - the model's ACTUAL DIN target values must appear in both outputs
+        // (no fabricated standard values).
+        let targetValues = ["0.65", "0.55"]
         for value in targetValues {
             XCTAssertTrue(pdfText.contains(value), "PDF fehlt DIN-Zielwert: \(value)")
             XCTAssertTrue(htmlText.contains(value), "HTML fehlt DIN-Zielwert: \(value)")
         }
+        XCTAssertFalse(pdfText.contains("0.48"), "PDF darf keinen erfundenen DIN-Wert (0.48) enthalten")
     }
 
     func test_pdf_includes_required_frequencies_and_din_values() {
@@ -169,11 +171,10 @@ final class ReportContractTests: XCTestCase {
             XCTAssertTrue(pdfText.contains(freq), "PDF fehlt erforderliche Frequenz: \(freq)")
         }
 
-        // Assert - Required DIN values should always appear in PDF
-        let requiredDINValues = ["0.6", "0.5", "0.48"]  // Updated to use proper DIN 18041 values
-        for value in requiredDINValues {
-            XCTAssertTrue(pdfText.contains(value), "PDF fehlt erforderlichen DIN-Wert: \(value)")
-        }
+        // Assert - the model's ACTUAL DIN target (250 Hz, T_soll 0.60) must appear,
+        // and no fabricated standard values.
+        XCTAssertTrue(pdfText.contains("250 hz: t_soll=0.60"), "PDF fehlt der echte DIN-Zielwert des Modells")
+        XCTAssertFalse(pdfText.contains("0.48"), "PDF darf keinen erfundenen DIN-Wert (0.48) enthalten")
 
         // Assert - Core tokens should always appear in PDF
         let coreTokens = ["rt60 bericht", "metadaten", "geraet", "ipadpro", "version", "1.0.0"]

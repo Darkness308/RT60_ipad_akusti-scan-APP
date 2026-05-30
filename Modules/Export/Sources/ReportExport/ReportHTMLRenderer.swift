@@ -152,37 +152,12 @@ public final class ReportHTMLRenderer {
         <div class="small muted">Hinweis: Werte aus Audit-Quelle (T20), Einheiten geprüft.</div>
         """
 
-        // Build DIN targets section with representative values and model data
-        let representativeDINValues = [
-            (frequency: 125, targetRT60: 0.6, tolerance: 0.1),   // Classroom low frequency
-            (frequency: 1000, targetRT60: 0.5, tolerance: 0.1),  // Office/optimal speech
-            (frequency: 4000, targetRT60: 0.48, tolerance: 0.1)  // High frequency (0.6 * 0.8)
-        ]
-
+        // Build the DIN targets section from the model's actual computed targets.
         var dinRows: [String] = []
 
-        // Add representative DIN 18041 standard values first
-        for (freq, targetRT60, tolerance) in representativeDINValues {
-            dinRows.append("<tr><td>\(freq)</td><td>\(String(format: "%.2f", targetRT60))</td><td>\(String(format: "%.2f", tolerance))</td></tr>")
-        }
-
-        // Add model DIN targets that aren't already covered
         for row in m.din_targets {
-            if let freq = row["freq_hz"], let actualFreq = freq {
-                // Check for valid finite number before converting to Int
-                guard actualFreq.isFinite && !actualFreq.isNaN else {
-                    let f = "-"
-                    let ts = numberString(row["t_soll"] ?? nil)
-                    let tol = numberString(row["tol"] ?? nil)
-                    dinRows.append("<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>")
-                    continue
-                }
-                let freqInt = Int(actualFreq.rounded())
-                // Skip if this frequency is already covered by representative values
-                if representativeDINValues.contains(where: { $0.frequency == freqInt }) {
-                    continue
-                }
-                let f = String(freqInt)
+            if let freq = row["freq_hz"], let actualFreq = freq, actualFreq.isFinite && !actualFreq.isNaN {
+                let f = String(Int(actualFreq.rounded()))
                 let ts = numberString(row["t_soll"] ?? nil)
                 let tol = numberString(row["tol"] ?? nil)
                 dinRows.append("<tr><td>\(f)</td><td>\(ts)</td><td>\(tol)</td></tr>")
