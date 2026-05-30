@@ -13,8 +13,8 @@ and evaluates acoustics. The repo is **proprietary** (see `LICENSE`).
 ## Repository layout
 
 - `AcoustiScanConsolidated/` — Swift package, the computation core (RT60, DIN 18041,
-  models, report rendering). Builds & tests cross-platform via `swift test`.
-- `Modules/Export/` — `ReportExport` package (PDF/HTML/XLSX rendering), `swift test`.
+  models, report rendering). Builds & tests on macOS via `swift build` / `swift test`.
+- `Modules/Export/` — `ReportExport` package (PDF/HTML/XLSX rendering). Builds & tests on macOS via `swift build` / `swift test`.
 - `AcoustiScanApp/` — the iOS app (SwiftUI). Built via **`AcoustiScanApp.xcodeproj`**
   (authoritative). A parallel `AcoustiScanApp/Package.swift` exists but is **not**
   built by CI — don't rely on it.
