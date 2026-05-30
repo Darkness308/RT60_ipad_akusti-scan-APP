@@ -48,8 +48,8 @@
 
 ```bash
 # 1) Packages (laufen sicher auf jedem Mac mit Xcode/Swift)
-cd AcoustiScanConsolidated && swift build && swift test && cd ..
-cd Modules/Export         && swift build && swift test && cd ..
+(cd AcoustiScanConsolidated && swift build && swift test)
+(cd Modules/Export         && swift build && swift test)
 
 # 2) iOS-App bauen (Simulator-SDK, ohne Signing)
 xcodebuild build \
