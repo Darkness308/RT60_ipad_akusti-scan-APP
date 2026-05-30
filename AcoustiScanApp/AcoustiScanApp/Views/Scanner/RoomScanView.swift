@@ -75,11 +75,13 @@ public final class RoomScanCoordinator: NSObject, ObservableObject, RoomCaptureS
 
         // CapturedRoomData is raw scan data; build the structured CapturedRoom
         // (which exposes walls/floors/etc.) via RoomBuilder before processing.
-        Task { [weak self] in
+        // The Task itself captures no `self`; the main-thread hop weak-captures it,
+        // mirroring the didUpdate handler above.
+        Task {
             do {
                 let builder = RoomBuilder(options: [.beautifyObjects])
                 let room = try await builder.capturedRoom(from: data)
-                await MainActor.run {
+                DispatchQueue.main.async { [weak self] in
                     self?.processRoomData(room, store: store)
                 }
             } catch {
