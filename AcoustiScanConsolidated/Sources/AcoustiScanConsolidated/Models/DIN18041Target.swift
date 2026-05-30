@@ -3,52 +3,50 @@
 
 import Foundation
 
-/// DIN 18041 target RT60 value with tolerance for a specific frequency
+/// DIN 18041 target RT60 with an (asymmetric) tolerance band for one octave.
 ///
-/// This structure represents the target reverberation time and tolerance
-/// for a specific frequency band according to DIN 18041 standard.
+/// The tolerance per DIN 18041:2016-03 Bild 2 is expressed as a ratio of the
+/// measured RT60 to the target `T_soll` and is generally asymmetric (e.g.
+/// 0.65–1.45 at the band edges), so the acceptable range is stored as explicit
+/// lower/upper bounds in seconds rather than a single symmetric tolerance.
 public struct DIN18041Target: Codable, Equatable {
 
     /// Frequency band in Hz
     public let frequency: Int
 
-    /// Target RT60 value in seconds according to DIN 18041
+    /// Mid-band target RT60 value `T_soll` in seconds.
     public let targetRT60: Double
 
-    /// Tolerance range in seconds (±tolerance)
-    public let tolerance: Double
+    /// Lower bound of the acceptable RT60 range in seconds.
+    public let lowerBound: Double
 
-    /// Initialize a new DIN 18041 target
-    /// - Parameters:
-    ///   - frequency: Frequency band in Hz
-    ///   - targetRT60: Target RT60 value in seconds
-    ///   - tolerance: Tolerance range in seconds
-    public init(frequency: Int, targetRT60: Double, tolerance: Double) {
+    /// Upper bound of the acceptable RT60 range in seconds.
+    public let upperBound: Double
+
+    /// Initialize with explicit bounds in seconds.
+    public init(frequency: Int, targetRT60: Double, lowerBound: Double, upperBound: Double) {
         self.frequency = frequency
         self.targetRT60 = targetRT60
-        self.tolerance = tolerance
+        self.lowerBound = lowerBound
+        self.upperBound = upperBound
     }
 
-    /// Lower bound of acceptable RT60 range
-    public var lowerBound: Double {
-        return targetRT60 - tolerance
+    /// Initialize from tolerance ratios (T / T_soll), as given by Bild 2.
+    public init(frequency: Int, targetRT60: Double, lowerRatio: Double, upperRatio: Double) {
+        self.init(
+            frequency: frequency,
+            targetRT60: targetRT60,
+            lowerBound: targetRT60 * lowerRatio,
+            upperBound: targetRT60 * upperRatio
+        )
     }
 
-    /// Upper bound of acceptable RT60 range
-    public var upperBound: Double {
-        return targetRT60 + tolerance
-    }
-
-    /// Check if a measured RT60 value is within tolerance
-    /// - Parameter measuredRT60: Measured RT60 value in seconds
-    /// - Returns: True if within acceptable range
+    /// Check if a measured RT60 value is within the tolerance band.
     public func isWithinTolerance(_ measuredRT60: Double) -> Bool {
         return measuredRT60 >= lowerBound && measuredRT60 <= upperBound
     }
 
-    /// Evaluate compliance status for a measured value
-    /// - Parameter measuredRT60: Measured RT60 value in seconds
-    /// - Returns: Evaluation status
+    /// Evaluate compliance status for a measured value.
     public func evaluateCompliance(_ measuredRT60: Double) -> EvaluationStatus {
         if measuredRT60 > upperBound {
             return .tooHigh

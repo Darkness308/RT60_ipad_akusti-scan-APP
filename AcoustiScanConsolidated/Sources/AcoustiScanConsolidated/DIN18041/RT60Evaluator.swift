@@ -19,16 +19,7 @@ public struct RT60Evaluator {
                 return nil
             }
 
-            let diff = measurement.rt60 - target.targetRT60
-            let status: EvaluationStatus
-
-            if abs(diff) <= target.tolerance {
-                status = .withinTolerance
-            } else if diff > 0 {
-                status = .tooHigh
-            } else {
-                status = .tooLow
-            }
+            let status = target.evaluateCompliance(measurement.rt60)
 
             return RT60Deviation(
                 frequency: measurement.frequency,

@@ -22,7 +22,7 @@ struct SampleDataset {
 enum SampleData {
     static func baselineDataset() -> SampleDataset {
         let configuration = SampleRoomConfiguration(
-            roomType: .classroom,
+            roomType: .a3Education,
             volume: 150.0,
             surfaces: [
                 AcousticSurface(
