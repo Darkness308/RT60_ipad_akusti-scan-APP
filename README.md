@@ -4,6 +4,9 @@
 
 AcoustiScan ist eine professionelle iOS-App für akustische Raumanalyse mit LiDAR-Scanner-Integration und RT60-Nachhallzeitmessungen nach DIN 18041.
 
+> 🛠 **Projekt übernehmen?** Starte mit **[HANDOFF.md](HANDOFF.md)** — ehrlicher Stand, echte
+> Build-/Test-Befehle für macOS, bekannte Risiken und priorisierte nächste Schritte.
+
 ### Features
 
 - 🎯 **LiDAR-Raumscan**: Automatische 3D-Raumerfassung mit RoomPlan API
