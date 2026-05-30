@@ -128,7 +128,7 @@ RT60_ipad_akusti-scan-APP/
 │   └── Tests/                     # Export-Tests
 │
 └── .github/workflows/             # CI/CD Pipelines
-    ├── ci-honest.yml              # AKTIVE CI: App (xcodebuild) + alle Packages
+    ├── ci-honest.yml              # AKTIVE CI: Packages (Consolidated, Export) + App (xcodebuild)
     └── (build-test.yml, swift.yml,
          self-healing.yml, …)      # stillgelegt (nur workflow_dispatch)
 ```
@@ -338,7 +338,7 @@ Dann auf GitHub:
 - Minderung/Abfang (Fallback, Feature-Flag, Tests, Monitoring) ist beschrieben.
 
 ### Required Checks (müssen grün sein)
-- CI-Workflow **ci-honest.yml** erfolgreich (baut die App via `xcodebuild` und alle Swift-Packages ohne Fehler-Maskierung).
+- CI-Workflow **ci-honest.yml** erfolgreich: baut & testet die Packages `AcoustiScanConsolidated` und `Modules/Export` (`swift test`) und baut die App via `xcodebuild` — ohne Fehler-Maskierung. (Das Manifest `AcoustiScanApp/Package.swift` selbst wird dabei nicht gebaut.)
 - Linting/Formatting (SwiftLint/SwiftFormat) ohne Fehler.
 - Relevante Unit/Integration/UI-Tests vorhanden und grün.
 
