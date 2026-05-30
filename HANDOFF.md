@@ -135,6 +135,69 @@ git push origin --delete <branchname> [<branchname> ...]
 Behalten: `main`, aktive Feature-Branches, `claude/*`-Branches mit evtl. nützlicher Arbeit
 (z. B. `consolidate-duplicate-renderers`) und beschreibende WIP-Branches (`fix-pdf-export-issues` etc.).
 
+## 10. Verifizierungs-Engpässe & blinde Flecken (Audit 2026-05-30)
+
+Ergebnis einer systematischen EKS-Engpassanalyse (CI/Test-Coverage + Fake-Funktions-Jagd).
+Reihenfolge bewusst nach **Risiko × Schließbarkeit**. Mac-gebundene Punkte sind markiert
+(🖥 = braucht swift/xcodebuild; in der Linux-Sandbox nicht verifizierbar).
+
+### 10.1 ⚠️ CRITICAL — Befund, der eine Produktentscheidung erfordert
+**Die App *misst* RT60 nicht, sie *prognostiziert* es.** `RT60View` → `SurfaceStore.calculateRT60`
+ist reine Sabine-Formel (`0.161·V/A`) aus den vom Nutzer zugewiesenen Material­koeffizienten.
+Es gibt **keinen** Mikrofon-/Audio-Capture-Pfad im App-Code (`AVAudioEngine`/`installTap` etc.
+kommen nicht vor). Die echte, korrekte Audio-Engine `ImpulseResponseAnalyzer` (Schroeder-
+Integration, Oktavband-Filter) wird von der App **nie aufgerufen**. Gleichzeitig druckt das
+PDF-Boilerplate „Diese **Messung** wurde nach DIN 18041 durchgeführt".
+→ Entscheidung nötig: entweder (a) Wortlaut/Doku ehrlich auf „Prognose nach Sabine" umstellen,
+oder (b) echten Messpfad (`ImpulseResponseAnalyzer`) an die UI anbinden. **Nicht** stillschweigend lassen.
+
+### 10.2 🔴 Der Haupt-Engpass — App-Tests laufen in KEINER CI
+`AcoustiScanAppTests` ist **0× in `AcoustiScanApp.xcodeproj/project.pbxproj`**; `ci-honest.yml`
+macht für die App nur `xcodebuild build` (ohne `test`). Folge: ~1.600 Zeilen App-Tests laufen
+**nie** — u. a. der **einzige XLSX-Round-Trip-Test** (`MaterialManagerXLSXTests`), `SurfaceStore`-
+RT60 und `MaterialManager`. Die App „besteht CI" allein durchs Kompilieren.
+→ 🖥 Höchster Hebel: Unit-Test-Target in Xcode anlegen, vorhandene Dateien zuordnen, dann
+`xcodebuild test` in `ci-honest.yml` ergänzen. Macht die gesamte App-Schicht erst verifizierbar.
+
+### 10.3 🟠 Schnelle, risikoarme Gates (fehlen in der CI)
+- **Lint/Format nicht erzwungen:** `.swiftlint.yml` + `.swiftformat` existieren, werden aber
+  von `ci-honest.yml` **nicht** ausgeführt (Enforcement lag nur im stillgelegten `build-test.yml`).
+  → 🖥 `swiftlint --strict` + `swiftformat --lint` als CI-Schritt. (Vorher lokal laufen lassen —
+  kann anfangs viele Funde liefern.)
+- **JSON-Schemas ungenutzt:** `Schemas/report.schema.json` + `audit.schema.json` werden nirgends
+  zur Validierung herangezogen. → Report-Modell gegen Schema prüfen (Contract-Test).
+
+### 10.4 🟡 Methodik-Lücken
+- Nur **Debug**, ein SDK, **kein `archive`/Release-Build** → Optimizer-/Packaging-/Signing-Fehler
+  werden nie gefangen.
+- **Keine Code-Coverage-Messung** (kein `-enableCodeCoverage`, kein Threshold-Gate).
+- **Lokalisierung:** `.strings`/`.lproj` sind **nicht in der `.pbxproj`** → die App könnte rohe
+  Keys rendern; bestehende Tests fangen das wegen des NSLocalizedString-Fallbacks **nicht**.
+  → Key↔`.strings`-Vollständigkeitscheck + Dateien ins Projekt aufnehmen.
+
+### 10.5 🟡 Weitere bestätigte Code-Funde (eigene kleine PRs)
+- **App-PDF-Exporter nutzt symmetrische Toleranz** (`PDFTableRenderer`/`PDFPageRenderer`,
+  `abs(measured−target) ≤ tol`) statt des asymmetrischen Bild-2-Bands. Derzeit **unerreichbar**
+  (ExportView ist Platzhalter), würde aber falsch bewerten, sobald verdrahtet. (Auch in §2/§4.)
+- **Paket-`AcousticMaterial` erfindet α = 0.1** für fehlende Koeffizienten
+  (`Models/AcousticMaterial.swift`, `?? 0.1`) → ändert RT60 still; besser fehlende Daten kennzeichnen.
+- ⚠️ **DIN-Bild-2-Toleranz bei 4000 Hz**: Recherche legt nahe, dass die Aufweitung **asymmetrisch**
+  ist (125 Hz weitet oben, 4000 Hz lockert v. a. unten) — unsere Implementierung nutzt an **beiden**
+  Rändern `(0.65, 1.45)`. Exakte Figur-Koordinaten waren **nicht** verbatim belegbar.
+  → 🖥 Gegen die **gedruckte** DIN 18041:2016-03 (Bild 2) prüfen, **nicht** raten. Ebenso offen:
+  A1-Obergrenze (1000 vs. 5000 m³) und A4 `b = −0.14` (nur indirekt belegt).
+
+### 10.6 ⚪ Bewusst NICHT automatisiert (gerätegebunden — als untested dokumentieren)
+LiDAR/RoomPlan/ARKit-Scan, Live-Audio-Capture, PDF-Visual-Layout, Persistenz auf echtem Gerät.
+RoomPlan schätzt zudem Deckenfläche = Bodenfläche und Wandhöhe 2.5 m (Default); der LiDAR-Raycast-
+Fallback liefert 2.0 m² — vernünftige, **dokumentierte** Schätzungen, die aber in die RT60-Geometrie
+einfließen.
+
+### 10.7 Bereinigte Green-Washing-Tests (erledigt, PR #276)
+`XCTAssertEqual(h,h)` (PDF-Snapshot), zwei `XCTAssertTrue(true)`-No-ops → durch echte Assertions
+ersetzt. Verbleibende **immer-skippende** Tests (`TimeoutConfigurationTests` via Datei-Existenz)
+sollten gelöscht oder mit echten Fixtures versehen werden.
+
 ---
 
 *Letzte Aktualisierung dieses Dokuments: 2026-05-30. Bei Abweichungen zwischen diesem Dokument und dem Code
