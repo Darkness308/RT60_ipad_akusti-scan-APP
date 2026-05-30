@@ -4,12 +4,14 @@ import XCTest
 
 final class RT60EvaluatorTests: XCTestCase {
 
+    // A3 (Unterricht/Kommunikation) at V = 120 m³:
+    // T_soll = 0.32·lg(120) − 0.17 ≈ 0.495 s; 1 kHz mid-band tolerance ≈ [0.396, 0.594].
+
     func testEvaluationWithinTolerance() {
-        // RT60Measurement uses (frequency, rt60) constructor
         let measurement = RT60Measurement(frequency: 1000, rt60: 0.49)
-        let deviations = RT60Evaluator.evaluate(
+        let deviations = RT60Evaluator.evaluateDINCompliance(
             measurements: [measurement],
-            roomType: RoomType.classroom,
+            roomType: .a3Education,
             volume: 120.0
         )
 
@@ -18,9 +20,9 @@ final class RT60EvaluatorTests: XCTestCase {
 
     func testEvaluationTooHigh() {
         let measurement = RT60Measurement(frequency: 1000, rt60: 0.75)
-        let deviations = RT60Evaluator.evaluate(
+        let deviations = RT60Evaluator.evaluateDINCompliance(
             measurements: [measurement],
-            roomType: RoomType.classroom,
+            roomType: .a3Education,
             volume: 120.0
         )
 

@@ -468,6 +468,12 @@ Proprietary - Alle Rechte vorbehalten
   paralleles SPM-Manifest `AcoustiScanApp/Package.swift`, das **nicht** von der CI
   genutzt wird — bei Build-Einstellungen/Abhängigkeiten ist das **`.xcodeproj`
   maßgeblich**.
+- **App-Tests laufen (noch) nicht in der CI**: Das Test-Target
+  `AcoustiScanAppTests` wird weder vom xcodebuild-Job noch vom Packages-Job
+  ausgeführt. Dadurch bleibt z. B. ein Test, der gegen veraltete Package-APIs
+  kompiliert, unbemerkt — bitte App-Tests vorerst **lokal** ausführen
+  (`swift test` im App-Ordner bzw. ⌘U in Xcode). Diese Tests ins CI-Gate zu
+  nehmen ist ein sinnvoller nächster Schritt.
 
 Die folgenden Feature-Beschreibungen sind als **Zielbild** zu lesen: Auf
 Kompilier-/Testebene verifiziert, die volle Geräte-Laufzeit ist noch nicht
