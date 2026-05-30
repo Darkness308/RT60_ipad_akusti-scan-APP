@@ -79,8 +79,11 @@ public final class RoomScanCoordinator: NSObject, ObservableObject, RoomCaptureS
             do {
                 let builder = RoomBuilder(options: [.beautifyObjects])
                 let room = try await builder.capturedRoom(from: data)
+
+                guard let self else { return }
+
                 await MainActor.run {
-                    self?.processRoomData(room, store: store)
+                    self.processRoomData(room, store: store)
                 }
             } catch {
                 ErrorLogger.log(error, context: "RoomScanCoordinator.buildCapturedRoom", level: .error)
