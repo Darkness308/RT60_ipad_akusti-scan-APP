@@ -562,7 +562,7 @@ swift test
 - [ ] **Business Value** ist klar beschrieben und nachvollziehbar.
 - [ ] **Keine neue technische Schuld** (keine neuen TODOs ohne Ticket, keine Code-Smells).
 - [ ] **Risikoabschätzung** ist dokumentiert inkl. Mitigation.
-- [ ] **Required Checks** sind grün (ci-honest.yml, Linting, relevante Tests).
+- [ ] **Required Checks** sind grün (`ci-honest.yml`; Linting/Format lokal geprüft; relevante Tests).
 - [ ] **Required Reviews** sind erfüllt (fachlich + technisch, bei hohem Risiko zusätzlicher Lead).
 
 **No-Go, wenn einer der folgenden Punkte zutrifft:**
