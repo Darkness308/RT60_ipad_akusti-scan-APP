@@ -72,10 +72,13 @@ struct ContentView: View {
             .accessibilityIdentifier("tabExport")
         }
         .accessibilityIdentifier("contentView")
-        .onAppear(perform: syncRoomVolume)
-        .onChange(of: roomLength) { _, _ in syncRoomVolume() }
-        .onChange(of: roomWidth) { _, _ in syncRoomVolume() }
-        .onChange(of: roomHeight) { _, _ in syncRoomVolume() }
+        // Seed an initial volume only if none exists yet (so RT60 works without a
+        // scan), but never on later re-appears — that would clobber a scanned
+        // volume with the manual defaults.
+        .onAppear { syncRoomVolume(userEdited: false) }
+        .onChange(of: roomLength) { _, _ in syncRoomVolume(userEdited: true) }
+        .onChange(of: roomWidth) { _, _ in syncRoomVolume(userEdited: true) }
+        .onChange(of: roomHeight) { _, _ in syncRoomVolume(userEdited: true) }
     }
 
     /// Scanner tab: real RoomPlan capture where available, otherwise a fallback
@@ -94,7 +97,14 @@ struct ContentView: View {
 
     /// Keep the shared room volume in sync with the manual dimension entry so
     /// the RT60 calculation has a volume even without a LiDAR scan.
-    private func syncRoomVolume() {
+    ///
+    /// - Parameter userEdited: true when triggered by an actual edit of a
+    ///   dimension field. Manual entry must not silently overwrite a volume that
+    ///   came from a LiDAR/RoomPlan scan, so we only write when the user edited a
+    ///   field, or when there is no scanned volume yet (store.roomVolume == 0).
+    private func syncRoomVolume(userEdited: Bool) {
+        let hasScannedVolume = store.roomVolume > 0 && store.roomDimensions != nil
+        guard userEdited || !hasScannedVolume else { return }
         store.roomVolume = roomLength * roomWidth * roomHeight
         store.roomDimensions = (width: roomWidth, height: roomHeight, depth: roomLength)
     }
