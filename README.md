@@ -407,7 +407,13 @@ Dieser Abschnitt hilft dir, das Projekt zu verstehen und eigene Beiträge zu lei
 
 ## 📜 Lizenz
 
-Proprietary - Alle Rechte vorbehalten
+**Proprietär – Alle Rechte vorbehalten.** Siehe [LICENSE](LICENSE).
+
+Standardmäßig werden **keine** Nutzungs-, Änderungs- oder Weitergaberechte
+gewährt. Zugriff auf das Repository (z. B. als privater Fork oder als
+eingeladene/r Collaborator) begründet **allein noch keine** Rechte am Code —
+maßgeblich ist die gesonderte schriftliche Vereinbarung mit dem
+Rechteinhaber. Externe Mitwirkende: siehe **[ONBOARDING_EXTERNAL.md](ONBOARDING_EXTERNAL.md)**.
 
 ---
 

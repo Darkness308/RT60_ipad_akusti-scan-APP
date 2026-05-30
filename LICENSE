@@ -1,0 +1,49 @@
+Proprietary Software License
+============================
+
+Copyright (c) 2025–2026 Marc Schneider-Handrup. All rights reserved.
+
+This software and its source code ("the Software"), including the
+"AcoustiScan" application and the AcoustiScanConsolidated / ReportExport
+packages, are proprietary and confidential.
+
+No license is granted by default
+--------------------------------
+No permission is granted to use, copy, modify, merge, publish, distribute,
+sublicense, or sell copies of the Software, in whole or in part, except as
+expressly authorized in a separate, signed written agreement with the
+copyright holder.
+
+Authorized collaborators
+------------------------
+Access to this repository (for example, as a private fork or as an invited
+collaborator) does NOT by itself grant any rights to the Software. Any such
+access is governed by the terms of the separate written agreement between the
+collaborator and the copyright holder (e.g. a development or contributor
+agreement). Unless that agreement states otherwise:
+
+  - The Software may be used solely for the purpose of contributing to this
+    project on behalf of the copyright holder.
+  - All contributions, modifications, and derivative works created by the
+    collaborator are assigned to / owned by the copyright holder.
+  - The Software and any related information must be kept confidential and
+    must not be redistributed or published.
+
+Third-party components
+----------------------
+The Software may reference Apple frameworks (RoomPlan, ARKit, PDFKit, etc.)
+and any third-party dependencies under their own respective licenses; those
+licenses are unaffected by this notice.
+
+No warranty
+-----------
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING
+FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+Contact
+-------
+For licensing or usage permission, contact the copyright holder via the
+repository owner account: https://github.com/Darkness308
