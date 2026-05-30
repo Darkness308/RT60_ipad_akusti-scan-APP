@@ -54,10 +54,12 @@ extension ReportModel {
         let dinTargets = DIN18041Database.targets(for: reportData.roomType, volume: reportData.volume)
 
         let din_targets = reportData.dinResults.map { deviation -> [String: Double] in
-            // Look up the actual tolerance from DIN database for this frequency
+            // The Bild 2 tolerance band is asymmetric (lower/upper bounds in
+            // seconds); expose half the band width as a representative ± value
+            // for the report's "tol" field.
             let actualTolerance = dinTargets
-                .first { $0.frequency == deviation.frequency }?
-                .tolerance ?? 0.1 // Fallback to 0.1s if not found
+                .first { $0.frequency == deviation.frequency }
+                .map { ($0.upperBound - $0.lowerBound) / 2.0 } ?? 0.1
 
             return [
                 "freq_hz": Double(deviation.frequency),
