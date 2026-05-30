@@ -118,9 +118,9 @@ RT60_ipad_akusti-scan-APP/
 │   ├── Sources/
 │   │   └── AcoustiScanConsolidated/
 │   │       ├── RT60Calculator.swift    # Sabine-Formel
-│   │       ├── RT60Evaluator.swift     # DIN 18041 Bewertung
-│   │       ├── MaterialDatabase.swift  # 500+ Materialien
-│   │       └── AcousticFramework.swift # 48 Akustik-Parameter
+│   │       ├── DIN18041/               # DIN 18041 Evaluator (A1–A5)
+│   │       ├── Models/                 # RoomType, AcousticMaterial, …
+│   │       └── AcousticFramework.swift # Akustik-Parameter-Katalog
 │   └── Tests/                     # Unit Tests
 │
 ├── Modules/Export/                 # Separates Export-Modul
@@ -128,9 +128,9 @@ RT60_ipad_akusti-scan-APP/
 │   └── Tests/                     # Export-Tests
 │
 └── .github/workflows/             # CI/CD Pipelines
-    ├── build-test.yml             # Haupt-Build
-    ├── swift.yml                  # Swift Tests
-    └── self-healing.yml           # Auto-Fix
+    ├── ci-honest.yml              # AKTIVE CI: App (xcodebuild) + alle Packages
+    └── (build-test.yml, swift.yml,
+         self-healing.yml, …)      # stillgelegt (nur workflow_dispatch)
 ```
 
 ### Architektur-Muster
@@ -338,8 +338,7 @@ Dann auf GitHub:
 - Minderung/Abfang (Fallback, Feature-Flag, Tests, Monitoring) ist beschrieben.
 
 ### Required Checks (müssen grün sein)
-- CI-Workflow **build-test.yml** erfolgreich.
-- CI-Workflow **swift.yml** erfolgreich.
+- CI-Workflow **ci-honest.yml** erfolgreich (baut die App via `xcodebuild` und alle Swift-Packages ohne Fehler-Maskierung).
 - Linting/Formatting (SwiftLint/SwiftFormat) ohne Fehler.
 - Relevante Unit/Integration/UI-Tests vorhanden und grün.
 
@@ -393,7 +392,7 @@ swift test
 swift test -v
 
 # Einzelnen Test ausführen
-swift test --filter RT60CalculatorTests.testSabineFormula
+swift test --filter RT60CalculatorTests.testRT60CalculationUsingSabineFormula
 
 # In Xcode
 # ⌘U = Alle Tests
@@ -563,7 +562,7 @@ swift test
 - [ ] **Business Value** ist klar beschrieben und nachvollziehbar.
 - [ ] **Keine neue technische Schuld** (keine neuen TODOs ohne Ticket, keine Code-Smells).
 - [ ] **Risikoabschätzung** ist dokumentiert inkl. Mitigation.
-- [ ] **Required Checks** sind grün (build-test.yml, swift.yml, Linting, relevante Tests).
+- [ ] **Required Checks** sind grün (ci-honest.yml, Linting, relevante Tests).
 - [ ] **Required Reviews** sind erfüllt (fachlich + technisch, bei hohem Risiko zusätzlicher Lead).
 
 **No-Go, wenn einer der folgenden Punkte zutrifft:**
