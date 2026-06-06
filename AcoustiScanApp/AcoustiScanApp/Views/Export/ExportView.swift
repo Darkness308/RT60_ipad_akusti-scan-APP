@@ -1,4 +1,5 @@
 import SwiftUI
+import AcoustiScanConsolidated
 
 struct ExportView: View {
     @ObservedObject var store: SurfaceStore
@@ -11,7 +12,7 @@ struct ExportView: View {
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("exportTitle")
 
-            NavigationLink(destination: PDFExportPlaceholderView(store: store)) {
+            NavigationLink(destination: PDFReportExportView(store: store)) {
                 Label(
                     LocalizationKeys.exportRT60AsPDF
                         .localized(comment: "Export RT60 report as PDF"),
@@ -34,60 +35,75 @@ struct ExportView: View {
     }
 }
 
-// Placeholder view for PDF export until full integration with ReportExport module
-struct PDFExportPlaceholderView: View {
+/// Real PDF report export: builds `ReportData` from the room state and renders it
+/// with the norm-faithful `ConsolidatedPDFExporter` (RT60 = Sabine calculation,
+/// DIN 18041 evaluation), then shares the resulting PDF.
+struct PDFReportExportView: View {
     @ObservedObject var store: SurfaceStore
+    @AppStorage("din.roomType") private var roomTypeRaw: String = RoomType.a3Education.rawValue
+
+    @State private var shareURL: URL?
+    @State private var showShare = false
+    @State private var errorMessage: String?
+
+    private var roomType: RoomType { RoomType(rawValue: roomTypeRaw) ?? .a3Education }
 
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "doc.richtext")
-                .font(.system(size: 60))
-                .foregroundColor(.blue)
-                .accessibilityLabel("PDF document icon")
-                .accessibilityIdentifier("pdfIcon")
-
-            Text(LocalizationKeys.pdfExport.localized(comment: "PDF Export title"))
-                .font(.title2)
-                .fontWeight(.bold)
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityIdentifier("pdfExportTitle")
-
-            Text(LocalizationKeys.featureInIntegration.localized(comment: "Feature in integration message"))
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .accessibilityLabel("Feature in integration")
-                .accessibilityIdentifier("integrationMessage")
-
-            // Show basic room info
-            VStack(alignment: .leading, spacing: 10) {
-                Text("\(LocalizationKeys.room.localized(comment: "Room label")): \(store.roomName)")
-                    .accessibilityLabel("Room name")
-                    .accessibilityValue(store.roomName)
-                    .accessibilityIdentifier("roomNameText")
-                Text(
-                    "\(LocalizationKeys.volume.localized(comment: "Volume label")): "
-                    + "\(String(format: "%.1f m³", store.roomVolume))"
-                )
-                    .accessibilityLabel("Room volume")
-                    .accessibilityValue(String(format: "%.1f cubic meters", store.roomVolume))
-                    .accessibilityIdentifier("roomVolumeText")
-                Text("\(LocalizationKeys.surfaces.localized(comment: "Surfaces label")): \(store.surfaces.count)")
-                    .accessibilityLabel("Number of surfaces")
-                    .accessibilityValue("\(store.surfaces.count) surfaces")
-                    .accessibilityIdentifier("surfacesCountText")
+        List {
+            Section(
+                header: Text("Bericht"),
+                footer: Text("Erzeugt ein PDF-Gutachten: RT60 nach Sabine berechnet (keine Messung), DIN-18041-Bewertung der Gruppe \(roomType.groupLabel).")
+            ) {
+                LabeledContent("Raum", value: store.roomName)
+                LabeledContent("Volumen", value: String(format: "%.1f m³", store.roomVolume))
+                LabeledContent("DIN-Gruppe", value: roomType.displayName)
+                LabeledContent("Flächen", value: "\(store.surfaces.count)")
             }
-            .padding()
-            .background(Color.gray.opacity(0.1))
-            .cornerRadius(8)
-            .accessibilityElement(children: .contain)
-            .accessibilityLabel("Room information summary")
-            .accessibilityIdentifier("roomInfoGroup")
 
-            Spacer()
+            Section {
+                Button {
+                    generate()
+                } label: {
+                    Label("PDF erzeugen & teilen", systemImage: "square.and.arrow.up")
+                }
+                .disabled(store.roomVolume <= 0)
+                .accessibilityIdentifier("generatePDFButton")
+
+                if store.roomVolume <= 0 {
+                    Text("Kein Raumvolumen – erst Maße eingeben oder scannen.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                if let errorMessage {
+                    Text(errorMessage)
+                        .foregroundStyle(.red)
+                        .accessibilityIdentifier("exportError")
+                }
+            }
         }
-        .padding()
-        .navigationTitle(LocalizationKeys.pdfExport.localized(comment: "PDF Export navigation title"))
+        .navigationTitle("PDF-Export")
+        .sheet(isPresented: $showShare) {
+            if let shareURL {
+                ShareSheet(activityItems: [shareURL])
+            }
+        }
+    }
+
+    private func generate() {
+        errorMessage = nil
+        let data = ReportBuilder.makeReportData(store: store, roomType: roomType)
+        guard let pdf = ConsolidatedPDFExporter.generateReport(data: data) else {
+            errorMessage = "PDF konnte nicht erzeugt werden."
+            return
+        }
+        do {
+            let url = FileManager.default.temporaryDirectory
+                .appendingPathComponent("AcoustiScan-Report.pdf")
+            try pdf.write(to: url)
+            shareURL = url
+            showShare = true
+        } catch {
+            errorMessage = "Speichern fehlgeschlagen: \(error.localizedDescription)"
+        }
     }
 }
