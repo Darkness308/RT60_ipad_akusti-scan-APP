@@ -66,5 +66,12 @@ struct RT60DINView: View {
             }
         }
         .navigationTitle("DIN 18041")
+        .onAppear {
+            // Normalize a possibly-stale/corrupt stored value so the Picker
+            // selection always matches a valid RoomType tag.
+            if RoomType(rawValue: roomTypeRaw) == nil {
+                roomTypeRaw = RoomType.a3Education.rawValue
+            }
+        }
     }
 }
