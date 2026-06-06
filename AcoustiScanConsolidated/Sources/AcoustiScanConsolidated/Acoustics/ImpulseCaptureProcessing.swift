@@ -84,10 +84,13 @@ public enum ImpulseCaptureProcessing {
         sampleRate: Double,
         minimumSNRdB: Double = 0.0
     ) throws -> [RT60Measurement] {
-        if minimumSNRdB > 0,
-           let snr = estimateSNRdB(samples: samples, sampleRate: sampleRate),
-           snr < minimumSNRdB {
-            throw ProcessingError.insufficientSNR(snr)
+        if minimumSNRdB > 0 {
+            guard let snr = estimateSNRdB(samples: samples, sampleRate: sampleRate) else {
+                throw ProcessingError.snrUnavailable
+            }
+            if snr < minimumSNRdB {
+                throw ProcessingError.insufficientSNR(snr)
+            }
         }
         let ir = try extractImpulseResponse(from: samples, sampleRate: sampleRate)
         let byBand = try ImpulseResponseAnalyzer.rt60PerOctaveBand(ir: ir, sampleRate: sampleRate)
