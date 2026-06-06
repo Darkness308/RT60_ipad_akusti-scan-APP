@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D6B87FD3F6CF6BF3C82F0DA /* DINEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E189FB36B03E227642869FB6 /* DINEvaluation.swift */; };
 		2C6E06781844639C104E8907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CF3E0E84C35284144BB3226E /* Localizable.strings */; };
 		52A23908CB3563EACF2067FB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C844B7827888F3E31637EECC /* Foundation.framework */; };
 		635F5DA43922D1A59793D4D2 /* MaterialManagerXLSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91BC90510829E31A2952D24 /* MaterialManagerXLSXTests.swift */; };
@@ -26,6 +27,7 @@
 		AA0000000000000000000013 /* MaterialEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000013 /* MaterialEditorView.swift */; };
 		AA0000000000000000000014 /* RT60MeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000014 /* RT60MeasurementView.swift */; };
 		AS0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AR0000000000000000000001 /* Assets.xcassets */; };
+		C5B9B53320E1010BD7ABEF87 /* RT60DINView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24EF1F80CC20877CD865DA9 /* RT60DINView.swift */; };
 		C82BEF775D2EA984F1FA66B9 /* ErrorLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9975929754D1C31D0C4C1E /* ErrorLoggerTests.swift */; };
 		D21919BBB536BA04816CA471 /* LocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C82C61DC5149711E0C326CC /* LocalizationTests.swift */; };
 		KF0000000000000000000001 /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000001 /* ARKit.framework */; };
@@ -80,6 +82,8 @@
 		CC0000000000000000000001 /* AcoustiScanApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AcoustiScanApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD0000000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* AcoustiScan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AcoustiScan.entitlements; sourceTree = "<group>"; };
+		E189FB36B03E227642869FB6 /* DINEvaluation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DINEvaluation.swift; sourceTree = "<group>"; };
+		E24EF1F80CC20877CD865DA9 /* RT60DINView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RT60DINView.swift; sourceTree = "<group>"; };
 		KR0000000000000000000001 /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
 		KR0000000000000000000002 /* RealityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealityKit.framework; path = System/Library/Frameworks/RealityKit.framework; sourceTree = SDKROOT; };
 		KR0000000000000000000003 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
@@ -206,6 +210,7 @@
 				BB0000000000000000000004 /* RT60ChartView.swift */,
 				BB0000000000000000000005 /* RT60ClassificationView.swift */,
 				BB0000000000000000000014 /* RT60MeasurementView.swift */,
+				E24EF1F80CC20877CD865DA9 /* RT60DINView.swift */,
 			);
 			path = RT60;
 			sourceTree = "<group>";
@@ -250,6 +255,7 @@
 				MR0000000000000000000012 /* SurfaceStore.swift */,
 				MR0000000000000000000013 /* XLSXExporter.swift */,
 				MR0000000000000000000014 /* XLSXImporter.swift */,
+				E189FB36B03E227642869FB6 /* DINEvaluation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -402,6 +408,8 @@
 				MM0000000000000000000013 /* XLSXExporter.swift in Sources */,
 				MM0000000000000000000014 /* XLSXImporter.swift in Sources */,
 				MM0000000000000000000015 /* LocalizationKeys.swift in Sources */,
+				1D6B87FD3F6CF6BF3C82F0DA /* DINEvaluation.swift in Sources */,
+				C5B9B53320E1010BD7ABEF87 /* RT60DINView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
