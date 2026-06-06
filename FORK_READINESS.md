@@ -67,13 +67,15 @@ verifizierbar ist**, **was zwingend auf macOS/an echte Entwickler übergeht**, u
 
 Ein Fork ist **„ready für Entwickler"**, wenn:
 
-- [ ] `git clone` + die drei Build-Befehle (`CLAUDE.md`) laufen auf **macOS** grün. *(macOS — P1)*
-- [ ] `ci-honest.yml` ist grün auf dem Head-Commit. *(GitHub — prüfbar)*
-- [ ] App-Tests sind in CI eingebunden **und** grün. *(macOS — P2)*
-- [ ] Kein skip-only/leerer Test (Audit bestanden). *(P2)*
-- [ ] `README`/`HANDOFF`/dieses DoD beschreiben den **realen** Stand inkl. Grenzen. *(hier)*
-- [ ] Bekannte Lücken (P1/P3) sind als Issues **mit DoD** erfasst. *(hier / GitHub)*
-- [ ] Branch-Protection auf `main` aktiv. *(Admin — #284)*
+> Stand Juni 2026 — fast alles erfüllt; offen ist nur noch die Branch-Protection (Admin).
+
+- [x] `git clone` + Build auf **macOS** grün — `ci-honest.yml` baut Packages **und** App. *(P1)*
+- [x] `ci-honest.yml` ist grün auf `main`. *(GitHub — prüfbar)*
+- [x] App-Tests sind in CI eingebunden **und** grün — `xcodebuild test`, Target `AcoustiScanAppTests`. *(P2)*
+- [x] Keine skip-only/leeren Tests mehr (nicht-verifizierende Tests entfernt; App-Tests laufen real). *(P2)*
+- [x] `README`/`HANDOFF`/dieses DoD beschreiben den **realen** Stand inkl. Grenzen.
+- [x] Bekannte Lücken sind als Issues erfasst (#284 Branch-Protection, #293 Report-Wiring, …).
+- [ ] **Branch-Protection auf `main` aktiv** — **einziger offener Punkt**, nur Owner/Admin (#284).
 
 > Punkte mit *(macOS)* sind **hier nicht abhakbar** — das ist die ehrliche Grenze,
 > kein offener Mangel an dieser Stelle.

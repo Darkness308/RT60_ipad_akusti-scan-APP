@@ -7,13 +7,38 @@
 
 ---
 
+## Stand Juni 2026 — Update (gilt bei Konflikt vor den älteren Abschnitten unten)
+
+Seit 2026-05-30 wurden die meisten unten als „offen" markierten Engpässe **geschlossen**
+(alle via `ci-honest.yml` grün gemergt):
+
+- ✅ **App-Tests laufen jetzt in der CI.** Unit-Test-Target `AcoustiScanAppTests` ist im
+  Xcode-Projekt; `ci-honest.yml` führt für die App `xcodebuild test` aus (iPad-Simulator).
+  → §2 / §4 / §5 / §10.2 sind **erledigt**.
+- ✅ **Reale App-Bugs gefixt** (erst durch die Test-/Run-Loop sichtbar): fehlendes
+  `CFBundleExecutable` (App war **nicht installierbar**), Lokalisierung jetzt im Target
+  gebündelt (§10.4).
+- ✅ **DIN-18041-Bewertung in der App verdrahtet:** RoomType-Auswahl A1–A5 → norm-treue
+  **asymmetrische** Bewertung → Anzeige. (§10.1 a erledigt; Wortlaut ehrlich „Sabine/Prognose".)
+- ✅ **Mess-Pfad vorbereitet** (§10.1 b): `AudioImpulseRecorder` (AVAudioEngine) + getestetes
+  `ImpulseCaptureProcessing` + Mess-UI; **Geräte-Lauf** steht noch aus.
+- ✅ **Toter, duplizierter App-PDF-Renderer-Cluster entfernt** (enthielt die symmetrische
+  Toleranz) → §2 / §10.5 gegenstandslos.
+- ✅ **Echter PDF-Report** über den norm-treuen `ConsolidatedPDFExporter` (PR #296):
+  asymmetrisches DIN-Band + ehrlicher Sabine-Hinweis; ersetzt den Platzhalter.
+
+**Noch offen:** Geräte-Laufzeit (LiDAR/Mikrofon, §10.6) · Dedup doppelter Modelle/Strings (§4) ·
+Lint-/Coverage-Gates (§10.3/§10.4) · **Branch-Protection als Durchsetzung** (§11, nur Owner/Admin).
+
+---
+
 ## TL;DR
 
 - **Rechenkern** (`AcoustiScanConsolidated`, `Modules/Export`): solide, getestet, baut via `swift test`. **Übernahmefähig.**
 - **DIN 18041**: normtreu nach DIN 18041:2016-03 (Gruppen A1–A5, `T_soll = a·lg(V)+b`, Bild-2-Toleranzband), mit Tests.
-- **iOS-App** (`AcoustiScanApp`): **kompiliert** (CI via `xcodebuild`), 5-Tab-Navigation verdrahtet — aber **App-Tests und Geräte-Laufzeit sind NICHT automatisch verifiziert** (siehe §2).
+- **iOS-App** (`AcoustiScanApp`): kompiliert **und App-Tests laufen jetzt in der CI** (`xcodebuild test`, iPad-Simulator); **Geräte-Laufzeit** (LiDAR/Mikrofon/ARKit) bleibt nicht automatisiert (siehe §0/§2).
 - **CI**: `ci-honest.yml` ist die **einzige** Pipeline (ehrlich, ohne Maskierung). Die früheren maskierenden Workflows wurden vor dem Fork **gelöscht**.
-- **Wichtigster nächster Schritt**: App-Tests in eine echte CI-Loop bringen (§5).
+- **Erledigt** (war der wichtigste Schritt): App-Tests in einer echten CI-Loop (§0). **Jetzt offen:** Geräte-Lauf, Dedup, Branch-Protection-Durchsetzung (§0/§11).
 
 ---
 
