@@ -100,8 +100,8 @@ PAYLOAD="$(cat <<EOF
     "required_approving_review_count": 0
   },
   "restrictions": null,
-  "allow_force_pushes": false,
-  "required_linear_history": true
+  "allow_force_pushes": { "enabled": false },
+  "required_linear_history": { "enabled": true }
 }
 EOF
 )"
