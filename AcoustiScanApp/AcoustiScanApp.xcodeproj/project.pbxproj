@@ -20,6 +20,7 @@
 		AA0000000000000000000011 /* RoomDimensionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000011 /* RoomDimensionView.swift */; };
 		AA0000000000000000000012 /* RoomScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000012 /* RoomScanView.swift */; };
 		AA0000000000000000000013 /* MaterialEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000013 /* MaterialEditorView.swift */; };
+		AA0000000000000000000014 /* RT60MeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000014 /* RT60MeasurementView.swift */; };
 		MM0000000000000000000001 /* AbsorptionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000001 /* AbsorptionData.swift */; };
 		MM0000000000000000000002 /* AcousticMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000002 /* AcousticMaterial.swift */; };
 		MM0000000000000000000003 /* AuditTrail.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000003 /* AuditTrail.swift */; };
@@ -57,6 +58,7 @@
 		BB0000000000000000000011 /* RoomDimensionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDimensionView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000012 /* RoomScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomScanView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000013 /* MaterialEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialEditorView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000014 /* RT60MeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RT60MeasurementView.swift; sourceTree = "<group>"; };
 		DD0000000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* AcoustiScan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AcoustiScan.entitlements; sourceTree = "<group>"; };
 		MR0000000000000000000001 /* AbsorptionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsorptionData.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				BB0000000000000000000003 /* RT60View.swift */,
 				BB0000000000000000000004 /* RT60ChartView.swift */,
 				BB0000000000000000000005 /* RT60ClassificationView.swift */,
+				BB0000000000000000000014 /* RT60MeasurementView.swift */,
 			);
 			path = RT60;
 			sourceTree = "<group>";
@@ -312,6 +315,7 @@
 				AA0000000000000000000011 /* RoomDimensionView.swift in Sources */,
 				AA0000000000000000000012 /* RoomScanView.swift in Sources */,
 				AA0000000000000000000013 /* MaterialEditorView.swift in Sources */,
+				AA0000000000000000000014 /* RT60MeasurementView.swift in Sources */,
 				MM0000000000000000000001 /* AbsorptionData.swift in Sources */,
 				MM0000000000000000000002 /* AcousticMaterial.swift in Sources */,
 				MM0000000000000000000003 /* AuditTrail.swift in Sources */,

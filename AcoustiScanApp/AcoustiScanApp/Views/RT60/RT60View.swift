@@ -36,6 +36,15 @@ struct RT60View: View {
                     .accessibilityIdentifier("rt60Row\(freq)")
                 }
             }
+
+            Section {
+                NavigationLink {
+                    RT60MeasurementView(store: store)
+                } label: {
+                    Label("Impulsmessung (Mikrofon)", systemImage: "waveform")
+                }
+                .accessibilityIdentifier("openMeasurementLink")
+            }
         }
         .navigationTitle("Nachhallzeiten")
     }

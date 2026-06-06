@@ -41,6 +41,12 @@ public final class AudioImpulseRecorder {
         let sampleRate = format.sampleRate
 
         var collected: [Float] = []
+        // Pre-reserve to limit reallocations while the audio tap appends on its
+        // real-time thread. A lock-free ring buffer is the fully robust solution
+        // (see #289 review) and is deferred until on-device dropouts are observed.
+        if sampleRate > 0 {
+            collected.reserveCapacity(Int(sampleRate * max(0, duration)) + 4096)
+        }
         let lock = NSLock()
 
         input.installTap(onBus: 0, bufferSize: 4096, format: format) { buffer, _ in
