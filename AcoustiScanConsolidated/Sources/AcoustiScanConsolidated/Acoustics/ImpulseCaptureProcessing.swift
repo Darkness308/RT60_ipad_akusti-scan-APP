@@ -24,6 +24,7 @@ public enum ImpulseCaptureProcessing {
     public enum ProcessingError: Error, Equatable {
         case emptyRecording
         case noOnsetFound
+        case snrUnavailable
         case insufficientSNR(Double)
     }
 
