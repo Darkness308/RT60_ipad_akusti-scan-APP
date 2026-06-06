@@ -34,14 +34,8 @@
 		MM0000000000000000000001 /* AbsorptionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000001 /* AbsorptionData.swift */; };
 		MM0000000000000000000002 /* AcousticMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000002 /* AcousticMaterial.swift */; };
 		MM0000000000000000000003 /* AuditTrail.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000003 /* AuditTrail.swift */; };
-		MM0000000000000000000004 /* EnhancedPDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000004 /* EnhancedPDFExporter.swift */; };
 		MM0000000000000000000005 /* ErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000005 /* ErrorLogger.swift */; };
 		MM0000000000000000000006 /* MaterialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000006 /* MaterialManager.swift */; };
-		MM0000000000000000000007 /* PDFChartRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000007 /* PDFChartRenderer.swift */; };
-		MM0000000000000000000008 /* PDFDrawingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000008 /* PDFDrawingHelpers.swift */; };
-		MM0000000000000000000009 /* PDFPageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000009 /* PDFPageRenderer.swift */; };
-		MM0000000000000000000010 /* PDFStyleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000010 /* PDFStyleConfiguration.swift */; };
-		MM0000000000000000000011 /* PDFTableRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000011 /* PDFTableRenderer.swift */; };
 		MM0000000000000000000012 /* SurfaceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000012 /* SurfaceStore.swift */; };
 		MM0000000000000000000013 /* XLSXExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000013 /* XLSXExporter.swift */; };
 		MM0000000000000000000014 /* XLSXImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000014 /* XLSXImporter.swift */; };
@@ -92,14 +86,8 @@
 		MR0000000000000000000001 /* AbsorptionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsorptionData.swift; sourceTree = "<group>"; };
 		MR0000000000000000000002 /* AcousticMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticMaterial.swift; sourceTree = "<group>"; };
 		MR0000000000000000000003 /* AuditTrail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditTrail.swift; sourceTree = "<group>"; };
-		MR0000000000000000000004 /* EnhancedPDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedPDFExporter.swift; sourceTree = "<group>"; };
 		MR0000000000000000000005 /* ErrorLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLogger.swift; sourceTree = "<group>"; };
 		MR0000000000000000000006 /* MaterialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialManager.swift; sourceTree = "<group>"; };
-		MR0000000000000000000007 /* PDFChartRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFChartRenderer.swift; sourceTree = "<group>"; };
-		MR0000000000000000000008 /* PDFDrawingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDrawingHelpers.swift; sourceTree = "<group>"; };
-		MR0000000000000000000009 /* PDFPageRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPageRenderer.swift; sourceTree = "<group>"; };
-		MR0000000000000000000010 /* PDFStyleConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFStyleConfiguration.swift; sourceTree = "<group>"; };
-		MR0000000000000000000011 /* PDFTableRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFTableRenderer.swift; sourceTree = "<group>"; };
 		MR0000000000000000000012 /* SurfaceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurfaceStore.swift; sourceTree = "<group>"; };
 		MR0000000000000000000013 /* XLSXExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXExporter.swift; sourceTree = "<group>"; };
 		MR0000000000000000000014 /* XLSXImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXImporter.swift; sourceTree = "<group>"; };
@@ -257,14 +245,8 @@
 				MR0000000000000000000001 /* AbsorptionData.swift */,
 				MR0000000000000000000002 /* AcousticMaterial.swift */,
 				MR0000000000000000000003 /* AuditTrail.swift */,
-				MR0000000000000000000004 /* EnhancedPDFExporter.swift */,
 				MR0000000000000000000005 /* ErrorLogger.swift */,
 				MR0000000000000000000006 /* MaterialManager.swift */,
-				MR0000000000000000000007 /* PDFChartRenderer.swift */,
-				MR0000000000000000000008 /* PDFDrawingHelpers.swift */,
-				MR0000000000000000000009 /* PDFPageRenderer.swift */,
-				MR0000000000000000000010 /* PDFStyleConfiguration.swift */,
-				MR0000000000000000000011 /* PDFTableRenderer.swift */,
 				MR0000000000000000000012 /* SurfaceStore.swift */,
 				MR0000000000000000000013 /* XLSXExporter.swift */,
 				MR0000000000000000000014 /* XLSXImporter.swift */,
@@ -414,14 +396,8 @@
 				MM0000000000000000000001 /* AbsorptionData.swift in Sources */,
 				MM0000000000000000000002 /* AcousticMaterial.swift in Sources */,
 				MM0000000000000000000003 /* AuditTrail.swift in Sources */,
-				MM0000000000000000000004 /* EnhancedPDFExporter.swift in Sources */,
 				MM0000000000000000000005 /* ErrorLogger.swift in Sources */,
 				MM0000000000000000000006 /* MaterialManager.swift in Sources */,
-				MM0000000000000000000007 /* PDFChartRenderer.swift in Sources */,
-				MM0000000000000000000008 /* PDFDrawingHelpers.swift in Sources */,
-				MM0000000000000000000009 /* PDFPageRenderer.swift in Sources */,
-				MM0000000000000000000010 /* PDFStyleConfiguration.swift in Sources */,
-				MM0000000000000000000011 /* PDFTableRenderer.swift in Sources */,
 				MM0000000000000000000012 /* SurfaceStore.swift in Sources */,
 				MM0000000000000000000013 /* XLSXExporter.swift in Sources */,
 				MM0000000000000000000014 /* XLSXImporter.swift in Sources */,
