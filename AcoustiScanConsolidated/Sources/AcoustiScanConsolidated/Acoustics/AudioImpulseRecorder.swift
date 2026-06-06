@@ -59,10 +59,13 @@ public final class AudioImpulseRecorder {
             throw RecorderError.engineFailure(error.localizedDescription)
         }
 
-        try await Task.sleep(nanoseconds: UInt64(duration * 1_000_000_000))
+        defer {
+            input.removeTap(onBus: 0)
+            engine.stop()
+        }
 
-        input.removeTap(onBus: 0)
-        engine.stop()
+        let nanoseconds = UInt64(max(0, duration) * 1_000_000_000)
+        try await Task.sleep(nanoseconds: nanoseconds)
 
         lock.lock()
         let samples = collected
