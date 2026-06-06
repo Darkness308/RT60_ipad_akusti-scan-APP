@@ -74,7 +74,7 @@ Ein Fork ist **„ready für Entwickler"**, wenn:
 - [x] App-Tests sind in CI eingebunden **und** grün — `xcodebuild test`, Target `AcoustiScanAppTests`. *(P2)*
 - [x] Keine skip-only/leeren Tests mehr (nicht-verifizierende Tests entfernt; App-Tests laufen real). *(P2)*
 - [x] `README`/`HANDOFF`/dieses DoD beschreiben den **realen** Stand inkl. Grenzen.
-- [x] Bekannte Lücken sind als Issues erfasst (#284 Branch-Protection, #293 Report-Wiring, …).
+- [x] Bekannte Lücken sind als Issues erfasst (z. B. #284 Branch-Protection, weitere siehe Issue-Liste).
 - [ ] **Branch-Protection auf `main` aktiv** — **einziger offener Punkt**, nur Owner/Admin (#284).
 
 > Punkte mit *(macOS)* sind **hier nicht abhakbar** — das ist die ehrliche Grenze,
