@@ -116,7 +116,7 @@ if [[ "${APPLY}" != "true" ]]; then
   echo "Dry-run only. To apply, re-run with --apply."
   echo
   echo "Command that will be executed:"
-  echo "gh api --method PUT repos/${OWNER}/${NAME}/branches/${BRANCH}/protection --input -"
+  echo "printf '%s\n' \"\$PAYLOAD\" | gh api --method PUT \"repos/${OWNER}/${NAME}/branches/${BRANCH}/protection\" --input -"
   exit 0
 fi
 
