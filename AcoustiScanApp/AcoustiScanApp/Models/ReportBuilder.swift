@@ -11,11 +11,13 @@ import AcoustiScanConsolidated
 
 enum ReportBuilder {
 
-    private static let standardFrequencies = [125, 250, 500, 1000, 2000, 4000, 8000]
-
     /// Build `ReportData` for the PDF report from the current room state.
     static func makeReportData(store: SurfaceStore, roomType: RoomType) -> ReportData {
-        let spectrum = store.calculateRT60Spectrum()
+        // Restrict to the bands DIN actually evaluates for this group so that
+        // rt60Measurements and dinResults align (no "Status: Unbekannt" rows,
+        // e.g. 8000 Hz, or 125/4000 Hz for A5).
+        let evaluated = Set(roomType.evaluationFrequencies)
+        let spectrum = store.calculateRT60Spectrum().filter { evaluated.contains($0.key) }
 
         let measurements = spectrum
             .sorted { $0.key < $1.key }
@@ -28,7 +30,7 @@ enum ReportBuilder {
         )
 
         let surfaces: [AcousticSurface] = store.surfaces.map { surface in
-            let coefficients: [Int: Double] = standardFrequencies.reduce(into: [:]) { dict, frequency in
+            let coefficients: [Int: Double] = AbsorptionData.standardFrequencies.reduce(into: [:]) { dict, frequency in
                 dict[frequency] = surface.material.map { Double($0.absorptionCoefficient(at: frequency)) } ?? 0.0
             }
             let material = AcoustiScanConsolidated.AcousticMaterial(

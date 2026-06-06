@@ -92,6 +92,10 @@ struct PDFReportExportView: View {
     private func generate() {
         errorMessage = nil
         let data = ReportBuilder.makeReportData(store: store, roomType: roomType)
+        guard !data.rt60Measurements.isEmpty else {
+            errorMessage = "Keine RT60-Werte – bitte den Flächen Materialien mit Absorption zuweisen."
+            return
+        }
         guard let pdf = ConsolidatedPDFExporter.generateReport(data: data) else {
             errorMessage = "PDF konnte nicht erzeugt werden."
             return
