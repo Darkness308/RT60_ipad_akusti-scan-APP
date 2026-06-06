@@ -16,8 +16,8 @@
 // permission APIs leaking into the cross-platform package).
 
 #if os(iOS)
+import Foundation
 import AVFoundation
-
 /// Records a short mono signal from the microphone and computes octave-band
 /// RT60 via `ImpulseCaptureProcessing` + `ImpulseResponseAnalyzer`.
 public final class AudioImpulseRecorder {
