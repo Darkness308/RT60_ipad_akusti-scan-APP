@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C6E06781844639C104E8907 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CF3E0E84C35284144BB3226E /* Localizable.strings */; };
 		52A23908CB3563EACF2067FB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C844B7827888F3E31637EECC /* Foundation.framework */; };
 		635F5DA43922D1A59793D4D2 /* MaterialManagerXLSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91BC90510829E31A2952D24 /* MaterialManagerXLSXTests.swift */; };
 		99141265D7F4E5A63067A5FF /* AcoustiScanUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF1FAF9E201B55B21A60C9CF /* AcoustiScanUITests.swift */; };
@@ -60,10 +61,12 @@
 
 /* Begin PBXFileReference section */
 		2D9975929754D1C31D0C4C1E /* ErrorLoggerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ErrorLoggerTests.swift; sourceTree = "<group>"; };
+		70FB041E4788DB4C92281EA2 /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7C82C61DC5149711E0C326CC /* LocalizationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocalizationTests.swift; sourceTree = "<group>"; };
 		A6F49369DA611D08BF86A4C6 /* AcoustiScanAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AcoustiScanAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF1FAF9E201B55B21A60C9CF /* AcoustiScanUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AcoustiScanUITests.swift; sourceTree = "<group>"; };
 		AR0000000000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ../Assets.xcassets; sourceTree = "<group>"; };
+		B3B7D00AC39B408C352A744E /* de */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B91BC90510829E31A2952D24 /* MaterialManagerXLSXTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MaterialManagerXLSXTests.swift; sourceTree = "<group>"; };
 		BB0000000000000000000001 /* AcoustiScanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcoustiScanApp.swift; sourceTree = "<group>"; };
 		BB0000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -203,6 +206,7 @@
 				DD0000000000000000000001 /* Info.plist */,
 				MR0000000000000000000015 /* LocalizationKeys.swift */,
 				AR0000000000000000000001 /* Assets.xcassets */,
+				CF3E0E84C35284144BB3226E /* Localizable.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -342,6 +346,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = FF0000000000000000000001;
 			packageReferences = (
@@ -370,6 +375,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AS0000000000000000000001 /* Assets.xcassets in Resources */,
+				2C6E06781844639C104E8907 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +439,18 @@
 			targetProxy = 84C54DD307B378063694E417 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CF3E0E84C35284144BB3226E /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				70FB041E4788DB4C92281EA2 /* en */,
+				B3B7D00AC39B408C352A744E /* de */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		9A6B15C02E65C5D029AB65AC /* Debug */ = {

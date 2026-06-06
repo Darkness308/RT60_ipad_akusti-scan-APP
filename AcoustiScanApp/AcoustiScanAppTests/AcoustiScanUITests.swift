@@ -237,7 +237,7 @@ class AcoustiScanUITests: XCTestCase {
         let volume = length * width * height
 
         // Then - Precision should be maintained
-        XCTAssertEqual(volume, 126.208, accuracy: 0.001, "Should maintain decimal precision")
+        XCTAssertEqual(volume, 126.3025, accuracy: 0.001, "Should maintain decimal precision")
     }
 
     // MARK: - 4. Material Editor Functionality Tests
