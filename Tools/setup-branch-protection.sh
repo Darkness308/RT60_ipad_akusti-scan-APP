@@ -95,8 +95,7 @@ PAYLOAD="$(cat <<EOF
       "iOS app (xcodebuild)"
     ]
   },
-  "enforce_admins": false,
-  "required_pull_request_reviews": {
+  "enforce_admins": true,
     "required_approving_review_count": 0
   },
   "restrictions": null,
