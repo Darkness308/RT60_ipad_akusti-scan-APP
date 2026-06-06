@@ -44,9 +44,10 @@ xcodebuild build -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
    `build.sh` auto-fix wrapper and `.github/heal-attempts.json` were **deleted**
    before the fork. Do not reintroduce retry/auto-fix/self-healing automation.
 2. **The word "verified" means built/ran.** Reading code is review, not verification.
-3. **App tests are NOT in CI.** `AcoustiScanAppTests` isn't in the Xcode project yet,
-   so its breakage is invisible to CI. Run app tests locally; wiring them into CI is
-   the highest-value next step (see HANDOFF §5).
+3. **App tests now run in CI.** `AcoustiScanAppTests` is wired into `AcoustiScanApp.xcodeproj`
+   and `ci-honest.yml` runs `xcodebuild test` (iPad simulator), so breakage is visible to CI.
+   Still NOT covered: on-device runtime (LiDAR/RoomPlan, microphone, ARKit) — only verifiable
+   on a real iPad. Keep new tests real (no skip-as-green).
 4. **DIN logic is norm-faithful — keep it that way.** Targets are
    `T_soll = a·lg(V)+b` for Groups A1–A5 with the asymmetric Bild-2 tolerance band
    (lives in `Models/RoomType.swift` + `DIN18041/`). Do not reintroduce the old
