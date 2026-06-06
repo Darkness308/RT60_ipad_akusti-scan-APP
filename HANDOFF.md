@@ -36,9 +36,9 @@ Lint-/Coverage-Gates (§10.3/§10.4) · **Branch-Protection als Durchsetzung** (
 
 - **Rechenkern** (`AcoustiScanConsolidated`, `Modules/Export`): solide, getestet, baut via `swift test`. **Übernahmefähig.**
 - **DIN 18041**: normtreu nach DIN 18041:2016-03 (Gruppen A1–A5, `T_soll = a·lg(V)+b`, Bild-2-Toleranzband), mit Tests.
-- **iOS-App** (`AcoustiScanApp`): kompiliert **und App-Tests laufen jetzt in der CI** (`xcodebuild test`, iPad-Simulator); **Geräte-Laufzeit** (LiDAR/Mikrofon/ARKit) bleibt nicht automatisiert (siehe Update oben / §2).
+- **iOS-App** (`AcoustiScanApp`): kompiliert **und App-Tests laufen jetzt in der CI** (`xcodebuild test`, iPad-Simulator); **Geräte-Laufzeit** (LiDAR/Mikrofon/ARKit) bleibt nicht automatisiert (siehe „Stand Juni 2026" oben / §2).
 - **CI**: `ci-honest.yml` ist die **einzige** Pipeline (ehrlich, ohne Maskierung). Die früheren maskierenden Workflows wurden vor dem Fork **gelöscht**.
-- **Erledigt** (war der wichtigste Schritt): App-Tests in einer echten CI-Loop (siehe Update oben). **Jetzt offen:** Geräte-Lauf, Dedup, Branch-Protection-Durchsetzung (siehe Update oben / §11).
+- **Erledigt** (war der wichtigste Schritt): App-Tests in einer echten CI-Loop (siehe „Stand Juni 2026" oben). **Jetzt offen:** Geräte-Lauf, Dedup, Branch-Protection-Durchsetzung (§11).
 
 ---
 
@@ -49,23 +49,22 @@ Lint-/Coverage-Gates (§10.3/§10.4) · **Branch-Protection als Durchsetzung** (
 | `AcoustiScanConsolidated` | ✅ baut + Tests grün | `swift build && swift test` in `ci-honest.yml` |
 | `Modules/Export` (ReportExport) | ✅ baut + Tests grün | `swift build && swift test` in `ci-honest.yml` |
 | DIN 18041 Engine (A1–A5) | ✅ implementiert + getestet | `DIN18041Tests.swift`, `AcoustiScanConsolidatedTests.swift` |
-| iOS-App **Build** | ✅ kompiliert | `xcodebuild build` (Simulator-SDK) in `ci-honest.yml` |
+| iOS-App **Build + App-Tests** | ✅ kompiliert + Tests grün | `xcodebuild test` (iPad-Simulator) in `ci-honest.yml` |
 | App `ContentView` | ✅ echte `TabView` (RT60/Scan/Maße/Material/Export) | Code + CI-Build |
 
 ---
 
 ## 2. Was (noch) NICHT verifiziert ist — ehrlich
 
-- **App-Tests laufen in KEINER CI.** Das Test-Target `AcoustiScanAppTests` ist **nicht** im Xcode-Projekt
-  (`AcoustiScanApp.xcodeproj/project.pbxproj` referenziert es 0×). Die Testdateien existieren nur auf der Platte
-  und im SPM-Manifest `AcoustiScanApp/Package.swift`, das die CI **nicht** baut. → Brüche in App-Tests bleiben unbemerkt.
-- **Geräte-Laufzeit** (LiDAR/RoomPlan, Mikrofon, ARKit) wurde **nie automatisiert** getestet — nur auf echtem iPad sinnvoll.
-- **PDF-Export der App ist ein Platzhalter.** Seine Compliance-/Toleranzprüfung (`PDFPageRenderer`/`PDFTableRenderer`)
-  ist **symmetrisch** (`abs(measured − target) ≤ tolerance`) statt des normtreuen **asymmetrischen** Bild-2-Bands.
-  Derzeit ohne Aufrufer/ohne erzeugte `dinTargets` → produziert aktuell keine falschen Zahlen, **muss aber** beim
-  Verdrahten auf die Package-Bänder (`DIN18041Database`) umgestellt werden.
+- **Geräte-Laufzeit** (LiDAR/RoomPlan, Mikrofon, ARKit) ist **nicht automatisiert** getestet — nur auf echtem iPad sinnvoll. Das ist der verbleibende Hauptpunkt.
+- **App-PDF am Gerät:** Der PDF-Report wird erzeugt (`ConsolidatedPDFExporter`, normtreues asymmetrisches DIN-Band) und im CI-Build kompiliert, aber der **tatsächliche Share-/Layout-Lauf am Gerät** ist nicht auto-getestet.
+- **Release-/Archive-Build, Lint-Gate, Code-Coverage** laufen (noch) nicht in der CI (siehe §10.3/§10.4).
 
-> **Konsequenz:** „bugfrei" ist **nicht belegbar**, solange §5/Schritt 1 nicht erledigt ist. Bitte nicht so nennen.
+> **Erledigt seit 2026-05-30** (siehe „Stand Juni 2026"-Block oben): App-Tests laufen jetzt in der CI
+> (`xcodebuild test`); der frühere **tote** PDF-Platzhalter samt symmetrischer Toleranz wurde **entfernt**;
+> DIN-Bewertung + echter PDF-Report sind verdrahtet.
+>
+> **Konsequenz:** „bugfrei" bleibt nur so weit belegbar, wie CI + Tests reichen — die **Geräte-Laufzeit** ist der offene Rest.
 
 ---
 
@@ -106,15 +105,13 @@ xcodebuild build \
 
 ## 5. Empfohlene nächste Schritte (Priorität)
 
-1. **Echte App-Verifikation herstellen** *(höchster Wert)*:
-   in Xcode ein **Unit-Test-Target** anlegen (GUI: *File → New → Target → Unit Testing Bundle*),
-   die vorhandenen Dateien in `AcoustiScanApp/AcoustiScanAppTests/` zuordnen, dann **`xcodebuild test`**
-   in `ci-honest.yml` ergänzen. → erstes automatisches Rot/Grün für die App.
-   *(Die `.pbxproj` bitte über Xcode ändern, nicht von Hand — danach `swift`/`xcodebuild test` lokal prüfen.)*
-2. **Danach wählen** (je ein eigenes, CI-verifiziertes Vorhaben):
-   - Modelle App→Package konsolidieren, **oder**
-   - PDF-Export verdrahten **und dabei** die normtreuen DIN-Bänder (`DIN18041Database`) nutzen (§2).
-3. **Branch-Hygiene** (§9).
+1. ✅ **Erledigt:** App-Verifikation in der CI (Unit-Test-Target `AcoustiScanAppTests` + `xcodebuild test`)
+   sowie PDF-Export mit normtreuen DIN-Bändern. War der höchste Hebel — siehe „Stand Juni 2026"-Block oben.
+2. **Jetzt offen** (je ein eigenes, CI-verifiziertes Vorhaben):
+   - Modelle/Strings App↔Package **konsolidieren** (Dedup), **oder**
+   - **i18n**: neue App-Views (DIN/Messung/Export) auf `LocalizationKeys` umstellen, **oder**
+   - **Geräte-Lauf** (Mikrofon-Capture, LiDAR) auf echtem iPad verifizieren.
+3. **Branch-Hygiene** (§9) · **Branch-Protection** als Durchsetzung (§11).
 
 ---
 
@@ -163,7 +160,7 @@ git push origin --delete <branchname> [<branchname> ...]
 Behalten: `main`, aktive Feature-Branches, `claude/*`-Branches mit evtl. nützlicher Arbeit
 (z. B. `consolidate-duplicate-renderers`) und beschreibende WIP-Branches (`fix-pdf-export-issues` etc.).
 
-## 10. Verifizierungs-Engpässe & blinde Flecken (Audit 2026-05-30)
+## 10. Verifizierungs-Engpässe & blinde Flecken (Audit 2026-05-30 — historisch; viele Punkte erledigt, siehe „Stand Juni 2026" oben)
 
 Ergebnis einer systematischen EKS-Engpassanalyse (CI/Test-Coverage + Fake-Funktions-Jagd).
 Reihenfolge bewusst nach **Risiko × Schließbarkeit**. Mac-gebundene Punkte sind markiert
@@ -179,13 +176,11 @@ PDF-Boilerplate „Diese **Messung** wurde nach DIN 18041 durchgeführt".
 → Entscheidung nötig: entweder (a) Wortlaut/Doku ehrlich auf „Prognose nach Sabine" umstellen,
 oder (b) echten Messpfad (`ImpulseResponseAnalyzer`) an die UI anbinden. **Nicht** stillschweigend lassen.
 
-### 10.2 🔴 Der Haupt-Engpass — App-Tests laufen in KEINER CI
-`AcoustiScanAppTests` ist **0× in `AcoustiScanApp.xcodeproj/project.pbxproj`**; `ci-honest.yml`
-macht für die App nur `xcodebuild build` (ohne `test`). Folge: ~1.600 Zeilen App-Tests laufen
-**nie** — u. a. der **einzige XLSX-Round-Trip-Test** (`MaterialManagerXLSXTests`), `SurfaceStore`-
-RT60 und `MaterialManager`. Die App „besteht CI" allein durchs Kompilieren.
-→ 🖥 Höchster Hebel: Unit-Test-Target in Xcode anlegen, vorhandene Dateien zuordnen, dann
-`xcodebuild test` in `ci-honest.yml` ergänzen. Macht die gesamte App-Schicht erst verifizierbar.
+### 10.2 ✅ ERLEDIGT (war: App-Tests laufen in KEINER CI)
+**Seit Juni 2026 behoben:** Das Unit-Test-Target `AcoustiScanAppTests` ist im Xcode-Projekt, und
+`ci-honest.yml` führt `xcodebuild test` (iPad-Simulator) aus. Die App-Tests (`MaterialManagerXLSXTests`,
+`SurfaceStore`-RT60, `MaterialManager`, …) laufen jetzt real in CI — die App besteht CI nicht mehr
+allein durchs Kompilieren.
 
 ### 10.3 🟠 Schnelle, risikoarme Gates (fehlen in der CI)
 - **Lint/Format nicht erzwungen:** `.swiftlint.yml` + `.swiftformat` existieren, werden aber
@@ -250,5 +245,5 @@ im GitHub-UI setzen (nicht im Code, nicht von einer Sandbox):
 
 ---
 
-*Letzte Aktualisierung dieses Dokuments: 2026-05-30. Bei Abweichungen zwischen diesem Dokument und dem Code
-gilt der Code — bitte diese Datei dann aktualisieren.*
+*Letzte Aktualisierung dieses Dokuments: 2026-06-06 (Stand-Update Juni 2026 + Konsistenzabgleich der älteren
+Abschnitte). Bei Abweichungen zwischen diesem Dokument und dem Code gilt der Code — bitte diese Datei dann aktualisieren.*

@@ -35,7 +35,7 @@ verifizierbar ist**, **was zwingend auf macOS/an echte Entwickler übergeht**, u
 | Reiner Nicht-Swift-Content editieren | ✅ ja | hier |
 | **Swift Packages bauen + testen** | ❌ nein | macOS-CI (`ci-honest.yml`) ✓ vorhanden |
 | **iOS-App `xcodebuild`** | ❌ nein | macOS-CI ✓ vorhanden |
-| **App-Tests (`AcoustiScanAppTests`) ausführen** | ❌ nein **und** nicht in CI | macOS, **nach** Wiring (P2) |
+| **App-Tests (`AcoustiScanAppTests`) ausführen** | ❌ nicht hier (Linux) | ✅ **in CI** (`xcodebuild test`) — P2 erledigt |
 | **App im Simulator/Gerät, RoomPlan/LiDAR** | ❌ nein | macOS + echtes iPad |
 
 ---
@@ -45,18 +45,16 @@ verifizierbar ist**, **was zwingend auf macOS/an echte Entwickler übergeht**, u
 > Diese Pakete sind **hier nicht abschließend verifizierbar.** Claude bereitet sie
 > (Spec, Inventar, statische Vorarbeit, PRs) vor; die **Verifikation** macht macOS/CI/Dev.
 
-- **P1 — macOS/Xcode-Migration (Voraussetzung, ausstehend).**
-  *DoD:* Repo baut/testet auf **macOS + Xcode 15.4** mit den drei Befehlen aus
-  `CLAUDE.md`; `ci-honest.yml` grün. → **Explizit im Scope** als anstehende Migration.
-- **P2 — Test-Integrität & App-Tests in CI.**
-  *DoD:* (a) `AcoustiScanAppTests` im Xcode-Projekt **und** in `ci-honest.yml`;
-  (b) kein Test, der auf sauberem Checkout nur *skippt*; (c) **Nachweis:** ein
-  absichtlich gebrochener Funktionswert macht **genau einen** Test rot.
-- **P3 — Funktionslücken.**
-  *DoD je Punkt:* RT60-Messpfad (`ImpulseResponseAnalyzer`) **entweder** verdrahtet +
-  getestet **oder** klar als „nicht aktiv" markiert; Exporter-Toleranz **asymmetrisch**
-  (DIN-Bild-2) statt Platzhalter; doppelte Modelle/Strings konsolidiert **oder**
-  bewusst dupliziert + synchron getestet.
+- **P1 — macOS/Xcode-Build. ✅ ERLEDIGT.**
+  `ci-honest.yml` baut/testet auf **macOS + Xcode 15.4** (Packages via `swift test`, App via
+  `xcodebuild test`) und ist auf `main` grün.
+- **P2 — Test-Integrität & App-Tests in CI. ✅ ERLEDIGT (Juni 2026).**
+  `AcoustiScanAppTests` ist im Xcode-Projekt **und** in `ci-honest.yml` (`xcodebuild test`);
+  nicht-verifizierende Tests wurden entfernt. Offen nur: Geräte-Laufzeit (HANDOFF §10.6).
+- **P3 — Funktionslücken (teilweise erledigt).**
+  ✅ Exporter nutzt das **asymmetrische** DIN-Bild-2-Band (toter symmetrischer Platzhalter entfernt);
+  ✅ Messpfad vorbereitet (`AudioImpulseRecorder` + getestetes `ImpulseCaptureProcessing`, Geräte-Lauf offen).
+  **Offen:** doppelte Modelle/Strings konsolidieren (Dedup).
 - **P4 — Repo-Hygiene.** Git-Labels-Taxonomie; Branch-Protection (#284);
   Wording/Labeling (#285); verwaiste Branches.
 - **P5 — Ehrliches Statusdokument.** Dieses DoD + `HANDOFF.md` konsistent halten.
@@ -74,7 +72,7 @@ Ein Fork ist **„ready für Entwickler"**, wenn:
 - [x] App-Tests sind in CI eingebunden **und** grün — `xcodebuild test`, Target `AcoustiScanAppTests`. *(P2)*
 - [x] Keine skip-only/leeren Tests mehr (nicht-verifizierende Tests entfernt; App-Tests laufen real). *(P2)*
 - [x] `README`/`HANDOFF`/dieses DoD beschreiben den **realen** Stand inkl. Grenzen.
-- [x] Bekannte Lücken sind als Issues erfasst (z. B. #284 Branch-Protection, weitere siehe Issue-Liste).
+- [x] Bekannte Lücken sind als Issues/Doku erfasst (z. B. #284 Branch-Protection; offen: Dedup, i18n, Geräte-Lauf).
 - [ ] **Branch-Protection auf `main` aktiv** — **einziger offener Punkt**, nur Owner/Admin (#284).
 
 > Punkte mit *(macOS)* sind **hier nicht abhakbar** — das ist die ehrliche Grenze,
