@@ -38,7 +38,7 @@ Lint-/Coverage-Gates (§10.3/§10.4) · **Branch-Protection als Durchsetzung** (
 - **DIN 18041**: normtreu nach DIN 18041:2016-03 (Gruppen A1–A5, `T_soll = a·lg(V)+b`, Bild-2-Toleranzband), mit Tests.
 - **iOS-App** (`AcoustiScanApp`): kompiliert **und App-Tests laufen jetzt in der CI** (`xcodebuild test`, iPad-Simulator); **Geräte-Laufzeit** (LiDAR/Mikrofon/ARKit) bleibt nicht automatisiert (siehe Update oben / §2).
 - **CI**: `ci-honest.yml` ist die **einzige** Pipeline (ehrlich, ohne Maskierung). Die früheren maskierenden Workflows wurden vor dem Fork **gelöscht**.
-- **Erledigt** (war der wichtigste Schritt): App-Tests in einer echten CI-Loop (§0). **Jetzt offen:** Geräte-Lauf, Dedup, Branch-Protection-Durchsetzung (§0/§11).
+- **Erledigt** (war der wichtigste Schritt): App-Tests in einer echten CI-Loop (siehe Update oben). **Jetzt offen:** Geräte-Lauf, Dedup, Branch-Protection-Durchsetzung (siehe Update oben / §11).
 
 ---
 
