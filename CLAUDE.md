@@ -38,10 +38,11 @@ xcodebuild build -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
 ## Hard rules (learned the hard way)
 
 1. **Honesty over polish.** This repo was previously "green-washed" by bots that
-   masked failures. The single source of CI truth is **`.github/workflows/ci-honest.yml`**.
-   The other workflows (`build-test.yml`, `swift.yml`, `self-healing.yml`,
-   `auto-retry.yml`, `autofix-agent.yml`) are **disabled on purpose** — do not
-   re-enable them.
+   masked failures. The single source of CI truth is **`.github/workflows/ci-honest.yml`**
+   — and now the *only* workflow. The legacy masking workflows (`build-test.yml`,
+   `swift.yml`, `self-healing.yml`, `auto-retry.yml`, `autofix-agent.yml`), the
+   `build.sh` auto-fix wrapper and `.github/heal-attempts.json` were **deleted**
+   before the fork. Do not reintroduce retry/auto-fix/self-healing automation.
 2. **The word "verified" means built/ran.** Reading code is review, not verification.
 3. **App tests are NOT in CI.** `AcoustiScanAppTests` isn't in the Xcode project yet,
    so its breakage is invisible to CI. Run app tests locally; wiring them into CI is
@@ -53,6 +54,11 @@ xcodebuild build -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
 5. **Known tech debt (documented, deliberately deferred):** duplicated models
    (app vs. package), the dual build system, the app PDF exporter's still-symmetric
    tolerance placeholder. See HANDOFF §2/§4.
+6. **Agents/automation only with enforcement + tests.** Any agent or automation
+   (CI bot, Git hook, "agent system", RAG/tooling) may live in this repo only if it
+   is actually enforced (Git hooks / GitHub Actions) **and** covered by executable
+   tests across the relevant layers. No aspirational prose/architecture — the
+   fictional `Docs/agents.md` was deleted for exactly this reason.
 
 ## Workflow conventions
 
