@@ -213,6 +213,7 @@ im GitHub-UI setzen (nicht im Code, nicht von einer Sandbox):
    - ☑ Require review from Code Owners
    - ☑ Require branches up to date before merging
    Ohne dies kann (auch der externe Dev) **rot mergen** oder direkt auf `main` pushen.
+   - Optional „as code" (einmalig durch Admin ausführen): `Tools/setup-branch-protection.sh --repo Darkness308/RT60_ipad_akusti-scan-APP --apply`
 2. **Actions-Berechtigungen für Forks** (Settings → Actions → General): Workflow-Permissions auf
    *read-only* + „Require approval for all outside collaborators" (Security-Review-Gate, vgl. LICENSE und ONBOARDING_EXTERNAL.md).
 3. **CODEOWNERS** ist jetzt real (`@Darkness308` statt nicht-existenter `@your-org/*`-Teams);
