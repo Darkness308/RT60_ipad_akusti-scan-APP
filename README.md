@@ -10,7 +10,7 @@ AcoustiScan ist eine professionelle iOS-App für akustische Raumanalyse mit LiDA
 ### Features
 
 - 🎯 **LiDAR-Raumscan**: Automatische 3D-Raumerfassung mit RoomPlan API
-- 🔊 **RT60-Auswertung**: Frequenzabhängige Nachhallzeit (125 Hz – 4 kHz) — aktuell *berechnet* (Sabine); ein Messpfad (`ImpulseResponseAnalyzer`) ist vorbereitet, aber noch nicht an die UI angebunden (HANDOFF §10.1)
+- 🔊 **RT60-Auswertung**: Nachhallzeit je Oktavband — **angezeigt** 125 Hz – 8 kHz, **DIN-bewertet** nur 125 Hz – 4 kHz (8 kHz wird gezeigt, aber nicht nach DIN bewertet); aktuell *berechnet* (Sabine), Messpfad (`ImpulseResponseAnalyzer`) vorbereitet, aber noch nicht an die UI angebunden (HANDOFF §10.1)
 - 📊 **DIN 18041 Klassifizierung**: Automatische Bewertung nach deutscher Norm
 - 📄 **PDF-Export**: 6-seitiger Gutachten-Report mit Frequenzgrafiken
 - 🎨 **Material-Datenbank**: vordefinierte akustische Materialien mit Absorptionskoeffizienten, erweiterbar via CSV/XLSX-Import

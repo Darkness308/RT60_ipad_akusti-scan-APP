@@ -61,7 +61,7 @@ xcodebuild build -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
 - **Hinweis zu Fork-PRs:** Bei PRs aus einem Fork läuft die CI ggf. erst nach Freigabe durch
   eine/n Maintainer/in, und der automatische Fehler-Kommentar entfällt (er ist `push`-gebunden und
   braucht Schreibrechte). Verlass dich daher auf die **lokalen** Befehle (§3) und den Tab
-  **„Checks"** deines PRs.
+  **„Checks“** deines PRs.
 
 ---
 
