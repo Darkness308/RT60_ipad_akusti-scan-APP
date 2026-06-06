@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		52A23908CB3563EACF2067FB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C844B7827888F3E31637EECC /* Foundation.framework */; };
+		635F5DA43922D1A59793D4D2 /* MaterialManagerXLSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91BC90510829E31A2952D24 /* MaterialManagerXLSXTests.swift */; };
+		99141265D7F4E5A63067A5FF /* AcoustiScanUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF1FAF9E201B55B21A60C9CF /* AcoustiScanUITests.swift */; };
 		AA0000000000000000000001 /* AcoustiScanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000001 /* AcoustiScanApp.swift */; };
 		AA0000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000002 /* ContentView.swift */; };
 		AA0000000000000000000003 /* RT60View.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000003 /* RT60View.swift */; };
@@ -21,6 +24,12 @@
 		AA0000000000000000000012 /* RoomScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000012 /* RoomScanView.swift */; };
 		AA0000000000000000000013 /* MaterialEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000013 /* MaterialEditorView.swift */; };
 		AA0000000000000000000014 /* RT60MeasurementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000014 /* RT60MeasurementView.swift */; };
+		AS0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AR0000000000000000000001 /* Assets.xcassets */; };
+		C82BEF775D2EA984F1FA66B9 /* ErrorLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9975929754D1C31D0C4C1E /* ErrorLoggerTests.swift */; };
+		D21919BBB536BA04816CA471 /* LocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C82C61DC5149711E0C326CC /* LocalizationTests.swift */; };
+		KF0000000000000000000001 /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000001 /* ARKit.framework */; };
+		KF0000000000000000000002 /* RealityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000002 /* RealityKit.framework */; };
+		KF0000000000000000000003 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000003 /* Charts.framework */; };
 		MM0000000000000000000001 /* AbsorptionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000001 /* AbsorptionData.swift */; };
 		MM0000000000000000000002 /* AcousticMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000002 /* AcousticMaterial.swift */; };
 		MM0000000000000000000003 /* AuditTrail.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000003 /* AuditTrail.swift */; };
@@ -36,15 +45,26 @@
 		MM0000000000000000000013 /* XLSXExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000013 /* XLSXExporter.swift */; };
 		MM0000000000000000000014 /* XLSXImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000014 /* XLSXImporter.swift */; };
 		MM0000000000000000000015 /* LocalizationKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000015 /* LocalizationKeys.swift */; };
-		KF0000000000000000000001 /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000001 /* ARKit.framework */; };
-		KF0000000000000000000002 /* RealityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000002 /* RealityKit.framework */; };
-		KF0000000000000000000003 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = KR0000000000000000000003 /* Charts.framework */; };
-		AS0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AR0000000000000000000001 /* Assets.xcassets */; };
 		PF0000000000000000000001 /* AcoustiScanConsolidated in Frameworks */ = {isa = PBXBuildFile; productRef = PK0000000000000000000002 /* AcoustiScanConsolidated */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		84C54DD307B378063694E417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = II0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = GG0000000000000000000001;
+			remoteInfo = AcoustiScanApp;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		CC0000000000000000000001 /* AcoustiScanApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AcoustiScanApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D9975929754D1C31D0C4C1E /* ErrorLoggerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ErrorLoggerTests.swift; sourceTree = "<group>"; };
+		7C82C61DC5149711E0C326CC /* LocalizationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocalizationTests.swift; sourceTree = "<group>"; };
+		A6F49369DA611D08BF86A4C6 /* AcoustiScanAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AcoustiScanAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF1FAF9E201B55B21A60C9CF /* AcoustiScanUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AcoustiScanUITests.swift; sourceTree = "<group>"; };
+		AR0000000000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ../Assets.xcassets; sourceTree = "<group>"; };
+		B91BC90510829E31A2952D24 /* MaterialManagerXLSXTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MaterialManagerXLSXTests.swift; sourceTree = "<group>"; };
 		BB0000000000000000000001 /* AcoustiScanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcoustiScanApp.swift; sourceTree = "<group>"; };
 		BB0000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000003 /* RT60View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RT60View.swift; sourceTree = "<group>"; };
@@ -59,8 +79,13 @@
 		BB0000000000000000000012 /* RoomScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomScanView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000013 /* MaterialEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialEditorView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000014 /* RT60MeasurementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RT60MeasurementView.swift; sourceTree = "<group>"; };
+		C844B7827888F3E31637EECC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		CC0000000000000000000001 /* AcoustiScanApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AcoustiScanApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD0000000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* AcoustiScan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AcoustiScan.entitlements; sourceTree = "<group>"; };
+		KR0000000000000000000001 /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
+		KR0000000000000000000002 /* RealityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealityKit.framework; path = System/Library/Frameworks/RealityKit.framework; sourceTree = SDKROOT; };
+		KR0000000000000000000003 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
 		MR0000000000000000000001 /* AbsorptionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsorptionData.swift; sourceTree = "<group>"; };
 		MR0000000000000000000002 /* AcousticMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcousticMaterial.swift; sourceTree = "<group>"; };
 		MR0000000000000000000003 /* AuditTrail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditTrail.swift; sourceTree = "<group>"; };
@@ -76,13 +101,17 @@
 		MR0000000000000000000013 /* XLSXExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXExporter.swift; sourceTree = "<group>"; };
 		MR0000000000000000000014 /* XLSXImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXImporter.swift; sourceTree = "<group>"; };
 		MR0000000000000000000015 /* LocalizationKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationKeys.swift; sourceTree = "<group>"; };
-		KR0000000000000000000001 /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
-		KR0000000000000000000002 /* RealityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealityKit.framework; path = System/Library/Frameworks/RealityKit.framework; sourceTree = SDKROOT; };
-		KR0000000000000000000003 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
-		AR0000000000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ../Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		80A6FD912D3A49C739D33CC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52A23908CB3563EACF2067FB /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EE0000000000000000000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -97,12 +126,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4A10AD6A1BF202F00F242042 /* AcoustiScanAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				B91BC90510829E31A2952D24 /* MaterialManagerXLSXTests.swift */,
+				2D9975929754D1C31D0C4C1E /* ErrorLoggerTests.swift */,
+				7C82C61DC5149711E0C326CC /* LocalizationTests.swift */,
+				AF1FAF9E201B55B21A60C9CF /* AcoustiScanUITests.swift */,
+			);
+			name = AcoustiScanAppTests;
+			path = AcoustiScanAppTests;
+			sourceTree = SOURCE_ROOT;
+		};
+		B15E928D530FB1EF74C90F52 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				C844B7827888F3E31637EECC /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		FF0000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
 				FF0000000000000000000002 /* AcoustiScanApp */,
 				FF0000000000000000000003 /* Products */,
 				FF0000000000000000000012 /* Frameworks */,
+				4A10AD6A1BF202F00F242042 /* AcoustiScanAppTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -122,6 +172,7 @@
 			isa = PBXGroup;
 			children = (
 				CC0000000000000000000001 /* AcoustiScanApp.app */,
+				A6F49369DA611D08BF86A4C6 /* AcoustiScanAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -223,6 +274,7 @@
 				KR0000000000000000000001 /* ARKit.framework */,
 				KR0000000000000000000002 /* RealityKit.framework */,
 				KR0000000000000000000003 /* Charts.framework */,
+				B15E928D530FB1EF74C90F52 /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -230,6 +282,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		30202A0D8514D2EF436C8B11 /* AcoustiScanAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 38D1254F33697618C574A48A /* Build configuration list for PBXNativeTarget "AcoustiScanAppTests" */;
+			buildPhases = (
+				0B9BADE34C002DD66F285C59 /* Sources */,
+				80A6FD912D3A49C739D33CC9 /* Frameworks */,
+				6328F64454858E958D002C75 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA5EC73870732A119C0296F5 /* PBXTargetDependency */,
+			);
+			name = AcoustiScanAppTests;
+			productName = AcoustiScanAppTests;
+			productReference = A6F49369DA611D08BF86A4C6 /* AcoustiScanAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		GG0000000000000000000001 /* AcoustiScanApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = GG0000000000000000000002 /* Build configuration list for PBXNativeTarget "AcoustiScanApp" */;
@@ -242,10 +312,10 @@
 			);
 			dependencies = (
 			);
+			name = AcoustiScanApp;
 			packageProductDependencies = (
 				PK0000000000000000000002 /* AcoustiScanConsolidated */,
 			);
-			name = AcoustiScanApp;
 			productName = AcoustiScanApp;
 			productReference = CC0000000000000000000001 /* AcoustiScanApp.app */;
 			productType = "com.apple.product-type.application";
@@ -273,20 +343,28 @@
 				en,
 				Base,
 			);
-			packageReferences = (
-				PK0000000000000000000001 /* XCLocalSwiftPackageReference "../AcoustiScanConsolidated" */,
-			);
 			mainGroup = FF0000000000000000000001;
+			packageReferences = (
+				PK0000000000000000000001 /* XCLocalSwiftPackageReference "AcoustiScanConsolidated" */,
+			);
 			productRefGroup = FF0000000000000000000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				GG0000000000000000000001 /* AcoustiScanApp */,
+				30202A0D8514D2EF436C8B11 /* AcoustiScanAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6328F64454858E958D002C75 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		HH0000000000000000000002 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,6 +376,17 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0B9BADE34C002DD66F285C59 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				635F5DA43922D1A59793D4D2 /* MaterialManagerXLSXTests.swift in Sources */,
+				C82BEF775D2EA984F1FA66B9 /* ErrorLoggerTests.swift in Sources */,
+				D21919BBB536BA04816CA471 /* LocalizationTests.swift in Sources */,
+				99141265D7F4E5A63067A5FF /* AcoustiScanUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		HH0000000000000000000001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -336,7 +425,53 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		FA5EC73870732A119C0296F5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AcoustiScanApp;
+			target = GG0000000000000000000001 /* AcoustiScanApp */;
+			targetProxy = 84C54DD307B378063694E417 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		9A6B15C02E65C5D029AB65AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.acoustiscan.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AcoustiScanApp.app/AcoustiScanApp";
+			};
+			name = Debug;
+		};
+		C001BD8E0CA6FE6E4B3B27C1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.acoustiscan.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AcoustiScanApp.app/AcoustiScanApp";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		JJ0000000000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -464,7 +599,7 @@
 				CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ""; /* Set your Apple Developer Team ID in Xcode → Signing & Capabilities */
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AcoustiScanApp/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -495,7 +630,7 @@
 				CODE_SIGN_ENTITLEMENTS = AcoustiScanApp/AcoustiScan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ""; /* Set your Apple Developer Team ID in Xcode → Signing & Capabilities */
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = AcoustiScanApp/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -521,11 +656,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		II0000000000000000000002 /* Build configuration list for PBXProject "AcoustiScanApp" */ = {
+		38D1254F33697618C574A48A /* Build configuration list for PBXNativeTarget "AcoustiScanAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				JJ0000000000000000000001 /* Debug */,
-				JJ0000000000000000000002 /* Release */,
+				C001BD8E0CA6FE6E4B3B27C1 /* Release */,
+				9A6B15C02E65C5D029AB65AC /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -539,10 +674,19 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		II0000000000000000000002 /* Build configuration list for PBXProject "AcoustiScanApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				JJ0000000000000000000001 /* Debug */,
+				JJ0000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		PK0000000000000000000001 /* XCLocalSwiftPackageReference "../AcoustiScanConsolidated" */ = {
+		PK0000000000000000000001 /* XCLocalSwiftPackageReference "AcoustiScanConsolidated" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../AcoustiScanConsolidated;
 		};
