@@ -8,7 +8,8 @@ name: CI (honest)
 # It verifies three things independently:
 #   1. The platform-independent Swift packages build and their tests pass.
 #   2. The Export module builds and its tests pass.
-#   3. The actual iOS application compiles via xcodebuild (iOS Simulator SDK).
+#   3. The actual iOS application compiles AND its unit tests (AcoustiScanAppTests)
+#      run via xcodebuild test (iOS Simulator).
 #
 # On failure each job captures its output and (for push events) posts the tail
 # as a PR comment, so the real error is visible without expanding JS-loaded logs.
@@ -95,16 +96,16 @@ jobs:
           xcodebuild -version 2>&1 | tee "$RUNNER_TEMP/list.log" || true
           xcodebuild -list -project AcoustiScanApp/AcoustiScanApp.xcodeproj 2>&1 | tee -a "$RUNNER_TEMP/list.log" || true
 
-      - name: Build iOS app for simulator
+      - name: Build & test iOS app (incl. AcoustiScanAppTests)
         run: |
           set -o pipefail
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
             -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination 'platform=iOS Simulator,name=iPad (10th generation),OS=17.5' \
             -configuration Debug \
-            clean build \
+            clean test \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
 
       - name: Report failure to PR
@@ -119,7 +120,7 @@ jobs:
               catch (e) { return '(no output captured)'; }
             };
             const xb = read('xcodebuild.log', 400);
-            const errs = xb.split('\n').filter(l => /error:|fatal|Cannot|cannot find|No such|Undefined|Command .* failed/.test(l)).slice(-120).join('\n') || '(no matching error lines; see full tail)';
+            const errs = xb.split('\n').filter(l => /error:|fatal|Cannot|cannot find|No such|Undefined|Command .* failed|Testing failed|TEST FAILED|failed \(/.test(l)).slice(-120).join('\n') || '(no matching error lines; see full tail)';
             let body = '### ❌ CI (honest) — iOS app job failed\n';
             body += `Commit \`${context.sha.slice(0,7)}\`\n\n`;
             body += `<details><summary>xcodebuild -list / version</summary>\n\n\`\`\`\n${read('list.log', 60)}\n\`\`\`\n</details>\n\n`;

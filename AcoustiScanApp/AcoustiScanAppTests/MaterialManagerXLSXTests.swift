@@ -314,7 +314,7 @@ class MaterialManagerXLSXTests: XCTestCase {
             name: "Perfect Absorber",
             absorption: AbsorptionData(values: [
                 125: 1.0, 250: 1.0, 500: 1.0,
-                1000: 1.0, 2000: 1.0, 4000: 1.0
+                1000: 1.0, 2000: 1.0, 4000: 1.0, 8000: 1.0
             ])
         )
 
