@@ -137,6 +137,51 @@ final class ImpulseCaptureProcessingTests: XCTestCase {
         XCTAssertNil(ImpulseCaptureProcessing.estimateSNRdB(samples: recording, sampleRate: 48000))
     }
 
+    // MARK: - SNR gate (minimumSNRdB)
+
+    func testMeasureRT60ThrowsSnrUnavailableWhenGateRequestedButNoNoise() {
+        // No leading silence -> onset at index 0 -> SNR cannot be estimated.
+        let recording = syntheticRecording(
+            rt60: 0.8, sampleRate: 48000, decaySeconds: 0.5, leadingSilence: 0
+        )
+        XCTAssertThrowsError(
+            try ImpulseCaptureProcessing.measureRT60(
+                fromRecording: recording, sampleRate: 48000, minimumSNRdB: 6.0
+            )
+        ) { error in
+            XCTAssertEqual(error as? ImpulseCaptureProcessing.ProcessingError, .snrUnavailable)
+        }
+    }
+
+    func testMeasureRT60ThrowsInsufficientSNRWhenBelowGate() {
+        // Loud background noise close to the peak -> SNR well below the gate.
+        let recording = syntheticRecording(
+            rt60: 0.8, sampleRate: 48000, decaySeconds: 0.5,
+            leadingSilence: 1000, noiseAmplitude: 0.9
+        )
+        XCTAssertThrowsError(
+            try ImpulseCaptureProcessing.measureRT60(
+                fromRecording: recording, sampleRate: 48000, minimumSNRdB: 6.0
+            )
+        ) { error in
+            guard case ImpulseCaptureProcessing.ProcessingError.insufficientSNR = error else {
+                return XCTFail("expected insufficientSNR, got \(error)")
+            }
+        }
+    }
+
+    func testMeasureRT60PassesGateForCleanSignal() throws {
+        let sampleRate = 48000.0
+        let recording = syntheticRecording(
+            rt60: 0.8, sampleRate: sampleRate, decaySeconds: 2.0,
+            leadingSilence: 1000, noiseAmplitude: 0.001
+        )
+        let measured = try ImpulseCaptureProcessing.measureRT60(
+            fromRecording: recording, sampleRate: sampleRate, minimumSNRdB: 6.0
+        )
+        XCTAssertFalse(measured.isEmpty)
+    }
+
     // MARK: - Measured vs. predicted (Sabine as verification)
 
     func testCompareMatchesByFrequency() {
