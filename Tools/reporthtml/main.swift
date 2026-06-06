@@ -93,7 +93,7 @@ public class ReportHTMLRenderer {
         <body>
             <div class="header">
                 <h1>Gutachterlicher Raumakustik Report</h1>
-                <p>RT60-Messung und DIN 18041-Bewertung</p>
+                <p>RT60-Berechnung (Sabine-Prognose) und DIN 18041-Bewertung</p>
             </div>
 
             \(renderMetadataSection(model.metadata))
