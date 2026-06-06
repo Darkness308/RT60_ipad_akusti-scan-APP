@@ -127,10 +127,8 @@ RT60_ipad_akusti-scan-APP/
 │   ├── Sources/ReportExport/      # PDF/XLSX-Export
 │   └── Tests/                     # Export-Tests
 │
-└── .github/workflows/             # CI/CD Pipelines
-    ├── ci-honest.yml              # AKTIVE CI: Packages (Consolidated, Export) + App (xcodebuild)
-    └── (build-test.yml, swift.yml,
-         self-healing.yml, …)      # stillgelegt (nur workflow_dispatch)
+└── .github/workflows/             # CI/CD
+    └── ci-honest.yml              # EINZIGE CI: Packages (Consolidated, Export) + App (xcodebuild)
 ```
 
 ### Architektur-Muster
@@ -242,6 +240,11 @@ DispatchQueue.main.async {
 
 ## Workflow: Änderungen einreichen
 
+> **Externe Mitwirkende (ohne Schreibrecht):** Nutzt den **Fork → PR**-Workflow aus
+> **[ONBOARDING_EXTERNAL.md](ONBOARDING_EXTERNAL.md) §3** (forken, `upstream` setzen, in den
+> eigenen Fork pushen, PR gegen `Darkness308:main`). Der folgende Ablauf gilt für Personen
+> **mit** direktem Schreibzugriff auf das Repo.
+
 ### 1. Branch erstellen
 
 ```bash
@@ -338,9 +341,12 @@ Dann auf GitHub:
 - Minderung/Abfang (Fallback, Feature-Flag, Tests, Monitoring) ist beschrieben.
 
 ### Required Checks (müssen grün sein)
-- CI-Workflow **ci-honest.yml** erfolgreich: baut & testet die Packages `AcoustiScanConsolidated` und `Modules/Export` (`swift test`) und baut die App via `xcodebuild` — ohne Fehler-Maskierung. (Das Manifest `AcoustiScanApp/Package.swift` selbst wird dabei nicht gebaut.)
-- Linting/Formatting (SwiftLint/SwiftFormat) ohne Fehler.
-- Relevante Unit/Integration/UI-Tests vorhanden und grün.
+- CI-Workflow **ci-honest.yml** erfolgreich: baut & testet die Packages `AcoustiScanConsolidated` und `Modules/Export` (`swift test`) und baut die App via `xcodebuild` — ohne Fehler-Maskierung. (Das Manifest `AcoustiScanApp/Package.swift` selbst wird dabei nicht gebaut.) **Dies ist das einzige automatische Gate.**
+
+> **Ehrlich (Stand Fork):** SwiftLint/SwiftFormat und die **App-Tests** werden von der CI **noch nicht**
+> erzwungen — `.swiftlint.yml`/`.swiftformat` existieren, sind aber nicht verdrahtet; `AcoustiScanAppTests`
+> ist kein Xcode-Test-Target. Bitte daher **lokal** ausführen. Diese in CI zu verdrahten ist der priorisierte
+> nächste Schritt (HANDOFF §5/§10.2–10.3) — danach hier auf „required" hochstufen.
 
 ### Required Reviews (müssen vor Merge erfüllt sein)
 - Mindestens **1 fachlicher Review** (Produkt/QA/Domain) für Business Value.
@@ -504,13 +510,13 @@ swift build
 # Xcode: File > Packages > Reset Package Caches
 ```
 
-**Problem**: SwiftLint-Fehler blockieren Build
+**Problem**: SwiftLint/SwiftFormat meldet Verstöße (lokal)
 
 ```bash
-# Lösung: Auto-Fix ausführen
+# Hinweis: Lint/Format sind (noch) NICHT im CI-Gate — aber lokal empfohlen.
 swiftlint --fix
 swiftformat .
-git add . && git commit -m "style: Fix lint errors"
+git add . && git commit -m "style: fix lint findings"
 ```
 
 ### LiDAR-Probleme

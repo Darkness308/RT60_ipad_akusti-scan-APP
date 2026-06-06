@@ -10,7 +10,7 @@ AcoustiScan ist eine professionelle iOS-App für akustische Raumanalyse mit LiDA
 ### Features
 
 - 🎯 **LiDAR-Raumscan**: Automatische 3D-Raumerfassung mit RoomPlan API
-- 🔊 **RT60-Messung**: Frequenzabhängige Nachhallzeitmessung (125 Hz - 4 kHz)
+- 🔊 **RT60-Auswertung**: Nachhallzeit je Oktavband — **angezeigt** 125 Hz – 8 kHz, **DIN-bewertet** nur 125 Hz – 4 kHz (8 kHz wird gezeigt, aber nicht nach DIN bewertet); aktuell *berechnet* (Sabine), Messpfad (`ImpulseResponseAnalyzer`) vorbereitet, aber noch nicht an die UI angebunden (HANDOFF §10.1)
 - 📊 **DIN 18041 Klassifizierung**: Automatische Bewertung nach deutscher Norm
 - 📄 **PDF-Export**: 6-seitiger Gutachten-Report mit Frequenzgrafiken
 - 🎨 **Material-Datenbank**: vordefinierte akustische Materialien mit Absorptionskoeffizienten, erweiterbar via CSV/XLSX-Import
@@ -47,10 +47,9 @@ open AcoustiScanApp/AcoustiScanApp.xcodeproj
 AcoustiScanApp (SwiftUI UI Layer)
     │
     ├── Views/
-    │   ├── Scanner/     # LiDAR + RoomPlan Integration
-    │   ├── RT60/        # Impulsmessung + Frequenzanalyse
+    │   ├── Scanner/     # LiDAR + RoomPlan + RoomDimensionView (Maße)
+    │   ├── RT60/        # RT60-Auswertung + Frequenzgrafiken
     │   ├── Material/    # Material-Datenbank Editor
-    │   ├── Room/        # Manuelle Raumeingabe
     │   └── Export/      # PDF-Generation + Sharing
     │
     └── Dependencies:
@@ -74,7 +73,7 @@ AcoustiScanApp (SwiftUI UI Layer)
 Die App benötigt folgende iOS-Berechtigungen (in Info.plist konfiguriert):
 
 - **Kamera**: Für LiDAR-Scanner (`NSCameraUsageDescription`)
-- **Mikrofon**: Für RT60-Impulsmessungen (`NSMicrophoneUsageDescription`)
+- **Mikrofon**: deklariert für RT60-Impulsmessung (`NSMicrophoneUsageDescription`) — **derzeit ungenutzt** (die App *berechnet* RT60 via Sabine, sie *misst* nicht). Vor Release: Messpfad anbinden **oder** Berechtigung entfernen (HANDOFF §10.1)
 - **LiDAR**: Hardware-Anforderung (`UIRequiredDeviceCapabilities`)
 
 ---
@@ -114,26 +113,25 @@ RT60_ipad_akusti-scan-APP/
 │   │   ├── App/                    # App Entry Point
 │   │   │   ├── AcoustiScanApp.swift
 │   │   │   └── ContentView.swift
-│   │   ├── Views/                  # UI Layer (11 Views)
+│   │   ├── Views/                  # UI Layer
 │   │   │   ├── RT60/               # RT60View, ChartView, ClassificationView
-│   │   │   ├── Scanner/            # LiDAR, RoomScan, ARCoordinator
+│   │   │   ├── Scanner/            # LiDAR, RoomScan, ARCoordinator, RoomDimensionView
 │   │   │   ├── Material/           # MaterialEditorView
-│   │   │   ├── Room/               # RoomDimensionView
 │   │   │   └── Export/             # ExportView, ShareSheet
 │   │   └── Resources/
 │   │       ├── Info.plist          # App Configuration
 │   │       └── Assets.xcassets/    # App Icon, AccentColor
-│   └── AcoustiScanAppTests/        # UI Tests
+│   └── AcoustiScanAppTests/        # App-Tests (NICHT im Xcode-Projekt/CI — HANDOFF §10.2)
 │
 └── AcoustiScanConsolidated/        # Backend (Swift Package)
     ├── Package.swift
     ├── Sources/
     │   └── AcoustiScanConsolidated/
-    │       ├── RT60/               # RT60 Calculation Engine
-    │       ├── DIN18041/           # Evaluator + Classification
-    │       ├── Export/             # PDF Report Generator
-    │       ├── Material/           # Material Database
-    │       └── Room/               # Room Model + Calculations
+    │       ├── RT60Calculator.swift   # RT60 (Sabine)
+    │       ├── DIN18041/              # RT60Evaluator + DIN18041Database
+    │       ├── Models/                # RoomType (A1–A5), DIN18041Target, …
+    │       ├── Acoustics/             # ImpulseResponseAnalyzer
+    │       └── ConsolidatedPDFExporter.swift  # PDF-Report
     └── Tests/
 ```
 
@@ -385,7 +383,7 @@ Rechteinhaber. Externe Mitwirkende: siehe **[ONBOARDING_EXTERNAL.md](ONBOARDING_
 
 ✅ **Backend Integration**
 - RT60 Calculation Engine (consolidated)
-- DIN 18041 Evaluator (production-ready)
+- DIN 18041 Evaluator (A1–A5, normtreu, getestet)
 - PDF Report Generator (6-page template)
 - Material Database (predefined seed set + CSV/XLSX import)
 
@@ -401,9 +399,9 @@ Rechteinhaber. Externe Mitwirkende: siehe **[ONBOARDING_EXTERNAL.md](ONBOARDING_
   (RT60 / Scan / Maße / Material / Export) verdrahtet. Laufzeit-Funktionen auf echtem
   Gerät (LiDAR/RoomPlan) lassen sich in CI nicht abschließend verifizieren.
 - **CI**: `ci-honest.yml` baut App + Packages ohne Fehler-Maskierung (Xcode 15.4,
-  bewusst gepinnt) und postet bei Fehlern den echten Build-/Test-Tail an den PR. Die
-  früheren maskierenden Workflows (Retry/Self-Healing/Autofix, `swift.yml`,
-  `build-test.yml`) sind stillgelegt.
+  bewusst gepinnt) und postet bei Fehlern den echten Build-/Test-Tail an den PR. Sie
+  ist die **einzige** Pipeline; die früheren maskierenden Workflows (Retry/Self-Healing/
+  Autofix, `swift.yml`, `build-test.yml`) wurden vor dem Fork **gelöscht**.
 - **DIN 18041**: Die normkonformen Sollwertgleichungen (1)–(6) nach DIN 18041:2016-03
   und das frequenzabhängige Bild-2-Toleranzband (A1–A5) sind implementiert und
   getestet (siehe Sollwert-Tabelle oben).

@@ -13,9 +13,13 @@ struct RT60View: View {
 
     var body: some View {
         List {
-            Section(header: Text("RT60 je Frequenz")
-                .accessibilityAddTraits(.isHeader)
-                .accessibilityIdentifier("rt60Header")) {
+            Section(
+                header: Text("RT60 je Frequenz")
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityIdentifier("rt60Header"),
+                footer: Text("Berechnet nach Sabine aus Raumvolumen und Materialabsorption – keine akustische Messung.")
+                    .accessibilityIdentifier("rt60MethodNote")
+            ) {
                 ForEach(AbsorptionData.standardFrequencies, id: \.self) { freq in
                     let value = calculateRT60(frequency: freq)
                     HStack {
@@ -31,9 +35,6 @@ struct RT60View: View {
                     .accessibilityHint("Reverberation time for this frequency")
                     .accessibilityIdentifier("rt60Row\(freq)")
                 }
-            } footer: {
-                Text("Berechnet nach Sabine aus Raumvolumen und Materialabsorption – keine akustische Messung.")
-                    .accessibilityIdentifier("rt60MethodNote")
             }
         }
         .navigationTitle("Nachhallzeiten")

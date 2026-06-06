@@ -56,8 +56,12 @@ xcodebuild build -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
 
 - Bitte **kleine, fokussierte PRs** und die Konventionen aus
   [CONTRIBUTING.md](CONTRIBUTING.md) einhalten.
-- Die einzige verbindliche CI ist **`ci-honest.yml`** — sie muss grün sein.
-  Andere Workflows sind stillgelegt und dürfen **nicht** reaktiviert werden.
+- Die einzige CI ist **`ci-honest.yml`** — sie muss grün sein. (Frühere maskierende
+  Workflows wurden gelöscht; Retry-/Self-Healing-/Autofix-Automation **nicht** wieder einführen.)
+- **Hinweis zu Fork-PRs:** Bei PRs aus einem Fork läuft die CI ggf. erst nach Freigabe durch
+  eine/n Maintainer/in, und der automatische Fehler-Kommentar entfällt (er ist `push`-gebunden und
+  braucht Schreibrechte). Verlass dich daher auf die **lokalen** Befehle (§3) und den Tab
+  **„Checks“** deines PRs.
 
 ---
 

@@ -12,7 +12,7 @@
 - **Rechenkern** (`AcoustiScanConsolidated`, `Modules/Export`): solide, getestet, baut via `swift test`. **Übernahmefähig.**
 - **DIN 18041**: normtreu nach DIN 18041:2016-03 (Gruppen A1–A5, `T_soll = a·lg(V)+b`, Bild-2-Toleranzband), mit Tests.
 - **iOS-App** (`AcoustiScanApp`): **kompiliert** (CI via `xcodebuild`), 5-Tab-Navigation verdrahtet — aber **App-Tests und Geräte-Laufzeit sind NICHT automatisch verifiziert** (siehe §2).
-- **CI**: `ci-honest.yml` ist die **einzige aktive, ehrliche** Pipeline. Alle anderen Workflows sind stillgelegt.
+- **CI**: `ci-honest.yml` ist die **einzige** Pipeline (ehrlich, ohne Maskierung). Die früheren maskierenden Workflows wurden vor dem Fork **gelöscht**.
 - **Wichtigster nächster Schritt**: App-Tests in eine echte CI-Loop bringen (§5).
 
 ---
@@ -107,8 +107,11 @@ xcodebuild build \
 - **Aktiv**: `ci-honest.yml` — baut & testet `AcoustiScanConsolidated` und `Modules/Export` (`swift test`)
   und baut die App via `xcodebuild`; bei Fehlern wird der echte Build-/Test-Tail an den PR gepostet.
   Xcode ist bewusst auf **15.4 gepinnt** (Reproduzierbarkeit).
-- **Stillgelegt** (nur `workflow_dispatch`): `build-test.yml`, `swift.yml`, `self-healing.yml`,
-  `auto-retry.yml`, `autofix-agent.yml`. **Nicht ohne Grund reaktivieren** — sie haben früher Fehler maskiert.
+- **Gelöscht** (vor dem Fork): die früheren maskierenden Workflows `build-test.yml`, `swift.yml`,
+  `self-healing.yml`, `auto-retry.yml`, `autofix-agent.yml` sowie `AcoustiScanConsolidated/build.sh`
+  (Auto-Fix/Retry-Wrapper) und `.github/heal-attempts.json`. Sie maskierten früher Fehler.
+  Retry-/Auto-Fix-/Self-Healing-Automation **nicht** wieder einführen (CLAUDE.md-Regel 6:
+  Agenten/Automation nur mit Durchsetzung + Tests).
 
 ---
 
@@ -161,7 +164,7 @@ RT60 und `MaterialManager`. Die App „besteht CI" allein durchs Kompilieren.
 
 ### 10.3 🟠 Schnelle, risikoarme Gates (fehlen in der CI)
 - **Lint/Format nicht erzwungen:** `.swiftlint.yml` + `.swiftformat` existieren, werden aber
-  von `ci-honest.yml` **nicht** ausgeführt (Enforcement lag nur im stillgelegten `build-test.yml`).
+  von `ci-honest.yml` **nicht** ausgeführt (Enforcement lag nur im inzwischen gelöschten `build-test.yml`).
   → 🖥 `swiftlint --strict` + `swiftformat --lint` als CI-Schritt. (Vorher lokal laufen lassen —
   kann anfangs viele Funde liefern.)
 - **JSON-Schemas ungenutzt:** `Schemas/report.schema.json` + `audit.schema.json` werden nirgends
@@ -193,10 +196,10 @@ RoomPlan schätzt zudem Deckenfläche = Bodenfläche und Wandhöhe 2.5 m (Defaul
 Fallback liefert 2.0 m² — vernünftige, **dokumentierte** Schätzungen, die aber in die RT60-Geometrie
 einfließen.
 
-### 10.7 Bereinigte Green-Washing-Tests (erledigt, PR #276)
+### 10.7 Bereinigte Green-Washing-Tests
 `XCTAssertEqual(h,h)` (PDF-Snapshot), zwei `XCTAssertTrue(true)`-No-ops → durch echte Assertions
-ersetzt. Verbleibende **immer-skippende** Tests (`TimeoutConfigurationTests` via Datei-Existenz)
-sollten gelöscht oder mit echten Fixtures versehen werden.
+ersetzt. Die immer-skippenden `TimeoutConfigurationTests` (Datei-Existenz-Skip → 0 Assertions in CI)
+wurden vor dem Fork **gelöscht**.
 
 ## 11. Governance / Systemdurchsetzung (vor dem Fork einzurichten)
 
