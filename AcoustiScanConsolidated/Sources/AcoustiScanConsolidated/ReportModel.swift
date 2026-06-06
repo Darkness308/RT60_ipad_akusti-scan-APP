@@ -90,7 +90,7 @@ extension ReportModel {
         }
 
         // DIN 18041 only verifies specific octave bands per usage group
-        // (125–4000 Hz for A1–A4, 250–2000 Hz for A5). Measured bands outside that
+        // (125–4000 Hz for A1–A4, 250–2000 Hz for A5). Calculated bands outside that
         // set (e.g. 8000 Hz) appear in the RT60 table but are NOT part of the
         // compliance evaluation — make that explicit instead of dropping them silently.
         let evaluated = Set(reportData.roomType.evaluationFrequencies)
@@ -103,7 +103,7 @@ extension ReportModel {
         if !unevaluated.isEmpty {
             validity["din_nicht_bewertet"] =
                 unevaluated.map { "\($0)" }.joined(separator: ", ")
-                + " Hz – gemessen, aber nicht bewertet n. DIN 18041 (Gruppe \(reportData.roomType.groupLabel))"
+                + " Hz – berechnet, nicht n. DIN 18041 bewertet (Gruppe \(reportData.roomType.groupLabel))"
         }
 
         let audit = [

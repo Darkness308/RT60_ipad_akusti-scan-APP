@@ -481,6 +481,7 @@ final class ReportContractTests: XCTestCase {
         let note = model.validity["din_nicht_bewertet"]
         XCTAssertNotNil(note)
         XCTAssertTrue(note?.contains("8000") ?? false)
+        XCTAssertTrue(note?.contains("berechnet, nicht n. DIN 18041 bewertet") ?? false)
         XCTAssertFalse(model.validity["din_bewertete_baender"]?.contains("8000") ?? true)
     }
 

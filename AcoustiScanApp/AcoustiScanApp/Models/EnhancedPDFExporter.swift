@@ -40,7 +40,7 @@ public class EnhancedPDFExporter {
             kCGPDFContextCreator: "AcoustiScan Enhanced",
             kCGPDFContextAuthor: "MSH-Audio-Gruppe",
             kCGPDFContextTitle: "RT60 Gutachten - \(roomName)",
-            kCGPDFContextSubject: "Raumakustische Messung nach DIN 18041"
+            kCGPDFContextSubject: "Raumakustische RT60-Berechnung (Sabine-Prognose) nach DIN 18041"
         ]
 
         let format = UIGraphicsPDFRendererFormat()
