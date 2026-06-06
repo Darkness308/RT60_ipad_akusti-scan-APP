@@ -2,7 +2,7 @@
   Localizable.strings (English)
   AcoustiScanApp
 
-  English localization strings for the RT60 acoustic measurement app
+  English localization strings for the RT60 acoustic calculation app
 */
 
 // MARK: - Room & General
@@ -68,8 +68,8 @@
 "frequency_hz" = "Frequency [Hz]";
 "t20_seconds" = "T20 [s]";
 "frequency_header" = "Frequency [Hz]    T20 [s]";
-"rt60_measurements" = "RT60 Measurements";
-"measured" = "Measured";
+"rt60_measurements" = "RT60 Values (calculated, Sabine prediction)";
+"measured" = "RT60 [s]";
 "target" = "Target";
 "status" = "Status";
 
@@ -87,7 +87,7 @@
 
 "recommendations" = "Recommendations";
 "recommendations_title" = "Recommended Actions";
-"recommendations_intro" = "Based on the measurements, the following acoustic actions are recommended:";
+"recommendations_intro" = "Based on the evaluation, the following acoustic actions are recommended:";
 "audit" = "Audit";
 "compliant" = "Compliant";
 "warning" = "Warning";

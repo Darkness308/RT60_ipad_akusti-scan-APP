@@ -92,6 +92,7 @@ All files have:
 - **linters**: Code quality and linting tools
 - **reporthtml**: HTML report generation utilities
 - **rt60log2json**: Convert RT60 logs to JSON format
+- **setup-branch-protection.sh**: Admin script to enforce PR + required CI checks on `main`
 
 ## Maintenance
 

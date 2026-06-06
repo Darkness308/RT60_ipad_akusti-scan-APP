@@ -83,7 +83,7 @@ enum SampleData {
             "Absorberfläche an der Decke um 15% vergrößern",
             "Materialien mit höherem Absorptionsgrad einsetzen",
             "Schallabsorber in kritischen Bereichen installieren",
-            "Nachmessung nach 3 Monaten durchführen"
+            "Erneute Auswertung nach 3 Monaten durchführen"
         ]
 
         return SampleDataset(
