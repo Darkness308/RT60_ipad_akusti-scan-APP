@@ -44,6 +44,13 @@ struct RT60View: View {
                     Label("Impulsmessung (Mikrofon)", systemImage: "waveform")
                 }
                 .accessibilityIdentifier("openMeasurementLink")
+
+                NavigationLink {
+                    RT60DINView(store: store)
+                } label: {
+                    Label("DIN 18041-Auswertung", systemImage: "checkmark.seal")
+                }
+                .accessibilityIdentifier("openDINLink")
             }
         }
         .navigationTitle("Nachhallzeiten")
