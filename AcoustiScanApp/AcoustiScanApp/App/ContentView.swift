@@ -585,6 +585,9 @@ struct LiDARScannerTab: View {
     @EnvironmentObject var surfaceStore: SurfaceStore
     @State private var showingScanView = false
     @State private var showingManualEntry = false
+    @State private var roomLength: Double = 5.0
+    @State private var roomWidth: Double = 4.0
+    @State private var roomHeight: Double = 2.7
 
     var body: some View {
         VStack(spacing: 20) {
