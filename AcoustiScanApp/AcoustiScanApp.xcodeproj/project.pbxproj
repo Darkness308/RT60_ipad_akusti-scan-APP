@@ -43,6 +43,10 @@
 		MM0000000000000000000013 /* XLSXExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000013 /* XLSXExporter.swift */; };
 		MM0000000000000000000014 /* XLSXImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000014 /* XLSXImporter.swift */; };
 		MM0000000000000000000015 /* LocalizationKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000015 /* LocalizationKeys.swift */; };
+		MM0000000000000000000020 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000020 /* AudioManager.swift */; };
+		MM0000000000000000000021 /* AbsorberCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = MR0000000000000000000021 /* AbsorberCalculator.swift */; };
+		TM0000000000000000000001 /* AudioManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TR0000000000000000000001 /* AudioManagerTests.swift */; };
+		TM0000000000000000000002 /* AbsorberCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TR0000000000000000000002 /* AbsorberCalculatorTests.swift */; };
 		PF0000000000000000000001 /* AcoustiScanConsolidated in Frameworks */ = {isa = PBXBuildFile; productRef = PK0000000000000000000002 /* AcoustiScanConsolidated */; };
 /* End PBXBuildFile section */
 
@@ -98,6 +102,10 @@
 		MR0000000000000000000013 /* XLSXExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXExporter.swift; sourceTree = "<group>"; };
 		MR0000000000000000000014 /* XLSXImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXImporter.swift; sourceTree = "<group>"; };
 		MR0000000000000000000015 /* LocalizationKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationKeys.swift; sourceTree = "<group>"; };
+		MR0000000000000000000020 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		MR0000000000000000000021 /* AbsorberCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsorberCalculator.swift; sourceTree = "<group>"; };
+		TR0000000000000000000001 /* AudioManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManagerTests.swift; sourceTree = "<group>"; };
+		TR0000000000000000000002 /* AbsorberCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsorberCalculatorTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +138,8 @@
 				2D9975929754D1C31D0C4C1E /* ErrorLoggerTests.swift */,
 				7C82C61DC5149711E0C326CC /* LocalizationTests.swift */,
 				AF1FAF9E201B55B21A60C9CF /* AcoustiScanUITests.swift */,
+				TR0000000000000000000001 /* AudioManagerTests.swift */,
+				TR0000000000000000000002 /* AbsorberCalculatorTests.swift */,
 			);
 			name = AcoustiScanAppTests;
 			path = AcoustiScanAppTests;
@@ -259,6 +269,8 @@
 				MR0000000000000000000014 /* XLSXImporter.swift */,
 				E189FB36B03E227642869FB6 /* DINEvaluation.swift */,
 				41E56F27E8C8BF956483FF91 /* ReportBuilder.swift */,
+				MR0000000000000000000020 /* AudioManager.swift */,
+				MR0000000000000000000021 /* AbsorberCalculator.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -381,6 +393,8 @@
 				C82BEF775D2EA984F1FA66B9 /* ErrorLoggerTests.swift in Sources */,
 				D21919BBB536BA04816CA471 /* LocalizationTests.swift in Sources */,
 				99141265D7F4E5A63067A5FF /* AcoustiScanUITests.swift in Sources */,
+				TM0000000000000000000001 /* AudioManagerTests.swift in Sources */,
+				TM0000000000000000000002 /* AbsorberCalculatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +428,8 @@
 				1D6B87FD3F6CF6BF3C82F0DA /* DINEvaluation.swift in Sources */,
 				C5B9B53320E1010BD7ABEF87 /* RT60DINView.swift in Sources */,
 				A4C83B04DB74625C99F114AD /* ReportBuilder.swift in Sources */,
+				MM0000000000000000000020 /* AudioManager.swift in Sources */,
+				MM0000000000000000000021 /* AbsorberCalculator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
