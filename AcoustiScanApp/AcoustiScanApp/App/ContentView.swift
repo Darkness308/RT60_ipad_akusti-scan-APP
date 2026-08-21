@@ -18,6 +18,9 @@ struct ContentView: View {
     // MARK: - State
 
     @State private var selectedTab: Tab = .dashboard
+    @State private var roomLength: Double = 5.0
+    @State private var roomWidth: Double = 4.0
+    @State private var roomHeight: Double = 2.7
 
     // MARK: - Tab Definition
 
@@ -72,7 +75,7 @@ struct ContentView: View {
 
             // Tab 4: Materials
             NavigationStack {
-                MaterialEditorView(manager: materialManager)
+                MaterialEditorView(materialManager: materialManager)
                     .navigationTitle("Materialdatenbank")
             }
             .tabItem {
@@ -639,7 +642,11 @@ struct LiDARScannerTab: View {
                 .ignoresSafeArea()
         }
         .sheet(isPresented: $showingManualEntry) {
-            RoomDimensionView(store: surfaceStore)
+            RoomDimensionView(length: $roomLength, width: $roomWidth, height: $roomHeight)
+                .onDisappear {
+                    surfaceStore.roomVolume = roomLength * roomWidth * roomHeight
+                    surfaceStore.roomDimensions = (width: roomWidth, height: roomHeight, depth: roomLength)
+                }
         }
     }
 }

@@ -14,7 +14,7 @@ import Combine
 // MARK: - Audio Input Device
 
 /// Represents an available audio input device
-public struct AudioInputDevice: Identifiable, Equatable {
+public struct AudioInputDevice: Identifiable, Equatable, Hashable {
     public let id: String
     public let name: String
     public let portType: AVAudioSession.Port
