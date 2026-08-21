@@ -171,10 +171,12 @@ public class AudioManager: ObservableObject {
     }
 
     deinit {
-        stopMonitoring()
+        // Clean up FFT resources (nonisolated operation)
         if let setup = fftSetup {
-            vDSP_DFT_Destroy(setup)
+            vDSP_DFT_DestroySetup(setup)
         }
+        // Note: stopMonitoring() is MainActor-isolated and cannot be called from deinit
+        // Audio engine cleanup happens automatically when references are released
     }
 
     // MARK: - Setup
@@ -198,7 +200,8 @@ public class AudioManager: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            Task { @MainActor in
+            guard let self = self else { return }
+            Task { @MainActor [weak self] in
                 self?.refreshAvailableInputs()
             }
         }
