@@ -108,12 +108,15 @@ jobs:
       - name: Build iOS app (simulator SDK)
         run: |
           set -o pipefail
-          # Use -sdk iphonesimulator only, no destination (build-only)
+          # Boot a simulator and use it for build
+          DEVICE_ID=$(xcrun simctl list devices available | grep "iPad Pro 11-inch (M4)" | head -1 | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
+          echo "Using simulator ID: $DEVICE_ID"
+          xcrun simctl boot "$DEVICE_ID" || true
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
             -sdk iphonesimulator \
-            -arch x86_64 \
+            -destination "id=$DEVICE_ID" \
             -configuration Debug \
             clean build \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
