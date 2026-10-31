@@ -49,8 +49,9 @@ jobs:
         # Linux SwiftLint lints the Swift sources (no iOS SDK). Fails on error-severity
         # violations; add `--strict` later to also fail on warnings once existing debt is cleared.
         run: |
+          # Image ENTRYPOINT is `swiftlint`; pass the subcommand only (no leading `swiftlint`).
           docker run --rm -v "$PWD:/work" -w /work ghcr.io/realm/swiftlint:0.65.0 \
-            swiftlint lint --config .swiftlint.yml --reporter github-actions-logging
+            lint --config .swiftlint.yml --reporter github-actions-logging
 
   packages:
     name: Swift packages (build + test)
