@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import AcoustiScanConsolidated
 
 struct RT60View: View {
     @ObservedObject var store: SurfaceStore
@@ -15,7 +16,7 @@ struct RT60View: View {
     private let frequencies = AbsorptionData.standardFrequencies
 
     /// Calculate RT60 using Sabine formula for a specific frequency
-    /// Formula: RT60 = 0.161 * V / A
+    /// Formula: RT60 = k × V / A (k ≈ 0.161 at 20°C)
     /// Where V = room volume (m³), A = total absorption area (m² Sabine)
     /// - Parameter frequency: Target frequency in Hz
     /// - Returns: RT60 value in seconds
@@ -25,7 +26,7 @@ struct RT60View: View {
     }
 
     /// Calculate using Eyring formula (more accurate for high absorption)
-    /// Formula: RT60 = 0.161 * V / (-S * ln(1 - α_avg))
+    /// Formula: RT60 = k × V / (-S × ln(1 - α_avg)) (k ≈ 0.161 at 20°C)
     /// - Parameter frequency: Target frequency in Hz
     /// - Returns: RT60 value in seconds using Eyring formula
     func calculateRT60Eyring(frequency: Int) -> Double {
@@ -39,7 +40,7 @@ struct RT60View: View {
             return calculateRT60(frequency: frequency)
         }
 
-        return 0.161 * store.roomVolume / (-store.totalArea * log(1 - avgAbsorption))
+        return SabineConstant.standard.value * store.roomVolume / (-store.totalArea * log(1 - avgAbsorption))
     }
 
     /// Determine which formula to use based on average absorption

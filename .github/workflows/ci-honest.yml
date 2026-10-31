@@ -59,16 +59,12 @@ jobs:
 
   packages:
     name: Swift packages (build + test)
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
 
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          # Pinned for reproducible builds (ships the iOS 17 SDK). Bump
-          # deliberately once validated on a newer Xcode.
-          xcode-version: '15.4'
+      # Use default Xcode on macos-15 runner (setup-xcode often fails to find simulators)
 
       - name: Toolchain versions
         run: |
@@ -102,39 +98,53 @@ jobs:
             body += `Commit \`${context.sha.slice(0,7)}\`\n\n`;
             body += `<details><summary>AcoustiScanConsolidated (tail)</summary>\n\n\`\`\`\n${tail('consolidated.log')}\n\`\`\`\n</details>\n\n`;
             body += `<details><summary>ReportExport (tail)</summary>\n\n\`\`\`\n${tail('export.log')}\n\`\`\`\n</details>\n`;
-            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
-            for (const pr of prs.data) {
+            // For PR events, use the PR number directly; for push events, find associated PRs
+            if (context.payload.pull_request) {
               await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number, body });
+            } else {
+              const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
+              for (const pr of prs.data) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+              }
             }
 
   ios-app:
     name: iOS app (xcodebuild)
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
 
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          # Pinned for reproducible builds (ships the iOS 17 SDK). Bump
-          # deliberately once validated on a newer Xcode.
-          xcode-version: '15.4'
+      # Use default Xcode on macos-15 runner (avoids simulator mismatch issues)
 
-      - name: Toolchain + scheme listing
+      - name: Toolchain + simulator listing
         run: |
           xcodebuild -version 2>&1 | tee "$RUNNER_TEMP/list.log" || true
+          echo "=== Available iPad Simulators ===" | tee -a "$RUNNER_TEMP/list.log"
+          xcrun simctl list devices available | grep -i ipad | head -20 | tee -a "$RUNNER_TEMP/list.log" || true
           xcodebuild -list -project AcoustiScanApp/AcoustiScanApp.xcodeproj 2>&1 | tee -a "$RUNNER_TEMP/list.log" || true
 
       - name: Build & test iOS app (incl. AcoustiScanAppTests)
         run: |
           set -o pipefail
+          # Find first available iPad simulator
+          IPAD_DEST=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | sed 's/.*(\([^)]*\)).*/\1/' || echo "")
+          if [ -z "$IPAD_DEST" ]; then
+            echo "No iPad simulator found, using generic iOS destination"
+            DEST="generic/platform=iOS Simulator"
+          else
+            echo "Using iPad simulator: $IPAD_DEST"
+            DEST="platform=iOS Simulator,id=$IPAD_DEST"
+          fi
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPad (10th generation),OS=17.5' \
+            -destination "$DEST" \
             -configuration Debug \
             clean test \
             -enableCodeCoverage YES \
@@ -148,7 +158,7 @@ jobs:
             || echo "(coverage report not available)"
 
       - name: Report failure to PR
-        if: failure() && github.event_name == 'push'
+        if: failure()
         uses: actions/github-script@v8
         with:
           script: |
@@ -164,9 +174,16 @@ jobs:
             body += `Commit \`${context.sha.slice(0,7)}\`\n\n`;
             body += `<details><summary>xcodebuild -list / version</summary>\n\n\`\`\`\n${read('list.log', 60)}\n\`\`\`\n</details>\n\n`;
             body += `<details><summary>xcodebuild errors (filtered)</summary>\n\n\`\`\`\n${errs}\n\`\`\`\n</details>\n`;
-            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
-            for (const pr of prs.data) {
+            // For PR events, use the PR number directly; for push events, find associated PRs
+            if (context.payload.pull_request) {
               await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number, body });
+            } else {
+              const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
+              for (const pr of prs.data) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+              }
             }

@@ -7,10 +7,33 @@ import Foundation
 public class RT60Calculator {
 
     /// Calculate RT60 using Sabine formula
-    public static func calculateRT60(volume: Double, absorptionArea: Double) -> Double {
+    /// - Parameters:
+    ///   - volume: Room volume in cubic meters
+    ///   - absorptionArea: Total absorption area in m² Sabine
+    ///   - sabineConstant: Sabine constant (default: standard conditions at 20°C)
+    /// - Returns: RT60 reverberation time in seconds
+    public static func calculateRT60(
+        volume: Double,
+        absorptionArea: Double,
+        sabineConstant: SabineConstant = .standard
+    ) -> Double {
         guard absorptionArea > 0 else { return 0.0 }
-        let sabineConstant = 0.161 // For air at 20°C, 50% humidity
-        return sabineConstant * volume / absorptionArea
+        return sabineConstant.value * volume / absorptionArea
+    }
+
+    /// Calculate RT60 using Sabine formula with temperature adjustment
+    /// - Parameters:
+    ///   - volume: Room volume in cubic meters
+    ///   - absorptionArea: Total absorption area in m² Sabine
+    ///   - temperatureCelsius: Air temperature in degrees Celsius
+    /// - Returns: RT60 reverberation time in seconds
+    public static func calculateRT60(
+        volume: Double,
+        absorptionArea: Double,
+        temperatureCelsius: Double
+    ) -> Double {
+        let sabineConstant = SabineConstant(temperatureCelsius: temperatureCelsius)
+        return calculateRT60(volume: volume, absorptionArea: absorptionArea, sabineConstant: sabineConstant)
     }
 
     /// Calculate total absorption area from surfaces and materials
