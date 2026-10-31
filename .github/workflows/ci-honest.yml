@@ -105,17 +105,30 @@ jobs:
           echo "=== Available iPad Simulators ===" | tee -a "$RUNNER_TEMP/list.log"
           xcrun simctl list devices available | grep -i ipad | head -20 | tee -a "$RUNNER_TEMP/list.log" || true
 
-      - name: Build & test iOS app (incl. AcoustiScanAppTests)
+      - name: Build iOS app
         run: |
           set -o pipefail
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
-            -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPad Air 11-inch (M2),OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
-            clean test \
+            clean build \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Test iOS app (AcoustiScanAppTests)
+        run: |
+          set -o pipefail
+          # Get first available iPad simulator name
+          IPAD_SIM=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | sed 's/^[[:space:]]*//' | sed 's/ (.*$//')
+          echo "Using simulator: $IPAD_SIM"
+          xcodebuild \
+            -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
+            -scheme AcoustiScanApp \
+            -destination "platform=iOS Simulator,name=$IPAD_SIM" \
+            -configuration Debug \
+            test \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee -a "$RUNNER_TEMP/xcodebuild.log"
 
       - name: Report failure to PR
         if: failure()
