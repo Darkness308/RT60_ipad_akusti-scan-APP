@@ -107,7 +107,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
 
       - name: Report failure to PR
-        if: failure() && github.event_name == 'push'
+        if: failure()
         uses: actions/github-script@v8
         with:
           script: |
