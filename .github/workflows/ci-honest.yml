@@ -108,7 +108,7 @@ jobs:
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,OS=latest,name=iPad' \
+            -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (4th generation)' \
             -configuration Debug \
             clean test \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
