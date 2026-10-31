@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import AcoustiScanConsolidated
 
 struct RT60ChartView: View {
     @ObservedObject var store: SurfaceStore
@@ -14,7 +15,8 @@ struct RT60ChartView: View {
         }
 
         let v = Float(store.roomVolume)
-        return a_f > 0 ? 0.161 * v / a_f : 0.0
+        let k = Float(SabineConstant.standard.value)
+        return a_f > 0 ? k * v / a_f : 0.0
     }
 
     var body: some View {

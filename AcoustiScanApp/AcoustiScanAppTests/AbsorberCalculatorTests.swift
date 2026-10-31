@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import AcoustiScanApp
+import AcoustiScanConsolidated
 
 final class AbsorberCalculatorTests: XCTestCase {
 
@@ -28,10 +29,10 @@ final class AbsorberCalculatorTests: XCTestCase {
             currentRT60: 2.0,
             targetRT60: 1.0,
             roomVolume: 100.0,
-            currentAbsorption: 8.05  // Sabine: 0.161 * 100 / 2.0 = 8.05
+            currentAbsorption: 8.05  // Sabine: k * 100 / 2.0 (k ≈ 0.161)
         )
 
-        // Target absorption: 0.161 * 100 / 1.0 = 16.1
+        // Target absorption: k * 100 / 1.0 = 16.1 (k = SabineConstant.standard)
         // Required additional: 16.1 - 8.05 = 8.05
         XCTAssertEqual(required, 8.05, accuracy: 0.01)
     }

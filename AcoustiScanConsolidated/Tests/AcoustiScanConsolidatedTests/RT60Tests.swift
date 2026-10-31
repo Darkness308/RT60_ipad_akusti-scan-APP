@@ -7,7 +7,7 @@ final class RT60Tests: XCTestCase {
     func testSabineRT60Calculation() {
         let volume = 112.5
         let absorptionArea = 38.25
-        let expectedRT60 = 0.161 * volume / absorptionArea
+        let expectedRT60 = SabineConstant.standard.value * volume / absorptionArea
 
         let result = RT60Calculator.calculateRT60(volume: volume, absorptionArea: absorptionArea)
 
