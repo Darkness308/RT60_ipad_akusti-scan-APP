@@ -70,11 +70,18 @@ jobs:
             body += `Commit \`${context.sha.slice(0,7)}\`\n\n`;
             body += `<details><summary>AcoustiScanConsolidated (tail)</summary>\n\n\`\`\`\n${tail('consolidated.log')}\n\`\`\`\n</details>\n\n`;
             body += `<details><summary>ReportExport (tail)</summary>\n\n\`\`\`\n${tail('export.log')}\n\`\`\`\n</details>\n`;
-            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
-            for (const pr of prs.data) {
+            // For PR events, use the PR number directly; for push events, find associated PRs
+            if (context.payload.pull_request) {
               await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number, body });
+            } else {
+              const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
+              for (const pr of prs.data) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+              }
             }
 
   ios-app:
@@ -123,9 +130,16 @@ jobs:
             body += `Commit \`${context.sha.slice(0,7)}\`\n\n`;
             body += `<details><summary>xcodebuild -list / version</summary>\n\n\`\`\`\n${read('list.log', 60)}\n\`\`\`\n</details>\n\n`;
             body += `<details><summary>xcodebuild errors (filtered)</summary>\n\n\`\`\`\n${errs}\n\`\`\`\n</details>\n`;
-            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
-            for (const pr of prs.data) {
+            // For PR events, use the PR number directly; for push events, find associated PRs
+            if (context.payload.pull_request) {
               await github.rest.issues.createComment({
-                owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number, body });
+            } else {
+              const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha });
+              for (const pr of prs.data) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, body });
+              }
             }
