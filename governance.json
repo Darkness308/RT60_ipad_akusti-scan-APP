@@ -49,7 +49,7 @@
   ],
   "bottlenecks": [
     {"id": "ci-runners", "severity": "high", "desc": "macOS-Runner werden nicht zugeteilt (0s-Cancel) -> ci-honest.yml kann nicht laufen", "owner": "repo-owner", "verifiable": "github-billing", "ref": "ci"},
-    {"id": "enforcement", "severity": "high", "desc": "Lint- + Index-Gate in CI verdrahtet (Linux, laufen sofort); Coverage report-only; Branch-Protection weiter offen (Owner)", "ref": "M2"},
+    {"id": "enforcement", "severity": "high", "desc": "Index-Gate blockierend+gruen (Linux); Lint report-only/lenient (Baseline 204 Verstoesse/4 serious, Ratchet offen); Coverage report-only; Branch-Protection offen (Owner)", "ref": "M2"},
     {"id": "device-metrology", "severity": "high", "desc": "L4/L5 unverifiziert (hardware-/kalibrierungsgebunden)", "ref": "dod_measurement"},
     {"id": "dedup", "severity": "med", "desc": "doppelte Modelle App/Paket", "ref": "adr_0003"}
   ],

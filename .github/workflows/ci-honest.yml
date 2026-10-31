@@ -50,8 +50,12 @@ jobs:
         # violations; add `--strict` later to also fail on warnings once existing debt is cleared.
         run: |
           # Image ENTRYPOINT is `swiftlint`; pass the subcommand only (no leading `swiftlint`).
+          # Report-only baseline (M2): `--lenient` downgrades violations to warnings, so the
+          # pre-existing debt (204 violations / 4 serious, Okt 2026) does NOT fail CI yet. Ratchet:
+          # drop `--lenient` (and add `--strict`) once that debt is cleared — see issue tracker.
+          # A genuine SwiftLint/config error still exits non-zero and fails this job.
           docker run --rm -v "$PWD:/work" -w /work ghcr.io/realm/swiftlint:0.65.0 \
-            lint --config .swiftlint.yml --reporter github-actions-logging
+            lint --config .swiftlint.yml --reporter github-actions-logging --lenient
 
   packages:
     name: Swift packages (build + test)

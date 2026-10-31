@@ -38,7 +38,7 @@ bewertet und einen **belegbaren** PDF-Bericht erzeugt — mit nachvollziehbarer 
 
 - **M0 ✅** — `ci-honest.yml` einzige Pipeline, `swift test` grün für beide Pakete. *(erreicht)*
 - **M1 ✅** — `xcodebuild test` (App-Tests) grün; RT60→DIN→PDF + Messpfad (`AudioManager`/`RT60MeasurementView`) im Code. *(erreicht; Geräte-Lauf = M3)*
-- **M2** — *Entry:* M1. *Status:* Lint- (`SwiftLint`, Linux) + Index-Gate (`Governance index (SSOT)`, Linux) sind in `ci-honest.yml` **verdrahtet** und laufen unabhängig vom macOS-Block; Coverage ist **report-only** (Baseline, wird später zum Gate „geratcht"). *Exit:* `main` protected mit allen vier Checks als *required* (Owner-Recht, [HANDOFF §11](HANDOFF.md)) **und** erster grüner Lauf bestätigt die Gates.
+- **M2** — *Entry:* M1. *Status:* Index-Gate (`Governance index (SSOT)`, Linux) **blockierend + grün**; `SwiftLint` (Linux) **report-only** (`--lenient`, Baseline 204 Verstöße/4 serious) — Ratchet auf blockierend nach Bereinigung; Coverage **report-only** (läuft bei zurückgekehrten macOS-Runnern). *Exit:* `main` protected mit allen vier Checks als *required* (Owner, [HANDOFF §11](HANDOFF.md)); Lint- + Coverage-Gate scharfgeschaltet nach Schuld-Bereinigung.
 - **M3** — *Entry:* M1. *Exit:* L4-Checkliste in [measurement-validation.md §6](Docs/measurement-validation.md) abgehakt (iPad).
 - **M4** — *Entry:* M3. *Exit:* L5-Checkliste abgehakt; Unsicherheitsbudget dokumentiert.
 - **M5** — *Entry:* M2+M3 (Minimum). *Exit:* Release-Build signiert/archiviert, Version getaggt, Store-Einreichung.
