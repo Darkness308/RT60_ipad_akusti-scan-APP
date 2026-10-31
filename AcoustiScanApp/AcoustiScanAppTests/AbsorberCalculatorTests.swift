@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import AcoustiScanApp
-import AcoustiScanConsolidated
 
 final class AbsorberCalculatorTests: XCTestCase {
 

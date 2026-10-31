@@ -205,4 +205,32 @@ final class SabineConstantTests: XCTestCase {
             "CANARY BREACH: Warm room should have shorter RT60"
         )
     }
+
+    // MARK: - Input Validation Tests
+
+    func testTemperatureClampingPreventsNaN() {
+        // Out-of-range temperatures must be clamped, not produce NaN
+        let extremeCold = SabineConstant(temperatureCelsius: -300.0)
+        let extremeHot = SabineConstant(temperatureCelsius: 1000.0)
+        let nonFinite = SabineConstant(temperatureCelsius: .infinity)
+
+        XCTAssertFalse(extremeCold.value.isNaN, "Extreme cold should not produce NaN")
+        XCTAssertFalse(extremeHot.value.isNaN, "Extreme hot should not produce NaN")
+        XCTAssertFalse(nonFinite.value.isNaN, "Non-finite input should not produce NaN")
+
+        // Clamped to valid range
+        XCTAssertEqual(extremeCold.temperatureCelsius, -40.0)
+        XCTAssertEqual(extremeHot.temperatureCelsius, 60.0)
+        XCTAssertEqual(nonFinite.temperatureCelsius, 60.0)
+    }
+
+    func testCalculateClampingPreventsNaN() {
+        let extremeValue = SabineConstant.calculate(temperatureCelsius: -300.0)
+        XCTAssertFalse(extremeValue.isNaN, "Calculate should clamp out-of-range values")
+    }
+
+    func testValidTemperatureRange() {
+        XCTAssertEqual(SabineConstant.validTemperatureRange.lowerBound, -40.0)
+        XCTAssertEqual(SabineConstant.validTemperatureRange.upperBound, 60.0)
+    }
 }

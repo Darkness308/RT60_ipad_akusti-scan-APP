@@ -30,12 +30,18 @@ public struct SabineConstant: Equatable, Hashable, Codable {
     /// Alias for standard conditions (backward compatibility)
     public static let `default` = standard
 
+    /// Valid temperature range for acoustic calculations
+    public static let validTemperatureRange: ClosedRange<Double> = -40.0...60.0
+
     /// Create a Sabine constant for a specific temperature.
     /// - Parameter temperatureCelsius: Air temperature in degrees Celsius.
-    ///   Valid range: -40°C to +60°C (physically reasonable for indoor acoustics)
+    ///   Valid range: -40°C to +60°C (physically reasonable for indoor acoustics).
+    ///   Values outside this range are clamped to prevent NaN propagation.
     public init(temperatureCelsius: Double) {
-        self.temperatureCelsius = temperatureCelsius
-        self.value = SabineConstant.calculate(temperatureCelsius: temperatureCelsius)
+        let clampedTemp = min(max(temperatureCelsius, Self.validTemperatureRange.lowerBound),
+                               Self.validTemperatureRange.upperBound)
+        self.temperatureCelsius = clampedTemp
+        self.value = SabineConstant.calculate(temperatureCelsius: clampedTemp)
     }
 
     /// Create with an explicit value (for testing or calibration)
@@ -49,10 +55,13 @@ public struct SabineConstant: Equatable, Hashable, Codable {
     /// Formula: k = 24 × ln(10) / c
     /// where c = 331.3 × √(1 + T/273.15) m/s
     ///
-    /// - Parameter temperatureCelsius: Temperature in degrees Celsius
+    /// - Parameter temperatureCelsius: Temperature in degrees Celsius.
+    ///   Values outside -40°C to +60°C are clamped to prevent NaN.
     /// - Returns: Sabine constant (typically 0.159–0.163 for indoor temperatures)
     public static func calculate(temperatureCelsius: Double) -> Double {
-        let speedOfSound = 331.3 * sqrt(1.0 + temperatureCelsius / 273.15)
+        let clampedTemp = min(max(temperatureCelsius, validTemperatureRange.lowerBound),
+                               validTemperatureRange.upperBound)
+        let speedOfSound = 331.3 * sqrt(1.0 + clampedTemp / 273.15)
         let numerator = 24.0 * log(10.0) // ≈ 55.26
         return numerator / speedOfSound
     }
