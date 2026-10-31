@@ -13,7 +13,7 @@ final class RT60CalculatorTests: XCTestCase {
         let absorptionArea = 20.0 // m^2
 
         let rt60 = RT60Calculator.calculateRT60(volume: volume, absorptionArea: absorptionArea)
-        let expected = 0.161 * volume / absorptionArea // 0.805 seconds
+        let expected = SabineConstant.standard.value * volume / absorptionArea // 0.805 seconds
 
         XCTAssertEqual(rt60, expected, accuracy: 0.001)
     }

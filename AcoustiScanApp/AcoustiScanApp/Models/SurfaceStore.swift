@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import AcoustiScanConsolidated
 
 /// Surface information from room scanning
 public struct Surface: Identifiable, Codable {
@@ -114,8 +115,8 @@ public class SurfaceStore: ObservableObject {
         let absorption = totalAbsorption(at: frequency)
         guard absorption > 0 else { return nil }
 
-        // Sabine formula: RT60 = 0.161 * V / A
-        return 0.161 * roomVolume / absorption
+        // Sabine formula: RT60 = k × V / A (k ≈ 0.161 at 20°C)
+        return SabineConstant.standard.value * roomVolume / absorption
     }
 
     /// Calculate RT60 for all standard frequencies

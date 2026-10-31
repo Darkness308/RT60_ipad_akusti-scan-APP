@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AcoustiScanConsolidated
 
 // MARK: - Absorber Recommendation
 
@@ -119,9 +120,10 @@ public class AbsorberCalculator {
     ) -> Double {
         guard targetRT60 > 0, currentRT60 > targetRT60 else { return 0 }
 
-        // From Sabine formula: RT60 = 0.161 * V / A
-        // Target absorption: A_target = 0.161 * V / RT60_target
-        let targetAbsorption = 0.161 * roomVolume / targetRT60
+        // From Sabine formula: RT60 = k × V / A
+        // Target absorption: A_target = k × V / RT60_target
+        let k = SabineConstant.standard.value
+        let targetAbsorption = k * roomVolume / targetRT60
 
         // Required additional absorption
         return max(0, targetAbsorption - currentAbsorption)
