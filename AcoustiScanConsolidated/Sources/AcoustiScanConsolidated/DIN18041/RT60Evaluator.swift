@@ -49,6 +49,12 @@ public struct RT60Evaluator {
 
     /// Get overall compliance status for all measurements
     public static func overallCompliance(deviations: [RT60Deviation]) -> EvaluationStatus {
+        // Empty measurements cannot be evaluated - return notEvaluated instead of
+        // falsely claiming compliance (fixes vacuous-truth bug)
+        guard !deviations.isEmpty else {
+            return .notEvaluated
+        }
+
         let nonCompliantCount = deviations.filter { $0.status != .withinTolerance }.count
 
         if nonCompliantCount == 0 {
