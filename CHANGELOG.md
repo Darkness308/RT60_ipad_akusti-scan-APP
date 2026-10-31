@@ -14,6 +14,7 @@ Alle nennenswerten Änderungen an diesem Projekt. Format nach
 ### Added
 - Mess-/Belegketten-Validierungsprotokoll (L4/L5) mit DoD, ISO-3382-1-Bezug und GUM-Unsicherheitsbudget (`Docs/measurement-validation.md`).
 - Roadmap mit Meilensteinen M0–M5 (`ROADMAP.md`), Reifegrad-Instrument (`Docs/reifegrad.md` + `Tools/maturity/reifegrad.sh`), ADR-Verzeichnis (`Docs/adr/`), dieses Changelog.
+- Maschinenlesbarer Governance-Index/SSOT (`governance.json`) + Drift-Validator (`Tools/maturity/index_check.py`): Doku-Landkarte, Autoritätsregel, Ebenen-Reifegrad, Meilensteine, offene Engpässe — single-sourced.
 - RT60-Messsystem mit USB-Mikrofon + FFT-Analyse (`AudioManager`), ISO-3382-1-Bezug, AbsorberCalculator inkl. 8000-Hz-Band (#299).
 - Echter PDF-Report über den normtreuen `ConsolidatedPDFExporter` (#296); DIN-18041-Bewertung in der App verdrahtet (RoomType A1–A5, asymmetrisches Bild-2-Band) (#295).
 - Audio-Messpfad: getestetes `ImpulseCaptureProcessing` + `AudioImpulseRecorder` + Mess-UI (#289/#290).

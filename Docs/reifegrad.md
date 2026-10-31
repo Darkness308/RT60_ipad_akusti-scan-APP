@@ -10,18 +10,12 @@ Skala (CMMI-artig): **0** nicht vorhanden · **1** ad hoc · **2** wiederholbar 
 
 ## Ebenen-Scorecard (Stand 2026-10-31)
 
-| Ebene | Reife | Belegt durch (Kennzahl/Nachweis) | Fehlt für die nächste Stufe |
-|---|---|---|---|
-| **L1 Rechenkern** | 4 | ~89 Tests, `swift test` grün in CI | Coverage-Messung + Schwelle |
-| **L2 Report/Export** | 4 | 14 Tests, `swift test` grün | Schema-Contract-Test (report.schema.json) als Gate |
-| **L3 App-Logik** | 3 | 177 App-Tests via `xcodebuild test` grün | Dedup (ADR-0003), UI-Tests verifizieren, Coverage |
-| **L4 Geräte-Laufzeit** | 1 | nur compile-checked (Simulator) | L4-DoD am iPad abhaken (measurement-validation §6) |
-| **L5 Metrologie** | 0–1 | nur Checkliste, keine Referenzmessung | kalibriertes Messmikro, Referenz, Unsicherheitsbudget |
-| **L6 Enforcement** | 2 | ehrliche CI läuft (1 Workflow) | Branch-Protection + Lint-/Coverage-Gate (M2) |
-| **L7 Steuerung** | 2–3 | DoD, Roadmap, ADRs, Changelog, dieses Instrument | regelmäßige Pflege + Gate-Kopplung |
+Die Ebenen-Daten (Reife 0–5, Evidenz, Verifizierbarkeit) stehen **maschinenlesbar und single-sourced**
+in [`../governance.json`](../governance.json) → `layers` (dazu `milestones` und `bottlenecks`); hier
+**nicht** dupliziert (SSOT-Disziplin). Konsistenz-Check: `python3 Tools/maturity/index_check.py`.
 
-> Diese Stufen sind **Einschätzungen**, keine Messwerte. Belegpflicht: wer eine Stufe anhebt, nennt
-> die Kennzahl/den Nachweis in der Tabelle.
+> Diese Stufen sind **Einschätzungen**, keine Messwerte; die *gemessenen* KPIs liefert `reifegrad.sh`.
+> Belegpflicht: wer eine Stufe in `governance.json` anhebt, nennt dort die Kennzahl/den Nachweis.
 
 ## Fortschritts-Metriken (vom Skript gezählt)
 

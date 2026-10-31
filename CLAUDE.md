@@ -3,6 +3,10 @@
 Guidance for Claude Code instances working in this repository. Read this first,
 then **[HANDOFF.md](HANDOFF.md)** for the honest, verifiable project state.
 
+Machine-readable governance index / SSOT (doc map, authority rule, layers, milestones,
+open bottlenecks): **[`governance.json`](governance.json)** — validate with
+`python3 Tools/maturity/index_check.py`.
+
 ## What this project is
 
 **AcoustiScan** — a SwiftUI/iPadOS app for room-acoustics analysis: LiDAR room

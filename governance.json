@@ -1,0 +1,65 @@
+{
+  "schema": "acoustiscan.governance/1",
+  "updated": "2026-10-31",
+  "description": "Maschinenlesbarer Governance-Index / SSOT-Karte. Single source of truth fuer Doku-Landkarte, Autoritaetsregel, Ebenen-Reifegrad, Meilensteine und offene Engpaesse. Validierung: python3 Tools/maturity/index_check.py",
+  "authority": {
+    "rule": "Bei Konflikt gilt das laufende System vor jedem Dokument.",
+    "precedence": ["code", "ci:ci-honest.yml", "CLAUDE.md", "HANDOFF.md#newest-dated-block", "FORK_READINESS.md", "ROADMAP.md", "other-docs"],
+    "note": "Dokumente sind beschreibend; Code/CI sind die Quelle der Wahrheit fuer Verhalten. 'verifiziert' = gebaut/gelaufen."
+  },
+  "nodes": [
+    {"id": "rules", "path": "CLAUDE.md", "kind": "rules", "authoritative_for": ["agent-workflow", "hard-rules"], "status": "active"},
+    {"id": "handoff", "path": "HANDOFF.md", "kind": "status", "authoritative_for": ["project-state"], "status": "active", "note": "newest dated block wins"},
+    {"id": "dod_fork", "path": "FORK_READINESS.md", "kind": "dod", "authoritative_for": ["fork-readiness", "scope-bounds"], "status": "active"},
+    {"id": "dod_measurement", "path": "Docs/measurement-validation.md", "kind": "dod", "authoritative_for": ["L4-device", "L5-metrology", "measurement-chain", "chain-of-custody"], "status": "active"},
+    {"id": "roadmap", "path": "ROADMAP.md", "kind": "roadmap", "authoritative_for": ["milestones"], "status": "active"},
+    {"id": "changelog", "path": "CHANGELOG.md", "kind": "changelog", "authoritative_for": ["release-history", "version"], "status": "active", "note": "noch kein Release-Tag (M5)"},
+    {"id": "maturity_doc", "path": "Docs/reifegrad.md", "kind": "maturity", "authoritative_for": ["maturity-scale", "maturity-method"], "status": "active"},
+    {"id": "maturity_tool", "path": "Tools/maturity/reifegrad.sh", "kind": "maturity-metric", "authoritative_for": ["measured-kpis"], "status": "active", "run": "bash Tools/maturity/reifegrad.sh"},
+    {"id": "index", "path": "governance.json", "kind": "index", "authoritative_for": ["doc-map", "authority-rule", "layers", "milestones", "bottlenecks"], "status": "active", "validator": "Tools/maturity/index_check.py"},
+    {"id": "index_validator", "path": "Tools/maturity/index_check.py", "kind": "validator", "authoritative_for": ["index-integrity"], "status": "active", "run": "python3 Tools/maturity/index_check.py"},
+    {"id": "adr_index", "path": "Docs/adr/README.md", "kind": "adr-index", "authoritative_for": ["decisions"], "status": "active"},
+    {"id": "adr_0001", "path": "Docs/adr/0001-honest-ci.md", "kind": "adr", "authoritative_for": ["ci-policy"], "status": "accepted"},
+    {"id": "adr_0002", "path": "Docs/adr/0002-dual-build-system.md", "kind": "adr", "authoritative_for": ["build-system"], "status": "accepted"},
+    {"id": "adr_0003", "path": "Docs/adr/0003-duplicated-models.md", "kind": "adr", "authoritative_for": ["data-models"], "status": "accepted-debt"},
+    {"id": "adr_0004", "path": "Docs/adr/0004-din18041-asymmetric-tolerance.md", "kind": "adr", "authoritative_for": ["din18041-evaluation"], "status": "accepted"},
+    {"id": "adr_0005", "path": "Docs/adr/0005-measurement-method.md", "kind": "adr", "authoritative_for": ["measurement-method"], "status": "accepted"},
+    {"id": "ci", "path": ".github/workflows/ci-honest.yml", "kind": "ci", "authoritative_for": ["build-test-verification"], "status": "blocked", "note": "einzige Pipeline; derzeit blockiert: macOS-Runner werden nicht zugeteilt (Billing/Minuten)"},
+    {"id": "docs_index", "path": "Docs/README.md", "kind": "sub-index", "authoritative_for": ["Docs-folder"], "status": "active"},
+    {"id": "readme", "path": "README.md", "kind": "readme", "authoritative_for": ["product-overview"], "status": "active"},
+    {"id": "contributing", "path": "CONTRIBUTING.md", "kind": "process", "authoritative_for": ["contribution-rules"], "status": "active"},
+    {"id": "onboarding", "path": "ONBOARDING_EXTERNAL.md", "kind": "process", "authoritative_for": ["external-fork-onboarding"], "status": "active"}
+  ],
+  "layers": [
+    {"id": "L1", "name": "Rechenkern", "maturity": 4, "verifiable": "ci", "evidence": "maturity_tool"},
+    {"id": "L2", "name": "Report/Export", "maturity": 4, "verifiable": "ci", "evidence": "maturity_tool"},
+    {"id": "L3", "name": "App-Logik", "maturity": 3, "verifiable": "ci", "evidence": "maturity_tool"},
+    {"id": "L4", "name": "Geraete-Laufzeit", "maturity": 1, "verifiable": "device", "evidence": "dod_measurement"},
+    {"id": "L5", "name": "Metrologie", "maturity": 1, "note": "eher 0-1", "verifiable": "lab", "evidence": "dod_measurement"},
+    {"id": "L6", "name": "Enforcement", "maturity": 2, "verifiable": "github", "evidence": "ci"},
+    {"id": "L7", "name": "Steuerung", "maturity": 2, "note": "2-3", "verifiable": "static", "evidence": "maturity_doc"}
+  ],
+  "milestones": [
+    {"id": "M0", "title": "Ehrliche Baseline", "status": "done", "defined_by": "roadmap", "verifiable": "ci"},
+    {"id": "M1", "title": "Rechnerisch fork-ready", "status": "done", "defined_by": "roadmap", "verifiable": "ci"},
+    {"id": "M2", "title": "Durchsetzung (Branch-Protection + Lint-/Coverage-Gate)", "status": "open", "defined_by": "roadmap", "verifiable": "github"},
+    {"id": "M3", "title": "Geraete-Validierung", "status": "open", "defined_by": "dod_measurement", "verifiable": "device"},
+    {"id": "M4", "title": "Metrologie/Feld", "status": "open", "defined_by": "dod_measurement", "verifiable": "lab"},
+    {"id": "M5", "title": "Release (Signing/Archive/Tag)", "status": "open", "defined_by": "roadmap", "verifiable": "appstore"}
+  ],
+  "bottlenecks": [
+    {"id": "ci-runners", "severity": "high", "desc": "macOS-Runner werden nicht zugeteilt (0s-Cancel) -> ci-honest.yml kann nicht laufen", "owner": "repo-owner", "verifiable": "github-billing", "ref": "ci"},
+    {"id": "enforcement", "severity": "high", "desc": "keine Branch-Protection, kein Lint-/Coverage-Gate", "ref": "M2"},
+    {"id": "device-metrology", "severity": "high", "desc": "L4/L5 unverifiziert (hardware-/kalibrierungsgebunden)", "ref": "dod_measurement"},
+    {"id": "dedup", "severity": "med", "desc": "doppelte Modelle App/Paket", "ref": "adr_0003"}
+  ],
+  "edges": [
+    {"from": "M2", "rel": "enforces", "to": "ci"},
+    {"from": "M3", "rel": "dod", "to": "dod_measurement"},
+    {"from": "M4", "rel": "dod", "to": "dod_measurement"},
+    {"from": "L6", "rel": "blocked_by", "to": "ci"},
+    {"from": "maturity_doc", "rel": "measured_by", "to": "maturity_tool"},
+    {"from": "index", "rel": "validated_by", "to": "index_validator"},
+    {"from": "adr_0003", "rel": "explains", "to": "dedup"}
+  ]
+}
