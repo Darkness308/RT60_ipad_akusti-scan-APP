@@ -105,19 +105,34 @@ jobs:
           echo "=== Available iPad Simulators ===" | tee -a "$RUNNER_TEMP/list.log"
           xcrun simctl list devices available | grep -i ipad | head -20 | tee -a "$RUNNER_TEMP/list.log" || true
 
-      - name: Build & test iOS app
+      - name: Build iOS app (simulator SDK)
         run: |
           set -o pipefail
-          # Use -sdk iphonesimulator to force simulator build (avoids iOS device lookup)
-          # Use iPad Pro 11-inch (M4) which is always available on macos-15 runners
+          # Use -sdk iphonesimulator only, no destination (build-only)
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPad Pro 11-inch (M4)' \
+            -arch x86_64 \
             -configuration Debug \
-            clean build test \
+            clean build \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Test iOS app (AcoustiScanAppTests)
+        run: |
+          set -o pipefail
+          # Boot a specific simulator and run tests on it
+          DEVICE_ID=$(xcrun simctl list devices available | grep "iPad Pro 11-inch (M4)" | head -1 | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
+          echo "Using simulator ID: $DEVICE_ID"
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcodebuild \
+            -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
+            -scheme AcoustiScanApp \
+            -sdk iphonesimulator \
+            -destination "id=$DEVICE_ID" \
+            -configuration Debug \
+            test \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee -a "$RUNNER_TEMP/xcodebuild.log"
 
       - name: Report failure to PR
         if: failure()
