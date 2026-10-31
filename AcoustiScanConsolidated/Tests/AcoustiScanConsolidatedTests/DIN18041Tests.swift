@@ -143,7 +143,9 @@ final class DIN18041ModuleTests: XCTestCase {
             volume: 150.0
         )
         XCTAssertTrue(deviations.isEmpty)
-        XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: []), .withinTolerance)
+        // Empty measurements must return .notEvaluated, not .withinTolerance
+        // (vacuous-truth bug fix: "not measured" ≠ "compliant")
+        XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: []), .notEvaluated)
     }
 
     func testMismatchedFrequenciesAreIgnored() {
@@ -176,5 +178,36 @@ final class DIN18041ModuleTests: XCTestCase {
             XCTAssertEqual(deviations.count, targets.count, "\(group) band count")
             XCTAssertTrue(deviations.allSatisfy { $0.status == .withinTolerance }, "\(group) all within tolerance")
         }
+    }
+
+    // MARK: - Canary Tests (Regression Guards)
+
+    /// CANARY: Empty measurements MUST NOT be evaluated as compliant.
+    /// This guards against the vacuous-truth bug where 0/0 non-compliant = "all compliant".
+    func testEmptyMeasurementsCanary() {
+        let result = RT60Evaluator.overallCompliance(deviations: [])
+        XCTAssertNotEqual(result, .withinTolerance,
+            "CANARY BREACH: Empty measurements must not be within tolerance!")
+        XCTAssertEqual(result, .notEvaluated,
+            "CANARY BREACH: Empty measurements must return .notEvaluated")
+    }
+
+    /// CANARY: Implausible RT60 values must be flagged as out-of-tolerance.
+    /// RT60 of 100 seconds is physically impossible for normal rooms.
+    func testImplausibleValuesCanary() {
+        let deviations = RT60Evaluator.evaluateDINCompliance(
+            measurements: [RT60Measurement(frequency: 500, rt60: 100.0)],
+            roomType: .a3Education,
+            volume: 150.0
+        )
+        XCTAssertEqual(deviations.first?.status, .tooHigh,
+            "CANARY BREACH: RT60=100s must be tooHigh!")
+    }
+
+    /// CANARY: DIN A3 at 200m³ must yield T_soll ≈ 0.566s (golden value).
+    func testDINA3GoldenValueCanary() {
+        let tSoll = RoomType.a3Education.targetReverberationTime(volume: 200)
+        XCTAssertEqual(tSoll, 0.566, accuracy: 0.005,
+            "CANARY BREACH: A3@200m³ golden value changed!")
     }
 }

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RT60 Repos — Kritisches Audit Oktober 2026</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --c-primary: #1e3a5f;
+  --c-accent: #c23d3d;
+  --c-success: #2d8659;
+  --c-warning: #b8941f;
+  --c-danger: #c23d3d;
+  --c-bg: #f8f9fb;
+  --c-surface: #ffffff;
+  --c-text: #1a1d23;
+  --c-text-muted: #5a6170;
+  --c-border: #dfe2e8;
+  --c-code-bg: #f0f2f5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-primary: #4a7eb8;
+    --c-accent: #e05555;
+    --c-success: #3da86f;
+    --c-warning: #d4aa2a;
+    --c-danger: #e05555;
+    --c-bg: #0f1218;
+    --c-surface: #1a1f28;
+    --c-text: #e8eaef;
+    --c-text-muted: #8a92a3;
+    --c-border: #2d3340;
+    --c-code-bg: #252b38;
+  }
+}
+:root[data-theme="dark"] {
+  --c-primary: #4a7eb8;
+  --c-accent: #e05555;
+  --c-success: #3da86f;
+  --c-warning: #d4aa2a;
+  --c-danger: #e05555;
+  --c-bg: #0f1218;
+  --c-surface: #1a1f28;
+  --c-text: #e8eaef;
+  --c-text-muted: #8a92a3;
+  --c-border: #2d3340;
+  --c-code-bg: #252b38;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--c-text);
+  background: var(--c-bg);
+  padding: 2rem;
+}
+.container { max-width: 900px; margin: 0 auto; }
+header {
+  border-bottom: 3px solid var(--c-danger);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-danger);
+  margin-bottom: 0.5rem;
+}
+h1 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--c-danger);
+  line-height: 1.2;
+}
+.subtitle { color: var(--c-text-muted); margin-top: 0.5rem; }
+h2 {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--c-text);
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--c-border);
+}
+h3 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.75rem; }
+p { margin-bottom: 1rem; }
+.critical-box {
+  background: var(--c-surface);
+  border: 2px solid var(--c-danger);
+  border-left: 5px solid var(--c-danger);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+.critical-box::before {
+  content: "⚠ KRITISCH";
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--c-danger);
+  margin-bottom: 0.5rem;
+}
+.warning-box {
+  background: var(--c-surface);
+  border-left: 4px solid var(--c-warning);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+.info-box {
+  background: var(--c-code-bg);
+  border-left: 4px solid var(--c-primary);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+th, td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--c-border);
+}
+th {
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-text-muted);
+  background: var(--c-code-bg);
+}
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8em;
+  background: var(--c-code-bg);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+}
+pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  background: var(--c-code-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+.badge-red { background: var(--c-danger); color: #fff; }
+.badge-yellow { background: var(--c-warning); color: #1a1d23; }
+.badge-gray { background: var(--c-text-muted); color: #fff; }
+.badge-green { background: var(--c-success); color: #fff; }
+ul, ol { margin: 0.75rem 0 1rem 1.25rem; }
+li { margin-bottom: 0.4rem; }
+.source-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--c-text-muted);
+  background: var(--c-code-bg);
+  padding: 0.1rem 0.3rem;
+  border-radius: 2px;
+}
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--c-border);
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="eyebrow">Kritisches Audit — Widerspruchsprinzip</div>
+    <h1>RT60 Repos — Hardcoded Values & Test-Lücken</h1>
+    <p class="subtitle">Analyse mit Attacke statt Bestätigung · Keine simulierten Daten</p>
+  </header>
+
+  <div class="critical-box">
+    <strong>Methodik:</strong> Dieses Audit widerspricht aktiv statt zu bestätigen. Jede Behauptung muss durch Code oder externe Quelle belegt sein. Web-Quellen (ISO, DIN) waren nicht erreichbar — alle Aussagen stammen direkt aus dem Repository-Code. <span class="badge badge-red">Nicht extern verifiziert</span>
+  </div>
+
+  <h2>1. Hardcoded Sabine-Konstante</h2>
+
+  <div class="critical-box">
+    Die Sabine-Konstante <code>0.161</code> ist an <strong>12 Dateien / 14+ Stellen</strong> hardcoded:
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Datei</th><th>Zeile</th><th>Code</th><th>Problem</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>RT60Calculator.swift</code></td>
+        <td>12</td>
+        <td><code>let sabineConstant = 0.161</code></td>
+        <td><span class="badge badge-red">Hardcoded</span></td>
+      </tr>
+      <tr>
+        <td><code>AbsorberCalculator.swift</code></td>
+        <td>124</td>
+        <td><code>0.161 * roomVolume / targetRT60</code></td>
+        <td><span class="badge badge-red">Hardcoded</span></td>
+      </tr>
+      <tr>
+        <td><code>SurfaceStore.swift</code></td>
+        <td>118</td>
+        <td><code>return 0.161 * roomVolume / absorption</code></td>
+        <td><span class="badge badge-red">Hardcoded</span></td>
+      </tr>
+      <tr>
+        <td><code>RT60View.swift</code></td>
+        <td>42</td>
+        <td><code>return 0.161 * store.roomVolume / ...</code></td>
+        <td><span class="badge badge-red">Hardcoded</span></td>
+      </tr>
+      <tr>
+        <td><code>RT60ChartView.swift</code></td>
+        <td>17</td>
+        <td><code>0.161 * v / a_f</code></td>
+        <td><span class="badge badge-red">Hardcoded</span></td>
+      </tr>
+      <tr>
+        <td><code>RT60Tests.swift</code></td>
+        <td>10</td>
+        <td><code>let expectedRT60 = 0.161 * volume / absorptionArea</code></td>
+        <td><span class="badge badge-yellow">In Tests</span></td>
+      </tr>
+      <tr>
+        <td><code>AcoustiScanConsolidatedTests.swift</code></td>
+        <td>16</td>
+        <td><code>let expected = 0.161 * volume / absorptionArea</code></td>
+        <td><span class="badge badge-yellow">In Tests</span></td>
+      </tr>
+      <tr>
+        <td><code>AbsorberCalculatorTests.swift</code></td>
+        <td>31, 34</td>
+        <td><code>currentAbsorption: 8.05  // Sabine: 0.161 * 100 / 2.0</code></td>
+        <td><span class="badge badge-yellow">In Tests</span></td>
+      </tr>
+      <tr>
+        <td><code>README.md</code></td>
+        <td>212, 329</td>
+        <td><code>RT60 = 0.161 × V / A</code></td>
+        <td><span class="badge badge-gray">Doku</span></td>
+      </tr>
+      <tr>
+        <td><code>CONTRIBUTING.md</code></td>
+        <td>186, 380</td>
+        <td><code>private let sabineConstant = 0.161</code></td>
+        <td><span class="badge badge-gray">Doku</span></td>
+      </tr>
+      <tr>
+        <td><code>HANDOFF.md</code></td>
+        <td>171</td>
+        <td><code>Sabine-Formel (0.161·V/A)</code></td>
+        <td><span class="badge badge-gray">Doku</span></td>
+      </tr>
+      <tr>
+        <td><code>AcoustiScanConsolidated/README.md</code></td>
+        <td>27</td>
+        <td><code>RT60 nach Sabine (0.161·V/A)</code></td>
+        <td><span class="badge badge-gray">Doku</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warning-box">
+    <strong>Widerspruch:</strong> Der Kommentar in <code>RT60Calculator.swift:12</code> sagt "For air at 20°C, 50% humidity" — aber:
+    <ul>
+      <li>Konstante variiert: 0.159 (30°C) bis 0.163 (10°C)</li>
+      <li>Keine dynamische Anpassung an Umgebung</li>
+      <li>Kein Parameter für Temperatur/Feuchte</li>
+      <li><strong>Quelle für korrekten Bereich: Nicht verifiziert (Web nicht erreichbar)</strong></li>
+    </ul>
+  </div>
+
+  <h2>2. Fatale Test-Lücke: Leere Messungen = OK</h2>
+
+  <div class="critical-box">
+    <code>DIN18041Tests.swift:139-147</code> + <code>RT60Evaluator.swift:51-55</code>
+<pre>// DIN18041Tests.swift:139-147
+func testEmptyMeasurements() {
+    let deviations = RT60Evaluator.evaluateDINCompliance(
+        measurements: [],  // LEER!
+        roomType: .a3Education,
+        volume: 150.0
+    )
+    XCTAssertTrue(deviations.isEmpty)
+    XCTAssertEqual(RT60Evaluator.overallCompliance(deviations: []),
+                   .withinTolerance)  // ⚠️ FATAL
+}
+
+// RT60Evaluator.swift:51-55 — ROOT CAUSE
+public static func overallCompliance(deviations: [RT60Deviation]) -> EvaluationStatus {
+    let nonCompliantCount = deviations.filter { $0.status != .withinTolerance }.count
+    if nonCompliantCount == 0 {  // ← EMPTY ARRAY: count = 0
+        return .withinTolerance   // ← BUG: Returns "compliant" for EMPTY!
+    }
+    // ...
+}</pre>
+    <strong>Problem:</strong> "Nicht gemessen" wird als "withinTolerance" bewertet!<br>
+    <strong>Ursache:</strong> Vacuous-Truth-Bug — 0 von 0 nicht-konform = "alle konform".<br>
+    <strong>Konsequenz:</strong> Ein System ohne Messungen wird als DIN-konform eingestuft.
+  </div>
+
+  <h2>3. Zirkuläre Tests (Selbst-Validierung)</h2>
+
+  <div class="warning-box">
+    <strong>DIN18041Tests.swift:89-101</strong> — Test erstellt Measurements aus Targets, testet dann ob sie "withinTolerance" sind:
+<pre>let targets = DIN18041Database.targets(for: .a3Education, volume: 150.0)
+let measurements = targets.map {
+    RT60Measurement(frequency: $0.frequency, rt60: $0.targetRT60)
+}
+// ↑ Measurements = exakt die Zielwerte!
+
+let deviations = RT60Evaluator.evaluateDINCompliance(...)
+XCTAssertTrue(deviations.allSatisfy { $0.status == .withinTolerance })
+// ↑ Natürlich sind sie "in Toleranz" — sie SIND die Zielwerte!</pre>
+    <strong>Widerspruch:</strong> Dieser Test beweist nur Selbstkonsistenz, nicht Korrektheit nach DIN 18041.
+  </div>
+
+  <h2>4. Hardcoded DIN-Erwartungswerte</h2>
+
+  <table>
+    <thead>
+      <tr><th>Raumtyp</th><th>Volumen</th><th>Hardcoded T_soll</th><th>Formel</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A1 Musik</td>
+        <td>500 m³</td>
+        <td><code>1.285</code></td>
+        <td>0.45·lg(V) + 0.07</td>
+        <td><span class="badge badge-yellow">Nicht extern verifiziert</span></td>
+      </tr>
+      <tr>
+        <td>A2 Sprache</td>
+        <td>1000 m³</td>
+        <td><code>0.97</code></td>
+        <td>0.37·lg(V) − 0.14</td>
+        <td><span class="badge badge-yellow">Nicht extern verifiziert</span></td>
+      </tr>
+      <tr>
+        <td>A3 Unterricht</td>
+        <td>200 m³</td>
+        <td><code>0.566</code></td>
+        <td>0.32·lg(V) − 0.17</td>
+        <td><span class="badge badge-yellow">Nicht extern verifiziert</span></td>
+      </tr>
+      <tr>
+        <td>A4 Inklusiv</td>
+        <td>100 m³</td>
+        <td><code>0.38</code></td>
+        <td>0.26·lg(V) − 0.14</td>
+        <td><span class="badge badge-yellow">Nicht extern verifiziert</span></td>
+      </tr>
+      <tr>
+        <td>A5 Sport</td>
+        <td>2000 m³</td>
+        <td><code>1.476</code></td>
+        <td>0.75·lg(V) − 1.00</td>
+        <td><span class="badge badge-yellow">Nicht extern verifiziert</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <strong>Erforderliche Verifizierung:</strong> DIN 18041:2016-03 muss manuell gegen diese Werte geprüft werden. Web-Zugriff auf din.de war blockiert.
+  </div>
+
+  <h2>5. Hardcoded Toleranzbänder</h2>
+
+  <table>
+    <thead>
+      <tr><th>Frequenzband</th><th>Untere Grenze</th><th>Obere Grenze</th><th>Code-Quelle</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mitte (500, 1000, 2000 Hz)</td>
+        <td><code>T_soll × 0.80</code></td>
+        <td><code>T_soll × 1.20</code></td>
+        <td>DIN18041Tests.swift:69-70</td>
+      </tr>
+      <tr>
+        <td>Rand (125, 4000 Hz)</td>
+        <td><code>T_soll × 0.65</code></td>
+        <td><code>T_soll × 1.45</code></td>
+        <td>DIN18041Tests.swift:72-73</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>6. Fehlende Canary-Patterns</h2>
+
+  <div class="warning-box">
+    <strong>Nicht gefunden:</strong>
+    <ul>
+      <li>Keine Sentinel-Werte zum Erkennen von Regressionen</li>
+      <li>Keine Boundary-Canaries (was soll SCHEITERN?)</li>
+      <li>Keine Inverse-Tests (falsche Eingaben → erwarteter Fehler)</li>
+      <li>Keine Golden-File-Vergleiche mit externen Referenzdaten</li>
+    </ul>
+  </div>
+
+  <h3>Empfohlene Canary-Implementierung</h3>
+  <pre>// CANARY: Dieser Test MUSS fehlschlagen wenn Sabine-Konstante geändert wird
+func testSabineConstantCanary() {
+    let CANARY_SABINE = 0.161
+    let result = RT60Calculator.calculateRT60(volume: 100, absorptionArea: 10)
+    XCTAssertEqual(result, CANARY_SABINE * 100 / 10, accuracy: 0.0001,
+        "CANARY BREACH: Sabine constant changed! Was: \(CANARY_SABINE)")
+}
+
+// CANARY: Leere Messungen DÜRFEN NICHT "withinTolerance" sein
+func testEmptyMeasurementsCanary() {
+    let result = RT60Evaluator.overallCompliance(deviations: [])
+    XCTAssertNotEqual(result, .withinTolerance,
+        "CANARY BREACH: Empty measurements must not be within tolerance!")
+}
+
+// CANARY: Inverse — unplausible Werte müssen erkannt werden
+func testImplausibleValuesCanary() {
+    // RT60 of 100 seconds is physically impossible for normal rooms
+    let deviations = RT60Evaluator.evaluateDINCompliance(
+        measurements: [RT60Measurement(frequency: 500, rt60: 100.0)],
+        roomType: .a3Education,
+        volume: 150.0
+    )
+    XCTAssertEqual(deviations.first?.status, .tooHigh,
+        "CANARY BREACH: RT60=100s must be tooHigh!")
+}
+
+// CANARY: DIN A3 bei 200m³ muss T_soll ≈ 0.566s liefern
+func testDINA3GoldenValueCanary() {
+    let tSoll = RoomType.a3Education.targetReverberationTime(volume: 200)
+    XCTAssertEqual(tSoll, 0.566, accuracy: 0.005,
+        "CANARY BREACH: A3@200m³ golden value changed!")
+}</pre>
+
+  <h2>7. Skipped Tests</h2>
+
+  <table>
+    <thead>
+      <tr><th>Datei</th><th>Grund</th><th>Bewertung</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>testMismatchedFrequenciesAreIgnored</code></td>
+        <td>Mismatched frequencies are silently ignored (100 Hz)</td>
+        <td><span class="badge badge-yellow">Silent Ignore</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>8. Offene Lücken (Rot bleibt Rot)</h2>
+
+  <table>
+    <thead>
+      <tr><th>Lücke</th><th>Status</th><th>Quelle</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ISO 3382-1 Compliance nicht extern verifiziert</td>
+        <td><span class="badge badge-red">Offen</span></td>
+        <td>iso.org nicht erreichbar</td>
+      </tr>
+      <tr>
+        <td>DIN 18041:2016-03 Koeffizienten nicht extern verifiziert</td>
+        <td><span class="badge badge-red">Offen</span></td>
+        <td>din.de nicht erreichbar</td>
+      </tr>
+      <tr>
+        <td>Sabine-Konstante 0.161 Temperaturabhängigkeit</td>
+        <td><span class="badge badge-red">Ignoriert</span></td>
+        <td>Keine Implementierung</td>
+      </tr>
+      <tr>
+        <td>Geräte-Laufzeit (LiDAR/Mikrofon)</td>
+        <td><span class="badge badge-red">Nicht getestet</span></td>
+        <td>HANDOFF.md</td>
+      </tr>
+      <tr>
+        <td>Leere Messungen = withinTolerance</td>
+        <td><span class="badge badge-red">Bug</span></td>
+        <td>RT60Evaluator.swift:51-55, DIN18041Tests.swift:146</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>9. Empfehlungen</h2>
+
+  <ol>
+    <li><strong>Sabine-Konstante parametrisieren</strong> — Temperatur/Feuchte als Eingabe</li>
+    <li><strong>Leere Messungen als "notEvaluated" behandeln</strong> — nicht als "withinTolerance"</li>
+    <li><strong>Externe Referenzdaten laden</strong> — DIN-Koeffizienten aus JSON/YAML statt hardcoded</li>
+    <li><strong>Canary-Tests implementieren</strong> — Regressionen aktiv erkennen</li>
+    <li><strong>Golden-File-Tests</strong> — Vergleich gegen bekannte Referenzwerte</li>
+    <li><strong>DIN 18041:2016-03 manuell verifizieren</strong> — Norm beschaffen und prüfen</li>
+  </ol>
+
+  <footer>
+    Kritisches Audit · 31. Oktober 2026<br>
+    <strong>Methodik:</strong> Widerspruchsprinzip — Attacke statt Bestätigung<br>
+    Keine simulierten, geschätzten oder generisch erzeugten Daten<br>
+    <strong>Quellen:</strong> Alle Zeilennummern und Dateipfade aus Repository <code>darkness308/rt60_ipad_akusti-scan-app</code><br>
+    <a href="https://claude.ai/code/session_019UfUgLY4c6mUoN7R9gMAiU">Ursprüngliche Session</a> ·
+    <a href="https://claude.ai/code/session_01G2s5xt5UzXP6gF5LZbcJmm">Fortsetzung</a>
+  </footer>
+</div>
+</body>
+</html>
