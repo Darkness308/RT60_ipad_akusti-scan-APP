@@ -7,6 +7,23 @@
 
 ---
 
+## Stand Oktober 2026 — Update (NEUESTER Stand; gilt bei Konflikt vor allem darunter)
+
+Seit dem Juni-Stand in `main` gemergt (CI grün):
+- **#299** RT60-Messsystem: `AudioManager` (USB-Mikrofon + FFT), `AbsorberCalculator` inkl. 8000-Hz-Band, ISO-3382-1-Bezug, zusätzliche App-Tests.
+- **#298** PDF-Export an `ReportExport` gebunden.
+
+- ✅ **Messpfad in der App verdrahtet** → der alte CRITICAL-Befund §10.1 (»App misst nicht, sie prognostiziert«) ist **im Code aufgelöst**: `AudioManager` + `RT60MeasurementView` rufen den echten Impuls-/RT60-Pfad auf. **Geräte-Gültigkeit** (echtes Mikro/LiDAR, Metrologie) bleibt offen → L4/L5.
+- 📋 **Neue Steuerungs-/Validierungs-Artefakte:** [ROADMAP.md](ROADMAP.md) (Meilensteine M0–M5) · [Docs/measurement-validation.md](Docs/measurement-validation.md) (DoD für Mess-/Belegkette, L4/L5) · [Docs/reifegrad.md](Docs/reifegrad.md) + `Tools/maturity/reifegrad.sh` (messbare Kennzahlen) · [Docs/adr/](Docs/adr/) (ADR-0001…0005) · [CHANGELOG.md](CHANGELOG.md).
+- 🔢 **Test-Inventar (gezählt, Okt 2026):** L1 89 · L2 14 · L3 177 = **280** in baubaren Targets; 1 verwaister `LogParser`-Test entfernt; genau **1** `XCTSkip` (nur auf Nicht-PDFKit-Plattformen; auf macOS läuft der volle Test).
+
+**Reale offene Engpässe (nach Meilenstein):**
+- **M2 — Durchsetzung:** Branch-Protection auf `main` **und** Lint-/Coverage-Gate in der CI — **beide fehlen** (per `reifegrad.sh` bestätigt). Bis dahin ist „grün" belastbar, aber **nicht blockierend** (freiwillig).
+- **M3 — Geräte-Validierung** (iPad: Mikro/LiDAR/E2E) · **M4 — Metrologie** (kalibriertes Messmikro, Referenz, Unsicherheitsbudget) → beide in [Docs/measurement-validation.md](Docs/measurement-validation.md).
+- **Dedup** doppelter Modelle App↔Paket ([ADR-0003](Docs/adr/0003-duplicated-models.md)).
+
+---
+
 ## Stand Juni 2026 — Update (gilt bei Konflikt vor den älteren Abschnitten unten)
 
 Seit 2026-05-30 wurden die meisten unten als „offen" markierten Engpässe **geschlossen**
@@ -99,7 +116,12 @@ xcodebuild build \
    PDF/XLSX-Exporter parallel zum Package. Beide in sich konsistent; Konsolidierung = großer Refactor.
 2. **Dual-Build-System**: Die CI baut die App über das **`.xcodeproj`** (maßgeblich). Das parallele
    `AcoustiScanApp/Package.swift` wird von der CI **nicht** gebaut.
-3. **App-Tests nicht im CI-Gate** (siehe §2) — größte Verifikationslücke.
+3. **Parallele `AcoustiScanApp/Package.swift`** neben dem maßgeblichen `.xcodeproj`
+   ([ADR-0002](Docs/adr/0002-dual-build-system.md)) — Drift-Risiko; Kandidat zum Entfernen.
+
+> Hinweis (Okt 2026): Der frühere Punkt »App-Tests nicht im CI-Gate« ist **erledigt** (#291) —
+> App-Tests laufen via `xcodebuild test`. Die verbleibende Enforcement-Lücke ist jetzt das
+> **fehlende Lint-/Coverage-Gate + Branch-Protection** (M2), nicht die App-Tests.
 
 ---
 
@@ -166,7 +188,11 @@ Ergebnis einer systematischen EKS-Engpassanalyse (CI/Test-Coverage + Fake-Funkti
 Reihenfolge bewusst nach **Risiko × Schließbarkeit**. Mac-gebundene Punkte sind markiert
 (🖥 = braucht swift/xcodebuild; in der Linux-Sandbox nicht verifizierbar).
 
-### 10.1 ⚠️ CRITICAL — Befund, der eine Produktentscheidung erfordert
+### 10.1 ✅ AUFGELÖST (Okt 2026) — war: CRITICAL (Prognose statt Messung)
+> **Aufgelöst:** Die App hat jetzt einen echten Messpfad (`AudioManager` + `RT60MeasurementView` →
+> Impuls/Schroeder-RT60); Entscheidung (b) wurde umgesetzt ([ADR-0005](Docs/adr/0005-measurement-method.md)).
+> Geräte-/Metrologie-Gültigkeit bleibt offen (L4/L5, [Docs/measurement-validation.md](Docs/measurement-validation.md)).
+> Der historische Befund darunter bleibt zur Nachvollziehbarkeit stehen.
 **Die App *misst* RT60 nicht, sie *prognostiziert* es.** `RT60View` → `SurfaceStore.calculateRT60`
 ist reine Sabine-Formel (`0.161·V/A`) aus den vom Nutzer zugewiesenen Material­koeffizienten.
 Es gibt **keinen** Mikrofon-/Audio-Capture-Pfad im App-Code (`AVAudioEngine`/`installTap` etc.
@@ -245,5 +271,6 @@ im GitHub-UI setzen (nicht im Code, nicht von einer Sandbox):
 
 ---
 
-*Letzte Aktualisierung dieses Dokuments: 2026-06-06 (Stand-Update Juni 2026 + Konsistenzabgleich der älteren
-Abschnitte). Bei Abweichungen zwischen diesem Dokument und dem Code gilt der Code — bitte diese Datei dann aktualisieren.*
+*Letzte Aktualisierung dieses Dokuments: 2026-10-31 (Stand-Update Oktober 2026: #298/#299, Messpfad
+aufgelöst, neue Steuerungs-/Validierungs-Artefakte). Bei Abweichungen zwischen diesem Dokument und dem
+Code gilt der Code — bitte diese Datei dann aktualisieren.*
