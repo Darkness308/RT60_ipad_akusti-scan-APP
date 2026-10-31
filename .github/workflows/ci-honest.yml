@@ -119,8 +119,11 @@ jobs:
       - name: Test iOS app (AcoustiScanAppTests)
         run: |
           set -o pipefail
-          # Get first available iPad simulator name
-          IPAD_SIM=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | sed 's/^[[:space:]]*//' | sed 's/ (.*$//')
+          # Extract first available iPad simulator name (preserve model like "(M4)", remove UUID)
+          # Format: "    iPad Pro 11-inch (M4) (UUID) (Status)"
+          IPAD_SIM=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | \
+            sed 's/^[[:space:]]*//' | \
+            sed -E 's/ \([0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\).*$//')
           echo "Using simulator: $IPAD_SIM"
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
