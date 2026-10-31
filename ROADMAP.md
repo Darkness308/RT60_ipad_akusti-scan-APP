@@ -29,7 +29,7 @@ bewertet und einen **belegbaren** PDF-Bericht erzeugt — mit nachvollziehbarer 
 |---|---|---|---|---|
 | **M0** | Ehrliche Baseline (CI ohne Maskierung, Rechenkern getestet) | L1–L2, L6(CI) | ✅ erreicht | CI |
 | **M1** | Rechnerisch fork-ready (App baut+testet in CI, DIN+PDF+Messpfad verdrahtet) | L1–L3 | ✅ erreicht | CI |
-| **M2** | **Durchsetzung** (Branch-Protection, Lint-/Coverage-Gate) | L6 | 🔴 offen | GitHub + CI |
+| **M2** | **Durchsetzung** (Branch-Protection, Lint-/Coverage-Gate) | L6 | 🟡 teilweise (Gates verdrahtet; Branch-Protection offen) | GitHub + CI |
 | **M3** | **Geräte-Validierung** (S3/S4: iPad, Mikro, LiDAR-Volumen, E2E am Gerät) | L4 | 🔴 offen | iPad |
 | **M4** | **Metrologie/Feld** (S5: kalibriertes Messmikro, Referenz, Unsicherheitsbudget) | L5 | 🔴 offen | Labor/Ringversuch |
 | **M5** | **Release** (Archive/Signing, App-Store-Build, Tag `v1.0.0`) | L3, L6 | 🔴 offen | macOS + App Store Connect |
@@ -38,7 +38,7 @@ bewertet und einen **belegbaren** PDF-Bericht erzeugt — mit nachvollziehbarer 
 
 - **M0 ✅** — `ci-honest.yml` einzige Pipeline, `swift test` grün für beide Pakete. *(erreicht)*
 - **M1 ✅** — `xcodebuild test` (App-Tests) grün; RT60→DIN→PDF + Messpfad (`AudioManager`/`RT60MeasurementView`) im Code. *(erreicht; Geräte-Lauf = M3)*
-- **M2** — *Entry:* M1. *Exit:* `main` protected mit beiden Checks als *required*; SwiftLint/Format + Coverage-Gate laufen in CI. (Owner-Recht + CI-Edit; vgl. [HANDOFF §11](HANDOFF.md).)
+- **M2** — *Entry:* M1. *Status:* Lint- (`SwiftLint`, Linux) + Index-Gate (`Governance index (SSOT)`, Linux) sind in `ci-honest.yml` **verdrahtet** und laufen unabhängig vom macOS-Block; Coverage ist **report-only** (Baseline, wird später zum Gate „geratcht"). *Exit:* `main` protected mit allen vier Checks als *required* (Owner-Recht, [HANDOFF §11](HANDOFF.md)) **und** erster grüner Lauf bestätigt die Gates.
 - **M3** — *Entry:* M1. *Exit:* L4-Checkliste in [measurement-validation.md §6](Docs/measurement-validation.md) abgehakt (iPad).
 - **M4** — *Entry:* M3. *Exit:* L5-Checkliste abgehakt; Unsicherheitsbudget dokumentiert.
 - **M5** — *Entry:* M2+M3 (Minimum). *Exit:* Release-Build signiert/archiviert, Version getaggt, Store-Einreichung.

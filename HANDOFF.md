@@ -255,7 +255,7 @@ im GitHub-UI setzen (nicht im Code, nicht von einer Sandbox):
 
 1. **Branch-Protection auf `main`** (Settings → Branches → Add rule):
    - ☑ Require a pull request before merging
-   - ☑ Require status checks to pass → **`Swift packages (build + test)`** und **`iOS app (xcodebuild)`** als *required* markieren
+   - ☑ Require status checks to pass → **`Swift packages (build + test)`**, **`iOS app (xcodebuild)`**, **`Governance index (SSOT)`** und **`SwiftLint`** als *required* markieren
    - ☑ Require review from Code Owners
    - ☑ Require branches up to date before merging
    Ohne dies kann (auch der externe Dev) **rot mergen** oder direkt auf `main` pushen.
