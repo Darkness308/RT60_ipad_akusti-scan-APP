@@ -105,37 +105,28 @@ jobs:
           echo "=== Available iPad Simulators ===" | tee -a "$RUNNER_TEMP/list.log"
           xcrun simctl list devices available | grep -i ipad | head -20 | tee -a "$RUNNER_TEMP/list.log" || true
 
-      - name: Build iOS app (simulator SDK)
+      - name: Build & test iOS app
         run: |
           set -o pipefail
-          # Boot a simulator and use it for build
-          DEVICE_ID=$(xcrun simctl list devices available | grep "iPad Pro 11-inch (M4)" | head -1 | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
+          # Get first iPad simulator UUID (case-insensitive UUID extraction)
+          echo "Available iPads:"
+          xcrun simctl list devices available | grep -i iPad
+          DEVICE_ID=$(xcrun simctl list devices available | grep -i "iPad Pro 11-inch (M4)" | head -1 | grep -oiE '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}')
+          if [ -z "$DEVICE_ID" ]; then
+            echo "ERROR: Could not extract simulator UUID"
+            exit 1
+          fi
           echo "Using simulator ID: $DEVICE_ID"
-          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl boot "$DEVICE_ID" 2>/dev/null || echo "Simulator may already be booted"
+          echo "Running xcodebuild with destination: id=$DEVICE_ID"
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
             -sdk iphonesimulator \
             -destination "id=$DEVICE_ID" \
             -configuration Debug \
-            clean build \
+            clean build test \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
-
-      - name: Test iOS app (AcoustiScanAppTests)
-        run: |
-          set -o pipefail
-          # Boot a specific simulator and run tests on it
-          DEVICE_ID=$(xcrun simctl list devices available | grep "iPad Pro 11-inch (M4)" | head -1 | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
-          echo "Using simulator ID: $DEVICE_ID"
-          xcrun simctl boot "$DEVICE_ID" || true
-          xcodebuild \
-            -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
-            -scheme AcoustiScanApp \
-            -sdk iphonesimulator \
-            -destination "id=$DEVICE_ID" \
-            -configuration Debug \
-            test \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tee -a "$RUNNER_TEMP/xcodebuild.log"
 
       - name: Report failure to PR
         if: failure()
