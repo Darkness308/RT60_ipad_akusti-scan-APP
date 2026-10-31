@@ -35,8 +35,8 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          # Xcode 16.2 for macOS 15 runners - compatible with available iOS runtimes
-          xcode-version: '16.2'
+          # Use latest stable Xcode - ensures iOS SDK matches available simulator runtimes
+          xcode-version: 'latest-stable'
 
       - name: Toolchain versions
         run: |
@@ -93,8 +93,8 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          # Xcode 16.2 for macOS 15 runners - compatible with available iOS runtimes
-          xcode-version: '16.2'
+          # Use latest stable Xcode - ensures iOS SDK matches available simulator runtimes
+          xcode-version: 'latest-stable'
 
       - name: Toolchain + scheme listing
         run: |
@@ -108,25 +108,31 @@ jobs:
       - name: Build & test iOS app
         run: |
           set -o pipefail
-          # Get first iPad simulator UUID (case-insensitive UUID extraction)
-          echo "Available iPads:"
-          xcrun simctl list devices available | grep -i iPad
-          DEVICE_ID=$(xcrun simctl list devices available | grep -i "iPad Pro 11-inch (M4)" | head -1 | grep -oiE '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}')
-          if [ -z "$DEVICE_ID" ]; then
-            echo "ERROR: Could not extract simulator UUID"
-            exit 1
-          fi
-          echo "Using simulator ID: $DEVICE_ID"
-          xcrun simctl boot "$DEVICE_ID" 2>/dev/null || echo "Simulator may already be booted"
-          echo "Running xcodebuild with destination: id=$DEVICE_ID"
+          # List available simulators for diagnostics
+          echo "=== iOS SDK version ==="
+          xcodebuild -showsdks | grep -i ios
+          echo "=== Available iPad simulators ==="
+          xcrun simctl list devices available | grep -i "iPad" | head -10
+
+          # Use generic iOS Simulator destination - xcodebuild will pick a compatible one
+          echo "Building with generic iOS Simulator destination..."
           xcodebuild \
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
-            -sdk iphonesimulator \
-            -destination "id=$DEVICE_ID" \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
-            clean build test \
+            clean build \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+
+          # Run tests on a specific iPad simulator
+          echo "=== Running tests ==="
+          xcodebuild \
+            -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
+            -scheme AcoustiScanApp \
+            -destination 'platform=iOS Simulator,name=iPad Pro 11-inch (M4)' \
+            -configuration Debug \
+            test \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee -a "$RUNNER_TEMP/xcodebuild.log"
 
       - name: Report failure to PR
         if: failure()
