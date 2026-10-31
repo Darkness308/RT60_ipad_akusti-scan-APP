@@ -21,6 +21,9 @@ public enum EvaluationStatus: String, CaseIterable, Codable {
     /// Partially compliant - some frequencies meet standards
     case partiallyCompliant = "partially_compliant"
 
+    /// Not evaluated - insufficient data (e.g., no measurements provided)
+    case notEvaluated = "not_evaluated"
+
     /// Human-readable description of the status
     public var displayName: String {
         switch self {
@@ -32,6 +35,8 @@ public enum EvaluationStatus: String, CaseIterable, Codable {
             return "Unterschritten"
         case .partiallyCompliant:
             return "Teilweise konform"
+        case .notEvaluated:
+            return "Nicht auswertbar"
         }
     }
 
@@ -51,6 +56,8 @@ public enum EvaluationStatus: String, CaseIterable, Codable {
             return "orange"
         case .partiallyCompliant:
             return "yellow"
+        case .notEvaluated:
+            return "gray"
         }
     }
 }
