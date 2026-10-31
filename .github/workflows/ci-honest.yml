@@ -100,7 +100,9 @@ jobs:
         run: |
           xcodebuild -version 2>&1 | tee "$RUNNER_TEMP/list.log" || true
           xcodebuild -list -project AcoustiScanApp/AcoustiScanApp.xcodeproj 2>&1 | tee -a "$RUNNER_TEMP/list.log" || true
-          echo "=== Available iOS Simulators ===" | tee -a "$RUNNER_TEMP/list.log"
+          echo "=== Available iOS Simulator Runtimes ===" | tee -a "$RUNNER_TEMP/list.log"
+          xcrun simctl list runtimes | grep -i ios | tee -a "$RUNNER_TEMP/list.log" || true
+          echo "=== Available iPad Simulators ===" | tee -a "$RUNNER_TEMP/list.log"
           xcrun simctl list devices available | grep -i ipad | head -20 | tee -a "$RUNNER_TEMP/list.log" || true
 
       - name: Build & test iOS app (incl. AcoustiScanAppTests)
@@ -110,7 +112,7 @@ jobs:
             -project AcoustiScanApp/AcoustiScanApp.xcodeproj \
             -scheme AcoustiScanApp \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPad (10th generation)' \
+            -destination 'platform=iOS Simulator,name=iPad Air 11-inch (M2),OS=latest' \
             -configuration Debug \
             clean test \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
