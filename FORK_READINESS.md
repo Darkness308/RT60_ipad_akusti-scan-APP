@@ -57,7 +57,11 @@ verifizierbar ist**, **was zwingend auf macOS/an echte Entwickler übergeht**, u
   **Offen:** doppelte Modelle/Strings konsolidieren (Dedup).
 - **P4 — Repo-Hygiene.** Git-Labels-Taxonomie; Branch-Protection (#284);
   Wording/Labeling (#285); verwaiste Branches.
-- **P5 — Ehrliches Statusdokument.** Dieses DoD + `HANDOFF.md` konsistent halten.
+- **P5 — Ehrliches Statusdokument & Steuerung.** Dieses DoD + `HANDOFF.md` konsistent halten; dazu
+  [ROADMAP.md](ROADMAP.md), [Docs/reifegrad.md](Docs/reifegrad.md) (+ `Tools/maturity/reifegrad.sh`),
+  [Docs/adr/](Docs/adr/) und [CHANGELOG.md](CHANGELOG.md).
+- **P6 — Mess-/Belegkette (L4/L5).** Geräte- und Metrologie-Validierung nach
+  [Docs/measurement-validation.md](Docs/measurement-validation.md) — hardware-gebunden, nicht in CI.
 
 ---
 
@@ -65,7 +69,10 @@ verifizierbar ist**, **was zwingend auf macOS/an echte Entwickler übergeht**, u
 
 Ein Fork ist **„ready für Entwickler"**, wenn:
 
-> Stand Juni 2026 — fast alles erfüllt; offen ist nur noch die Branch-Protection (Admin).
+> Stand Oktober 2026 — der *rechnerische* Fork ist erfüllt (M0/M1). Offen sind: **M2 Durchsetzung**
+> (Branch-Protection **und** Lint-/Coverage-Gate — beide fehlen, per `Tools/maturity/reifegrad.sh`
+> bestätigt) sowie **M3/M4** (Geräte-/Metrologie-Validierung, siehe
+> [Docs/measurement-validation.md](Docs/measurement-validation.md)).
 
 - [x] `git clone` + Build auf **macOS** grün — `ci-honest.yml` baut Packages **und** App. *(P1)*
 - [x] `ci-honest.yml` ist grün auf `main`. *(GitHub — prüfbar)*
@@ -73,7 +80,8 @@ Ein Fork ist **„ready für Entwickler"**, wenn:
 - [x] Keine skip-only/leeren Tests mehr (nicht-verifizierende Tests entfernt; App-Tests laufen real). *(P2)*
 - [x] `README`/`HANDOFF`/dieses DoD beschreiben den **realen** Stand inkl. Grenzen.
 - [x] Bekannte Lücken sind als Issues/Doku erfasst (z. B. #284 Branch-Protection; offen: Dedup, i18n, Geräte-Lauf).
-- [ ] **Branch-Protection auf `main` aktiv** — **einziger offener Punkt**, nur Owner/Admin (#284).
+- [ ] **M2 Durchsetzung:** Branch-Protection auf `main` (Owner/Admin, #284) **+** Lint-/Coverage-Gate in `ci-honest.yml`. Ohne Gate ist „grün" nicht blockierend.
+- [ ] **M3/M4 Geräte-/Metrologie-Validierung** — DoD in [Docs/measurement-validation.md](Docs/measurement-validation.md) (nur am iPad / im Labor abhakbar).
 
 > Punkte mit *(macOS)* sind **hier nicht abhakbar** — das ist die ehrliche Grenze,
 > kein offener Mangel an dieser Stelle.

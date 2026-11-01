@@ -343,10 +343,10 @@ Dann auf GitHub:
 ### Required Checks (müssen grün sein)
 - CI-Workflow **ci-honest.yml** erfolgreich: baut & testet die Packages `AcoustiScanConsolidated` und `Modules/Export` (`swift test`) und baut die App via `xcodebuild` — ohne Fehler-Maskierung. (Das Manifest `AcoustiScanApp/Package.swift` selbst wird dabei nicht gebaut.) **Dies ist das einzige automatische Gate.**
 
-> **Ehrlich (Stand Fork):** SwiftLint/SwiftFormat und die **App-Tests** werden von der CI **noch nicht**
-> erzwungen — `.swiftlint.yml`/`.swiftformat` existieren, sind aber nicht verdrahtet; `AcoustiScanAppTests`
-> ist kein Xcode-Test-Target. Bitte daher **lokal** ausführen. Diese in CI zu verdrahten ist der priorisierte
-> nächste Schritt (HANDOFF §5/§10.2–10.3) — danach hier auf „required" hochstufen.
+> **Ehrlich (Stand Okt 2026):** Die **App-Tests** (`AcoustiScanAppTests`) laufen inzwischen in der CI
+> (`xcodebuild test`, macOS/Xcode 16.4). **SwiftLint** läuft ebenfalls (Linux-Job), aber mit `--lenient` →
+> **report-only**, nicht blockierend (Baseline 204/4, Ratchet #305); **SwiftFormat** noch nicht. Lokal
+> weiter empfohlen. Auf „required" hochstufen nach Schuld-Bereinigung + Branch-Protection (#284).
 
 ### Required Reviews (müssen vor Merge erfüllt sein)
 - Mindestens **1 fachlicher Review** (Produkt/QA/Domain) für Business Value.
@@ -513,7 +513,7 @@ swift build
 **Problem**: SwiftLint/SwiftFormat meldet Verstöße (lokal)
 
 ```bash
-# Hinweis: Lint/Format sind (noch) NICHT im CI-Gate — aber lokal empfohlen.
+# Hinweis: SwiftLint läuft in CI report-only (--lenient, nicht blockierend); lokal empfohlen.
 swiftlint --fix
 swiftformat .
 git add . && git commit -m "style: fix lint findings"

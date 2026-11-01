@@ -26,6 +26,37 @@ permissions:
   pull-requests: write
 
 jobs:
+  # M2 enforcement — runs on Linux, so it works even while the macOS runners are blocked.
+  governance:
+    name: Governance index (SSOT)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate governance.json (no drift) + maturity KPIs
+        run: |
+          python3 Tools/maturity/index_check.py
+          bash Tools/maturity/reifegrad.sh
+
+  lint:
+    name: SwiftLint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - name: SwiftLint (config .swiftlint.yml)
+        # Tag tracks the SwiftLint release (web-verified 0.65.x, Oct 2026); bump deliberately.
+        # Linux SwiftLint lints the Swift sources (no iOS SDK). This job is REPORT-ONLY
+        # (see `--lenient` below): it surfaces violations but does NOT enforce an error gate yet.
+        run: |
+          # Image ENTRYPOINT is `swiftlint`; pass the subcommand only (no leading `swiftlint`).
+          # Report-only baseline (M2): `--lenient` downgrades violations to warnings, so the
+          # pre-existing debt (204 violations / 4 serious, Okt 2026) does NOT fail CI yet. Ratchet:
+          # drop `--lenient` (and add `--strict`) once that debt is cleared — see issue tracker.
+          # A genuine SwiftLint/config error still exits non-zero and fails this job.
+          docker run --rm -v "$PWD:/work" -w /work ghcr.io/realm/swiftlint:0.65.0 \
+            lint --config .swiftlint.yml --reporter github-actions-logging --lenient
+
   packages:
     name: Swift packages (build + test)
     runs-on: macos-15
@@ -100,13 +131,19 @@ jobs:
       - name: Build & test iOS app (incl. AcoustiScanAppTests)
         run: |
           set -o pipefail
-          # Find first available iPad simulator
-          IPAD_DEST=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | sed 's/.*(\([^)]*\)).*/\1/' || echo "")
+          # Find first available iPad simulator by its UDID.
+          # NOTE: extract the UDID explicitly. A greedy `sed 's/.*(\(...\)).*/\1/'`
+          # captures the trailing "(Shutdown)" instead of the UDID and breaks the
+          # destination ("Unable to find a device matching ...").
+          IPAD_DEST=$(xcrun simctl list devices available | grep -i "iPad" \
+            | grep -i -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}' | head -1 || echo "")
           if [ -z "$IPAD_DEST" ]; then
-            echo "No iPad simulator found, using generic iOS destination"
-            DEST="generic/platform=iOS Simulator"
+            echo "::error::No iPad simulator with a UDID found on this runner"
+            xcrun simctl list devices available | grep -i "iPad" || true
+            exit 1
           else
-            echo "Using iPad simulator: $IPAD_DEST"
+            echo "Using iPad simulator UDID: $IPAD_DEST"
+            xcrun simctl boot "$IPAD_DEST" 2>/dev/null || true
             DEST="platform=iOS Simulator,id=$IPAD_DEST"
           fi
           xcodebuild \
@@ -116,7 +153,15 @@ jobs:
             -destination "$DEST" \
             -configuration Debug \
             clean test \
+            -enableCodeCoverage YES \
+            -resultBundlePath "$RUNNER_TEMP/Test.xcresult" \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Code coverage (report-only; baseline for a future gate)
+        if: success()
+        run: |
+          xcrun xccov view --report "$RUNNER_TEMP/Test.xcresult" 2>/dev/null | head -40 \
+            || echo "(coverage report not available)"
 
       - name: Report failure to PR
         if: failure()
