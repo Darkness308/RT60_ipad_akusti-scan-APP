@@ -32,7 +32,7 @@ im Report ehrlich als *Prognose/Indikation* vs. *validierte Messung* zu kennzeic
 | G1 | Anregung | Impuls (Klatsch/Ballon) **oder** Interrupted Noise | Reproduzierbare, breitbandige Anregung über alle Oktavbänder 125–4000 Hz | Anregung deckt jedes Band mit ausreichend Pegel (SNR-Gate, s. G4) | Gerät |
 | G2 | Aufnahme | `AudioManager` (AVAudioEngine / **USB-Audio**) | Keine Übersteuerung (Clipping), bekannte Abtastrate, Mono-Kanal, Mikrofon-ID | 0 Clipping-Samples; Abtastrate ≥ 44,1 kHz dokumentiert | Gerät |
 | G3 | Impulsantwort | `ImpulseCaptureProcessing.extractImpulseResponse` | Onset-Erkennung + Pre-Roll korrekt; vollständiger Abklingschwanz erfasst | IR beginnt vor dem Onset, endet im Rauschboden | ✅ CI (synthetisch) + Gerät |
-| G4 | SNR-Gate | `estimateSNRdB` / `measureRT60(minimumSNRdB:)` | Dynamikumfang reicht für T20 (≥ 35 dB) bzw. T30 (≥ 45 dB) | Unter Gate → `insufficientSNR`, **kein** stiller Falschwert | ✅ CI (Logik) + Gerät (reale Pegel) |
+| G4 | SNR-Gate | `estimateSNRdB` / `measureRT60(minimumSNRdB:)` | Dynamikumfang reicht für T20 (≥ 35 dB) bzw. T30 (≥ 45 dB) | Unter Gate → `insufficientSNR`, **kein** stiller Falschwert | ⚠️ Core-Logik ✅ CI; **App-Pfad noch NICHT scharf** (Default 0 → offen, L4) |
 | G5 | Oktavband-RT60 | `ImpulseResponseAnalyzer.rt60PerOctaveBand` | Schroeder-Integration je Band; T20/T30; Krümmung C | Werte je Band plausibel (0 < T < 10 s); C dokumentiert | ✅ CI (synthetisch) + Gerät |
 | G6 | Geometrie/Volumen | RoomPlan/LiDAR → V | Raumvolumen V (geht in DIN-`T_soll` **und** Sabine-Prognose ein) | V innerhalb ± 5 % ggü. Bandmaß im Referenzraum | Gerät |
 | G7 | DIN-Bewertung | `RT60Evaluator.evaluateDINCompliance` | Asymmetrisches Bild-2-Band, Gruppe A1–A5 | Bewertung = Referenz­rechnung von Hand | ✅ CI |
@@ -40,6 +40,13 @@ im Report ehrlich als *Prognose/Indikation* vs. *validierte Messung* zu kennzeic
 
 **Lesart:** G3, G5, G7, G8 sind rechnerisch in CI abgedeckt. **G1, G2, G4(real), G6** sind der
 Geräte-Engpass (L4). Die *metrologische* Gültigkeit über alle Glieder ist L5.
+
+> ⚠️ **Offen (nicht überstaten):** Das SNR-Gate (G4) existiert als Core-Funktion
+> (`ImpulseCaptureProcessing.measureRT60(minimumSNRdB:)`, per Test abgedeckt), wird im **App-Messpfad
+> aber mit `minimumSNRdB = 0` aufgerufen** (`RT60MeasurementView` → `AudioImpulseRecorder.measureRT60(duration:)`),
+> d. h. die App verwirft Aufnahmen unter Schwelle derzeit **nicht**. G4 ist insoweit DoD-Ziel, nicht
+> erfüllter Stand — vor Freigabe eine Policy-Schwelle durchreichen und `insufficientSNR`/`snrUnavailable`
+> in der UI behandeln.
 
 ---
 
@@ -94,8 +101,8 @@ Geräte-Engpass (L4). Die *metrologische* Gültigkeit über alle Glieder ist L5.
 
 ## 5. Belegkette / Chain of Custody (pro Messung aufzuzeichnen)
 
-Damit ein Ergebnis **rückverfolgbar und reproduzierbar** ist, muss der Audit-Block (vgl.
-`Schemas/audit.schema.json`) je Messung festhalten:
+Damit ein Ergebnis **rückverfolgbar und reproduzierbar** ist, muss der Audit-Block je Messung
+folgende Felder festhalten (**Soll-Vorgabe / DoD** — Schema-Status s. Hinweis unten):
 
 - Zeitstempel, Geräte-/App-Version (SemVer, s. [CHANGELOG.md](../CHANGELOG.md))
 - Mikrofon-ID + **Kalibrierdatum** (bei externem Messmikro)
@@ -107,6 +114,11 @@ Damit ein Ergebnis **rückverfolgbar und reproduzierbar** ist, muss der Audit-Bl
 
 > Ohne diese Felder ist das Ergebnis eine Zahl ohne Beleg. **Vor Freigabe** eines Berichts muss der
 > Audit-Block vollständig sein (das ist der „lückenlose Nachweis", soweit er real erreichbar ist).
+>
+> ⚠️ **Noch NICHT schema-erzwungen (offen):** `Schemas/audit.schema.json` verlangt derzeit nur
+> `metadata`/`bands`/`summary`, und `report.schema.json` lässt `audit` als beliebiges Objekt zu — die
+> obigen Chain-of-Custody-Felder sind also **DoD-Ziel, kein erzwungener Stand**. Offen: Schema um diese
+> Pflichtfelder erweitern **und** die Validierung im Report-Pfad verdrahten.
 
 ---
 

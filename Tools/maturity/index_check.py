@@ -22,7 +22,15 @@ def main() -> int:
 
     problems = []
     nodes = data.get("nodes", [])
-    ids = {n.get("id") for n in nodes}
+    ids = set()
+    for n in nodes:
+        nid = n.get("id")
+        if not nid:
+            problems.append(f"node ohne 'id': {n.get('path', '?')}")
+        elif nid in ids:
+            problems.append(f"doppelte node-id (IDs sind SSOT-Schluessel): {nid}")
+        else:
+            ids.add(nid)
     checked = 0
 
     for n in nodes:
@@ -31,7 +39,10 @@ def main() -> int:
             if not rel:
                 continue
             checked += 1
-            if not (ROOT / rel).exists():
+            cand = (ROOT / rel).resolve()
+            if not cand.is_relative_to(ROOT):
+                problems.append(f"node '{n.get('id','?')}': {key} zeigt aus dem Repo heraus: {rel}")
+            elif not cand.exists():
                 problems.append(f"node '{n.get('id','?')}': {key} fehlt auf Platte: {rel}")
 
     for m in data.get("milestones", []):
