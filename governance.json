@@ -24,7 +24,7 @@
     {"id": "adr_0003", "path": "Docs/adr/0003-duplicated-models.md", "kind": "adr", "authoritative_for": ["data-models"], "status": "accepted-debt"},
     {"id": "adr_0004", "path": "Docs/adr/0004-din18041-asymmetric-tolerance.md", "kind": "adr", "authoritative_for": ["din18041-evaluation"], "status": "accepted"},
     {"id": "adr_0005", "path": "Docs/adr/0005-measurement-method.md", "kind": "adr", "authoritative_for": ["measurement-method"], "status": "accepted"},
-    {"id": "ci", "path": ".github/workflows/ci-honest.yml", "kind": "ci", "authoritative_for": ["build-test-verification"], "status": "partial", "note": "einzige Pipeline; Linux-Jobs (governance/lint) laufen; macOS-Jobs (packages/ios-app) derzeit blockiert: Runner nicht zugeteilt (Billing)"},
+    {"id": "ci", "path": ".github/workflows/ci-honest.yml", "kind": "ci", "authoritative_for": ["build-test-verification"], "status": "green", "note": "einzige Pipeline; macos-15/Xcode 16.4 + Linux-Jobs; alle Checks gruen auf #301 (packages, ios-app via xcodebuild test, governance, SwiftLint report-only)"},
     {"id": "docs_index", "path": "Docs/README.md", "kind": "sub-index", "authoritative_for": ["Docs-folder"], "status": "active"},
     {"id": "readme", "path": "README.md", "kind": "readme", "authoritative_for": ["product-overview"], "status": "active"},
     {"id": "contributing", "path": "CONTRIBUTING.md", "kind": "process", "authoritative_for": ["contribution-rules"], "status": "active"},
@@ -48,7 +48,7 @@
     {"id": "M5", "title": "Release (Signing/Archive/Tag)", "status": "open", "defined_by": "roadmap", "verifiable": "appstore"}
   ],
   "bottlenecks": [
-    {"id": "ci-runners", "severity": "high", "desc": "macOS-Runner werden nicht zugeteilt (0s-Cancel) -> ci-honest.yml kann nicht laufen", "owner": "repo-owner", "verifiable": "github-billing", "ref": "ci"},
+    {"id": "ci-runners", "severity": "resolved", "desc": "ERLEDIGT (Nov 2026): macOS-Runner zurueck (macos-15/Xcode 16.4); CI inkl. ios-app gruen auf #301", "ref": "ci"},
     {"id": "enforcement", "severity": "high", "desc": "Index-Gate blockierend+gruen (Linux); Lint report-only/lenient (Baseline 204 Verstoesse/4 serious, Ratchet offen); Coverage report-only; Branch-Protection offen (Owner)", "ref": "M2"},
     {"id": "device-metrology", "severity": "high", "desc": "L4/L5 unverifiziert (hardware-/kalibrierungsgebunden)", "ref": "dod_measurement"},
     {"id": "dedup", "severity": "med", "desc": "doppelte Modelle App/Paket", "ref": "adr_0003"}

@@ -209,10 +209,10 @@ oder (b) echten Messpfad (`ImpulseResponseAnalyzer`) an die UI anbinden. **Nicht
 allein durchs Kompilieren.
 
 ### 10.3 🟠 Schnelle, risikoarme Gates (fehlen in der CI)
-- **Lint/Format nicht erzwungen:** `.swiftlint.yml` + `.swiftformat` existieren, werden aber
-  von `ci-honest.yml` **nicht** ausgeführt (Enforcement lag nur im inzwischen gelöschten `build-test.yml`).
-  → 🖥 `swiftlint --strict` + `swiftformat --lint` als CI-Schritt. (Vorher lokal laufen lassen —
-  kann anfangs viele Funde liefern.)
+- **Lint läuft report-only (nicht blockierend):** `ci-honest.yml` führt **SwiftLint aus** (`--lenient`,
+  Linux-Job) — Verstöße werden gemeldet, lassen die CI aber **nicht** fehlschlagen. Baseline: 204 Verstöße /
+  4 serious (Ratchet #305). **SwiftFormat** läuft noch nicht. → scharf schalten: `--lenient` entfernen
+  (ggf. `--strict`) nach Bereinigung der Schuld.
 - **JSON-Schemas ungenutzt:** `Schemas/report.schema.json` + `audit.schema.json` werden nirgends
   zur Validierung herangezogen. → Report-Modell gegen Schema prüfen (Contract-Test).
 
