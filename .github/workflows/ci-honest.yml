@@ -46,8 +46,8 @@ jobs:
       - uses: actions/checkout@v5
       - name: SwiftLint (config .swiftlint.yml)
         # Tag tracks the SwiftLint release (web-verified 0.65.x, Oct 2026); bump deliberately.
-        # Linux SwiftLint lints the Swift sources (no iOS SDK). Fails on error-severity
-        # violations; add `--strict` later to also fail on warnings once existing debt is cleared.
+        # Linux SwiftLint lints the Swift sources (no iOS SDK). This job is REPORT-ONLY
+        # (see `--lenient` below): it surfaces violations but does NOT enforce an error gate yet.
         run: |
           # Image ENTRYPOINT is `swiftlint`; pass the subcommand only (no leading `swiftlint`).
           # Report-only baseline (M2): `--lenient` downgrades violations to warnings, so the

@@ -53,6 +53,11 @@ def main() -> int:
             if ref and ref not in known:
                 problems.append(f"edge {e.get('from')}->{e.get('to')}: '{side}' unbekannt: {ref}")
 
+    for b in data.get("bottlenecks", []):
+        ref = b.get("ref")
+        if ref and ref not in known:
+            problems.append(f"bottleneck '{b.get('id','?')}': ref unbekannt: {ref}")
+
     print(f"governance.json: {len(nodes)} Nodes, {checked} Pfade geprueft, {len(problems)} Problem(e).")
     for p in problems:
         print(f"  ! {p}")

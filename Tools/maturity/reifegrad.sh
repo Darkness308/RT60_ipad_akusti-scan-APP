@@ -27,11 +27,18 @@ SKIPS=$(grep -rhE 'XCTSkip' --include=*.swift . 2>/dev/null | wc -l); SKIPS=$((S
 WORKFLOWS=$(find .github/workflows -maxdepth 1 -name '*.yml' 2>/dev/null | wc -l); WORKFLOWS=$((WORKFLOWS + 0))
 ADRS=$(find Docs/adr -maxdepth 1 -name '[0-9]*.md' 2>/dev/null | wc -l); ADRS=$((ADRS + 0))
 
-gate() { # $1 = grep-Muster -> ja/NEIN
-  if grep -rqiE "$1" .github/workflows/ 2>/dev/null; then echo "ja"; else echo "NEIN"; fi
+# Ehrlich: "vorhanden" ist noch kein GATE. Ein Lint-Job mit --lenient bzw. ein
+# Coverage-Schritt ohne fehlschlagende Schwelle ist REPORT-ONLY, nicht erzwingend.
+lint_status() {
+  grep -rqiE 'swiftlint|swiftformat' .github/workflows/ 2>/dev/null || { echo "fehlt"; return; }
+  if grep -rqiE 'lenient' .github/workflows/ 2>/dev/null; then echo "report-only"; else echo "ENFORCING"; fi
 }
-LINT_GATE=$(gate 'swiftlint|swiftformat')
-COVERAGE_GATE=$(gate 'enableCodeCoverage|codecov|xccov')
+coverage_status() {
+  grep -rqiE 'enableCodeCoverage|codecov|xccov' .github/workflows/ 2>/dev/null || { echo "fehlt"; return; }
+  if grep -rqiE 'coverage.*(threshold|minimum|fail)|--minimum-coverage|xccov.*--check' .github/workflows/ 2>/dev/null; then echo "ENFORCING"; else echo "report-only"; fi
+}
+LINT_GATE=$(lint_status)
+COVERAGE_GATE=$(coverage_status)
 
 BRANCHES="n/v"
 if git rev-parse --git-dir >/dev/null 2>&1; then
@@ -47,15 +54,15 @@ printf 'Tests VERWAIST (Tools/, laufen nirgends):       %s\n' "$ORPH"
 printf 'Tests GESAMT:                                   %s\n' "$TOTAL"
 printf 'XCTSkip-Vorkommen:                              %s\n' "$SKIPS"
 printf 'CI-Workflows:                                   %s\n' "$WORKFLOWS"
-printf 'Lint-Gate in CI (swiftlint/-format):            %s\n' "$LINT_GATE"
-printf 'Coverage-Gate in CI:                            %s\n' "$COVERAGE_GATE"
+printf 'Lint in CI (swiftlint/-format):                 %s\n' "$LINT_GATE"
+printf 'Coverage in CI:                                 %s\n' "$COVERAGE_GATE"
 printf 'ADRs:                                           %s\n' "$ADRS"
 printf 'Remote-Branches (lokal bekannt):                %s\n' "$BRANCHES"
 
 printf '\nHinweise:\n'
 [ "$ORPH" -gt 0 ] && printf '  ! %s verwaiste Test(s) — in keiner Pipeline.\n' "$ORPH"
-[ "$LINT_GATE" = "NEIN" ] && printf '  ! Kein Lint-Gate in der CI (M2 offen).\n'
-[ "$COVERAGE_GATE" = "NEIN" ] && printf '  ! Kein Coverage-Gate in der CI (M2 offen).\n'
+[ "$LINT_GATE" != "ENFORCING" ] && printf '  ! Lint ist kein blockierendes Gate (%s) — M2-Ratchet offen.\n' "$LINT_GATE"
+[ "$COVERAGE_GATE" != "ENFORCING" ] && printf '  ! Coverage ist kein blockierendes Gate (%s) — M2-Ratchet offen.\n' "$COVERAGE_GATE"
 printf '  i Branch-Protection ist hier NICHT prüfbar — im GitHub-UI verifizieren.\n'
 printf '  i Stufen (0-5) je Ebene: siehe Docs/reifegrad.md.\n\n'
 exit 0

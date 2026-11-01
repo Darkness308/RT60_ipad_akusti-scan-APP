@@ -15,7 +15,7 @@ Seit dem Juni-Stand in `main` gemergt (CI grün):
 
 - ✅ **Messpfad in der App verdrahtet** → der alte CRITICAL-Befund §10.1 (»App misst nicht, sie prognostiziert«) ist **im Code aufgelöst**: `AudioManager` + `RT60MeasurementView` rufen den echten Impuls-/RT60-Pfad auf. **Geräte-Gültigkeit** (echtes Mikro/LiDAR, Metrologie) bleibt offen → L4/L5.
 - 📋 **Neue Steuerungs-/Validierungs-Artefakte:** [ROADMAP.md](ROADMAP.md) (Meilensteine M0–M5) · [Docs/measurement-validation.md](Docs/measurement-validation.md) (DoD für Mess-/Belegkette, L4/L5) · [Docs/reifegrad.md](Docs/reifegrad.md) + `Tools/maturity/reifegrad.sh` (messbare Kennzahlen) · [Docs/adr/](Docs/adr/) (ADR-0001…0005) · [CHANGELOG.md](CHANGELOG.md).
-- 🔢 **Test-Inventar (gezählt, Okt 2026):** L1 89 · L2 14 · L3 177 = **280** in baubaren Targets; 1 verwaister `LogParser`-Test entfernt; genau **1** `XCTSkip` (nur auf Nicht-PDFKit-Plattformen; auf macOS läuft der volle Test).
+- 🔢 **Test-Inventar (live via `Tools/maturity/reifegrad.sh`; Stand `b51460a` nach Merge #300/#304):** L1 110 · L2 14 · L3 177 = **301** in baubaren Targets (wächst mit neuen Tests — das Skript zählt, Zahl nicht hart pflegen); 1 verwaister `LogParser`-Test entfernt; genau **1** `XCTSkip` (nur Nicht-PDFKit; auf macOS läuft der volle Test).
 
 **Reale offene Engpässe (nach Meilenstein):**
 - **M2 — Durchsetzung:** Branch-Protection auf `main` **und** Lint-/Coverage-Gate in der CI — **beide fehlen** (per `reifegrad.sh` bestätigt). Bis dahin ist „grün" belastbar, aber **nicht blockierend** (freiwillig).
