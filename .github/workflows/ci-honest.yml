@@ -131,13 +131,19 @@ jobs:
       - name: Build & test iOS app (incl. AcoustiScanAppTests)
         run: |
           set -o pipefail
-          # Find first available iPad simulator
-          IPAD_DEST=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | sed 's/.*(\([^)]*\)).*/\1/' || echo "")
+          # Find first available iPad simulator by its UDID.
+          # NOTE: extract the UDID explicitly. A greedy `sed 's/.*(\(...\)).*/\1/'`
+          # captures the trailing "(Shutdown)" instead of the UDID and breaks the
+          # destination ("Unable to find a device matching ...").
+          IPAD_DEST=$(xcrun simctl list devices available | grep -i "iPad" \
+            | grep -i -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}' | head -1 || echo "")
           if [ -z "$IPAD_DEST" ]; then
-            echo "No iPad simulator found, using generic iOS destination"
-            DEST="generic/platform=iOS Simulator"
+            echo "::error::No iPad simulator with a UDID found on this runner"
+            xcrun simctl list devices available | grep -i "iPad" || true
+            exit 1
           else
-            echo "Using iPad simulator: $IPAD_DEST"
+            echo "Using iPad simulator UDID: $IPAD_DEST"
+            xcrun simctl boot "$IPAD_DEST" 2>/dev/null || true
             DEST="platform=iOS Simulator,id=$IPAD_DEST"
           fi
           xcodebuild \
